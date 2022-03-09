@@ -26,18 +26,25 @@ def initOneMapAPI():
     df['Address'] = df['blk_no'] + " " + df['street']
 
     # Append address and get the coordinates of the location
-    req = requests.get('https://developers.onemap.sg/commonapi/search?searchVal='+df['Address']+'&returnGeom=Y&getAddrDetails=Y&pageNum=1')
-    resultsdict = eval(req.text)
-    if len(resultsdict['results']) > 0:
-        return resultsdict['results'][0]['LATITUDE'], resultsdict['results'][0]['LONGITUDE']
-    else:
-        pass
+    routingJson = requests.get("https://developers.onemap.sg/privateapi/routingsvc/route?"
+                               "start=1.319728,103.8421&"
+                               "end=1.319728905,103.8421581&"
+                               "routeType=walk&"
+                               "token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjg1NDQsInVzZXJfaWQiOjg1NDQsImVtYWlsIjoieWFudGF0dGFuNzIxQGdtYWlsLmNvbSIsImZvcmV2ZXIiOmZhbHNlLCJpc3MiOiJodHRwOlwvXC9vbTIuZGZlLm9uZW1hcC5zZ1wvYXBpXC92MlwvdXNlclwvc2Vzc2lvbiIsImlhdCI6MTY0NjgxNDMxNywiZXhwIjoxNjQ3MjQ2MzE3LCJuYmYiOjE2NDY4MTQzMTcsImp0aSI6IjE4ZWI2MDVmYzU2MGU5YzcwZGY0MjEyNDMxN2I1MzM5In0.GsQO_VeKSFiw0gJbJENmhnM1obpN-KxVcGw1C2PUw8g")
+    resultsdict = eval(routingJson.text)
+    print(resultsdict)
+    # if len(resultsdict['results']) > 0:
+    #     return resultsdict['results'][0]['LATITUDE'], resultsdict['results'][0]['LONGITUDE']
+    # else:
+    #     pass
 
 
 # Functions to perform before showing the page
 @app.route("/")
 def mainPage_get():
-    return render_template("main.html", x="I am x", y="Meh")
+    yourLocation = geocoder.ip("me")
+    initOneMapAPI()
+    return render_template("main.html", locationCoords=",".join("%.11f" %coord for coord in yourLocation.latlng), y="Meh")
 
 
 # Functions to perform after submitting information
@@ -46,8 +53,6 @@ def mainPage_post():
     #To render the page (pathing starts from templates folder after). After the filename, variables defined behind are
     #data that the site needs to use
     initOneMapAPI()
-    yourLocation = geocoder.ip("me")
-    print(yourLocation.latlng)
     return redirect("/")
 
 
