@@ -1,8 +1,22 @@
 {% extends "base.html" %}
-{% block title %}<!--INSERT TITLE HERE-->{% endblock %}
+{% block title %}Redpins Buffer{% endblock %}
 
 {% block content %}
 <!--START YOUR HTML WITHIN block content and endblock-->
 <h1>Hello testing</h1>
 <p>{{ x }}</p>
+
+<script>
+        function GeoXY(){
+        $.ajax({
+        url: 'https://developers.onemap.sg/privateapi/commonsvc/revgeocodexy?location=24291.97788882387,31373.0117224489&token=0v9hsciobp1ifa5bgpkin21cs3?revgeocodexy?&buffer=100&addressType=all',
+        success: function(result){
+            //Set result to a variable for writing
+            var TrueResult = JSON.stringify(result);
+            document.write(TrueResult);
+            }});
+        }
+
+        GeoXY();
+</script>
 {% endblock %}

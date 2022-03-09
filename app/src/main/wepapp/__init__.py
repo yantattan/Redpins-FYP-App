@@ -2,7 +2,9 @@ from flask import Flask, render_template, request, redirect, url_for, session, f
 from datetime import timedelta, date
 from Model import *
 from controllers import *
-import shelve
+import pandas
+import geocoder
+import requests
 import random
 
 # from controllers.Users import UserCon
@@ -15,13 +17,39 @@ app.secret_key = "redp1n5Buffer"
 # userCon = UserCon()
 
 
-#For every different pages
+def initOneMapAPI():
+    df = {
+        "Address": "",
+        "blk_no": "336B",
+        "street": "Geylang St 69"
+    }
+    df['Address'] = df['blk_no'] + " " + df['street']
+
+    # Append address and get the coordinates of the location
+    req = requests.get('https://developers.onemap.sg/commonapi/search?searchVal='+df['Address']+'&returnGeom=Y&getAddrDetails=Y&pageNum=1')
+    resultsdict = eval(req.text)
+    if len(resultsdict['results']) > 0:
+        return resultsdict['results'][0]['LATITUDE'], resultsdict['results'][0]['LONGITUDE']
+    else:
+        pass
+
+
+# Functions to perform before showing the page
 @app.route("/")
-def mainPage():
+def mainPage_get():
+    return render_template("main.html", x="I am x", y="Meh")
+
+
+# Functions to perform after submitting information
+@app.route("/", methods=['GET', 'POST'])
+def mainPage_post():
     #To render the page (pathing starts from templates folder after). After the filename, variables defined behind are
     #data that the site needs to use
-    print("Hello world")
-    return render_template("main.html", x="I am x", y="Meh")
+    initOneMapAPI()
+    yourLocation = geocoder.ip("me")
+    print(yourLocation.latlng)
+    return redirect("/")
+
 
 
 @app.route("/login")
