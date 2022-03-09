@@ -5,23 +5,23 @@ from controllers import *
 import shelve
 import random
 
-from controllers.Users import UserCon
+# from controllers.Users import UserCon
 
 
 app = Flask(__name__)
 app.secret_key = "redp1n5Buffer"
 
 #Init all controllers
-userCon = UserCon()
+# userCon = UserCon()
 
 
 #For every different pages
 @app.route("/")
-def home():
+def mainPage():
     #To render the page (pathing starts from templates folder after). After the filename, variables defined behind are
     #data that the site needs to use
     print("Hello world")
-    return render_template("home.html", x="I am x", y="Meh")
+    return render_template("main.html", x="I am x", y="Meh")
 
 
 @app.route("/login")
@@ -37,8 +37,8 @@ def login_post():
     #data that the site needs to use
     login_form = User(request.form)
 
-    if request.method == 'POST' and login_form.validate():
-        userCon.Login(login_form)
+    # if request.method == 'POST' and login_form.validate():
+    #     userCon.Login(login_form)
     return redirect("/")
 
 
