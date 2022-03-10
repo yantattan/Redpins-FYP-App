@@ -1,4 +1,4 @@
-import mysql.connector as m
+import mysql.connector as mySqlDB
 
 
 class MySql:
@@ -7,19 +7,29 @@ class MySql:
     try:
         @staticmethod
         def Connect():
-            con = m.connect(
+            db = mySqlDB.connect(
                 host="localhost",
                 user="root",
-                password="P@ssw0rd",
-                database="RedpinsDB"
+                password="password",
+                database="redpinsdb"
             )
 
-            if con.is_connected():
+            cursor = db.cursor()
+            cursor.execute("CREATE SCHEMA IF NOT EXISTS redpinsdb")
+
+            if db.is_connected():
                 msg = "DB Connected"
-                return con
+                cursor.execute("CREATE TABLE IF NOT EXISTS `Users` ("
+                               "`Id` INT NOT NULL AUTO_INCREMENT, "
+                               "`Username` VARCHAR(50) NOT NULL,"
+                               "`Contact` VARCHAR(8) NOT NULL,"
+                               "`Password` LONGTEXT NOT NULL,"
+                               "`PwdSalt` VARCHAR(8) NOT NULL,"
+                               "PRIMARY KEY (`Id`));")
+                return db
 
     except Exception as e:
-        MySql.msg = e
+        msg = e
 
     @staticmethod
     def Close(self, con):

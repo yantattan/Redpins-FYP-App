@@ -5,12 +5,12 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css" />
 <script src="https://cdn.onemap.sg/leaflet/onemap-leaflet.js"></script>
 <!--START YOUR HTML WITHIN block content and endblock-->
-<h1>Hello testing</h1>
+<h1>Hello {{session["current_user"]["username"]}}</h1>
 <p>{{ locationCoords }}</p>
 <div id='mapdiv' style='height:800px;'></div>
 
 <script>
-        var locationCoords = "{{locationCoords}}"
+        /*var locationCoords = "{{locationCoords}}"
         function GeoXY(){
         $.ajax({
         url: `https://developers.onemap.sg/privateapi/commonsvc/revgeocodexy?location=${locationCoords}&token=0v9hsciobp1ifa5bgpkin21cs3?revgeocodexy?&buffer=100&addressType=all`,
@@ -21,7 +21,7 @@
             }});
         }
 
-        GeoXY();
+        GeoXY();*/
 </script>
 <script>
     var center = L.bounds([1.56073, 104.11475], [1.16, 103.502]).getCenter();
