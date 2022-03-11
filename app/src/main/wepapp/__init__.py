@@ -39,22 +39,23 @@ def initOneMapAPI(yourLocation):
 
 
 # Functions to perform before showing the page
-@app.route("/")
-def mainPage_get():
-    yourLocation = geocoder.ipinfo("")
-    print(yourLocation.latlng)
-    return render_template("main.html", locationCoords=",".join("%.11f" % coord for coord in yourLocation.latlng),
-                           y="Meh")
-
-
-# Functions to perform after submitting information
 @app.route("/", methods=['GET', 'POST'])
-def mainPage_post():
+def mainPage():
     # To render the page (pathing starts from templates folder after). After the filename, variables defined behind are
     # data that the site needs to use
-    yourLocation = geocoder.ip("me")
-    initOneMapAPI(yourLocation)
-    return redirect("/")
+    if request.method == 'POST':
+        yourLocation = geocoder.ip("me")
+        initOneMapAPI(yourLocation)
+        return redirect("/")
+    else:
+        if session.get("current_user") is None:
+            return redirect("/login")
+
+        yourLocation = geocoder.ipinfo("")
+        print(yourLocation.latlng)
+        return render_template("main.html", locationCoords=",".join("%.11f" % coord for coord in yourLocation.latlng),
+                               y="Meh")
+
 
 
 @app.route("/login", methods=['GET', 'POST'])

@@ -13,6 +13,7 @@ class RegisterForm(Form):
     password = PasswordField("Password", [validators.Length(min=7), validators.DataRequired()])
     confirm_password = PasswordField("Confirm Password", [validators.Length(min=7), validators.EqualTo("password", message="Both passwords must match"), validators.DataRequired()])
 
+
 class LoginForm(Form):
     username = StringField("User Name", [validators.DataRequired()])
     password = PasswordField("Password", [validators.DataRequired()])
