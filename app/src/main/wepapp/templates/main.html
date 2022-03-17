@@ -4,30 +4,78 @@
 {% block content %}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css" />
 <script src="https://cdn.onemap.sg/leaflet/onemap-leaflet.js"></script>
+<script type="text/javascript" src="https://rawgit.com/jieter/Leaflet.encoded/master/Polyline.encoded.js"></script>
+
 <!--START YOUR HTML WITHIN block content and endblock-->
-<h1>Hello {{session["current_user"]["username"]}}</h1>
-<p>{{ locationCoords }}</p>
-<div id='mapdiv' style='height:800px;'></div>
+<div id="mobile-view" class="">
+    <h1>Hello {{session["current_user"]["username"]}}</h1>
+    <p>{{ locationCoords }}</p>
+    <div id='mapdiv' style='height:500px;'></div>
+    
+    <input type="text" id="searchBar" onkeyup="pauseSearch()">
+    <div id="searchPage">1</div>
+    <button id="searchNextPageBtn">Next page</button>
+    <div id="searchResults"></div>
+</div>
 
 <script>
-        /*var locationCoords = "{{locationCoords}}"
-        function GeoXY(){
-        $.ajax({
-        url: `https://developers.onemap.sg/privateapi/commonsvc/revgeocodexy?location=${locationCoords}&token=0v9hsciobp1ifa5bgpkin21cs3?revgeocodexy?&buffer=100&addressType=all`,
-        success: function(result){
-            //Set result to a variable for writing
-            var TrueResult = JSON.stringify(result);
-            document.write(TrueResult);
-            }});
-        }
+    // var locationCoords = "{{locationCoords}}"
+    // function GeoXY(){
+    // $.ajax({
+    // url: `https://developers.onemap.sg/privateapi/commonsvc/revgeocodexy?location=${locationCoords}&token=0v9hsciobp1ifa5bgpkin21cs3?revgeocodexy?&buffer=100&addressType=all`,
+    // success: function(result){
+    //     //Set result to a variable for writing
+    //     var TrueResult = JSON.stringify(result);
+    //     document.write(TrueResult);
+    //     }});
+    // }
 
-        GeoXY();*/
+    var canSearch = true;
+
+    $("#searchNextPageBtn").click(function() {
+        $("#searchPage").text(parseInt($("#searchPage").text()) + 1)
+    })
+
+    $("#search")
+
+    function pauseSearch() {
+        canSearch = false;
+        setTimeout(function() {
+            canSearch = true;
+            search()
+        }, 1000)
+    }
+
+    function search() {
+        if (canSearch) {
+            const search = $("#searchBar").val()
+            const pageNum = $("#searchPage").val()
+            if (!search) {
+                $("#searchResults").text("Will show maybe some recommended places");
+            }
+            else {
+                $.ajax({
+                url: `https://developers.onemap.sg/commonapi/search?searchVal=${search}&returnGeom=Y&getAddrDetails=Y&pageNum=${pageNum}`,
+                success: function(result) {
+                    //Set result to a variable for writing
+                    var resultstr = JSON.stringify(result);
+                    $("#searchResults").text(resultstr);
+                }});
+            }
+            
+        }       
+    } 
+
+    // GeoXY();
 </script>
+
 <script>
+    // Map display init
+    L.Icon.Default.imagePath = "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.4.0/images";
     var center = L.bounds([1.56073, 104.11475], [1.16, 103.502]).getCenter();
     var map = L.map('mapdiv').setView([center.x, center.y], 12);
 
-    var basemap = L.tileLayer('https://maps-{s}.onemap.sg/v3/Default/{z}/{x}/{y}.png', {
+    var basemap = L.tileLayer(`http://maps-{s}.onemap.sg/v2/Default/{z}/{x}/{y}.png`, {
         detectRetina: true,
         maxZoom: 18,
         minZoom: 11
@@ -40,15 +88,47 @@
     function getLocation() {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(showPosition);
-        }
+        } 
     }
 
-    function showPosition(position) {
-        marker = new L.Marker([position.coords.latitude, position.coords.longitude], {bounceOnAdd: false}).addTo(map);
-        var popup = L.popup()
-        .setLatLng([position.coords.latitude, position.coords.longitude])
-        .setContent('You are here!')
-        .openOn(map);
+    function showPosition(position) {    
+        console.log(position);       
+        marker = new L.Marker([position.coords.latitude, position.coords.longitude], {bounceOnAdd: false}).addTo(map);             
+        // var popup = L.popup()
+        // .setLatLng([position.coords.latitude, position.coords.longitude]) 
+        // .setContent('<img height="20px" width="20px" src="https://web-static.onemap.sg/images/main/misc/icons_Locator.png">')
+        // .openOn(map);   
+        
+        $.ajax({
+            url: `https://developers.onemap.sg/privateapi/routingsvc/route?start=${position.coords.latitude},${position.coords.longitude}&end=1.319728905,103.8421581&routeType=${routeType}&token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjg1NDQsInVzZXJfaWQiOjg1NDQsImVtYWlsIjoieWFudGF0dGFuNzIxQGdtYWlsLmNvbSIsImZvcmV2ZXIiOmZhbHNlLCJpc3MiOiJodHRwOlwvXC9vbTIuZGZlLm9uZW1hcC5zZ1wvYXBpXC92MlwvdXNlclwvc2Vzc2lvbiIsImlhdCI6MTY0NzQxMTA0NSwiZXhwIjoxNjQ3ODQzMDQ1LCJuYmYiOjE2NDc0MTEwNDUsImp0aSI6ImJjNTBmNzFlOWZmOTYyMWE3NThiNjRkOGE0OGFiMTk0In0.lSAYegznUtlA36wrOkIMVNWTvOUzkxIh7KdjLwO6FbM&date=${String(today.getFullYear())}-${String(today.getMonth()+1)}-${String(today.getDate())}&time=${String(today.getHours())}:${String(today.getMinutes())}:${String(today.getSeconds())}&mode=TRANSIT`,
+            success: function(result) {
+                //Set result to a variable for writing
+                var encoded;
+                var routeGeo;
+                if (routeType == "drive") {
+                    encoded = result.route_geometry;
+                }
+                console.log(encoded);
+                
+                if (encoded !== undefined || encoded !== '' || encoded != null ) {
+                    routeGeo = L.Polyline.fromEncoded(encoded, {
+                        precision: 6
+                    });
+                }
+                
+                var endpoints = routeGeo._latlngs
+                L.polyline(endpoints, {color:"Black"}).addTo(map);
+            }
+        });
     }
+
+    // Routing display
+    var today = new Date();
+    const routeTypes = ["drive", "pt", "walk"]
+    var routeType = "drive";
+    
+    // Do something with latlngs
+
+    getLocation();
 </script>
 {% endblock %}

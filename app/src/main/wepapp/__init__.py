@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
-from datetime import timedelta, date
+from datetime import datetime, timedelta, date
 import DbContext
 from Model import *
 from controllers import *
@@ -7,6 +7,7 @@ import pandas
 import geocoder
 import requests
 import random
+import json
 from controllers.Users import UserCon
 
 app = Flask(__name__)
@@ -17,21 +18,22 @@ userCon = UserCon()
 
 
 def initOneMapAPI(yourLocation):
-    df = {
-        "Address": "",
-        "blk_no": "336B",
-        "street": "Geylang St 69"
-    }
-    df['Address'] = df['blk_no'] + " " + df['street']
-
+    address = "336B street Geylang St 69"
+    
     # Append address and get the coordinates of the location
+    location = ",".join([str(x) for x in yourLocation])
+    today = datetime.today()
+    print(location)
     routingJson = requests.get("https://developers.onemap.sg/privateapi/routingsvc/route?"
-                               "start=" + yourLocation +
+                               "start=" + location + "&"
                                "end=1.319728905,103.8421581&"
-                               "routeType=walk&"
-                               "token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjg1NDQsInVzZXJfaWQiOjg1NDQsImVtYWlsIjoieWFudGF0dGFuNzIxQGdtYWlsLmNvbSIsImZvcmV2ZXIiOmZhbHNlLCJpc3MiOiJodHRwOlwvXC9vbTIuZGZlLm9uZW1hcC5zZ1wvYXBpXC92MlwvdXNlclwvc2Vzc2lvbiIsImlhdCI6MTY0NjgxNDMxNywiZXhwIjoxNjQ3MjQ2MzE3LCJuYmYiOjE2NDY4MTQzMTcsImp0aSI6IjE4ZWI2MDVmYzU2MGU5YzcwZGY0MjEyNDMxN2I1MzM5In0.GsQO_VeKSFiw0gJbJENmhnM1obpN-KxVcGw1C2PUw8g")
-    resultsdict = eval(routingJson.text)
-    print(resultsdict)
+                               "routeType=drive&"
+                               "token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjg1NDQsInVzZXJfaWQiOjg1NDQsImVtYWlsIjoieWFudGF0dGFuNzIxQGdtYWlsLmNvbSIsImZvcmV2ZXIiOmZhbHNlLCJpc3MiOiJodHRwOlwvXC9vbTIuZGZlLm9uZW1hcC5zZ1wvYXBpXC92MlwvdXNlclwvc2Vzc2lvbiIsImlhdCI6MTY0NzQxMTA0NSwiZXhwIjoxNjQ3ODQzMDQ1LCJuYmYiOjE2NDc0MTEwNDUsImp0aSI6ImJjNTBmNzFlOWZmOTYyMWE3NThiNjRkOGE0OGFiMTk0In0.lSAYegznUtlA36wrOkIMVNWTvOUzkxIh7KdjLwO6FbM&"
+                               "date="+ today.strftime("%Y-%m-%d") +"&"
+                               "time="+ today.strftime("%H:%M:%S") +"&"
+                               "mode=TRANSIT")
+    resultsdict = json.loads(routingJson.text)
+    print(json.dumps(resultsdict, indent=4))
     # if len(resultsdict['results']) > 0:
     #     return resultsdict['results'][0]['LATITUDE'], resultsdict['results'][0]['LONGITUDE']
     # else:
@@ -43,11 +45,14 @@ def initOneMapAPI(yourLocation):
 def mainPage():
     # To render the page (pathing starts from templates folder after). After the filename, variables defined behind are
     # data that the site needs to use
+    yourLocation = geocoder.ip("me")
+    print(yourLocation.latlng)
     if request.method == 'POST':
-        yourLocation = geocoder.ip("me")
-        initOneMapAPI(yourLocation)
+        initOneMapAPI(yourLocation.latlng)
         return redirect("/")
+    # For functions to perform before loading of site
     else:
+        initOneMapAPI(yourLocation.latlng)
         if session.get("current_user") is None:
             return redirect("/login")
 
@@ -55,7 +60,6 @@ def mainPage():
         print(yourLocation.latlng)
         return render_template("main.html", locationCoords=",".join("%.11f" % coord for coord in yourLocation.latlng),
                                y="Meh")
-
 
 
 @app.route("/login", methods=['GET', 'POST'])
@@ -93,13 +97,13 @@ def register():
 
 
 # Form submit methods starts here
-@app.route("/", methods=['GET', 'POST'])
-def formSubmit():
-    sample_form = SampleForm(request.form)
-    if request.method == 'POST' and sample_form.validate():
-        # Operations starts here
-        x = 0
-    return redirect("/")
+# @app.route("/", methods=['GET', 'POST'])
+# def formSubmit():
+#     sample_form = SampleForm(request.form)
+#     if request.method == 'POST' and sample_form.validate():
+#         # Operations starts here
+#         x = 0
+#     return redirect("/")
 
 
 if __name__ == '__main__':
