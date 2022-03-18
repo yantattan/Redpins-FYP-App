@@ -31,8 +31,8 @@ class UserCon:
         passwordHash = hashlib.sha512((user.getPassword() + passwordSalt).encode("utf-8")).hexdigest()
         cursor = self.__connection.cursor()
         try:
-            cursor.execute('INSERT INTO Users VALUES(NULL, "{}", "{}", "{}", "{}");'.format(user.getUsername(), str(user.getContact()),
-                                                                                   passwordHash, passwordSalt))
+            cursor.execute('INSERT INTO Users VALUES(NULL, "{}", "{}", "{}", "{}", "{}");'.format(user.getUsername(), user.getEmail(), 
+                                                                                    str(user.getContact()) ,passwordHash, passwordSalt))
         except Exception as e:
             print(e)
 

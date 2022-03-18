@@ -31,6 +31,13 @@
     // }
 
     var canSearch = true;
+    var apiToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjg1NDQsInVzZXJfaWQiOjg1NDQsImVtYWlsIjoieWFudGF0dGFuNzIxQGdtYWlsLmNvbSIsImZvcmV2ZXIiOmZhbHNlLCJpc3MiOiJodHRwOlwvXC9vbTIuZGZlLm9uZW1hcC5zZ1wvYXBpXC92MlwvdXNlclwvc2Vzc2lvbiIsImlhdCI6MTY0NzQxMTA0NSwiZXhwIjoxNjQ3ODQzMDQ1LCJuYmYiOjE2NDc0MTEwNDUsImp0aSI6ImJjNTBmNzFlOWZmOTYyMWE3NThiNjRkOGE0OGFiMTk0In0.lSAYegznUtlA36wrOkIMVNWTvOUzkxIh7KdjLwO6FbM";
+    
+    function getLocation() {
+        if (navigator.geolocation) {
+            return navigator.geolocation.getCurrentPosition(showPosition);
+        } 
+    }
 
     $("#searchNextPageBtn").click(function() {
         $("#searchPage").text(parseInt($("#searchPage").text()) + 1)
@@ -66,11 +73,22 @@
         }       
     } 
 
-    // GeoXY();
+    function submitRecommendedPlaces() {
+        $.ajax({
+            type: "POST",   
+            url: `/funcs/post-places/`,
+            data: {
+                start: getLocation.coords,
+                storeMean: "itinerary",
+                destinations: [{latitude: 1.2834542, longitude: 103.8608090, address: "1 BAYFRONT AVENUE MARINA BAY SANDS SINGAPORE 018971"}]
+            }
+        });
+    }
 </script>
 
 <script>
     // Map display init
+    var apiToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjg1NDQsInVzZXJfaWQiOjg1NDQsImVtYWlsIjoieWFudGF0dGFuNzIxQGdtYWlsLmNvbSIsImZvcmV2ZXIiOmZhbHNlLCJpc3MiOiJodHRwOlwvXC9vbTIuZGZlLm9uZW1hcC5zZ1wvYXBpXC92MlwvdXNlclwvc2Vzc2lvbiIsImlhdCI6MTY0NzQxMTA0NSwiZXhwIjoxNjQ3ODQzMDQ1LCJuYmYiOjE2NDc0MTEwNDUsImp0aSI6ImJjNTBmNzFlOWZmOTYyMWE3NThiNjRkOGE0OGFiMTk0In0.lSAYegznUtlA36wrOkIMVNWTvOUzkxIh7KdjLwO6FbM";
     L.Icon.Default.imagePath = "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.4.0/images";
     var center = L.bounds([1.56073, 104.11475], [1.16, 103.502]).getCenter();
     var map = L.map('mapdiv').setView([center.x, center.y], 12);
@@ -85,13 +103,19 @@
 
     basemap.addTo(map);
 
+    var updatePosition = false;
+    var repeatedBuildings = {};
     function getLocation() {
         if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(showPosition);
+            navigator.geolocation.watchPosition(showPosition, positioningError, {
+                enableHighAccuracy: true,
+                timeout: 1000
+            });
         } 
     }
 
-    function showPosition(position) {    
+    function showPosition(position) {  
+        updatePosition = true;  
         console.log(position);       
         marker = new L.Marker([position.coords.latitude, position.coords.longitude], {bounceOnAdd: false}).addTo(map);             
         // var popup = L.popup()
@@ -100,7 +124,7 @@
         // .openOn(map);   
         
         $.ajax({
-            url: `https://developers.onemap.sg/privateapi/routingsvc/route?start=${position.coords.latitude},${position.coords.longitude}&end=1.319728905,103.8421581&routeType=${routeType}&token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjg1NDQsInVzZXJfaWQiOjg1NDQsImVtYWlsIjoieWFudGF0dGFuNzIxQGdtYWlsLmNvbSIsImZvcmV2ZXIiOmZhbHNlLCJpc3MiOiJodHRwOlwvXC9vbTIuZGZlLm9uZW1hcC5zZ1wvYXBpXC92MlwvdXNlclwvc2Vzc2lvbiIsImlhdCI6MTY0NzQxMTA0NSwiZXhwIjoxNjQ3ODQzMDQ1LCJuYmYiOjE2NDc0MTEwNDUsImp0aSI6ImJjNTBmNzFlOWZmOTYyMWE3NThiNjRkOGE0OGFiMTk0In0.lSAYegznUtlA36wrOkIMVNWTvOUzkxIh7KdjLwO6FbM&date=${String(today.getFullYear())}-${String(today.getMonth()+1)}-${String(today.getDate())}&time=${String(today.getHours())}:${String(today.getMinutes())}:${String(today.getSeconds())}&mode=TRANSIT`,
+            url: `https://developers.onemap.sg/privateapi/routingsvc/route?start=${position.coords.latitude},${position.coords.longitude}&end=1.319728905,103.8421581&routeType=${routeType}&token=${apiToken}&date=${String(today.getFullYear())}-${String(today.getMonth()+1)}-${String(today.getDate())}&time=${String(today.getHours())}:${String(today.getMinutes())}:${String(today.getSeconds())}&mode=TRANSIT`,
             success: function(result) {
                 //Set result to a variable for writing
                 var encoded;
@@ -116,10 +140,43 @@
                     });
                 }
                 
-                var endpoints = routeGeo._latlngs
+                var endpoints = routeGeo._latlngs;
                 L.polyline(endpoints, {color:"Black"}).addTo(map);
+
+                // Check for buildings around user
+                $.ajax({
+                    url: `https://developers.onemap.sg/privateapi/commonsvc/revgeocodexy?location=${position.coords.latitude},${position.coords.longitude}&token=${apiToken}&buffer=50`,
+                    success: function(result) {
+                        for (var i in result) {
+                            if (!repeatedBuildings[result[i]]) {
+                                repeatedBuildings[result[i]] = 1;
+                            }
+                            else {
+                                repeatedBuildings[result[i]]++;
+                            }
+                        } 
+                    }
+                });
             }
         });
+
+        var visited = [];
+        for (var place in repeatedBuildings) {
+            if (repeatedBuildings[place] >= 120) {
+                visited.push({latitude: 1.2834542, longitude: 103.8608090, address: "1 BAYFRONT AVENUE MARINA BAY SANDS SINGAPORE 018971"})
+                $.ajax({
+                    type: "POST",   
+                    url: `/funcs/mark-tracked/`,
+                    data: {
+                        start: getLocation.coords,
+                        storeMean: "visited",
+                        places: visited
+                    }
+                });
+
+                repeatedBuildings[place] = null;
+            }
+        }
     }
 
     // Routing display
