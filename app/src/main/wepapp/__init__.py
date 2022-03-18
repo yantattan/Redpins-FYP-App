@@ -30,13 +30,16 @@ def initOneMapAPI(yourLocation):
     routingJson = requests.get("https://developers.onemap.sg/privateapi/routingsvc/route?"
                                "start=" + location + "&"
                                "end=1.319728905,103.8421581&"
-                               "routeType=drive&"
+                               "routeType=walk&"
                                "token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjg1NDQsInVzZXJfaWQiOjg1NDQsImVtYWlsIjoieWFudGF0dGFuNzIxQGdtYWlsLmNvbSIsImZvcmV2ZXIiOmZhbHNlLCJpc3MiOiJodHRwOlwvXC9vbTIuZGZlLm9uZW1hcC5zZ1wvYXBpXC92MlwvdXNlclwvc2Vzc2lvbiIsImlhdCI6MTY0NzQxMTA0NSwiZXhwIjoxNjQ3ODQzMDQ1LCJuYmYiOjE2NDc0MTEwNDUsImp0aSI6ImJjNTBmNzFlOWZmOTYyMWE3NThiNjRkOGE0OGFiMTk0In0.lSAYegznUtlA36wrOkIMVNWTvOUzkxIh7KdjLwO6FbM&"
                                "date="+ today.strftime("%Y-%m-%d") +"&"
                                "time="+ today.strftime("%H:%M:%S") +"&"
                                "mode=TRANSIT")
     resultsdict = json.loads(routingJson.text)
-    print(json.dumps(resultsdict, indent=4))
+    text_file = open("transitJson.txt", "w")
+    n = text_file.write(json.dumps(resultsdict, indent=4))
+    text_file.close()
+
     # if len(resultsdict['results']) > 0:
     #     return resultsdict['results'][0]['LATITUDE'], resultsdict['results'][0]['LONGITUDE']
     # else:
@@ -50,12 +53,11 @@ def mainPage():
     # data that the site needs to use
     yourLocation = geocoder.ip("me")
     print(yourLocation.latlng)
+    initOneMapAPI(yourLocation.latlng)
     if request.method == 'POST':
-        initOneMapAPI(yourLocation.latlng)
         return redirect("/")
     # For functions to perform before loading of site
     else:
-        initOneMapAPI(yourLocation.latlng)
         if session.get("current_user") is None:
             return redirect("/login")
 

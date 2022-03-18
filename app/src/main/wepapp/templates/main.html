@@ -93,10 +93,24 @@
     var center = L.bounds([1.56073, 104.11475], [1.16, 103.502]).getCenter();
     var map = L.map('mapdiv').setView([center.x, center.y], 12);
 
+    var routeTextures = {
+        WALK: {color: "black", dashArray: "10, 10"},
+        SUBWAY: {
+            NE: {color: "purple"},
+            NS: {color: "red"},
+            DT: {color: "blue"},
+            EW: {color: "green"},
+            CC: {color: "yellow"},
+            TE: {color: "brown"},
+            Default: {color: "grey"}
+        },
+        DRIVE: {color: "black"}
+    }
+
     var basemap = L.tileLayer(`http://maps-{s}.onemap.sg/v2/Default/{z}/{x}/{y}.png`, {
         detectRetina: true,
-        maxZoom: 18,
-        minZoom: 11
+        maxZoom: 19,
+        minZoom: 13
     });
 
     map.setMaxBounds([[1.56073, 104.1147], [1.16, 103.502]]);
@@ -116,32 +130,71 @@
 
     function showPosition(position) {  
         updatePosition = true;  
-        console.log(position);       
-        marker = new L.Marker([position.coords.latitude, position.coords.longitude], {bounceOnAdd: false}).addTo(map);             
+        console.log(position);
+        // Remove old markers
+        $(".leaflet-marker-pane").empty();
+        // New marker     
+        marker = new L.Marker([position.coords.latitude, position.coords.longitude], {bounceOnAdd: false}).addTo(map); 
+        
         // var popup = L.popup()
         // .setLatLng([position.coords.latitude, position.coords.longitude]) 
         // .setContent('<img height="20px" width="20px" src="https://web-static.onemap.sg/images/main/misc/icons_Locator.png">')
         // .openOn(map);   
         
-        $.ajax({
-            url: `https://developers.onemap.sg/privateapi/routingsvc/route?start=${position.coords.latitude},${position.coords.longitude}&end=1.319728905,103.8421581&routeType=${routeType}&token=${apiToken}&date=${String(today.getFullYear())}-${String(today.getMonth()+1)}-${String(today.getDate())}&time=${String(today.getHours())}:${String(today.getMinutes())}:${String(today.getSeconds())}&mode=TRANSIT`,
-            success: function(result) {
-                //Set result to a variable for writing
-                var encoded;
-                var routeGeo;
-                if (routeType == "drive") {
-                    encoded = result.route_geometry;
-                }
-                console.log(encoded);
-                
-                if (encoded !== undefined || encoded !== '' || encoded != null ) {
-                    routeGeo = L.Polyline.fromEncoded(encoded, {
+        // Routing display
+        var today = new Date();
+        const routeTypes = ["drive", "pt", "walk"]
+        var routeType = "walk";
+
+        function decodeGeo(encodedRoute) {
+            if (encodedRoute !== undefined || encodedRoute !== '' || encodedRoute != null ) {
+                    var routeGeo = L.Polyline.fromEncoded(encodedRoute, {
                         precision: 6
                     });
+
+                    return routeGeo;
+                }
+        }
+
+        $.ajax({
+            url: `https://developers.onemap.sg/privateapi/routingsvc/route?start=${position.coords.latitude},${position.coords.longitude}&end=1.2834542,103.8608090&routeType=${routeType}&token=${apiToken}&date=${String(today.getFullYear())}-${String(today.getMonth()+1)}-${String(today.getDate())}&time=${String(today.getHours())}:${String(today.getMinutes())}:${String(today.getSeconds())}&mode=TRANSIT`,
+            success: function(result) {
+                //Set result to a variable for writing
+                var encodedRoute;
+                var modes = [];
+                if (routeType == "pt") {
+                    var allRoutes = result.plan.itineraries;
+                    for (var i in allRoutes) {
+                        var transportMeans = allRoutes[i].legs;
+                        for (var j in transportMeans) {
+                            var details = transportMeans[j];
+                            var mode = details.mode;
+
+                            encodedRoute = details.legGeometry.points
+                            var routeGeo = decodeGeo(encodedRoute);
+                            modes = {endpoints: routeGeo._latlngs, mode: mode};
+
+                            if (mode == "SUBWAY") {
+                                var subwayLine = details.route;
+                                L.polyline(modes.endpoints, routeTextures.SUBWAY[subwayLine]).addTo(map);
+                            }
+                            else {
+                                L.polyline(modes.endpoints, routeTextures[modes.mode]).addTo(map);
+                            }
+                        }
+
+                        // Remove for the next time, only take 1st route
+                        break
+                    }
+                }
+                else {
+                    encodedRoute = result.route_geometry;
+                    var routeGeo = decodeGeo(encodedRoute);
+                    modes = {endpoints: routeGeo._latlngs, mode: routeType.toUpperCase()};
+
+                    L.polyline(modes.endpoints, routeTextures[modes.mode]).addTo(map);
                 }
                 
-                var endpoints = routeGeo._latlngs;
-                L.polyline(endpoints, {color:"Black"}).addTo(map);
 
                 // Check for buildings around user
                 $.ajax({
@@ -179,10 +232,9 @@
         }
     }
 
-    // Routing display
-    var today = new Date();
-    const routeTypes = ["drive", "pt", "walk"]
-    var routeType = "drive";
+    function positioningError(error) {
+
+    }
     
     // Do something with latlngs
 

@@ -1,11 +1,31 @@
 package com.nyp.sit.s202897h.redpinsbuffer
 
+import android.app.Service
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.IBinder
 import android.util.Log
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.webkit.*
+import android.webkit.WebResourceResponse
+
+import android.webkit.WebResourceRequest
+
+import android.webkit.WebView
+
+import android.webkit.WebResourceError
+
+import android.webkit.WebViewClient
+
+import android.view.Gravity
+
+import android.graphics.PixelFormat
+import android.view.ViewGroup
+
+import android.view.WindowManager
+
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,6 +47,54 @@ class MainActivity : AppCompatActivity() {
                 val anim = AnimationUtils.loadAnimation(baseContext, android.R.anim.fade_out)
                 webView.startAnimation(anim)
             }
+        }
+
+        class BackgroundService: Service() {
+            override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+                val windowManager = getSystemService(WINDOW_SERVICE) as WindowManager
+                val params = WindowManager.LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    WindowManager.LayoutParams.TYPE_PHONE,
+                    WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+                            or WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                    PixelFormat.TRANSLUCENT
+                )
+
+                params.gravity = Gravity.TOP or Gravity.START
+                params.x = 0
+                params.y = 0
+                params.width = 0
+                params.height = 0
+
+                val wv = WebView(this)
+
+                wv.webViewClient = object : WebViewClient() {
+                    override fun onReceivedError(view: WebView, request: WebResourceRequest, error: WebResourceError) {
+                        Log.d("Error", "loading web view: request: $request error: $error")
+                    }
+
+                    override fun shouldInterceptRequest(view: WebView, request: WebResourceRequest): WebResourceResponse? {
+                        return if (request.url.toString().contains("/endProcess")) {
+                            windowManager.removeView(wv)
+                            wv.post { wv.destroy() }
+                            stopSelf()
+                            WebResourceResponse("bgsType", "utf-8", null)
+                        } else {
+                            null
+                        }
+                    }
+                }
+                wv.loadUrl("http://10.0.2.2:5000/")
+                windowManager.addView(wv, params)
+
+                return super.onStartCommand(intent, flags, startId)
+            }
+
+            override fun onBind(intent: Intent?): IBinder? {
+                TODO("Not yet implemented")
+            }
+
         }
 
         webView.webViewClient = CustWebViewClient()
