@@ -88,7 +88,7 @@
 
 <script>
     // Map display init
-    var apiToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjg1NDQsInVzZXJfaWQiOjg1NDQsImVtYWlsIjoieWFudGF0dGFuNzIxQGdtYWlsLmNvbSIsImZvcmV2ZXIiOmZhbHNlLCJpc3MiOiJodHRwOlwvXC9vbTIuZGZlLm9uZW1hcC5zZ1wvYXBpXC92MlwvdXNlclwvc2Vzc2lvbiIsImlhdCI6MTY0NzQxMTA0NSwiZXhwIjoxNjQ3ODQzMDQ1LCJuYmYiOjE2NDc0MTEwNDUsImp0aSI6ImJjNTBmNzFlOWZmOTYyMWE3NThiNjRkOGE0OGFiMTk0In0.lSAYegznUtlA36wrOkIMVNWTvOUzkxIh7KdjLwO6FbM";
+    var apiToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjg1NDQsInVzZXJfaWQiOjg1NDQsImVtYWlsIjoieWFudGF0dGFuNzIxQGdtYWlsLmNvbSIsImZvcmV2ZXIiOmZhbHNlLCJpc3MiOiJodHRwOlwvXC9vbTIuZGZlLm9uZW1hcC5zZ1wvYXBpXC92MlwvdXNlclwvc2Vzc2lvbiIsImlhdCI6MTY0Nzg0OTQxMiwiZXhwIjoxNjQ4MjgxNDEyLCJuYmYiOjE2NDc4NDk0MTIsImp0aSI6ImEwZjQwZjM4NTRiNGIzZjYzNTRhNTVhNTQ1NzEzNTI4In0.T6NyEvwGqk7io2FFLB4yVb78FbTtqeNe5jgH2B2by1g"
     L.Icon.Default.imagePath = "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.4.0/images";
     var center = L.bounds([1.56073, 104.11475], [1.16, 103.502]).getCenter();
     var map = L.map('mapdiv').setView([center.x, center.y], 12);
@@ -140,17 +140,18 @@
         // .setLatLng([position.coords.latitude, position.coords.longitude]) 
         // .setContent('<img height="20px" width="20px" src="https://web-static.onemap.sg/images/main/misc/icons_Locator.png">')
         // .openOn(map);   
+        showRoute(position)
     }
 
     function positioningError(error) {
 
     }
 
-    function showRoute() {
+    function showRoute(position) {
         // Routing display
         var today = new Date();
         const routeTypes = ["drive", "pt", "walk"]
-        var routeType = "walk";
+        var routeType = "drive";
 
         function decodeGeo(encodedRoute) {
             if (encodedRoute !== undefined || encodedRoute !== '' || encodedRoute != null ) {

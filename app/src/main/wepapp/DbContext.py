@@ -50,6 +50,7 @@ class MySql:
                                 "`UserId` INT NOT NULL,"
                                 "`Points` INT NULL,"
                                 "`Tier` VARCHAR(10) NOT NULL DEFAULT \"Bronze\","
+                                "CHECK (`Tier` in ('Bronze', 'Silver', 'Gold', 'Platinium', 'Diamond')),"
                                 "PRIMARY KEY (`UserId`),"
                                 "FOREIGN KEY (`UserId`) REFERENCES Users(`Id`));")
                 # Itinerary table
@@ -59,6 +60,7 @@ class MySql:
                                 "`Address` VARCHAR(150) NOT NULL,"
                                 "`Order` INT NOT NULL,"
                                 "`Status` VARCHAR(15) NOT NULL,"
+                                "CHECK (`Status` in ('Ongoing', 'Reached', 'Unreached')),"
                                 "PRIMARY KEY(`UserId`),"
                                 "FOREIGN KEY (`UserId`) REFERENCES Users(`Id`));")
                 # Tracked places table
@@ -69,6 +71,7 @@ class MySql:
                                 "`StoreMean` VARCHAR(20) NOT NULL,"
                                 "`Frequency` INT NOT NULL,"
                                 "`LastRegistered` DATE NULL,"
+                                "CHECK (`StoreMean` in ('Search', 'Visited', 'Planned')),"
                                 "PRIMARY KEY (`RowId`),"
                                 "FOREIGN KEY (`UserId`) REFERENCES Users(`Id`));")
                 return db
