@@ -1,7 +1,7 @@
 from audioop import add
 import email
 from wtforms import Form, StringField, RadioField, SelectField, PasswordField, IntegerField, \
-                    DecimalField, FileField, validators
+                    DecimalField, FileField ,validators
 
 
 # Model for webforms to be processed
@@ -12,6 +12,7 @@ class SampleForm(Form):
 class RegisterForm(Form):
     username = StringField("User Name", [validators.Length(min=1, max=100), validators.DataRequired()])
     email = StringField("Email", [validators.Email("someone@example.com"), validators.DataRequired()])
+    age = IntegerField("Age", [validators.DataRequired()])
     contact = IntegerField("Mobile Number", [validators.DataRequired()])
     password = PasswordField("Password", [validators.Length(min=7), validators.DataRequired()])
     confirm_password = PasswordField("Confirm Password", [validators.Length(min=7), validators.EqualTo("password", message="Both passwords must match"), validators.DataRequired()])
@@ -24,9 +25,10 @@ class LoginForm(Form):
 
 #Models
 class User:
-    def __init__(self, username, email, contact, password):
+    def __init__(self, username, email, age, contact, password):
         self.__username = username
         self.__email = email
+        self.__age = age
         self.__contact = contact
         self.__password = password
 
@@ -35,6 +37,9 @@ class User:
 
     def setEmail(self, email):
         self.__email = email
+
+    def setAge(self, age):
+        self.__age = age
 
     def setContact(self, contact):
         self.__contact = contact
@@ -47,6 +52,9 @@ class User:
 
     def getEmail(self):
         return self.__email
+
+    def getAge(self):
+        return self.__age
 
     def getContact(self):
         return self.__contact
@@ -82,3 +90,19 @@ class TrackedPlace:
 
     def getFrequency(self):
         return self.__frequency
+
+
+class UserPoints:
+    def __init__(self, userId, points, tier):
+        self.__userId = userId
+        self.__points = points
+        self.__tier = tier
+
+    def getUserId(self):
+        return self.__userId
+    
+    def getPoints(self):
+        return self.__points
+
+    def getTier(self):
+        return self.__tier

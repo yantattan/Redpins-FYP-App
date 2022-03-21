@@ -21,8 +21,6 @@ class UserCon:
             dbInfo = cursor.fetchone()
             if dbInfo is not None:
                 return {"userId": dbInfo[0], "username": dbInfo[1]}
-            else:
-                user.setErrMsg("Incorrect username and password")
 
         return {"error": "Incorrect username and password"}
 
@@ -31,8 +29,8 @@ class UserCon:
         passwordHash = hashlib.sha512((user.getPassword() + passwordSalt).encode("utf-8")).hexdigest()
         cursor = self.__connection.cursor()
         try:
-            cursor.execute('INSERT INTO Users VALUES(NULL, "{}", "{}", "{}", "{}", "{}");'.format(user.getUsername(), user.getEmail(), 
-                                                                                    str(user.getContact()) ,passwordHash, passwordSalt))
+            cursor.execute('INSERT INTO Users VALUES(NULL, "{}", "{}", "{}", "{}", "{}", "{}");'.format(user.getUsername(), user.getEmail(), 
+                                                                                    user.getAge(), str(user.getContact()) ,passwordHash, passwordSalt))
         except Exception as e:
             print(e)
 

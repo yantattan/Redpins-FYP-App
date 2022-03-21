@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Choose your activitiy 1{% endblock %}
+
+{% block content %}
+{% from "includes/_formHelper.html" import render_field %}
+<form method="post">
+    {% for i in range(1, 6) %}
+        <input type="checkbox" id="pref{{i}}" name="pref{{i}}">
+        <label for="pref{{i}}">Preference {{i}}</label>
+    {% endfor %}
+</form>
+{% endblock %}

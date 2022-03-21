@@ -140,7 +140,13 @@
         // .setLatLng([position.coords.latitude, position.coords.longitude]) 
         // .setContent('<img height="20px" width="20px" src="https://web-static.onemap.sg/images/main/misc/icons_Locator.png">')
         // .openOn(map);   
-        
+    }
+
+    function positioningError(error) {
+
+    }
+
+    function showRoute() {
         // Routing display
         var today = new Date();
         const routeTypes = ["drive", "pt", "walk"]
@@ -231,13 +237,9 @@
             }
         }
     }
-
-    function positioningError(error) {
-
-    }
     
     // Do something with latlngs
-
     getLocation();
+    showRoute();
 </script>
 {% endblock %}

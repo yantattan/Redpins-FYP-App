@@ -35,8 +35,6 @@ class MainActivity : AppCompatActivity() {
         var webView = findViewById<WebView>(R.id.webview)
         webView.settings.domStorageEnabled = true
         webView.settings.javaScriptEnabled = true
-        webView.settings.cacheMode = WebSettings.LOAD_CACHE_ELSE_NETWORK
-        webView.settings.setAppCacheEnabled(true)
         webView.scrollBarStyle = View.SCROLLBARS_INSIDE_OVERLAY
         webView.loadUrl("http://10.0.2.2:5000/")
 

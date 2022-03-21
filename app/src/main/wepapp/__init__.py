@@ -51,6 +51,7 @@ def initOneMapAPI(yourLocation):
 def mainPage():
     # To render the page (pathing starts from templates folder after). After the filename, variables defined behind are
     # data that the site needs to use
+    # session.pop("current_user", None)
     yourLocation = geocoder.ip("me")
     print(yourLocation.latlng)
     initOneMapAPI(yourLocation.latlng)
@@ -62,7 +63,6 @@ def mainPage():
             return redirect("/login")
 
         yourLocation = geocoder.ipinfo("")
-        print(yourLocation.latlng)
         return render_template("main.html", locationCoords=",".join("%.11f" % coord for coord in yourLocation.latlng),
                                y="Meh")
 
@@ -76,8 +76,9 @@ def login():
     if request.method == 'POST' and login_form.validate():
         userInfo = userCon.Login(login_form)
         if userInfo:
-            session["current_user"] = userInfo
-            return redirect("/")
+            if userInfo.get("error") is None:
+                session["current_user"] = userInfo
+                return redirect("/")
 
         return render_template("accounts/login.html", form=login_form, error="Invalid username or password")
 
@@ -89,7 +90,7 @@ def register():
     register_form = RegisterForm(request.form)
     if request.method == 'POST':
         if register_form.validate():
-            userModel = User(register_form.username.data, register_form.email.data, register_form.contact.data, register_form.password.data)
+            userModel = User(register_form.username.data, register_form.email.data, register_form.age.data, register_form.contact.data, register_form.password.data)
             registerResponse = userCon.Register(userModel)
             if registerResponse.get("error"):
                 return render_template("accounts/register.html", form=register_form, error=registerResponse["error"])
@@ -99,6 +100,19 @@ def register():
         return render_template("accounts/register.html", form=register_form, error="Invalid fields submitted")
 
     return render_template("accounts/register.html", form=register_form)
+
+
+# Preferences backend -- Send pref to db (Daoying)
+@app.route("/preferences/pref1", methods=['GET', 'POST'])
+def pref1():
+    return render_template("preferences/preference1.html")
+
+# Reward points -- Assign rewards point (Udhaya)
+@app.route("/funcs/reached-place/", methods=['GET', 'POST'])
+def reachedPlace():
+    # Placeholder returned data
+    result = {"address": "1 BAYFRONT AVENUE MARINA BAY SANDS SINGAPORE 018971"}
+    return {"success": True}
 
 def trackPlaces(places, storeMean):
     # Track down the destinations for future recommendation algorithm
