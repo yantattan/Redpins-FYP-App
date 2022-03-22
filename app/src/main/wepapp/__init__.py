@@ -1,23 +1,23 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from flask_socketio import SocketIO, emit
 from datetime import datetime, timedelta, date
-import DbContext
-from Model import *
-from controllers import *
 import pandas
 import geocoder
 import requests
 import random
 import json
-from controllers.TrackedPlaces import TrackedPlacesCon
-from controllers.Users import UserCon
+
+import DbContext
+from Model import *
+from controllers import Users, TrackedPlaces, RewardPoints, PlacesPoints
 
 app = Flask(__name__)
 app.secret_key = "redp1n5Buffer"
 
 # Init all controllers
-userCon = UserCon()
-trackedPlacesCon = TrackedPlacesCon()
+userCon = Users.UserCon()
+trackedPlacesCon = TrackedPlaces.TrackedPlacesCon()
+
 
 
 def initOneMapAPI(yourLocation):
@@ -105,6 +105,10 @@ def register():
 # Preferences backend -- Send pref to db (Daoying)
 @app.route("/preferences/pref1", methods=['GET', 'POST'])
 def pref1():
+    if request.method == 'POST':
+        allPrefs = request.form.get("preferences")
+    else:
+        print("Hello")
     return render_template("preferences/preference1.html")
 
 # Reward points -- Assign rewards point (Udhaya)

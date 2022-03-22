@@ -16,6 +16,9 @@ class UserPoints:
         cursor.execute('UPDATE Itinerary SET Status = "Reached"'
                         'WHERE UserId = {} AND Address = "{}" AND Date = DATE(NOW());'
                         .format(userId, address))
+                        
+        self.__connection.commit()
+        cursor.close()
 
 
     def GetUserPoints(self, userId):

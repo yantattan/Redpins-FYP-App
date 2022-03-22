@@ -4,7 +4,7 @@ from wtforms import Form, StringField, RadioField, SelectField, PasswordField, I
                     DecimalField, FileField ,validators
 
 
-# Model for webforms to be processed
+# Webforms helper
 class SampleForm(Form):
     firstfield = StringField("First Name", [validators.Length(min=1, max=50), validators.DataRequired()])
 
@@ -106,3 +106,22 @@ class UserPoints:
 
     def getTier(self):
         return self.__tier
+
+
+class Preferences:
+    def __init__(self, userId, preferences, category):
+        self.__userId = userId
+        self.__preferences = preferences
+        self.__category = category
+
+    def setPreferences(self, preferences):
+        self.__preferences = preferences
+
+    def getUserId(self):
+        return self.__userId
+
+    def getPreferences(self):
+        return self.__preferences
+
+    def getCategory(self):
+        return self.__category
