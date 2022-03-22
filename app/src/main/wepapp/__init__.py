@@ -108,7 +108,7 @@ def pref1():
     if request.method == 'POST':
         category = "Cuisine"
         allPrefs = request.form.getlist("preferences[]")
-        pref = Preferences(userId, allPrefs, category)
+        pref = Preferences(session["current_user"]["userId"], allPrefs, category)
         preferencesCon.setPreferences(pref)
 
         return redirect("/preferences/2")
