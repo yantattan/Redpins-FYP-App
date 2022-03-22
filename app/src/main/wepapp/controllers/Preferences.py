@@ -4,7 +4,7 @@ from DbContext import MySql
 from Model import Preferences
 
 
-class Preferences:
+class PreferencesCon:
     __connection = None
 
     def __init__(self):

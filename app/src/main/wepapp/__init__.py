@@ -9,7 +9,7 @@ import json
 
 import DbContext
 from Model import *
-from controllers import Users, TrackedPlaces, RewardPoints, PlacesPoints
+from controllers import Users, TrackedPlaces, RewardPoints, PlacesPoints, Preferences
 
 app = Flask(__name__)
 app.secret_key = "redp1n5Buffer"
@@ -17,7 +17,7 @@ app.secret_key = "redp1n5Buffer"
 # Init all controllers
 userCon = Users.UserCon()
 trackedPlacesCon = TrackedPlaces.TrackedPlacesCon()
-
+preferencesCon = Preferences.PreferencesCon()
 
 
 def initOneMapAPI(yourLocation):
@@ -103,14 +103,18 @@ def register():
 
 
 # Preferences backend -- Send pref to db (Daoying)
-@app.route("/preferences/pref1", methods=['GET', 'POST'])
+@app.route("/preferences/1", methods=['GET', 'POST'])
 def pref1():
     if request.method == 'POST':
+        category = "Cuisine"
         allPrefs = request.form.getlist("preferences[]")
-        print(allPrefs)
+        pref = Preferences(userId, allPrefs, category)
+        preferencesCon.setPreferences(pref)
+
+        return redirect("/preferences/2")
     else:
         print("Hello")
-    return render_template("preferences/preference1.html")
+    return render_template("preferences/pref2.html")
 
 # Reward points -- Assign rewards point (Udhaya)
 @app.route("/funcs/reached-place/", methods=['GET', 'POST'])
