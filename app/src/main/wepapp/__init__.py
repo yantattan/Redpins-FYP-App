@@ -106,7 +106,8 @@ def register():
 @app.route("/preferences/pref1", methods=['GET', 'POST'])
 def pref1():
     if request.method == 'POST':
-        allPrefs = request.form.get("preferences")
+        allPrefs = request.form.getlist("preferences[]")
+        print(allPrefs)
     else:
         print("Hello")
     return render_template("preferences/preference1.html")
