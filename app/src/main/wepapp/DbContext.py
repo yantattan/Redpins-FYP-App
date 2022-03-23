@@ -1,4 +1,7 @@
+import hashlib
 import mysql.connector as mySqlDB
+import random
+import string
 
 
 class MySql:
@@ -80,6 +83,19 @@ class MySql:
                                 "CHECK (`StoreMean` in ('Search', 'Visited', 'Planned')),"
                                 "PRIMARY KEY (`RowId`),"
                                 "FOREIGN KEY (`UserId`) REFERENCES Users(`Id`));")
+
+
+                # Make sure there is always a root account
+                # rootPwdSalt = "ABCD3FGH"
+                # rootPwd = hashlib.sha512(("P@ssw0rd" + rootPwdSalt).encode("utf-8")).hexdigest()
+                # try:
+                #     cursor.execute('INSERT INTO `Users` VALUES(NULL, "root", "root@gmail.com", "Admin", "2001-01-01", "00000000", "{}", "{}");'
+                #                     .format(rootPwd, rootPwdSalt))
+                # except Exception:
+                #     print("Root account is in database")
+                # else:
+                #     print("Root account is created")
+
                 return db
 
     except Exception as e:
