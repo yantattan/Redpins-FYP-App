@@ -194,11 +194,17 @@ def adminDeletePlace(id):
 @app.route("/funcs/reached-place/", methods=['GET', 'POST'])
 def reachedPlace():
     # Placeholder returned data
-    result = {"shopName": "MARINA BAY SANDS", "address": "1 BAYFRONT AVENUE MARINA BAY SANDS SINGAPORE 018971"}
+    Utier = {"bronze": 1, "silver": 1.1, "gold": 1.2, "platinum": 1.3, "diamond": 1.5}
+    Uid = session["current_user"]["userId"]
+    result = {"shopName":"MARINA BAY SANDS", "address": "1 BAYFRONT AVENUE MARINA BAY SANDS SINGAPORE 018971"}
     result2 = signedPlaceCon.getShopInfo()
     points = result2.getPoints()
-    result3 = userRewardsCon.GetUserPointsInfo()
-    upoints = result3.getTier()
+    result3 = userRewardsCon.GetUserPointsInfo(Uid)
+    uTierMultiplier = Utier.get(result3.getTier())
+    uPoints = result3.getPoints()
+    total_pts_earned = points*uTier
+    new_upoints = total_pts_earned + uPoints
+    userRewardsCon.SetPoints(Uid, new_upoints)
     return {"success": True}
 
 
