@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Add Signed Place Info{% endblock %}
+
+{% block content %}
+{% from "includes/_formHelper.html" import render_field %}
+<form method="post">
+    <div class="form-group">
+        {{ render_field(form.shopName, class="form-control") }}
+    </div>
+    <div class="form-group">
+        {{ render_field(form.organization, class="form-control") }}
+    </div>
+    <div class="form-group">
+        {{ render_field(form.address, class="form-control") }}
+    </div>
+    <div class="form-group">
+        {{ render_field(form.unitNo, class="form-control") }}
+    </div>
+    <div class="form-group">
+        {{ render_field(form.points, class="form-control") }}
+    </div>
+
+    <input type="submit" value="Add place" class="btn btn-primary">
+</form>
+{% endblock %}

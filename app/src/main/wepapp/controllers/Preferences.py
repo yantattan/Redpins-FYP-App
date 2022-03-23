@@ -17,8 +17,8 @@ class PreferencesCon:
             cursor.execute('DELETE FROM Preferences WHERE '
                             'UserId = {} AND Category = "{}";'
                             .format(preferences.getUserId(), category ))
-        except Exception:
-            print("An error occurred")
+        except Exception as e:
+            print("An error occurred reseting entries for preferences")
 
 
         for pref in preferences.getPreferences():
@@ -26,8 +26,9 @@ class PreferencesCon:
                 cursor.execute('INSERT INTO Preferences '
                                 'VALUES(NULL, {}, "{}", "{}");'
                                 .format(preferences.getUserId(), pref, category))
-            except Exception:
+            except Exception as e:
                 print("An error occurred updating database for preferences")
+                print(e)
 
 
         self.__connection.commit()
@@ -36,7 +37,7 @@ class PreferencesCon:
 
     def getPreferences(self, userId, category):
         cursor = self.__connection.cursor()
-        cursor.execute('SELECT * FROM Preferences'
+        cursor.execute('SELECT * FROM Preferences '
                         'WHERE UserId = {}; AND Category = "{}"'
                         .format(userId, category))
         preferences = cursor.fetchone()

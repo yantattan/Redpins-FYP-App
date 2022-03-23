@@ -12,12 +12,15 @@ class UserCon:
 
     def Login(self, user):
         cursor = self.__connection.cursor()
-        cursor.execute('SELECT pwdSalt FROM Users WHERE username = "{}";'.format(user.username.data))
+        cursor.execute('SELECT pwdSalt FROM Users WHERE username = "{}";'
+                        .format(user.username.data))
+
         dbPwdSalt = cursor.fetchone()[0]
         if dbPwdSalt is not None:
             passwordHash = hashlib.sha512((user.password.data + dbPwdSalt).encode("utf-8")).hexdigest()
-            cursor.execute(
-                'SELECT id, username FROM Users WHERE username = "{}" AND password = "{}";'.format(user.username.data, passwordHash))
+            cursor.execute('SELECT id, username FROM Users WHERE username = "{}" AND password = "{}";'
+                            .format(user.username.data, passwordHash))
+
             dbInfo = cursor.fetchone()
             if dbInfo is not None:
                 return {"userId": dbInfo[0], "username": dbInfo[1]}
@@ -29,10 +32,12 @@ class UserCon:
         passwordHash = hashlib.sha512((user.getPassword() + passwordSalt).encode("utf-8")).hexdigest()
         cursor = self.__connection.cursor()
         try:
-            cursor.execute('INSERT INTO Users VALUES(NULL, "{}", "{}", "{}", "{}", "{}", "{}");'.format(user.getUsername(), user.getEmail(), 
-                                                                                    user.getAge(), str(user.getContact()) ,passwordHash, passwordSalt))
+            cursor.execute('INSERT INTO Users VALUES(NULL, "{}", "{}", "{}", "{}", "{}", "{}", "{}");'
+                            .format(user.getUsername(), user.getEmail(), user.getRole(), user.getDateOfBirth(), str(user.getContact()),
+                            passwordHash, passwordSalt))
         except Exception as e:
             print(e)
+            return {"success": False, "error": "Invalid username or email. Please try another one"}
 
         self.__connection.commit()
         cursor.close()

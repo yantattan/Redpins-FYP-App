@@ -11,7 +11,7 @@ class TrackedPlacesCon:
     def SetInfo(self, trackedPlace):
         cursor = self.__connection.cursor()
         # Check if today with the store mean has already been registered
-        cursor.execute('SELECT LastRegistered FROM TrackedPlaces'
+        cursor.execute('SELECT LastRegistered FROM TrackedPlaces '
                         'WHERE UserId = "{}" AND StoreMean = "{}";'
                         .format(trackedPlace.getUserId(), trackedPlace.getStoreMean() ))
         currentTime = datetime.now()
@@ -33,7 +33,7 @@ class TrackedPlacesCon:
                                         trackedPlace.getFrequency(), currentTime))
                     except Exception as e:
                         print(e)
-                        return {"success": False, "error": e}
+                        return {"success": False}
             
 
         self.__connection.commit()
