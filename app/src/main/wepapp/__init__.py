@@ -114,7 +114,7 @@ def pref1():
         allPrefs = request.form.getlist("preferences[]")
         pref = Preferences.Preferences(session["current_user"]["userId"], allPrefs, category)
         preferencesCon.setPreferences(pref)
-
+        print(allPrefs)
         return redirect("/preferences/2")
     else:
         print("Hello")
