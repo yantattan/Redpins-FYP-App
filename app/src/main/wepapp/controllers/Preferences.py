@@ -14,7 +14,7 @@ class PreferencesCon:
         cursor = self.__connection.cursor()
         category = preferences.getCategory()
         try:
-            cursor.execute('DELETE FROM Preferences WHERE'
+            cursor.execute('DELETE FROM Preferences WHERE '
                             'UserId = {} AND Category = "{}";'
                             .format(preferences.getUserId(), category ))
         except Exception:
@@ -23,7 +23,7 @@ class PreferencesCon:
 
         for pref in preferences.getPreferences():
             try:
-                cursor.execute('INSERT INTO Preferences'
+                cursor.execute('INSERT INTO Preferences '
                                 'VALUES(NULL, {}, "{}", "{}");'
                                 .format(preferences.getUserId(), pref, category))
             except Exception:
