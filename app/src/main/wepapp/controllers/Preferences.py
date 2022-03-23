@@ -37,7 +37,7 @@ class PreferencesCon:
 
     def getPreferences(self, userId, category):
         cursor = self.__connection.cursor()
-        cursor.execute('SELECT * FROM Preferences'
+        cursor.execute('SELECT * FROM Preferences '
                         'WHERE UserId = {}; AND Category = "{}"'
                         .format(userId, category))
         preferences = cursor.fetchone()

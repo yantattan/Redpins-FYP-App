@@ -1,7 +1,8 @@
 from audioop import add
 import email
 from wtforms import Form, StringField, RadioField, SelectField, PasswordField, IntegerField, \
-                    DecimalField, FileField ,validators
+                    DecimalField, FileField, validators
+from wtforms.fields.html5 import DateField
 
 
 # Webforms helper
@@ -11,7 +12,7 @@ class SampleForm(Form):
 class RegisterForm(Form):
     username = StringField("User Name", [validators.Length(min=1, max=100), validators.DataRequired()])
     email = StringField("Email", [validators.Email("someone@example.com"), validators.DataRequired()])
-    age = IntegerField("Age", [validators.DataRequired()])
+    dateOfBirth = DateField("Date Of Birth", [validators.DataRequired()])
     contact = IntegerField("Mobile Number", [validators.DataRequired()])
     password = PasswordField("Password", [validators.Length(min=7), validators.DataRequired()])
     confirm_password = PasswordField("Confirm Password", [validators.Length(min=7), validators.EqualTo("password", message="Both passwords must match"), validators.DataRequired()])
@@ -30,11 +31,11 @@ class SignedPlaceForm(Form):
 
 #Models
 class User:
-    def __init__(self, username, email, role, age, contact, password):
+    def __init__(self, username, email, role, dateOfBirth, contact, password):
         self.__username = username
         self.__email = email
         self.__role = role
-        self.__age = age
+        self.__dateOfBirth = dateOfBirth
         self.__contact = contact
         self.__password = password
 
@@ -47,8 +48,8 @@ class User:
     def setRole(self, role):
         self.__role = role
 
-    def setAge(self, age):
-        self.__age = age
+    def setDateOfBirth(self, dateOfBirth):
+        self.__dateOfBirth = dateOfBirth
 
     def setContact(self, contact):
         self.__contact = contact
@@ -65,8 +66,8 @@ class User:
     def getRole(self):
         return self.__role
 
-    def getAge(self):
-        return self.__age
+    def getDateOfBirth(self):
+        return self.__dateOfBirth
 
     def getContact(self):
         return self.__contact
@@ -180,3 +181,11 @@ class SignedPlace:
 
     def getPoints(self):
         return self.__points
+
+    def dict(self):
+        return {"id": self.getId(), 
+                "address": self.getAddress(), 
+                "unitNo": self.getUnitNo(), 
+                "shopName": self.getShopName(),
+                "organization": self.getOrganization(),
+                "points": self.getPoints()}
