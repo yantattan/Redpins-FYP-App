@@ -8,7 +8,7 @@ class SignedPlacesCon:
     def __init__(self):
         self.__connection = MySql.Connect()
 
-    def getShopInfo(self, shopName, address):
+    def GetShopInfo(self, shopName, address):
         cursor = self.__connection.cursor()
 
         cursor.execute('SELECT * FROM SignedPlaces WHERE ShopName = "{}" AND Address = "{}"'
@@ -17,7 +17,7 @@ class SignedPlacesCon:
         if shop is not None:
             return SignedPlace(shop[0], shop[1], shop[2], shop[3], shop[4], shop[5])
 
-    def createEntry(self, shopInfo):
+    def CreateEntry(self, shopInfo):
         cursor = self.__connection.cursor()
 
         try:
@@ -31,7 +31,7 @@ class SignedPlacesCon:
         cursor.close()
         return {"success": True}
 
-    def updateEntry(self, shopInfo):
+    def UpdateEntry(self, shopInfo):
         cursor = self.__connection.cursor()
 
         try:
@@ -48,7 +48,7 @@ class SignedPlacesCon:
         cursor.close()
         return {"success": True}
     
-    def deleteEntry(self, shopId):
+    def DeleteEntry(self, shopId):
         cursor = self.__connection.cursor()
 
         try:

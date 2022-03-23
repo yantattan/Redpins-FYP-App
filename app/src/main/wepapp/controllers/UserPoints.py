@@ -3,7 +3,7 @@ from DbContext import MySql
 from Model import UserPoints
 
 
-class UserPoints:
+class UserPointsCon:
     __connection = None
 
     def __init__(self):
@@ -21,7 +21,7 @@ class UserPoints:
         cursor.close()
 
 
-    def GetUserPoints(self, userId):
+    def GetUserPointsInfo(self, userId):
         cursor = self.__connection.cursor()
         cursor.execute('SELECT * FROM UserPoints WHERE UserId = {}'
                         .format(userId))

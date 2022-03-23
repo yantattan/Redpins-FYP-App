@@ -11,7 +11,7 @@ import json
 
 import DbContext
 from Model import *
-from controllers import SignedPlaces, Users, TrackedPlaces, RewardPoints, Preferences
+from controllers import SignedPlaces, Users, TrackedPlaces, UserPoints, Preferences
 
 app = Flask(__name__)
 app.secret_key = "redp1n5Buffer"
@@ -21,6 +21,7 @@ userCon = Users.UserCon()
 trackedPlacesCon = TrackedPlaces.TrackedPlacesCon()
 preferencesCon = Preferences.PreferencesCon()
 signedPlaceCon = SignedPlaces.SignedPlacesCon()
+userRewardsCon = UserPoints.UserPointsCon()
 
 
 def initOneMapAPI(yourLocation):
@@ -158,6 +159,10 @@ def adminCreateShopPoints():
 def reachedPlace():
     # Placeholder returned data
     result = {"shopName":"MARINA BAY SANDS", "address": "1 BAYFRONT AVENUE MARINA BAY SANDS SINGAPORE 018971"}
+    result2 = signedPlaceCon.getShopInfo()
+    points = result2.getPoints()
+    result3 = userRewardsCon.GetUserPointsInfo()
+    upoints = result3.getTier()
     return {"success": True}
 
 def trackPlaces(places, storeMean):
