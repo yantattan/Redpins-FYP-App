@@ -8,7 +8,6 @@ from wtforms import Form, StringField, RadioField, SelectField, PasswordField, I
 class SampleForm(Form):
     firstfield = StringField("First Name", [validators.Length(min=1, max=50), validators.DataRequired()])
 
-
 class RegisterForm(Form):
     username = StringField("User Name", [validators.Length(min=1, max=100), validators.DataRequired()])
     email = StringField("Email", [validators.Email("someone@example.com"), validators.DataRequired()])
@@ -17,17 +16,24 @@ class RegisterForm(Form):
     password = PasswordField("Password", [validators.Length(min=7), validators.DataRequired()])
     confirm_password = PasswordField("Confirm Password", [validators.Length(min=7), validators.EqualTo("password", message="Both passwords must match"), validators.DataRequired()])
 
-
 class LoginForm(Form):
     username = StringField("User Name", [validators.DataRequired()])
     password = PasswordField("Password", [validators.DataRequired()])
 
+class SignedPlaceForm(Form):
+    shopName = StringField("Shop Name", [validators.DataRequired()])
+    organization = StringField("Organization Name", [validators.DataRequired()])
+    address = StringField("Address", [validators.DataRequired()])
+    unitNo = StringField("Unit Number", [validators.DataRequired()])
+    points = IntegerField("Points", [validators.DataRequired()])
+
 
 #Models
 class User:
-    def __init__(self, username, email, age, contact, password):
+    def __init__(self, username, email, role, age, contact, password):
         self.__username = username
         self.__email = email
+        self.__role = role
         self.__age = age
         self.__contact = contact
         self.__password = password
@@ -37,6 +43,9 @@ class User:
 
     def setEmail(self, email):
         self.__email = email
+
+    def setRole(self, role):
+        self.__role = role
 
     def setAge(self, age):
         self.__age = age
@@ -52,6 +61,9 @@ class User:
 
     def getEmail(self):
         return self.__email
+
+    def getRole(self):
+        return self.__role
 
     def getAge(self):
         return self.__age
@@ -125,3 +137,46 @@ class Preferences:
 
     def getCategory(self):
         return self.__category
+
+
+class SignedPlace:
+    def __init__(self, id, address, unitNo, shopName, organization, points):
+        self.__id = id
+        self.__address = address
+        self.__unitNo = unitNo
+        self.__shopName = shopName
+        self.__organization = organization
+        self.__points = points
+
+    def setAddress(self, address):
+        self.__address = address
+
+    def setUnitNo(self, unitNo):
+        self.__unitNo = unitNo
+
+    def setShopName(self, shopName):
+        self.__shopName = shopName
+
+    def setOrganization(self, organization):
+        self.__organization = organization
+
+    def setPoints(self, points):
+        self.__points = points
+
+    def getId(self):
+        return self.__id
+
+    def getAddress(self):
+        return self.__address
+
+    def getUnitNo(self):
+        return self.__unitNo
+
+    def getShopName(self):
+        return self.__shopName
+
+    def getOrganization(self):
+        return self.__organization
+
+    def getPoints(self):
+        return self.__points

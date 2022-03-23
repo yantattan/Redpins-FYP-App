@@ -29,10 +29,11 @@ class UserCon:
         passwordHash = hashlib.sha512((user.getPassword() + passwordSalt).encode("utf-8")).hexdigest()
         cursor = self.__connection.cursor()
         try:
-            cursor.execute('INSERT INTO Users VALUES(NULL, "{}", "{}", "{}", "{}", "{}", "{}");'.format(user.getUsername(), user.getEmail(), 
-                                                                                    user.getAge(), str(user.getContact()) ,passwordHash, passwordSalt))
+            cursor.execute('INSERT INTO Users VALUES(NULL, "{}", "{}", "{}", "{}", "{}", "{}", "{}");'.format(user.getUsername(), user.getEmail(), 
+                                                                                    user.getRole(), user.getAge(), str(user.getContact()) ,passwordHash, passwordSalt))
         except Exception as e:
             print(e)
+            return {"success": False, "error": "Invalid username or email. Please try another one"}
 
         self.__connection.commit()
         cursor.close()

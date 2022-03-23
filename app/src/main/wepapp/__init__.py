@@ -1,3 +1,5 @@
+from distutils.log import error
+from os import abort
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from flask_socketio import SocketIO, emit
 from datetime import datetime, timedelta, date
@@ -9,7 +11,7 @@ import json
 
 import DbContext
 from Model import *
-from controllers import Users, TrackedPlaces, RewardPoints, PlacesPoints, Preferences
+from controllers import SignedPlaces, Users, TrackedPlaces, RewardPoints, Preferences
 
 app = Flask(__name__)
 app.secret_key = "redp1n5Buffer"
@@ -18,6 +20,7 @@ app.secret_key = "redp1n5Buffer"
 userCon = Users.UserCon()
 trackedPlacesCon = TrackedPlaces.TrackedPlacesCon()
 preferencesCon = Preferences.PreferencesCon()
+signedPlaceCon = SignedPlaces.SignedPlacesCon()
 
 
 def initOneMapAPI(yourLocation):
@@ -90,7 +93,7 @@ def register():
     register_form = RegisterForm(request.form)
     if request.method == 'POST':
         if register_form.validate():
-            userModel = User(register_form.username.data, register_form.email.data, register_form.age.data, register_form.contact.data, register_form.password.data)
+            userModel = User(register_form.username.data, register_form.email.data, "User", register_form.age.data, register_form.contact.data, register_form.password.data)
             registerResponse = userCon.Register(userModel)
             if registerResponse.get("error"):
                 return render_template("accounts/register.html", form=register_form, error=registerResponse["error"])
@@ -108,19 +111,53 @@ def pref1():
     if request.method == 'POST':
         category = "Cuisine"
         allPrefs = request.form.getlist("preferences[]")
-        pref = Preferences(session["current_user"]["userId"], allPrefs, category)
+        pref = Preferences.Preferences(session["current_user"]["userId"], allPrefs, category)
         preferencesCon.setPreferences(pref)
 
         return redirect("/preferences/2")
     else:
         print("Hello")
-    return render_template("preferences/pref2.html")
+    return render_template("preferences/preference1.html")
+
+
+# Admin sites
+def validateAdmin():
+    if session.get("current_user") is None:
+        abort(403)
+    elif session["current_user"].get("role") != "Admin":
+        abort(403)
+
+@app.route("/admin/signedPlaces")
+def viewSignedPlaces():
+    validateAdmin()
+    return render_template("admin/viewSignedPlaces.html")
+
+@app.route("/admin/signedPlaces/create", methods=['GET', 'POST'])
+def adminCreateShopPoints():
+    validateAdmin()
+    signedPlaceForm = SignedPlaceForm(request.form)
+    if request.method == 'POST':
+        if signedPlaceForm.validate():
+            signedPlace = SignedPlaces(None, signedPlaceForm.address.data, signedPlaceForm.unitNo.data, signedPlaceForm.shopName.data, 
+                        signedPlaceForm.organization.data, signedPlaceForm.points.data)
+            response = signedPlaceCon.createEntry(signedPlace)
+
+            if response.get("success"):
+                return redirect("/admin/signedPlaces")
+            else:
+                return render_template("admin/editPoints.html", form=signedPlaceForm, error=response["error"])
+        
+        return render_template("admin/editPoints.html", form=signedPlaceForm, error="Invalid inputs entered")
+
+    else:
+        return render_template("admin/editPoints.html", form=signedPlaceForm)
+
 
 # Reward points -- Assign rewards point (Udhaya)
 @app.route("/funcs/reached-place/", methods=['GET', 'POST'])
 def reachedPlace():
     # Placeholder returned data
-    result = {"address": "1 BAYFRONT AVENUE MARINA BAY SANDS SINGAPORE 018971"}
+    result = {"shopName":"MARINA BAY SANDS", "address": "1 BAYFRONT AVENUE MARINA BAY SANDS SINGAPORE 018971"}
     return {"success": True}
 
 def trackPlaces(places, storeMean):

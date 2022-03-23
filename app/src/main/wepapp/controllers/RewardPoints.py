@@ -26,7 +26,8 @@ class UserPoints:
         cursor.execute('SELECT * FROM UserPoints WHERE UserId = {}'
                         .format(userId))
         resultData = cursor.fetchone()
-        return UserPoints(userId, resultData[0], resultData[1])
+        if resultData is not None:
+            return UserPoints(userId, resultData[0], resultData[1])
 
 
     def SetPoints(self, userId, points):

@@ -23,12 +23,15 @@ class MySql:
                 # User table
                 cursor.execute("CREATE TABLE IF NOT EXISTS `Users` ("
                                "`Id` INT NOT NULL AUTO_INCREMENT, "
-                               "`Username` VARCHAR(50) NOT NULL,"
-                               "`Email` VARCHAR(100) NOT NULL,"
-                               "`Age` INT NOT NULL,"
+                               "`Username` VARCHAR(50) NOT NULL Unique,"
+                               "`Email` VARCHAR(100) NOT NULL Unique,"
+                               "`Role` VARCHAR(20) NOT NULL DEFAULT \"User\","
+                               "`DateOfBirth` DATE NOT NULL,"
                                "`Contact` VARCHAR(8) NOT NULL,"
                                "`Password` LONGTEXT NOT NULL,"
                                "`PwdSalt` VARCHAR(8) NOT NULL,"
+                               "CHECK (`Role` in (\"User\", \"Admin\")),"
+                               "UNIQUE (`Username`, `Email`),"
                                "PRIMARY KEY (`Id`));")
                 # User preferences table
                 cursor.execute("CREATE TABLE IF NOT EXISTS `Preferences` ("
@@ -36,15 +39,18 @@ class MySql:
                                 "`UserId` INT NOT NULL,"
                                 "`Preference` VARCHAR(50) NOT NULL,"
                                 "`Category` VARCHAR(50) NOT NULL,"
+                                "CHECK (`Category` in (\"Cuisine\", \"Activity\")),"
                                 "PRIMARY KEY (`RowId`),"
                                 "FOREIGN KEY (`UserId`) REFERENCES Users(`Id`));")
                 # Shop points
-                cursor.execute("CREATE TABLE IF NOT EXISTS `ShopPoints` ("
+                cursor.execute("CREATE TABLE IF NOT EXISTS `SignedPlaces` ("
+                                "`Id` INT NOT NULL AUTO_INCREMENT,"
                                 "`Address` VARCHAR(150) NOT NULL,"
                                 "`UnitNo` VARCHAR(20) NOT NULL,"
                                 "`ShopName` VARCHAR(100) NOT NULL,"
+                                "`Organization` VARCHAR(100) NOT NULL,"
                                 "`Points` INT NULL,"
-                                "PRIMARY KEY (`Address`, `UnitNo`));")
+                                "PRIMARY KEY (`Id`));")
                 # User points table
                 cursor.execute("CREATE TABLE IF NOT EXISTS `UserPoints` ("
                                 "`UserId` INT NOT NULL,"

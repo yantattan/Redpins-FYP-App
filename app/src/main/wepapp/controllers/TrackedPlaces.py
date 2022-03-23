@@ -33,7 +33,7 @@ class TrackedPlacesCon:
                                         trackedPlace.getFrequency(), currentTime))
                     except Exception as e:
                         print(e)
-                        return {"success": False, "error": e}
+                        return {"success": False}
             
 
         self.__connection.commit()

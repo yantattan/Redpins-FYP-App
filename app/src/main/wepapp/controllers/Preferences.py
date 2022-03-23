@@ -14,20 +14,21 @@ class PreferencesCon:
         cursor = self.__connection.cursor()
         category = preferences.getCategory()
         try:
-            cursor.execute('DELETE FROM Preferences WHERE'
+            cursor.execute('DELETE FROM Preferences WHERE '
                             'UserId = {} AND Category = "{}";'
                             .format(preferences.getUserId(), category ))
-        except Exception:
-            print("An error occurred")
+        except Exception as e:
+            print("An error occurred reseting entries for preferences")
 
 
         for pref in preferences.getPreferences():
             try:
-                cursor.execute('INSERT INTO Preferences'
+                cursor.execute('INSERT INTO Preferences '
                                 'VALUES(NULL, {}, "{}", "{}");'
                                 .format(preferences.getUserId(), pref, category))
-            except Exception:
+            except Exception as e:
                 print("An error occurred updating database for preferences")
+                print(e)
 
 
         self.__connection.commit()
