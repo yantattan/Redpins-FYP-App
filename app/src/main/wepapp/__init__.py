@@ -17,7 +17,7 @@ userCon = Users.UserCon()
 trackedPlacesCon = TrackedPlaces.TrackedPlacesCon()
 preferencesCon = Preferences.PreferencesCon()
 signedPlaceCon = SignedPlaces.SignedPlacesCon()
-userRewardsCon = RewardPoints.UserPointsCon()
+userRewardsCon = UserPoints.UserPointsCon()
 
 
 def initOneMapAPI(yourLocation):
@@ -80,6 +80,7 @@ def login():
         if userInfo:
             if userInfo.get("error") is None:
                 session["current_user"] = userInfo
+                print(userInfo)
                 return redirect("/")
 
         return render_template("accounts/login.html", form=login_form, error="Invalid username or password")
@@ -90,6 +91,7 @@ def login():
 @app.route("/register", methods=['GET', 'POST'])
 def register():
     register_form = RegisterForm(request.form)
+
     if request.method == 'POST':
         if register_form.validate():
             userModel = User(register_form.username.data, register_form.email.data, "User",
@@ -108,6 +110,7 @@ def register():
 # Preferences backend -- Send pref to db (Daoying)
 @app.route("/preferences/1", methods=['GET', 'POST'])
 def pref1():
+    validateLoggedIn()
     if request.method == 'POST':
         category = "Cuisine"
         allPrefs = request.form.getlist("preferences[]")
@@ -155,20 +158,21 @@ def adminUpdatePlace(id):
     signedPlaceForm = SignedPlaceForm(request.form)
     if request.method == 'POST':
         if signedPlaceForm.validate():
-            signedPlace = SignedPlaces.SignedPlace(None, signedPlaceForm.address.data, signedPlaceForm.unitNo.data,
+            signedPlace = SignedPlaces.SignedPlace(id, signedPlaceForm.address.data, signedPlaceForm.unitNo.data,
                                                    signedPlaceForm.shopName.data,
                                                    signedPlaceForm.organization.data, signedPlaceForm.points.data)
             response = signedPlaceCon.UpdateEntry(signedPlace)
+            print(response)
 
             if response.get("success"):
                 return redirect("/admin/signedPlaces")
             else:
-                return render_template("admin/createSignedPlace.html", form=signedPlaceForm, error=response["error"])
+                return render_template("admin/editSignedPlace.html", form=signedPlaceForm, error=response["error"])
 
-        return render_template("admin/createSignedPlace.html", form=signedPlaceForm, error="Invalid inputs entered")
+        return render_template("admin/editSignedPlace.html", form=signedPlaceForm, error="Invalid inputs entered")
 
     else:
-        placeInfo = SignedPlaces.SignedPlacesCon.GetShopInfo(id)
+        placeInfo = signedPlaceCon.GetShopInfo(id)
         signedPlaceForm.address.data = placeInfo.getAddress()
         signedPlaceForm.unitNo.data = placeInfo.getUnitNo()
         signedPlaceForm.shopName.data = placeInfo.getShopName()
