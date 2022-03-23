@@ -217,6 +217,14 @@ def markTracked():
     trackPlaces(request.form.get("places"), request.form.get("storeMean"))
 
 
+@app.route("/funcs/admin/table_getSignedPlaces")
+def tableGetSignedPlaces():
+    args = request.args
+    resultDict = signedPlaceCon.ViewListOfPlaces(args.get("search"), args.get("sort"), args.get("order"),
+                                                 args.get("limit"), args.get("offset"))
+    return json.dumps(resultDict)
+
+
 # Error pages handling
 # @app.errorhandler(403)
 # def forbidden_error(error):
