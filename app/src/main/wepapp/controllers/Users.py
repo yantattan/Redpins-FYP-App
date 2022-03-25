@@ -43,3 +43,17 @@ class UserCon:
         cursor.close()
         return {"success": True}
 
+    def ChangePassword(self, userId, password):
+        cursor = self.__connection.cursor()
+        passwordSalt = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(8))
+        passwordHash = hashlib.sha512((password + passwordSalt).encode("utf-8")).hexdigest()
+
+        try:
+            cursor.execute('UPDATE Users SET Password = "{}", PwdSalt = "{}"'
+                            'WHERE Id = {}'
+                            .format(passwordHash, passwordSalt, userId))
+        except Exception as e:
+            print(e)
+
+        self.__connection.commit()
+        cursor.close()

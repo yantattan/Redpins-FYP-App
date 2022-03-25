@@ -10,7 +10,7 @@
 <div id="mobile-view" class="">
     <h1>Hello {{session["current_user"]["username"]}}</h1>
     <p>{{ locationCoords }}</p>
-    
+    <a href="/qr-scanner">Scan me</a>
     <div id='mapdiv' style='height:500px;'></div>
     
     <input type="text" id="searchBar" onkeyup="pauseSearch()">

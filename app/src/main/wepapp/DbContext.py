@@ -84,18 +84,6 @@ class MySql:
                                 "PRIMARY KEY (`RowId`),"
                                 "FOREIGN KEY (`UserId`) REFERENCES Users(`Id`));")
 
-
-                # Make sure there is always a root account
-                # rootPwdSalt = "ABCD3FGH"
-                # rootPwd = hashlib.sha512(("P@ssw0rd" + rootPwdSalt).encode("utf-8")).hexdigest()
-                # try:
-                #     cursor.execute('INSERT INTO `Users` VALUES(NULL, "root", "root@gmail.com", "Admin", "2001-01-01", "00000000", "{}", "{}");'
-                #                     .format(rootPwd, rootPwdSalt))
-                # except Exception:
-                #     print("Root account is in database")
-                # else:
-                #     print("Root account is created")
-
                 return db
 
     except Exception as e:
@@ -105,6 +93,36 @@ class MySql:
     def Close(self, con):
         con.Close()
 
+    
+    try:
+        @staticmethod
+        def SetRoot():
+            try:
+                db = mySqlDB.connect(
+                    host="localhost",
+                    user="root",
+                    password="password",
+                    database="redpinsdb"
+                )
+
+                passwordSalt = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(8))
+                passwordHash = hashlib.sha512(("P@ssw0rd" + passwordSalt).encode("utf-8")).hexdigest()
+
+                cursor = db.cursor()
+                cursor.execute('INSERT INTO `Users` VALUES(NULL, "Root", "redpinsbuffer@gmail.com", "Admin", "2001-01-01", "00000000", "{}", "{}");'
+                                .format(passwordHash, passwordSalt))
+                db.commit()
+                cursor.close()
+                print("Root account has been created")
+            except mySqlDB.IntegrityError:
+                print("Root account in database")
+            except Exception as e:
+                print(e)
+
+    except Exception as e:
+        msg = e
+
 
 MySql.Connect()
+MySql.SetRoot()
 print(MySql.msg)

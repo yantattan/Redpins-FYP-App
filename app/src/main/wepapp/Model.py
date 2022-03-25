@@ -2,7 +2,7 @@ from audioop import add
 import email
 from wtforms import Form, StringField, RadioField, SelectField, PasswordField, IntegerField, \
                     DecimalField, FileField, validators
-from wtforms.fields.html5 import DateField
+from wtforms.fields import DateField
 
 
 # Webforms helper
@@ -10,7 +10,7 @@ class SampleForm(Form):
     firstfield = StringField("First Name", [validators.Length(min=1, max=50), validators.DataRequired()])
 
 class RegisterForm(Form):
-    username = StringField("User Name", [validators.Length(min=1, max=100), validators.DataRequired()])
+    username = StringField("User Name", [validators.Length(min=1, max=20), validators.DataRequired()])
     email = StringField("Email", [validators.Email("someone@example.com"), validators.DataRequired()])
     dateOfBirth = DateField("Date Of Birth", [validators.DataRequired()])
     contact = IntegerField("Mobile Number", [validators.DataRequired()])
@@ -20,6 +20,10 @@ class RegisterForm(Form):
 class LoginForm(Form):
     username = StringField("User Name", [validators.DataRequired()])
     password = PasswordField("Password", [validators.DataRequired()])
+
+class ForgetPasswordForm(Form):
+    username = StringField("User Name", [validators.Length(min=1, max=20), validators.DataRequired()])
+    email = StringField("Email", [validators.Email("someone@example.com"), validators.DataRequired()])
 
 class SignedPlaceForm(Form):
     shopName = StringField("Shop Name", [validators.DataRequired()])
