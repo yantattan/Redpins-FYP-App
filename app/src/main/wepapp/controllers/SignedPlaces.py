@@ -45,14 +45,12 @@ class SignedPlacesCon:
         whereCondition = {"$or": [{"Id": "/{}/".format(search)}, {"Address": "/{}/".format(search)}, {"UnitNo": "/{}/".format(search)}, 
                                 {"Name": "/{}/".format(search)}, {"Organization": "/{}/".format(search)}, {"Points": "/{}/".format(search)}] }
         
-        orderCondition = {}
+        order = -1
         if sort:
             if order is not None and order == "desc":
-                orderCondition = { sort: 1 }
-            else:
-                orderCondition = { sort: -1 }
+                order = 1 
         
-        signedPlaces = self.__connection.find({whereCondition}).sort(orderCondition).limit(int(limit)).skip(int(offset) * int(limit))
+        signedPlaces = self.__connection.find({whereCondition}).sort(sort, order).limit(int(limit)).skip(int(offset) * int(limit))
         resultDict = [SignedPlace(row["_id"], row["Address"], row["UnitNo"], row["Name"], row["Organization"], row["Point"], row["Checkpoint"], row["Discount"]).dict() for row in signedPlaces]
         return resultDict
 
