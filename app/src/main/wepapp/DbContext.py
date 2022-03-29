@@ -1,7 +1,40 @@
 import hashlib
 import mysql.connector as mySqlDB
+from pymongo import MongoClient
 import random
 import string
+
+
+class MongoDBContext:
+    def Connect():
+        con = MongoClient("mongodb://localhost:27017")
+        db = con["RedpinsBufferDB"]
+        return db
+
+    def SetRoot():
+        # Set root account
+        db = MongoDBContext.Connect()
+        userDb = db["Users"]
+        try:
+            passwordSalt = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(8))
+            passwordHash = hashlib.sha512(("P@ssw0rd" + passwordSalt).encode("utf-8")).hexdigest()
+
+            userDb.insert_one({"_id": 0,
+                                "Username": "Root", 
+                                "Email": "redpinsbuffer@gmail.com", 
+                                "Role": "Admin", 
+                                "DateOfBirth": "2001-01-01", 
+                                "Contact": "00000000", 
+                                "Password": passwordHash,
+                                "PasswordSalt": passwordSalt})
+            print("Root account has been created")
+        except Exception:
+            print("Root account in database")
+
+
+# MongoDBContext.Connect()
+MongoDBContext.SetRoot()
+
 
 
 class MySql:
@@ -53,6 +86,8 @@ class MySql:
                                 "`ShopName` VARCHAR(100) NOT NULL,"
                                 "`Organization` VARCHAR(100) NOT NULL,"
                                 "`Points` INT NULL,"
+                                "`Checkpoint` INT NULL,"
+                                "`Discount` DECIMAL(4, 2) NULL,"
                                 "PRIMARY KEY (`Id`));")
                 # User points table
                 cursor.execute("CREATE TABLE IF NOT EXISTS `UserPoints` ("

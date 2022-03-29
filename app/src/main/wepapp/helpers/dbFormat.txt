@@ -1,0 +1,24 @@
+User [
+	{
+        _id : 1
+	    name: "sth"...
+	    preferences: 
+        {
+            cuisine: ["cui1", "cui2"...],
+			activity: ["act1", "act2"...]
+		},
+        points: 0,
+        tier: "Bronze"
+	}
+]
+
+
+TrackedInfo [
+	{ 
+        _id : <Obj sth>,
+        address: "sth",
+        action: "visited",
+        frequency: 2,
+        timestamps: [time1, time2] --ascending
+	}
+]

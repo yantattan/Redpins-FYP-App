@@ -1,8 +1,9 @@
 from audioop import add
+from decimal import Decimal
 import email
 from wtforms import Form, StringField, RadioField, SelectField, PasswordField, IntegerField, \
                     DecimalField, FileField, validators
-from wtforms.fields import DateField
+from wtforms.fields.html5 import DateField
 
 
 # Webforms helper
@@ -30,8 +31,9 @@ class SignedPlaceForm(Form):
     organization = StringField("Organization Name", [validators.DataRequired()])
     address = StringField("Address", [validators.DataRequired()])
     unitNo = StringField("Unit Number", [validators.DataRequired()])
-    points = IntegerField("Points", [validators.DataRequired()])
-
+    points = IntegerField("Points", [validators.NumberRange(min=3, max=50), validators.Optional()])
+    checkpoint = IntegerField("Points Needed", [validators.NumberRange(min=20, max=1000), validators.Optional()])
+    discount = DecimalField("Discount (%)", [validators.Optional()], places=2)
 
 #Models
 class User:
@@ -145,13 +147,15 @@ class Preferences:
 
 
 class SignedPlace:
-    def __init__(self, id, address, unitNo, shopName, organization, points):
+    def __init__(self, id, address, unitNo, shopName, organization, points, checkpoint, discount):
         self.__id = id
         self.__address = address
         self.__unitNo = unitNo
         self.__shopName = shopName
         self.__organization = organization
         self.__points = points
+        self.__checkpoint = checkpoint
+        self.__discount = discount
 
     def setAddress(self, address):
         self.__address = address
@@ -167,6 +171,12 @@ class SignedPlace:
 
     def setPoints(self, points):
         self.__points = points
+
+    def setCheckpoint(self, checkpoint):
+        self.__checkpoint = checkpoint
+
+    def setDiscount(self, discount):
+        self.__discount = discount
 
     def getId(self):
         return self.__id
@@ -185,6 +195,12 @@ class SignedPlace:
 
     def getPoints(self):
         return self.__points
+    
+    def getCheckpoint(self):
+        return self.__checkpoint
+
+    def getDiscount(self):
+        return self.__discount
 
     def dict(self):
         return {"id": self.getId(), 
@@ -192,4 +208,6 @@ class SignedPlace:
                 "unitNo": self.getUnitNo(), 
                 "shopName": self.getShopName(),
                 "organization": self.getOrganization(),
-                "points": self.getPoints()}
+                "points": self.getPoints(),
+                "checkpoint": self.getCheckpoint(),
+                "discount": float(self.getDiscount())}

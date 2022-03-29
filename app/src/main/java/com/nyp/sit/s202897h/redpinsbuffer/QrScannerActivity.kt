@@ -16,11 +16,10 @@ import com.budiyev.android.codescanner.DecodeCallback
 import com.budiyev.android.codescanner.ErrorCallback
 import com.budiyev.android.codescanner.ScanMode
 
-private const val CAMERA_REQUEST_CODE = 101
-
 class QrScannerActivity : AppCompatActivity() {
 
     private lateinit var codeScanner: CodeScanner
+    private val CAMERA_REQUEST_CODE = 101
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,7 +41,7 @@ class QrScannerActivity : AppCompatActivity() {
             autoFocusMode = AutoFocusMode.SAFE
             scanMode = ScanMode.CONTINUOUS
             isAutoFocusEnabled = true
-            isFlashEnabled = false
+            isFlashEnabled = true
 
             decodeCallback = DecodeCallback {
                 runOnUiThread {

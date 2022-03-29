@@ -82,6 +82,7 @@ def register():
         if register_form.validate():
             userModel = User(register_form.username.data, register_form.email.data, "User", register_form.dateOfBirth.data, register_form.contact.data, register_form.password.data)
             registerResponse = userCon.Register(userModel)
+            print(registerResponse)
             if registerResponse.get("error"):
                 return render_template("accounts/register.html", form=register_form, error=registerResponse["error"])
             else:
@@ -140,7 +141,8 @@ def pref1():
         category = "Cuisine"
         allPrefs = request.form.getlist("preferences[]")
         pref = Preferences.Preferences(session["current_user"]["userId"], allPrefs, category)
-        preferencesCon.setPreferences(pref)
+        # preferencesCon.setPreferences(pref)
+        userCon.SetPreferences(pref)
         print(allPrefs)
         return redirect("/preferences/2")
     else:
@@ -153,8 +155,9 @@ def scanQR():
     return render_template("qrSites/qrScanner.html")
 
 
-@app.route("/qrCode/arrival")
+@app.route("/qrCode/reached")
 def qrCodeArrival():
+    getpoints()
     return render_template("qrSites/arrivalQrCode.html")
 
 
@@ -170,8 +173,9 @@ def adminCreatePlace():
     signedPlaceForm = SignedPlaceForm(request.form)
     if request.method == 'POST':
         if signedPlaceForm.validate():
-            signedPlace = SignedPlaces.SignedPlace(None, signedPlaceForm.address.data, signedPlaceForm.unitNo.data, signedPlaceForm.shopName.data, 
-                        signedPlaceForm.organization.data, signedPlaceForm.points.data)
+            signedPlace = SignedPlaces.SignedPlace(None, signedPlaceForm.address.data, signedPlaceForm.unitNo.data, 
+                        signedPlaceForm.shopName.data, signedPlaceForm.organization.data, signedPlaceForm.points.data, 
+                        signedPlaceForm.checkpoint.data, signedPlaceForm.discount.data)
             response = signedPlaceCon.CreateEntry(signedPlace)
 
             if response.get("success"):
@@ -190,8 +194,9 @@ def adminUpdatePlace(id):
     signedPlaceForm = SignedPlaceForm(request.form)
     if request.method == 'POST':
         if signedPlaceForm.validate():
-            signedPlace = SignedPlaces.SignedPlace(id, signedPlaceForm.address.data, signedPlaceForm.unitNo.data, signedPlaceForm.shopName.data, 
-                        signedPlaceForm.organization.data, signedPlaceForm.points.data)
+            signedPlace = SignedPlaces.SignedPlace(id, signedPlaceForm.address.data, signedPlaceForm.unitNo.data, 
+                            signedPlaceForm.shopName.data, signedPlaceForm.organization.data, signedPlaceForm.points.data, 
+                            signedPlaceForm.checkpoint.data, signedPlaceForm.discount.data)
             response = signedPlaceCon.UpdateEntry(signedPlace)
             print(response)
 
@@ -209,6 +214,8 @@ def adminUpdatePlace(id):
         signedPlaceForm.shopName.data = placeInfo.getShopName()
         signedPlaceForm.organization.data = placeInfo.getOrganization()
         signedPlaceForm.points.data = placeInfo.getPoints()
+        signedPlaceForm.checkpoint.data = placeInfo.getCheckpoint()
+        signedPlaceForm.discount.data = placeInfo.getDiscount()
 
         return render_template("admin/createSignedPlace.html", form=signedPlaceForm)
 
@@ -221,20 +228,20 @@ def adminDeletePlace(id):
 
 # AJAX CALLS
 # Reward points -- Assign rewards point (Udhaya)
-@app.route("/funcs/reached-place/", methods=['GET', 'POST'])
-def reachedPlace():
-    # Placeholder returned data
+def getpoints():
     Utier = {"Bronze": 1, "Silver": 1.1, "Gold": 1.2, "Platinum": 1.3, "Diamond": 1.5}
     Uid = session["current_user"]["userId"]
     result = {"shopName":"MARINA BAY SANDS", "address": "1 BAYFRONT AVENUE MARINA BAY SANDS SINGAPORE 018971"}
     result2 = signedPlaceCon.getShopInfo()
     points = result2.getPoints()
-    result3 = userRewardsCon.GetUserPointsInfo(Uid)
+    # result3 = userRewardsCon.GetUserPointsInfo(Uid)
+    result3 = userCon.GetUserPointsInfo(Uid)
     uTierMultiplier = Utier.get(result3.getTier())
     uPoints = result3.getPoints()
     total_pts_earned = points*Utier
     new_upoints = total_pts_earned + uPoints
-    userRewardsCon.SetPoints(Uid, new_upoints)
+    # userRewardsCon.SetPoints(Uid, new_upoints)
+    userCon.SetPoints(Uid, new_upoints)
     def UpdateTier():
         OldRank = result3.getTier()
         NewRank = " "
@@ -246,10 +253,18 @@ def reachedPlace():
             NewRank = "Platinum"
         elif new_upoints>=11600:
             NewRank = "Diamond"
-            
-        userRewardsCon.SetTier(Uid, NewRank)
+
+        # userRewardsCon.SetTier(Uid, NewRank)
+        userCon.SetTier(Uid, NewRank)
         return json.dumps({"OldRank": OldRank,"NewRank": NewRank, "OldPoints": uPoints, "NewPoints": new_upoints })
     UpdateTier()
+
+# AJAX CALLS
+# Reward points -- Assign rewards point (Udhaya)
+@app.route("/funcs/reached-place/", methods=['GET', 'POST'])
+def reachedPlace():
+    # Placeholder returned data
+    getpoints()
 
 def trackPlaces(places, storeMean):
     # Track down the destinations for future recommendation algorithm
@@ -284,7 +299,6 @@ def genQRCode():
 
     response = send_file(buffer, mimetype='image/png')
     return response
-
 
 @app.route("/funcs/use-points", methods=['POST'])
 def usePoints():

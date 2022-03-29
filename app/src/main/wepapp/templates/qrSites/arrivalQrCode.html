@@ -8,7 +8,7 @@
         let formData = new FormData();
         formData.append("data", value);
         console.log(formData)
-        fetch("/funcs/generate-arrival-qrcode", {
+        fetch("/qrCode/reached/", {
             method: "POST",
             body: formData
         }).then((res) => {

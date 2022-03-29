@@ -32,7 +32,7 @@
     // }
 
     var canSearch = true;
-    var apiToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjg1NDQsInVzZXJfaWQiOjg1NDQsImVtYWlsIjoieWFudGF0dGFuNzIxQGdtYWlsLmNvbSIsImZvcmV2ZXIiOmZhbHNlLCJpc3MiOiJodHRwOlwvXC9vbTIuZGZlLm9uZW1hcC5zZ1wvYXBpXC92MlwvdXNlclwvc2Vzc2lvbiIsImlhdCI6MTY0NzQxMTA0NSwiZXhwIjoxNjQ3ODQzMDQ1LCJuYmYiOjE2NDc0MTEwNDUsImp0aSI6ImJjNTBmNzFlOWZmOTYyMWE3NThiNjRkOGE0OGFiMTk0In0.lSAYegznUtlA36wrOkIMVNWTvOUzkxIh7KdjLwO6FbM";
+    var apiToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjg1NDQsInVzZXJfaWQiOjg1NDQsImVtYWlsIjoieWFudGF0dGFuNzIxQGdtYWlsLmNvbSIsImZvcmV2ZXIiOmZhbHNlLCJpc3MiOiJodHRwOlwvXC9vbTIuZGZlLm9uZW1hcC5zZ1wvYXBpXC92MlwvdXNlclwvc2Vzc2lvbiIsImlhdCI6MTY0ODQ0NTM1NCwiZXhwIjoxNjQ4ODc3MzU0LCJuYmYiOjE2NDg0NDUzNTQsImp0aSI6IjBkYWIzYTIyMDIwMmYxZDA5YzJhYmMxYjEyZjk0M2RhIn0.ygc_daPpwuKKaMqR1MHLVVKBCOtO9cYtGdAnLALGlGI";
     
     function getLocation() {
         if (navigator.geolocation) {
@@ -89,7 +89,7 @@
 
 <script>
     // Map display init
-    var apiToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjg1NDQsInVzZXJfaWQiOjg1NDQsImVtYWlsIjoieWFudGF0dGFuNzIxQGdtYWlsLmNvbSIsImZvcmV2ZXIiOmZhbHNlLCJpc3MiOiJodHRwOlwvXC9vbTIuZGZlLm9uZW1hcC5zZ1wvYXBpXC92MlwvdXNlclwvc2Vzc2lvbiIsImlhdCI6MTY0Nzg0OTQxMiwiZXhwIjoxNjQ4MjgxNDEyLCJuYmYiOjE2NDc4NDk0MTIsImp0aSI6ImEwZjQwZjM4NTRiNGIzZjYzNTRhNTVhNTQ1NzEzNTI4In0.T6NyEvwGqk7io2FFLB4yVb78FbTtqeNe5jgH2B2by1g"
+    var apiToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjg1NDQsInVzZXJfaWQiOjg1NDQsImVtYWlsIjoieWFudGF0dGFuNzIxQGdtYWlsLmNvbSIsImZvcmV2ZXIiOmZhbHNlLCJpc3MiOiJodHRwOlwvXC9vbTIuZGZlLm9uZW1hcC5zZ1wvYXBpXC92MlwvdXNlclwvc2Vzc2lvbiIsImlhdCI6MTY0ODQ0NTM1NCwiZXhwIjoxNjQ4ODc3MzU0LCJuYmYiOjE2NDg0NDUzNTQsImp0aSI6IjBkYWIzYTIyMDIwMmYxZDA5YzJhYmMxYjEyZjk0M2RhIn0.ygc_daPpwuKKaMqR1MHLVVKBCOtO9cYtGdAnLALGlGI";
     L.Icon.Default.imagePath = "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.4.0/images";
     var center = L.bounds([1.56073, 104.11475], [1.16, 103.502]).getCenter();
     var map = L.map('mapdiv').setView([center.x, center.y], 12);
@@ -113,7 +113,7 @@
     var basemap = L.tileLayer(`http://maps-{s}.onemap.sg/v2/Default/{z}/{x}/{y}.png`, {
         detectRetina: true,
         maxZoom: 19,
-        minZoom: 13
+        minZoom: 12
     });
 
     map.setMaxBounds([[1.56073, 104.1147], [1.16, 103.502]]);
@@ -157,7 +157,7 @@
         // Routing display
         var today = new Date();
         const routeTypes = ["drive", "pt", "walk"]
-        var routeType = "drive";
+        var routeType = "pt";
         var endCoords = ["1.2834542", "103.8608090"];
 
         function decodeGeo(encodedRoute) {

@@ -21,6 +21,8 @@
                 <th data-field="address" data-sortable="true">Address</th>
                 <th data-field="unitNo" data-sortable="true">Unit Number</th>
                 <th data-field="points" data-sortable="true">Points</th>
+                <th data-field="checkpoint" data-sortable="true">Points Needed</th>
+                <th data-field="discount" data-sortable="true">Discount %</th>
                 <th>Action</th>
             </tr>
         </thead>
@@ -37,9 +39,9 @@
         var allTr = document.querySelector("#signedPlaces_table").querySelectorAll("tr");
         for (var i = 1; i < allTr.length; i++) {
             var allCurrTd = allTr.item(i).querySelectorAll("td");
-            if (allCurrTd.length == 7) {
-                if (allCurrTd.item(6).innerHTML == "-") {
-                    allCurrTd.item(6).innerHTML =
+            if (allCurrTd.length == 9) {
+                if (allCurrTd.item(8).innerHTML == "-") {
+                    allCurrTd.item(8).innerHTML =
                         `<a href="/admin/signedPlaces/update/${allCurrTd.item(0).innerText}"><i class="fa-solid fa-pencil"></i></a>
                     <span class="text-primary">  |  </span>
                     <button type="button" class="btn text-primary" style="padding:0px;" data-toggle="modal" data-target="#confirmDelete_${allCurrTd.item(0).innerText}"><i class="fa fa-trash"></i></button>
