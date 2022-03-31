@@ -1,12 +1,13 @@
 from datetime import datetime
 from DbContext import MySql
+from DbContext import MongoDBContext
 
 
 class TrackedPlacesCon:
     __connection = None
 
     def __init__(self):
-        self.__connection = MySql.Connect()["TrackedInformation"]
+        self.__connection = MongoDBContext.Connect()["TrackedInformation"]
     
     def SetInfo(self, trackedPlace):
         # cursor = self.__connection.cursor()

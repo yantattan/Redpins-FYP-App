@@ -37,13 +37,15 @@ class SignedPlaceForm(Form):
 
 #Models
 class User:
-    def __init__(self, username, email, role, dateOfBirth, contact, password):
+    def __init__(self, username, email, role, dateOfBirth, contact, password, points, tier):
         self.__username = username
         self.__email = email
         self.__role = role
         self.__dateOfBirth = dateOfBirth
         self.__contact = contact
         self.__password = password
+        self.__points = points
+        self.__tier = tier
 
     def setUsername(self, username):
         self.__username = username
@@ -63,6 +65,12 @@ class User:
     def setPassword(self, password):
         self.__password = password
 
+    def setPoints(self, points):
+        self.__points = points
+
+    def setTier(self, tier):
+        self.__tier = tier
+
     def getUsername(self):
         return self.__username
 
@@ -80,6 +88,12 @@ class User:
 
     def getPassword(self):
         return self.__password
+
+    def getPoints(self):
+        return self.__points
+
+    def getTier(self):
+        return self.__tier
 
 
 class TrackedPlace:
@@ -148,14 +162,14 @@ class Preferences:
 
 class SignedPlace:
     def __init__(self, id, address, unitNo, shopName, organization, points, checkpoint, discount):
-        self.__id = id
+        self.__id = str(id)
         self.__address = address
         self.__unitNo = unitNo
         self.__shopName = shopName
         self.__organization = organization
         self.__points = points
         self.__checkpoint = checkpoint
-        self.__discount = discount
+        self.__discount = float(discount)
 
     def setAddress(self, address):
         self.__address = address
@@ -210,4 +224,4 @@ class SignedPlace:
                 "organization": self.getOrganization(),
                 "points": self.getPoints(),
                 "checkpoint": self.getCheckpoint(),
-                "discount": float(self.getDiscount())}
+                "discount": self.getDiscount()}

@@ -1,12 +1,14 @@
 from DbContext import MySql
+from DbContext import MongoDBContext
 from Model import SignedPlace
+from bson.objectid import ObjectId
 
 
 class SignedPlacesCon:
     __connection = None
 
     def __init__(self):
-        self.__connection = MySql.Connect()["PartneredPlaces"]
+        self.__connection = MongoDBContext.Connect()["PartneredPlaces"]
 
     def GetShopInfo(self, id):
         # cursor = self.__connection.cursor()
@@ -17,9 +19,9 @@ class SignedPlacesCon:
         # if shop is not None:
         #     return SignedPlace(shop[0], shop[1], shop[2], shop[3], shop[4], shop[5], shop[6], shop[7])
 
-        shop = self.__connection.findOne({"_id": id})
+        shop = self.__connection.find_one({"_id": ObjectId(id)})
         if shop is not None:
-            return SignedPlace(shop["_id"], shop["Address"], shop["UnitNo"], shop["Name"], shop["Organization"], shop["Point"], shop["Checkpoint"], shop["Discount"])
+            return SignedPlace(shop["_id"], shop["Address"], shop["UnitNo"], shop["Name"], shop["Organization"], shop["Points"], shop["Checkpoint"], shop["Discount"])
 
     def ViewListOfPlaces(self, search, sort, order, limit, offset):
         # cursor = self.__connection.cursor()
@@ -41,17 +43,22 @@ class SignedPlacesCon:
         # results = cursor.fetchall()
         # resultDict = [SignedPlace(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7]).dict() for row in results]
         # return resultDict
-
-        whereCondition = {"$or": [{"Id": "/{}/".format(search)}, {"Address": "/{}/".format(search)}, {"UnitNo": "/{}/".format(search)}, 
-                                {"Name": "/{}/".format(search)}, {"Organization": "/{}/".format(search)}, {"Points": "/{}/".format(search)}] }
+        whereCondition = {}
+        if search:
+            whereCondition = {"$or": [{"_id": "/{}/".format(search)}, {"Address": "/{}/".format(search)}, {"UnitNo": "/{}/".format(search)}, 
+                                    {"Name": "/{}/".format(search)}, {"Organization": "/{}/".format(search)}, {"Points": "/{}/".format(search)}] }
         
+        signedPlaces = []
         order = -1
-        if sort:
+        if sort is not None:
             if order is not None and order == "desc":
                 order = 1 
         
-        signedPlaces = self.__connection.find({whereCondition}).sort(sort, order).limit(int(limit)).skip(int(offset) * int(limit))
-        resultDict = [SignedPlace(row["_id"], row["Address"], row["UnitNo"], row["Name"], row["Organization"], row["Point"], row["Checkpoint"], row["Discount"]).dict() for row in signedPlaces]
+            signedPlaces = self.__connection.find(whereCondition).sort({sort: order}).limit(int(limit)).skip(int(offset) * int(limit))
+        else:
+            signedPlaces = self.__connection.find(whereCondition).limit(int(limit)).skip(int(offset) * int(limit))
+        print(signedPlaces)
+        resultDict = [SignedPlace(row["_id"], row["Address"], row["UnitNo"], row["Name"], row["Organization"], row["Points"], row["Checkpoint"], row["Discount"]).dict() for row in signedPlaces]
         return resultDict
 
     def CreateEntry(self, shopInfo):
@@ -72,8 +79,9 @@ class SignedPlacesCon:
             self.__connection.insert_one({"Address": shopInfo.getAddress(), "UnitNo": shopInfo.getUnitNo(), 
                                         "Name": shopInfo.getShopName(), "Organization": shopInfo.getOrganization(), 
                                         "Points": shopInfo.getPoints(), "Checkpoint": shopInfo.getCheckpoint(), 
-                                        "Discount": shopInfo.getDiscount()})
+                                        "Discount": float(shopInfo.getDiscount())})
         except Exception as e:
+            print(e)
             return {"success": False, "error": "Such location is already registered"}
 
         return {"success": True}
@@ -97,7 +105,7 @@ class SignedPlacesCon:
         # return {"success": True}
 
         try:
-            self.__connection.update_one({"_id": shopInfo.getId()}, 
+            self.__connection.update_one({"_id": ObjectId(shopInfo.getId())}, 
                                             {"$set": 
                                                 {
                                                     "Address": shopInfo.getAddress(), "UnitNo": shopInfo.getUnitNo(), 
@@ -128,7 +136,7 @@ class SignedPlacesCon:
 
         # return {"success": True}
         try:
-            self.__connection.delete_one({"_id": shopId})
+            self.__connection.delete_one({"_id": ObjectId(shopId)})
         except Exception as e:
             return {"success": False, "error": "An error occurred removing the place"}
         

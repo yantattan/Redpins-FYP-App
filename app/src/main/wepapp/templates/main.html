@@ -127,7 +127,8 @@
             navigator.geolocation.getCurrentPosition(showRoute);
 
             navigator.geolocation.watchPosition(showPosition, positioningError, {
-                timeout: 1000
+                timeout: 1000,
+                enableHighAccuracy: true
             });
         } 
     }

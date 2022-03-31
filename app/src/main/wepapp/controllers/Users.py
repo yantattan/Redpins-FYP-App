@@ -1,5 +1,6 @@
 import random
 import string
+import csv
 from DbContext import MySql
 from DbContext import MongoDBContext
 import hashlib
@@ -69,7 +70,9 @@ class UserCon:
                     "DateOfBirth": str(user.getDateOfBirth()), 
                     "Contact": str(user.getContact()),
                     "Password": passwordHash, 
-                    "PasswordSalt": passwordSalt
+                    "PasswordSalt": passwordSalt,
+                    "Points": user.getPoints(),
+                    "Tier": user.getTier()
                 })
                 return {"success": True}
 
@@ -131,16 +134,19 @@ class UserCon:
         # cursor.close()
 
         category = preferences.getCategory()
+        dbPref = {}
         try:
             userInfo = self.__connection.find_one({"_id": preferences.getUserId()})
             try:
-                preferences = userInfo["Preferences"]
-                preferences[category] = preferences.getPreferences()
+                dbPref = userInfo["Preferences"]
+                dbPref[category] = preferences.getPreferences()
             except KeyError:
-                preferences = {category: preferences.getPreferences()}
+                dbPref = {category: preferences.getPreferences()}
 
-            self.__connection.update_one({"_id": userInfo}, {"$set": {"Preferences": preferences.getPreferences()}})
+            print("Here")
+            self.__connection.update_one({"_id": preferences.getUserId()}, {"$set": {"Preferences": dbPref}})
         except Exception as e:
+            print(e)
             print("An error occurred reseting entries for preferences")
     
     def GetPreferences(self, userId, category):
@@ -171,7 +177,6 @@ class UserCon:
         # cursor.close()
         print("Hello")
 
-
     def GetUserPointsInfo(self, userId):
         # cursor = self.__connection.cursor()
         # cursor.execute('SELECT * FROM UserPoints WHERE UserId = {};'
@@ -182,7 +187,6 @@ class UserCon:
         userInfo = self.__connection.find_one({"_id": userId})
         if userInfo is not None:
             return UserPoints(userId, userInfo.get("Points") or 0, userInfo.get("Tier") or "Bronze")
-
 
     def SetPoints(self, userId, points):
         # cursor = self.__connection.cursor()
@@ -200,7 +204,6 @@ class UserCon:
         except Exception as e:
             print(e)
 
-
     def SetTier(self, userId, tier):
         # cursor = self.__connection.cursor()
         # # Update points
@@ -211,3 +214,22 @@ class UserCon:
             self.__connection.update_one({"_id": userId}, {"$set": {"Tier": tier}})
         except Exception as e:
             print(e)      
+
+
+    # Data export csv functions
+    def ExportUserPreferenceCSV(self):
+        path = "csv/dbcsv/userPreference.csv"
+        csvFile = open(path, "w", newline="")
+        csvWriter = csv.writer(csvFile)
+        # Header
+        csvWriter.writerow(["DateOfBirth", "Points", "Tier", "Category", "Preference"])
+
+        allUserInfo = list(self.__connection.find())
+        for i in range(1, len(allUserInfo)):
+            row = allUserInfo[i]
+            preferencesDict = row.get("Preferences") or []
+            for cat in preferencesDict:
+                for pref in preferencesDict[cat]:
+                    csvWriter.writerow([row["DateOfBirth"], row["Points"], row["Tier"], cat, pref])
+
+        return path

@@ -1,21 +1,42 @@
 User [
 	{
-        _id : 1
-	    name: "sth"...
+        _id: 1,
+	    username: "sth",
+        email: "sth@sth.sth",
+        role: "user",
+        dob: "some date",
+        contact: 88888888,
+        password: "some hash"
+        pwdsalt: "sth"
 	    preferences: 
         {
             cuisine: ["cui1", "cui2"...],
-			activity: ["act1", "act2"...]
-		},
+            activity: ["act1", "act2"...]
+        },
         points: 0,
         tier: "Bronze"
 	}
 ]
 
 
+SignedPlaces [
+    {
+        _id: <Obj sth>,
+        address: "sth",
+        unitNo: "sth",
+        name: "sth",
+        organization: "sth",
+        category: "cuisine"
+        points: 20,
+        checkpoint: 200,
+        discount: 12.3
+    }
+]
+
+
 TrackedInfo [
 	{ 
-        _id : <Obj sth>,
+        _id: <Obj sth>,
         address: "sth",
         action: "visited",
         frequency: 2,

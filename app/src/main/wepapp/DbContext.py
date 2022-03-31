@@ -26,7 +26,10 @@ class MongoDBContext:
                                 "DateOfBirth": "2001-01-01", 
                                 "Contact": "00000000", 
                                 "Password": passwordHash,
-                                "PasswordSalt": passwordSalt})
+                                "PasswordSalt": passwordSalt,
+                                "Points": 9999999999,
+                                "Tier": "Diamond"})
+                                
             print("Root account has been created")
         except Exception:
             print("Root account in database")

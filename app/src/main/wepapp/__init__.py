@@ -1,36 +1,40 @@
-from urllib import response
 from urllib.error import HTTPError
 from flask import Flask, render_template, request, redirect, url_for, session, flash, send_file
-from datetime import datetime, timedelta, date
-import time, pandas, geocoder, requests, random, string
-import json
+from apscheduler.scheduler import Scheduler
 from io import BytesIO
 
+# Required libraries
+from datetime import datetime, timedelta, date
+import geocoder, requests, random, string, json
+# Machine learning, csv libraries
+import pandas, csv, joblib
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import accuracy_score
 # Email libraries
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-
 # Database modules
 import DbContext
 from helpers.permissionValidator import *
 from Model import *
-from controllers import SignedPlaces, Users, TrackedPlaces, UserPoints, Preferences
-
+from controllers import SignedPlaces, Users, TrackedPlaces, Preferences
 # Qrcode libraries
 from flask_cors import CORS
 import qrcode
 
 app = Flask(__name__)
+cron = Scheduler(daemon=True)
+cron.start()
 CORS(app)
 app.secret_key = "redp1n5Buffer"
 
 # Init all controllers
 userCon = Users.UserCon()
 trackedPlacesCon = TrackedPlaces.TrackedPlacesCon()
-preferencesCon = Preferences.PreferencesCon()
+# preferencesCon = Preferences.PreferencesCon()
 signedPlaceCon = SignedPlaces.SignedPlacesCon()
-userRewardsCon = UserPoints.UserPointsCon()
+# userRewardsCon = UserPoints.UserPointsCon()
 
 
 # Functions to perform before showing the page
@@ -41,7 +45,7 @@ def mainPage():
     # session.pop("current_user", None)
     validateLoggedIn()
     yourLocation = geocoder.ip("me")
-    print(yourLocation.latlng)
+    userCon.ExportUserPreferenceCSV()
 
     if request.method == 'POST':
         return redirect("/")
@@ -80,7 +84,8 @@ def register():
 
     if request.method == 'POST':
         if register_form.validate():
-            userModel = User(register_form.username.data, register_form.email.data, "User", register_form.dateOfBirth.data, register_form.contact.data, register_form.password.data)
+            userModel = User(register_form.username.data, register_form.email.data, "User", register_form.dateOfBirth.data, 
+                            register_form.contact.data, register_form.password.data, 0, "Bronze")
             registerResponse = userCon.Register(userModel)
             print(registerResponse)
             if registerResponse.get("error"):
@@ -188,7 +193,7 @@ def adminCreatePlace():
     else:
         return render_template("admin/createSignedPlace.html", form=signedPlaceForm)
 
-@app.route("/admin/signedPlaces/update/<int:id>", methods=['GET', 'POST'])
+@app.route("/admin/signedPlaces/update/<string:id>", methods=['GET', 'POST'])
 def adminUpdatePlace(id):
     validateAdmin()
     signedPlaceForm = SignedPlaceForm(request.form)
@@ -209,20 +214,23 @@ def adminUpdatePlace(id):
 
     else:
         placeInfo = signedPlaceCon.GetShopInfo(id)
-        signedPlaceForm.address.data = placeInfo.getAddress()
-        signedPlaceForm.unitNo.data = placeInfo.getUnitNo()
-        signedPlaceForm.shopName.data = placeInfo.getShopName()
-        signedPlaceForm.organization.data = placeInfo.getOrganization()
-        signedPlaceForm.points.data = placeInfo.getPoints()
-        signedPlaceForm.checkpoint.data = placeInfo.getCheckpoint()
-        signedPlaceForm.discount.data = placeInfo.getDiscount()
+        if placeInfo is not None:
+            signedPlaceForm.address.data = placeInfo.getAddress()
+            signedPlaceForm.unitNo.data = placeInfo.getUnitNo()
+            signedPlaceForm.shopName.data = placeInfo.getShopName()
+            signedPlaceForm.organization.data = placeInfo.getOrganization()
+            signedPlaceForm.points.data = placeInfo.getPoints()
+            signedPlaceForm.checkpoint.data = placeInfo.getCheckpoint()
+            signedPlaceForm.discount.data = placeInfo.getDiscount()
 
-        return render_template("admin/createSignedPlace.html", form=signedPlaceForm)
+            return render_template("admin/createSignedPlace.html", form=signedPlaceForm)
 
-@app.route("/admin/signedPlaces/delete/<int:id>")
+        return redirect("/admin/signedPlaces")
+
+@app.route("/admin/signedPlaces/delete/<string:id>")
 def adminDeletePlace(id):
     validateAdmin()
-    response = signedPlaceCon.DeleteEntry(id)
+    signedPlaceCon.DeleteEntry(id)
     return redirect("/admin/signedPlaces")
 
 
@@ -261,6 +269,20 @@ def getpoints():
 
 # AJAX CALLS
 # Reward points -- Assign rewards point (Udhaya)
+@app.route("/funcs/recommend-destination/itinerary")
+def recommendDestination():
+    # Get file and csv writer
+    # csvFile = open("csv/dbscv/music.csv", "w", newline="")
+    # csvWriter = csv.writer(csvFile)
+    # csvWriter.writerow(("Hello1", 1, 2))
+    # csvWriter.writerow(("Hell2", 2, 3))
+    data = pandas.read_csv("csv/dbcsv/music.csv")
+    inp = data.drop(columns=['genre'])
+    oup = data['genre']
+    print(inp, "\n", oup)
+
+    model = DecisionTreeClassifier()
+
 @app.route("/funcs/reached-place/", methods=['GET', 'POST'])
 def reachedPlace():
     # Placeholder returned data
@@ -305,6 +327,28 @@ def usePoints():
     return 
 
 
+# Scheduled tasks to run every week - Web scrap, training of data models
+@cron.cron_schedule(day_of_week="3", hour="3")
+def scheduledJobs():
+    def trainModel():
+        path = userCon.ExportUserPreferenceCSV()
+        data = pandas.read_csv(path)
+        inp = data.drop(columns=['Preference'])
+        oup = data['Preference']
+
+        model = DecisionTreeClassifier()
+        model.fit(inp, oup)
+
+        joblib.dump(model, "csv/dbcsv/globalUserPreference.joblib") # Saves the trained model as a file
+        newModel = joblib.load("csv/dbcsv/globalUserPreference.joblib") # Loads the model file in
+        print(model.predict([ [21, 1], [30, 0] ]))
+        print("I am training the model")
+
+    def webScrap():
+        print("I am web scrapping")
+    
+    trainModel()
+    webScrap()
 # Error pages handling
 # @app.errorhandler(403)
 # def forbidden_error(error):
