@@ -1,51 +1,48 @@
 from urllib.error import HTTPError
-from flask import Flask, render_template, request, redirect, url_for, session, flash
-from datetime import datetime, timedelta, date
-import pandas, geocoder, requests, random
-import json
+from flask import Flask, render_template, request, redirect, url_for, session, flash, send_file
+from apscheduler.scheduler import Scheduler
+from io import BytesIO
 
+# Required libraries
+from datetime import datetime, timedelta, date
+import geocoder, requests, random, string, json, geopy.distance
+# Machine learning, csv libraries
+import pandas, csv, joblib
+from sklearn import preprocessing
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import accuracy_score
+from sklearn.model_selection import train_test_split
+# Email libraries
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+# Database modules
 import DbContext
 from helpers.permissionValidator import *
 from Model import *
-from controllers import SignedPlaces, Users, TrackedPlaces, UserPoints, Preferences
+from controllers import MachineLearningReports, SignedPlaces, Users, TrackedPlaces, PlacesBonusCodes
+# Qrcode libraries
+from flask_cors import CORS
+import qrcode
 
 app = Flask(__name__)
+cron = Scheduler(daemon=True)
+cron.start()
+CORS(app)
 app.secret_key = "redp1n5Buffer"
+apiKey = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjg1NDQsInVzZXJfaWQiOjg1NDQsImVtYWlsIjoieWFudGF0dGFuNzIxQGdtYWlsLmNvbSIsImZvcmV2ZXIiOmZhbHNlLCJpc3MiOiJodHRwOlwvXC9vbTIuZGZlLm9uZW1hcC5zZ1wvYXBpXC92MlwvdXNlclwvc2Vzc2lvbiIsImlhdCI6MTY0ODQ0NTM1NCwiZXhwIjoxNjQ4ODc3MzU0LCJuYmYiOjE2NDg0NDUzNTQsImp0aSI6IjBkYWIzYTIyMDIwMmYxZDA5YzJhYmMxYjEyZjk0M2RhIn0.ygc_daPpwuKKaMqR1MHLVVKBCOtO9cYtGdAnLALGlGI"
 
 # Init all controllers
 userCon = Users.UserCon()
 trackedPlacesCon = TrackedPlaces.TrackedPlacesCon()
-preferencesCon = Preferences.PreferencesCon()
 signedPlaceCon = SignedPlaces.SignedPlacesCon()
-userRewardsCon = UserPoints.UserPointsCon()
+machineLearningReportCon = MachineLearningReports.MachineLearningReportCon()
+placesBonusCodesCon = PlacesBonusCodes.PlacesBonusCodesCon()
 
 
-def initOneMapAPI(yourLocation):
-    address = "336B street Geylang St 69"
-
-    # Append address and get the coordinates of the location
-    location = ",".join([str(x) for x in yourLocation])
-    today = datetime.today()
-    print(location)
-    routingJson = requests.get("https://developers.onemap.sg/privateapi/routingsvc/route?"
-                               "start=" + location + "&"
-                                                     "end=1.319728905,103.8421581&"
-                                                     "routeType=walk&"
-                                                     "token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjg1NDQsInVzZXJfaWQiOjg1NDQsImVtYWlsIjoieWFudGF0dGFuNzIxQGdtYWlsLmNvbSIsImZvcmV2ZXIiOmZhbHNlLCJpc3MiOiJodHRwOlwvXC9vbTIuZGZlLm9uZW1hcC5zZ1wvYXBpXC92MlwvdXNlclwvc2Vzc2lvbiIsImlhdCI6MTY0NzQxMTA0NSwiZXhwIjoxNjQ3ODQzMDQ1LCJuYmYiOjE2NDc0MTEwNDUsImp0aSI6ImJjNTBmNzFlOWZmOTYyMWE3NThiNjRkOGE0OGFiMTk0In0.lSAYegznUtlA36wrOkIMVNWTvOUzkxIh7KdjLwO6FbM&"
-                                                     "date=" + today.strftime("%Y-%m-%d") + "&"
-                                                                                            "time=" + today.strftime(
-        "%H:%M:%S") + "&"
-                      "mode=TRANSIT")
-    resultsdict = json.loads(routingJson.text)
-    text_file = open("transitJson.txt", "w")
-    n = text_file.write(json.dumps(resultsdict, indent=4))
-    text_file.close()
-
-    # if len(resultsdict['results']) > 0:
-    #     return resultsdict['results'][0]['LATITUDE'], resultsdict['results'][0]['LONGITUDE']
-    # else:
-    #     pass
-
+# preferencesCon = Preferences.PreferencesCon()
+# userRewardsCon = UserPoints.UserPointsCon()
 
 # Functions to perform before showing the page
 @app.route("/", methods=['GET', 'POST'])
@@ -55,8 +52,9 @@ def mainPage():
     # session.pop("current_user", None)
     validateLoggedIn()
     yourLocation = geocoder.ip("me")
-    print(yourLocation.latlng)
-    initOneMapAPI(yourLocation.latlng)
+    userCon.ExportGlobalUserPreferenceCSV()
+    scheduledJobs()
+
     if request.method == 'POST':
         return redirect("/")
     # For functions to perform before loading of site
@@ -95,8 +93,10 @@ def register():
     if request.method == 'POST':
         if register_form.validate():
             userModel = User(register_form.username.data, register_form.email.data, "User",
-                             register_form.dateOfBirth.data, register_form.contact.data, register_form.password.data)
+                             register_form.dateOfBirth.data,
+                             register_form.contact.data, register_form.password.data, 0, "Bronze")
             registerResponse = userCon.Register(userModel)
+            print(registerResponse)
             if registerResponse.get("error"):
                 return render_template("accounts/register.html", form=register_form, error=registerResponse["error"])
             else:
@@ -107,6 +107,47 @@ def register():
     return render_template("accounts/register.html", form=register_form)
 
 
+@app.route("/forgetPassword", methods=['GET', 'POST'])
+def forgetPassword():
+    forget_password_form = ForgetPasswordForm(request.form)
+
+    if request.method == 'POST' and forget_password_form.validate():
+        # Generate random string of characters
+        newPassword = "".join(
+            random.choice(string.ascii_uppercase + string.ascii_lowercase + string.digits) for _ in range(12))
+
+        # Reset password
+        result = userCon.ChangePassword(session['current_user']['userId'], newPassword)
+        if result.get("success"):
+            # Create email to send new password
+            mailFrom = "redpinsbuffer@gmail.com"
+            mailTo = forget_password_form.email.data
+            msg = MIMEMultipart('alternative')
+            msg['Subject'] = "Change of password"
+            msg['From'] = mailFrom
+            msg['To'] = mailTo
+            emailBody = '<div class="container text-center">' \
+                        '<h1>Redpins Buffer</h1>' \
+                        '<p>Your password has been reset:</p>' \
+                        '<p><b>{}</b></p>' \
+                        '</div>'.format(newPassword)
+
+            msg.attach(MIMEText(emailBody, "html"))
+
+            mail = smtplib.SMTP('smtp.gmail.com', 587)
+            mail.ehlo
+            mail.starttls()
+            mail.login('Redpins Buffer', 'redpinsP@ssw0rd')
+            mail.sendmail(mailFrom, mailTo, msg.as_string())
+            mail.quit()
+
+            return redirect("/login")
+
+        return render_template("accounts/forgetPassword.html", form=forget_password_form, error="An error occurred")
+
+    return render_template("accounts/forgetPassword.html", form=forget_password_form)
+
+
 # Preferences backend -- Send pref to db (Daoying)
 @app.route("/preferences/1", methods=['GET', 'POST'])
 def pref1():
@@ -115,12 +156,54 @@ def pref1():
         category = "Cuisine"
         allPrefs = request.form.getlist("preferences[]")
         pref = Preferences.Preferences(session["current_user"]["userId"], allPrefs, category)
-        preferencesCon.setPreferences(pref)
+        # preferencesCon.setPreferences(pref)
+        userCon.SetPreferences(pref)
         print(allPrefs)
         return redirect("/preferences/2")
     else:
         print("Hello")
     return render_template("preferences/preference1.html")
+
+
+def getpoints(isBonus):
+    Utier = {"Bronze": 1, "Silver": 1.1, "Gold": 1.2, "Diamond": 1.5}
+    Uid = session["current_user"]["userId"]
+    result = {"shopName": "MARINA BAY SANDS", "address": "1 BAYFRONT AVENUE MARINA BAY SANDS SINGAPORE 018971"}
+    result2 = signedPlaceCon.GetShopInfo(result["address"])
+    points = 10
+    if isBonus:
+        points = result2.getPoints()
+    result3 = userCon.GetUserPointsInfo(Uid)
+    uTierMultiplier = Utier.get(result3.getTier())
+    uPoints = result3.getPoints()
+    total_pts_earned = points * uTierMultiplier
+    new_upoints = total_pts_earned + uPoints
+    userCon.SetPoints(Uid, new_upoints)
+
+    def UpdateTier():
+        OldRank = result3.getTier()
+        NewRank = " "
+        if 400 <= new_upoints < 2000:
+            NewRank = "Silver"
+        elif 2000 <= new_upoints < 5000:
+            NewRank = "Gold"
+        elif new_upoints >= 5000:
+            NewRank = "Diamond"
+
+        userCon.SetTier(Uid, NewRank)
+        return json.dumps({"OldRank": OldRank, "NewRank": NewRank, "OldPoints": uPoints, "NewPoints": new_upoints})
+
+    UpdateTier()
+
+
+@app.route("/qr-scanner")
+def scanQR():
+    return render_template("qrSites/qrScanner.html")
+
+
+@app.route("/qrCode/claim-bonus/<string:id>")
+def qrCodeClaimBonus(id):
+    print("Test")
 
 
 # ADMIN SITES
@@ -137,8 +220,9 @@ def adminCreatePlace():
     if request.method == 'POST':
         if signedPlaceForm.validate():
             signedPlace = SignedPlaces.SignedPlace(None, signedPlaceForm.address.data, signedPlaceForm.unitNo.data,
-                                                   signedPlaceForm.shopName.data,
-                                                   signedPlaceForm.organization.data, signedPlaceForm.points.data)
+                                                   signedPlaceForm.shopName.data, signedPlaceForm.organization.data,
+                                                   signedPlaceForm.points.data,
+                                                   signedPlaceForm.checkpoint.data, signedPlaceForm.discount.data)
             response = signedPlaceCon.CreateEntry(signedPlace)
 
             if response.get("success"):
@@ -152,15 +236,16 @@ def adminCreatePlace():
         return render_template("admin/createSignedPlace.html", form=signedPlaceForm)
 
 
-@app.route("/admin/signedPlaces/update/<int:id>", methods=['GET', 'POST'])
+@app.route("/admin/signedPlaces/update/<string:id>", methods=['GET', 'POST'])
 def adminUpdatePlace(id):
     validateAdmin()
     signedPlaceForm = SignedPlaceForm(request.form)
     if request.method == 'POST':
         if signedPlaceForm.validate():
             signedPlace = SignedPlaces.SignedPlace(id, signedPlaceForm.address.data, signedPlaceForm.unitNo.data,
-                                                   signedPlaceForm.shopName.data,
-                                                   signedPlaceForm.organization.data, signedPlaceForm.points.data)
+                                                   signedPlaceForm.shopName.data, signedPlaceForm.organization.data,
+                                                   signedPlaceForm.points.data,
+                                                   signedPlaceForm.checkpoint.data, signedPlaceForm.discount.data)
             response = signedPlaceCon.UpdateEntry(signedPlace)
             print(response)
 
@@ -173,39 +258,60 @@ def adminUpdatePlace(id):
 
     else:
         placeInfo = signedPlaceCon.GetShopInfo(id)
-        signedPlaceForm.address.data = placeInfo.getAddress()
-        signedPlaceForm.unitNo.data = placeInfo.getUnitNo()
-        signedPlaceForm.shopName.data = placeInfo.getShopName()
-        signedPlaceForm.organization.data = placeInfo.getOrganization()
-        signedPlaceForm.points.data = placeInfo.getPoints()
+        if placeInfo is not None:
+            signedPlaceForm.address.data = placeInfo.getAddress()
+            signedPlaceForm.unitNo.data = placeInfo.getUnitNo()
+            signedPlaceForm.shopName.data = placeInfo.getShopName()
+            signedPlaceForm.organization.data = placeInfo.getOrganization()
+            signedPlaceForm.points.data = placeInfo.getPoints()
+            signedPlaceForm.checkpoint.data = placeInfo.getCheckpoint()
+            signedPlaceForm.discount.data = placeInfo.getDiscount()
 
-        return render_template("admin/createSignedPlace.html", form=signedPlaceForm)
+            return render_template("admin/createSignedPlace.html", form=signedPlaceForm)
+
+        return redirect("/admin/signedPlaces")
 
 
-@app.route("/admin/signedPlaces/delete/<int:id>")
+@app.route("/admin/signedPlaces/delete/<string:id>")
 def adminDeletePlace(id):
     validateAdmin()
-    response = signedPlaceCon.DeleteEntry(id)
+    signedPlaceCon.DeleteEntry(id)
     return redirect("/admin/signedPlaces")
+
+
+@app.route("/admin/signedPlaces/registerPurchase/<string:id>")
+def adminRegisterPurchase(id):
+    validatePlaceAdmin()
+
+    placesBonusCodesCon.GenerateCode(id)
 
 
 # AJAX CALLS
 # Reward points -- Assign rewards point (Udhaya)
+@app.route("/funcs/recommend-destination/itinerary", methods=['POST'])
+def recommendDestination():
+    if request.method == 'POST':
+        startCoords = request.form.get("startCoords")
+        timeAllowance = request.form.get("timeAllowance")
+        category = request.form.get("category")
+
+        placesList = json.loads(
+            "https://developers.onemap.sg/privateapi/themesvc/retrieveTheme?queryName={}&token={}".format(category,
+                                                                                                          apiKey))
+        if placesList.get("SrchResults") is not None:
+            for place in placesList["SrchResults"]:
+                # Find according to furthest distance possible (a and b distance)
+                placeLatlng = place["LatLng"].split(",")
+                aDist = geopy.distance.distance((startCoords.latitude, 0), (placeLatlng[0], 0))
+                bDist = geopy.distance.distance((0, startCoords.longitutde), (0, placeLatlng[1]))
+                furDist = aDist + bDist
+
+
+# Reward points -- Assign rewards point (Udhaya)
 @app.route("/funcs/reached-place/", methods=['GET', 'POST'])
 def reachedPlace():
     # Placeholder returned data
-    Utier = {"bronze": 1, "silver": 1.1, "gold": 1.2, "platinum": 1.3, "diamond": 1.5}
-    Uid = session["current_user"]["userId"]
-    result = {"shopName":"MARINA BAY SANDS", "address": "1 BAYFRONT AVENUE MARINA BAY SANDS SINGAPORE 018971"}
-    result2 = signedPlaceCon.getShopInfo()
-    points = result2.getPoints()
-    result3 = userRewardsCon.GetUserPointsInfo(Uid)
-    uTierMultiplier = Utier.get(result3.getTier())
-    uPoints = result3.getPoints()
-    total_pts_earned = points*uTier
-    new_upoints = total_pts_earned + uPoints
-    userRewardsCon.SetPoints(Uid, new_upoints)
-    return {"success": True}
+    getpoints(False)
 
 
 def trackPlaces(places, storeMean):
@@ -233,6 +339,70 @@ def tableGetSignedPlaces():
     resultDict = signedPlaceCon.ViewListOfPlaces(args.get("search"), args.get("sort"), args.get("order"),
                                                  args.get("limit"), args.get("offset"))
     return json.dumps(resultDict)
+
+
+@app.route("/funcs/generate-arrival-qrcode", methods=['POST'])
+def genQRCode():
+    buffer = BytesIO()
+    data = request.form.get("data")
+
+    img = qrcode.make(data)
+    img.save(buffer)
+    buffer.seek(0)
+
+    response = send_file(buffer, mimetype='image/png')
+    return response
+
+
+@app.route("/funcs/use-points", methods=['POST'])
+def usePoints():
+    return
+
+
+# Scheduled tasks to run every week - Web scrap, training of data models
+@cron.cron_schedule(day_of_week="3", hour="3")
+def scheduledJobs():
+    # Encode label strings
+    def encodeColumns(data):
+        le = preprocessing.LabelEncoder()
+        for column_name in data.columns:
+            if data[column_name].dtype == object:
+                data[column_name] = le.fit_transform(data[column_name])
+
+        return data
+
+    def trainGlobalUserPreferenceModel():
+        print("I am training the model")
+        path = userCon.ExportGlobalUserPreferenceCSV()  # Supply the new data in db to the csv files
+        data = encodeColumns(pandas.read_csv(path))
+
+        inp = data.drop(columns=['Preference'])
+        oup = data['Preference']
+
+        # Usage of K-Neighbours algorithm - Many overlaps
+        model = KNeighborsClassifier()
+
+        # Calculating average accuracy of current model
+        model.fit(inp.values, oup)
+        meanAccuracyScore = 0
+        for i in range(1, 6):
+            inp_train, inp_test, oup_train, oup_test = train_test_split(inp, oup, test_size=0.2)
+            model.fit(inp_train, oup_train)
+            predictions = model.predict(inp_test)
+            print(accuracy_score(oup_test, predictions))
+        meanAccuracyScore /= 5
+
+        # Saving the model and accuracy results
+        model.fit(inp, oup)
+        joblib.dump(model, "csv/dbcsv/global-users-preferences.joblib")  # Saves the newly trained model as a file
+        machineLearningReportCon.SetData(MachineLearningReport("GlobalUserPreferences", "Accuracy",
+                                                               meanAccuracyScore))  # Save the accuracy score to db
+
+    def webScrap():
+        print("I am web scrapping")
+
+    trainGlobalUserPreferenceModel()
+    webScrap()
 
 
 # Error pages handling
