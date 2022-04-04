@@ -1,3 +1,4 @@
+import numpy
 import pandas
 from sklearn import tree
 from sklearn.tree import DecisionTreeClassifier
@@ -18,6 +19,9 @@ oup = data['genre']
 model = DecisionTreeClassifier()
 model.fit(inp.values, oup)
 print(model.predict([ [21, 1], [30, 0] ]))
+# Predict top 3 values
+predict_proba = model.predict_proba([21, 1])
+best_3 = numpy.argsort(predict_proba, axis=1)[:,-3:]
 
 
 # Measure accuracy and training sample size

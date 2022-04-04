@@ -15,7 +15,7 @@
     
     <input type="text" id="searchBar" onkeyup="pauseSearch()">
     <div id="searchPage">1</div>
-    <button id="searchNextPageBtn">Next page</button>
+    <button id="searchNextPageBtn" onclick="searchNextPage()">Next page</button>
     <div id="searchResults"></div>
 </div>
 
@@ -31,65 +31,12 @@
     //     }});
     // }
 
-    var canSearch = true;
-    var apiToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjg1NDQsInVzZXJfaWQiOjg1NDQsImVtYWlsIjoieWFudGF0dGFuNzIxQGdtYWlsLmNvbSIsImZvcmV2ZXIiOmZhbHNlLCJpc3MiOiJodHRwOlwvXC9vbTIuZGZlLm9uZW1hcC5zZ1wvYXBpXC92MlwvdXNlclwvc2Vzc2lvbiIsImlhdCI6MTY0ODQ0NTM1NCwiZXhwIjoxNjQ4ODc3MzU0LCJuYmYiOjE2NDg0NDUzNTQsImp0aSI6IjBkYWIzYTIyMDIwMmYxZDA5YzJhYmMxYjEyZjk0M2RhIn0.ygc_daPpwuKKaMqR1MHLVVKBCOtO9cYtGdAnLALGlGI";
     
-    function getLocation() {
-        if (navigator.geolocation) {
-            return navigator.geolocation.getCurrentPosition(showPosition);
-        } 
-    }
-
-    $("#searchNextPageBtn").click(function() {
-        $("#searchPage").text(parseInt($("#searchPage").text()) + 1)
-    })
-
-    $("#search")
-
-    function pauseSearch() {
-        canSearch = false;
-        setTimeout(function() {
-            canSearch = true;
-            search()
-        }, 1000)
-    }
-
-    function search() {
-        if (canSearch) {
-            const search = $("#searchBar").val()
-            const pageNum = $("#searchPage").val()
-            if (!search) {
-                $("#searchResults").text("Will show maybe some recommended places");
-            }
-            else {
-                $.ajax({
-                url: `https://developers.onemap.sg/commonapi/search?searchVal=${search}&returnGeom=Y&getAddrDetails=Y&pageNum=${pageNum}`,
-                success: function(result) {
-                    //Set result to a variable for writing
-                    var resultstr = JSON.stringify(result);
-                    $("#searchResults").text(resultstr);
-                }});
-            }
-            
-        }       
-    } 
-
-    function submitRecommendedPlaces() {
-        $.ajax({
-            type: "POST",   
-            url: `/funcs/post-places/`,
-            data: {
-                start: getLocation.coords,
-                storeMean: "itinerary",
-                destinations: [{latitude: 1.2834542, longitude: 103.8608090, address: "1 BAYFRONT AVENUE MARINA BAY SANDS SINGAPORE 018971"}]
-            }
-        });
-    }
 </script>
 
 <script>
     // Map display init
-    var apiToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjg1NDQsInVzZXJfaWQiOjg1NDQsImVtYWlsIjoieWFudGF0dGFuNzIxQGdtYWlsLmNvbSIsImZvcmV2ZXIiOmZhbHNlLCJpc3MiOiJodHRwOlwvXC9vbTIuZGZlLm9uZW1hcC5zZ1wvYXBpXC92MlwvdXNlclwvc2Vzc2lvbiIsImlhdCI6MTY0ODQ0NTM1NCwiZXhwIjoxNjQ4ODc3MzU0LCJuYmYiOjE2NDg0NDUzNTQsImp0aSI6IjBkYWIzYTIyMDIwMmYxZDA5YzJhYmMxYjEyZjk0M2RhIn0.ygc_daPpwuKKaMqR1MHLVVKBCOtO9cYtGdAnLALGlGI";
+    var apiToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjg1NDQsInVzZXJfaWQiOjg1NDQsImVtYWlsIjoieWFudGF0dGFuNzIxQGdtYWlsLmNvbSIsImZvcmV2ZXIiOmZhbHNlLCJpc3MiOiJodHRwOlwvXC9vbTIuZGZlLm9uZW1hcC5zZ1wvYXBpXC92MlwvdXNlclwvc2Vzc2lvbiIsImlhdCI6MTY0OTAzNzU3NywiZXhwIjoxNjQ5NDY5NTc3LCJuYmYiOjE2NDkwMzc1NzcsImp0aSI6IjczZWM5ODM4ZmZjNmJkM2I3YWViNzEzMjNjZjM2YmVjIn0.baBuTC8AbXu8kPKWvTumTgkpqDpbjVCfAhcm7kaO9-Y";
     L.Icon.Default.imagePath = "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.4.0/images";
     var center = L.bounds([1.56073, 104.11475], [1.16, 103.502]).getCenter();
     var map = L.map('mapdiv').setView([center.x, center.y], 12);
@@ -113,7 +60,7 @@
     var basemap = L.tileLayer(`http://maps-{s}.onemap.sg/v2/Default/{z}/{x}/{y}.png`, {
         detectRetina: true,
         maxZoom: 19,
-        minZoom: 12
+        minZoom: 11
     });
 
     map.setMaxBounds([[1.56073, 104.1147], [1.16, 103.502]]);
@@ -171,6 +118,7 @@
                 }
         }
 
+        console.log(`https://developers.onemap.sg/privateapi/routingsvc/route?start=${position.coords.latitude},${position.coords.longitude}&end=${endCoords[0]},${endCoords[1]}&routeType=${routeType}&token=${apiToken}&date=${String(today.getFullYear())}-${String(today.getMonth()+1)}-${String(today.getDate())}&time=${String(today.getHours())}:${String(today.getMinutes())}:${String(today.getSeconds())}&mode=TRANSIT`)
         $.ajax({
             url: `https://developers.onemap.sg/privateapi/routingsvc/route?start=${position.coords.latitude},${position.coords.longitude}&end=${endCoords[0]},${endCoords[1]}&routeType=${routeType}&token=${apiToken}&date=${String(today.getFullYear())}-${String(today.getMonth()+1)}-${String(today.getDate())}&time=${String(today.getHours())}:${String(today.getMinutes())}:${String(today.getSeconds())}&mode=TRANSIT`,
             success: function(result) {
@@ -254,6 +202,60 @@
         }
     }
     
+    var canSearch = true;
+
+    function pauseSearch() {
+        canSearch = false;
+        setTimeout(function() {
+            canSearch = true;
+            search()
+        }, 1000)
+    }
+
+    function search() {
+        if (canSearch) {
+            const search = $("#searchBar").val()
+            const pageNum = $("#searchPage").val()
+            if (!search) {
+                $("#searchResults").text("Will show maybe some recommended places");
+            }
+            else {
+                $.ajax({
+                url: `https://developers.onemap.sg/commonapi/search?searchVal=${search}&returnGeom=Y&getAddrDetails=Y&pageNum=${pageNum}`,
+                success: function(result) {
+                    //Set result to a variable for writing
+                    var resultstr = JSON.stringify(result);
+                    $("#searchResults").text(resultstr);
+                }});
+            }
+            
+        }       
+    } 
+
+    function searchNextPage() {
+        $("#searchPage").text(parseInt($("#searchPage").text()) + 1)
+    }
+
+    function submitRecommendedPlaces() {
+        $.ajax({
+            type: "POST",   
+            url: `/funcs/recommend-destination/itinerary`,
+            data: {
+                startCoords: getLocation(),
+                timeAllowance: 120,
+                category: "healthierdining",
+                transportMode: "pt"
+            }
+        });
+    }
+
+    function recommendDestination() {
+        $.ajax({
+            type: "POST",
+            url: `/funcs/`
+        })
+    }
+
     // Do something with latlngs
     getLocation();
 </script>

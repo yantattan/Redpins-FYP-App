@@ -1,15 +1,20 @@
+from time import strftime
 from urllib.error import HTTPError
+from cv2 import split
 from flask import Flask, render_template, request, redirect, url_for, session, flash, send_file
 from apscheduler.scheduler import Scheduler
 from io import BytesIO
 
 # Required libraries
 from datetime import datetime, timedelta, date
-import geocoder, requests, random, string, json
+import geocoder, requests, random, string, json, geopy.distance
 # Machine learning, csv libraries
 import pandas, csv, joblib
+from sklearn import preprocessing
+from sklearn.neighbors import KNeighborsClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import accuracy_score
+from sklearn.model_selection import train_test_split 
 # Email libraries
 import smtplib
 from email.mime.multipart import MIMEMultipart
@@ -18,7 +23,7 @@ from email.mime.text import MIMEText
 import DbContext
 from helpers.permissionValidator import *
 from Model import *
-from controllers import SignedPlaces, Users, TrackedPlaces, Preferences
+from controllers import MachineLearningReports, SignedPlaces, Users, TrackedPlaces, PlacesBonusCodes
 # Qrcode libraries
 from flask_cors import CORS
 import qrcode
@@ -28,14 +33,16 @@ cron = Scheduler(daemon=True)
 cron.start()
 CORS(app)
 app.secret_key = "redp1n5Buffer"
+apiKey = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjg1NDQsInVzZXJfaWQiOjg1NDQsImVtYWlsIjoieWFudGF0dGFuNzIxQGdtYWlsLmNvbSIsImZvcmV2ZXIiOmZhbHNlLCJpc3MiOiJodHRwOlwvXC9vbTIuZGZlLm9uZW1hcC5zZ1wvYXBpXC92MlwvdXNlclwvc2Vzc2lvbiIsImlhdCI6MTY0OTAzNzU3NywiZXhwIjoxNjQ5NDY5NTc3LCJuYmYiOjE2NDkwMzc1NzcsImp0aSI6IjczZWM5ODM4ZmZjNmJkM2I3YWViNzEzMjNjZjM2YmVjIn0.baBuTC8AbXu8kPKWvTumTgkpqDpbjVCfAhcm7kaO9-Y"
 
 # Init all controllers
 userCon = Users.UserCon()
 trackedPlacesCon = TrackedPlaces.TrackedPlacesCon()
-# preferencesCon = Preferences.PreferencesCon()
 signedPlaceCon = SignedPlaces.SignedPlacesCon()
+machineLearningReportCon = MachineLearningReports.MachineLearningReportCon()
+placesBonusCodesCon = PlacesBonusCodes.PlacesBonusCodesCon()
+# preferencesCon = Preferences.PreferencesCon()
 # userRewardsCon = UserPoints.UserPointsCon()
-
 
 # Functions to perform before showing the page
 @app.route("/", methods=['GET', 'POST'])
@@ -45,7 +52,8 @@ def mainPage():
     # session.pop("current_user", None)
     validateLoggedIn()
     yourLocation = geocoder.ip("me")
-    userCon.ExportUserPreferenceCSV()
+    userCon.ExportGlobalUserPreferenceCSV()
+    scheduledJobs()
 
     if request.method == 'POST':
         return redirect("/")
@@ -85,7 +93,7 @@ def register():
     if request.method == 'POST':
         if register_form.validate():
             userModel = User(register_form.username.data, register_form.email.data, "User", register_form.dateOfBirth.data, 
-                            register_form.contact.data, register_form.password.data, 0, "Bronze")
+                            register_form.contact.data, register_form.password.data, 0, 0, "Bronze")
             registerResponse = userCon.Register(userModel)
             print(registerResponse)
             if registerResponse.get("error"):
@@ -155,15 +163,48 @@ def pref1():
     return render_template("preferences/preference1.html")
 
 
+def getpoints(isBonus):
+    Utier = {"Bronze": 1, "Silver": 1.1, "Gold": 1.2, "Diamond": 1.5}
+    Uid = session["current_user"]["userId"]
+    result = {"shopName": "MARINA BAY SANDS", "address": "1 BAYFRONT AVENUE MARINA BAY SANDS SINGAPORE 018971"}
+    result2 = signedPlaceCon.GetShopInfo(result["address"])
+    points = 10
+    if isBonus:
+        points = result2.getPoints()
+    result3 = userCon.GetUserPointsInfo(Uid)
+    uTierMultiplier = Utier.get(result3.getTier())
+    uPoints = result3.getPoints()
+    total_pts_earned = points * uTierMultiplier
+    new_upoints = total_pts_earned + uPoints
+    userCon.SetPoints(Uid, new_upoints)
+
+    def UpdateTier():
+        OldRank = result3.getTier()
+        NewRank = " "
+        if 400 <= new_upoints < 2000:
+            NewRank = "Silver"
+        elif 2000 <= new_upoints < 5000:
+            NewRank = "Gold"
+        elif new_upoints >= 5000:
+            NewRank = "Diamond"
+
+        userCon.SetTier(Uid, NewRank)
+        return json.dumps({"OldRank": OldRank, "NewRank": NewRank, "OldPoints": uPoints, "NewPoints": new_upoints})
+
+    UpdateTier()
+
+
 @app.route("/qr-scanner")
 def scanQR():
     return render_template("qrSites/qrScanner.html")
 
+@app.route("/qrCode/claim-bonus/<string:id>")
+def qrCodeClaimBonus(id):
+    print("Test")
 
-@app.route("/qrCode/reached")
-def qrCodeArrival():
-    getpoints()
-    return render_template("qrSites/arrivalQrCode.html")
+@app.route("qrCode/use-points/<string:id>")
+def qrCodeUsePoints(id):
+    print("Test")
 
 
 # ADMIN SITES
@@ -233,60 +274,72 @@ def adminDeletePlace(id):
     signedPlaceCon.DeleteEntry(id)
     return redirect("/admin/signedPlaces")
 
+@app.route("/admin/signedPlaces/registerPurchase/<string:id>")
+def adminRegisterPurchase(id):
+    validatePlaceAdmin()
+
+    placesBonusCodesCon.GenerateCode(id)
 
 # AJAX CALLS
 # Reward points -- Assign rewards point (Udhaya)
-def getpoints():
-    Utier = {"Bronze": 1, "Silver": 1.1, "Gold": 1.2, "Platinum": 1.3, "Diamond": 1.5}
-    Uid = session["current_user"]["userId"]
-    result = {"shopName":"MARINA BAY SANDS", "address": "1 BAYFRONT AVENUE MARINA BAY SANDS SINGAPORE 018971"}
-    result2 = signedPlaceCon.getShopInfo()
-    points = result2.getPoints()
-    # result3 = userRewardsCon.GetUserPointsInfo(Uid)
-    result3 = userCon.GetUserPointsInfo(Uid)
-    uTierMultiplier = Utier.get(result3.getTier())
-    uPoints = result3.getPoints()
-    total_pts_earned = points*Utier
-    new_upoints = total_pts_earned + uPoints
-    # userRewardsCon.SetPoints(Uid, new_upoints)
-    userCon.SetPoints(Uid, new_upoints)
-    def UpdateTier():
-        OldRank = result3.getTier()
-        NewRank = " "
-        if 400<=new_upoints<1900:
-            NewRank = "Silver"
-        elif 1900<=new_upoints<5400:
-            NewRank = "Gold"
-        elif 5400<=new_upoints<11600:
-            NewRank = "Platinum"
-        elif new_upoints>=11600:
-            NewRank = "Diamond"
-
-        # userRewardsCon.SetTier(Uid, NewRank)
-        userCon.SetTier(Uid, NewRank)
-        return json.dumps({"OldRank": OldRank,"NewRank": NewRank, "OldPoints": uPoints, "NewPoints": new_upoints })
-    UpdateTier()
-
-# AJAX CALLS
-# Reward points -- Assign rewards point (Udhaya)
-@app.route("/funcs/recommend-destination/itinerary")
+@app.route("/funcs/recommend-destination/itinerary", methods=['POST'])
 def recommendDestination():
-    # Get file and csv writer
-    # csvFile = open("csv/dbscv/music.csv", "w", newline="")
-    # csvWriter = csv.writer(csvFile)
-    # csvWriter.writerow(("Hello1", 1, 2))
-    # csvWriter.writerow(("Hell2", 2, 3))
-    data = pandas.read_csv("csv/dbcsv/music.csv")
-    inp = data.drop(columns=['genre'])
-    oup = data['genre']
-    print(inp, "\n", oup)
+    averageSpeeds = {
+        "walk": 4,
+        "drive": 60,
+        "pt": (80*0.45 + 50*0.45 + 4*0.1),
+        "cycle": 18
+    }
 
-    model = DecisionTreeClassifier()
+    if request.method == 'POST':
+        def ShortlistByDistance(placesList, transportMode):
+            finalList = []
+            for place in placesList:
+                # 1st stage shortlisting - Determined by roughly estimated average speed of transports
+                # Find according to furthest distance possible (a and b distance)
+                placeLatlng = place["LatLng"].split(",")
+                aDist = geopy.distance.distance((startCoords.latitude, 0), (placeLatlng[0], 0))
+                bDist = geopy.distance.distance((0, startCoords.longitutde), (0, placeLatlng[1]))
+                furDist = aDist + bDist
 
+                estTime = furDist // averageSpeeds[transportMode] + 0.75
+                if estTime <= timeAllowance:
+                    # 2nd stage shortlisting - Determined by the fastest route (actual timing needed)
+                    currentTime = datetime.now()
+                    routeResults = json.loads("https://developers.onemap.sg/privateapi/routingsvc/route?start=${},${}&end=${},${}" \
+                                    "&routeType=${}&token=${}&date=${}&time=${}" \
+                                    "&mode=TRANSIT".format(startCoords.latitude, startCoords.longitutde, placeLatlng[0], 
+                                                        placeLatlng[1], transportMode, apiKey, currentTime.strftime("%Y-%m-%d"), 
+                                                        currentTime.strftime("%H:%M:%S")) )
+                    estTime = 0.75
+                    if transportMode == "pt":
+                        estTime += routeResults["plan"]["itineraries"][0]["duration"] / 3600
+                    else:
+                        estTime += routeResults["route_summary"]["total_time"] / 3600
+                    
+                    if estTime <= timeAllowance:
+                        finalList.append(place)
+            
+            return finalList
+
+
+        startCoords = request.form.get("startCoords")
+        timeAllowance = request.form.get("timeAllowance")
+        category = request.form.get("category")
+        transportMode = request.form.get("transportMode")
+
+        placesList = json.loads("https://developers.onemap.sg/privateapi/themesvc/retrieveTheme?queryName={}&token={}"
+                                .format(category, apiKey))
+        if placesList.get("SrchResults") is not None:
+            # Shortlisted after calculating distance
+            shortlistedPlaces = ShortlistByDistance(placesList["SrchResults"], transportMode)
+
+    
+# Reward points -- Assign rewards point (Udhaya)
 @app.route("/funcs/reached-place/", methods=['GET', 'POST'])
 def reachedPlace():
     # Placeholder returned data
-    getpoints()
+    getpoints(False)
 
 def trackPlaces(places, storeMean):
     # Track down the destinations for future recommendation algorithm
@@ -330,24 +383,45 @@ def usePoints():
 # Scheduled tasks to run every week - Web scrap, training of data models
 @cron.cron_schedule(day_of_week="3", hour="3")
 def scheduledJobs():
-    def trainModel():
-        path = userCon.ExportUserPreferenceCSV()
-        data = pandas.read_csv(path)
+    # Encode label strings
+    def encodeColumns(data):
+        le = preprocessing.LabelEncoder()
+        for column_name in data.columns:
+            if data[column_name].dtype == object:
+                data[column_name] = le.fit_transform(data[column_name])
+            
+        return data 
+
+    def trainGlobalUserPreferenceModel():
+        print("I am training the model")
+        path = userCon.ExportGlobalUserPreferenceCSV() # Supply the new data in db to the csv files
+        data = encodeColumns(pandas.read_csv(path))
+
         inp = data.drop(columns=['Preference'])
         oup = data['Preference']
 
-        model = DecisionTreeClassifier()
-        model.fit(inp, oup)
+        # Usage of K-Neighbours algorithm - Many overlaps
+        model = KNeighborsClassifier()
 
-        joblib.dump(model, "csv/dbcsv/globalUserPreference.joblib") # Saves the trained model as a file
-        newModel = joblib.load("csv/dbcsv/globalUserPreference.joblib") # Loads the model file in
-        print(model.predict([ [21, 1], [30, 0] ]))
-        print("I am training the model")
+        # Calculating average accuracy of current model
+        model.fit(inp.values, oup)
+        meanAccuracyScore = 0
+        for i in range(1, 6):
+            inp_train, inp_test, oup_train, oup_test = train_test_split(inp, oup, test_size=0.2)
+            model.fit(inp_train, oup_train)
+            predictions = model.predict(inp_test)
+            print(accuracy_score(oup_test, predictions))
+        meanAccuracyScore /= 5
+
+        # Saving the model and accuracy results
+        model.fit(inp, oup)
+        joblib.dump(model, "csv/dbcsv/global-users-preferences.joblib") # Saves the newly trained model as a file
+        machineLearningReportCon.SetData(MachineLearningReport("GlobalUserPreferences", "Accuracy", meanAccuracyScore)) # Save the accuracy score to db
 
     def webScrap():
         print("I am web scrapping")
     
-    trainModel()
+    trainGlobalUserPreferenceModel()
     webScrap()
 # Error pages handling
 # @app.errorhandler(403)

@@ -11,10 +11,17 @@ class MongoDBContext:
         db = con["RedpinsBufferDB"]
         return db
 
-    def SetRoot():
+    def SetCollectionsAndRoot():
         # Set root account
         db = MongoDBContext.Connect()
+
+        # Create collections
         userDb = db["Users"]
+        partneredPlacesDb = db["PartneredPlaces"]
+        placesBonusCodesDb = db["PlacesBonusCodes"]
+        placesBonusCodesDb.create_index("Timestamp", expireAfterSeconds=1800)
+        machineLearningReportDb = db["MachineLearningReports"]
+        
         try:
             passwordSalt = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(8))
             passwordHash = hashlib.sha512(("P@ssw0rd" + passwordSalt).encode("utf-8")).hexdigest()
@@ -35,8 +42,7 @@ class MongoDBContext:
             print("Root account in database")
 
 
-# MongoDBContext.Connect()
-MongoDBContext.SetRoot()
+MongoDBContext.SetCollectionsAndRoot()
 
 
 

@@ -43,3 +43,13 @@ TrackedInfo [
         timestamps: [time1, time2] --ascending
 	}
 ]
+
+MachineLearningReport [
+    {
+        _id: <Obj sth>,
+        model: "sth"
+        data: {
+            "accuracy": 0.95
+        }
+    }
+]

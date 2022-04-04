@@ -72,6 +72,7 @@ class UserCon:
                     "Password": passwordHash, 
                     "PasswordSalt": passwordSalt,
                     "Points": user.getPoints(),
+                    "TierPoints": user.getTierPoints(),
                     "Tier": user.getTier()
                 })
                 return {"success": True}
@@ -188,7 +189,7 @@ class UserCon:
         if userInfo is not None:
             return UserPoints(userId, userInfo.get("Points") or 0, userInfo.get("Tier") or "Bronze")
 
-    def SetPoints(self, userId, points):
+    def SetPoints(self, userId, points, tierPoints):
         # cursor = self.__connection.cursor()
         # # Update points
         # cursor.execute('UPDATE UserPoints SET Points = {} '
@@ -200,7 +201,7 @@ class UserCon:
         # Update points
 
         try:
-            self.__connection.update_one({"_id": userId}, {"$set": {"Points": points}})
+            self.__connection.update_one({"_id": userId}, {"$set": {"Points": points, "TierPoints": tierPoints}})
         except Exception as e:
             print(e)
 
@@ -214,15 +215,15 @@ class UserCon:
             self.__connection.update_one({"_id": userId}, {"$set": {"Tier": tier}})
         except Exception as e:
             print(e)      
-
+            
 
     # Data export csv functions
-    def ExportUserPreferenceCSV(self):
-        path = "csv/dbcsv/userPreference.csv"
+    def ExportGlobalUserPreferenceCSV(self):
+        path = "csv/dbcsv/global-users-preferences.csv"
         csvFile = open(path, "w", newline="")
         csvWriter = csv.writer(csvFile)
         # Header
-        csvWriter.writerow(["DateOfBirth", "Points", "Tier", "Category", "Preference"])
+        csvWriter.writerow(["BirthYear", "Points", "Tier", "Category", "Preference"])
 
         allUserInfo = list(self.__connection.find())
         for i in range(1, len(allUserInfo)):
@@ -230,6 +231,6 @@ class UserCon:
             preferencesDict = row.get("Preferences") or []
             for cat in preferencesDict:
                 for pref in preferencesDict[cat]:
-                    csvWriter.writerow([row["DateOfBirth"], row["Points"], row["Tier"], cat, pref])
+                    csvWriter.writerow([row["DateOfBirth"][:4], row["Points"], row["Tier"], cat, pref])
 
         return path

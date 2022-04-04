@@ -10,7 +10,7 @@ class SignedPlacesCon:
     def __init__(self):
         self.__connection = MongoDBContext.Connect()["PartneredPlaces"]
 
-    def GetShopInfo(self, id):
+    def GetShopInfo(self, address):
         # cursor = self.__connection.cursor()
 
         # cursor.execute('SELECT * FROM SignedPlaces WHERE Id = "{}";'
@@ -19,7 +19,7 @@ class SignedPlacesCon:
         # if shop is not None:
         #     return SignedPlace(shop[0], shop[1], shop[2], shop[3], shop[4], shop[5], shop[6], shop[7])
 
-        shop = self.__connection.find_one({"_id": ObjectId(id)})
+        shop = self.__connection.find_one({"Address": address})
         if shop is not None:
             return SignedPlace(shop["_id"], shop["Address"], shop["UnitNo"], shop["Name"], shop["Organization"], shop["Points"], shop["Checkpoint"], shop["Discount"])
 
@@ -141,4 +141,4 @@ class SignedPlacesCon:
             return {"success": False, "error": "An error occurred removing the place"}
         
         return {"success": True}
-        
+    

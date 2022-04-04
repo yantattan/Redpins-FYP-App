@@ -37,7 +37,7 @@ class SignedPlaceForm(Form):
 
 #Models
 class User:
-    def __init__(self, username, email, role, dateOfBirth, contact, password, points, tier):
+    def __init__(self, username, email, role, dateOfBirth, contact, password, points, tierPoints, tier):
         self.__username = username
         self.__email = email
         self.__role = role
@@ -45,6 +45,7 @@ class User:
         self.__contact = contact
         self.__password = password
         self.__points = points
+        self.__tierPoints = tierPoints
         self.__tier = tier
 
     def setUsername(self, username):
@@ -67,6 +68,9 @@ class User:
 
     def setPoints(self, points):
         self.__points = points
+
+    def setTierPoints(self, tierPoints):
+        self.__tierPoints = tierPoints
 
     def setTier(self, tier):
         self.__tier = tier
@@ -91,6 +95,9 @@ class User:
 
     def getPoints(self):
         return self.__points
+
+    def getTierPoints(self):
+        return self.__tierPoints
 
     def getTier(self):
         return self.__tier
@@ -225,3 +232,28 @@ class SignedPlace:
                 "points": self.getPoints(),
                 "checkpoint": self.getCheckpoint(),
                 "discount": self.getDiscount()}
+
+
+class MachineLearningReport:
+    def __init__(self, modelName, attribute, data):
+        self.__modelName = modelName
+        self.__attribute = attribute
+        self.__data = data
+
+    def setModelName(self, modelName):
+        self.__modelName = modelName
+
+    def setAttribute(self, attribute):
+        self.__attribute = attribute
+    
+    def setData(self, data):
+        self.__data = data
+
+    def getModelName(self):
+        return self.__modelName
+
+    def getAttribute(self):
+        return self.__attribute
+
+    def getData(self):
+        return self.__data
