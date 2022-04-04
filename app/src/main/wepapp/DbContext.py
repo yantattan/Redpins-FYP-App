@@ -1,7 +1,49 @@
 import hashlib
 import mysql.connector as mySqlDB
+from pymongo import MongoClient
 import random
 import string
+
+
+class MongoDBContext:
+    def Connect():
+        con = MongoClient("mongodb://localhost:27017")
+        db = con["RedpinsBufferDB"]
+        return db
+
+    def SetCollectionsAndRoot():
+        # Set root account
+        db = MongoDBContext.Connect()
+
+        # Create collections
+        userDb = db["Users"]
+        partneredPlacesDb = db["PartneredPlaces"]
+        placesBonusCodesDb = db["PlacesBonusCodes"]
+        placesBonusCodesDb.create_index("Timestamp", expireAfterSeconds=1800)
+        machineLearningReportDb = db["MachineLearningReports"]
+        
+        try:
+            passwordSalt = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(8))
+            passwordHash = hashlib.sha512(("P@ssw0rd" + passwordSalt).encode("utf-8")).hexdigest()
+
+            userDb.insert_one({"_id": 0,
+                                "Username": "Root", 
+                                "Email": "redpinsbuffer@gmail.com", 
+                                "Role": "Admin", 
+                                "DateOfBirth": "2001-01-01", 
+                                "Contact": "00000000", 
+                                "Password": passwordHash,
+                                "PasswordSalt": passwordSalt,
+                                "Points": 9999999999,
+                                "Tier": "Diamond"})
+                                
+            print("Root account has been created")
+        except Exception:
+            print("Root account in database")
+
+
+MongoDBContext.SetCollectionsAndRoot()
+
 
 
 class MySql:
@@ -53,6 +95,8 @@ class MySql:
                                 "`ShopName` VARCHAR(100) NOT NULL,"
                                 "`Organization` VARCHAR(100) NOT NULL,"
                                 "`Points` INT NULL,"
+                                "`Checkpoint` INT NULL,"
+                                "`Discount` DECIMAL(4, 2) NULL,"
                                 "PRIMARY KEY (`Id`));")
                 # User points table
                 cursor.execute("CREATE TABLE IF NOT EXISTS `UserPoints` ("
@@ -84,18 +128,6 @@ class MySql:
                                 "PRIMARY KEY (`RowId`),"
                                 "FOREIGN KEY (`UserId`) REFERENCES Users(`Id`));")
 
-
-                # Make sure there is always a root account
-                # rootPwdSalt = "ABCD3FGH"
-                # rootPwd = hashlib.sha512(("P@ssw0rd" + rootPwdSalt).encode("utf-8")).hexdigest()
-                # try:
-                #     cursor.execute('INSERT INTO `Users` VALUES(NULL, "root", "root@gmail.com", "Admin", "2001-01-01", "00000000", "{}", "{}");'
-                #                     .format(rootPwd, rootPwdSalt))
-                # except Exception:
-                #     print("Root account is in database")
-                # else:
-                #     print("Root account is created")
-
                 return db
 
     except Exception as e:
@@ -105,6 +137,36 @@ class MySql:
     def Close(self, con):
         con.Close()
 
+    
+    try:
+        @staticmethod
+        def SetRoot():
+            try:
+                db = mySqlDB.connect(
+                    host="localhost",
+                    user="root",
+                    password="password",
+                    database="redpinsdb"
+                )
+
+                passwordSalt = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(8))
+                passwordHash = hashlib.sha512(("P@ssw0rd" + passwordSalt).encode("utf-8")).hexdigest()
+
+                cursor = db.cursor()
+                cursor.execute('INSERT INTO `Users` VALUES(NULL, "Root", "redpinsbuffer@gmail.com", "Admin", "2001-01-01", "00000000", "{}", "{}");'
+                                .format(passwordHash, passwordSalt))
+                db.commit()
+                cursor.close()
+                print("Root account has been created")
+            except mySqlDB.IntegrityError:
+                print("Root account in database")
+            except Exception as e:
+                print(e)
+
+    except Exception as e:
+        msg = e
+
 
 MySql.Connect()
+MySql.SetRoot()
 print(MySql.msg)

@@ -11,3 +11,8 @@ def validateAdmin():
     if session["current_user"].get("role") != "Admin":
         return redirect("/login")
 
+def validatePlaceAdmin():
+    validateLoggedIn()
+    if session["current_user"].get("role") != "Place Admin":
+        return redirect("/login")
+

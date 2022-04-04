@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Redpins Buffer - Scan QR for Arrival{% endblock %}
+
+{% block content %}
+<img alt="QR Code" id="qrcode">
+<script>
+    function genQrCode(value) {
+        let formData = new FormData();
+        formData.append("data", value);
+        console.log(formData)
+        fetch("/qrCode/reached/", {
+            method: "POST",
+            body: formData
+        }).then((res) => {
+            res.body.getReader().read().then((img) => {
+                let imgBytes = img.value;
+                let imgBytesString = String.fromCharCode(...imgBytes);
+                let encodedVal = btoa(imgBytesString);
+                $("#qrcode").attr("src", `data:image/png;base64,${encodedVal}`);
+            })
+        })
+    }
+
+    genQrCode("http://10.0.2.2:5000/register")
+</script>
+{% endblock %}

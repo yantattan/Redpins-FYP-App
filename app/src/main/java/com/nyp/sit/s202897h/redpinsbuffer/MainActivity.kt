@@ -28,6 +28,7 @@ import android.view.WindowManager
 
 
 class MainActivity : AppCompatActivity() {
+    var webAppUrl = "http://10.0.2.2:5000/"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -36,17 +37,32 @@ class MainActivity : AppCompatActivity() {
         webView.settings.domStorageEnabled = true
         webView.settings.javaScriptEnabled = true
         webView.scrollBarStyle = View.SCROLLBARS_INSIDE_OVERLAY
-        webView.loadUrl("http://10.0.2.2:5000/")
+
+        val newUrl = intent.getStringExtra("newUrl")
+        if (newUrl.isNullOrEmpty())
+            webView.loadUrl(webAppUrl)
+        else
+            webView.loadUrl(newUrl)
 
         class CustWebViewClient: WebViewClient() {
             override fun onPageFinished(view: WebView?, url: String?) {
                 super.onPageFinished(view, url)
 
+                // Check if the site goes to qr-scanner
+                Log.d("Hi", url!!)
+                if (url == webAppUrl + "qr-scanner") {
+                    Log.d("Hi", "IM here")
+                    var navQrScanner = Intent(this@MainActivity, QrScannerActivity::class.java)
+                    startActivity(navQrScanner)
+                }
+
+                // Animation to next page
                 val anim = AnimationUtils.loadAnimation(baseContext, android.R.anim.fade_out)
                 webView.startAnimation(anim)
             }
         }
 
+        // Run as background
         class BackgroundService: Service() {
             override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
                 val windowManager = getSystemService(WINDOW_SERVICE) as WindowManager
@@ -109,6 +125,4 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
-
 }
