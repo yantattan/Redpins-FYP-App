@@ -14,6 +14,7 @@ User [
             activity: ["act1", "act2"...]
         },
         points: 0,
+        tierPoints: 50,
         tier: "Bronze"
 	}
 ]
@@ -26,7 +27,10 @@ SignedPlaces [
         unitNo: "sth",
         name: "sth",
         organization: "sth",
-        category: "cuisine"
+        category: "eateries"
+        details: {
+            cuisines: ["sth1", "sth2"]
+        }
         points: 20,
         checkpoint: 200,
         discount: 12.3
@@ -37,17 +41,22 @@ SignedPlaces [
 TrackedInfo [
 	{ 
         _id: <Obj sth>,
+        userId: 1,
+        placeName: "sth",
         address: "sth",
-        action: "visited",
-        frequency: 2,
-        timestamps: [time1, time2] --ascending
+        actions: [{
+            action: "visited",
+            frequency: 2,
+            timestamps: [time1, time2] --ascending
+        }],
 	}
 ]
+
 
 MachineLearningReport [
     {
         _id: <Obj sth>,
-        model: "sth"
+        model: "sth",
         data: {
             "accuracy": 0.95
         }

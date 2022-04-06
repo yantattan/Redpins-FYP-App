@@ -41,8 +41,15 @@ class MainActivity : AppCompatActivity() {
         val newUrl = intent.getStringExtra("newUrl")
         if (newUrl.isNullOrEmpty())
             webView.loadUrl(webAppUrl)
-        else
-            webView.loadUrl(newUrl)
+        else {
+            val claimBonusUrl = webAppUrl + "qrCode/claim-bonus/"
+            val usePointsUrl = webAppUrl + "qrCode/use-points/"
+            if (newUrl.take(claimBonusUrl.length) == claimBonusUrl || newUrl.take(usePointsUrl.length) == usePointsUrl)
+                webView.loadUrl(newUrl)
+            else
+                webView.loadUrl("www.google.com")
+        }
+
 
         class CustWebViewClient: WebViewClient() {
             override fun onPageFinished(view: WebView?, url: String?) {

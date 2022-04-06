@@ -18,6 +18,7 @@ class MongoDBContext:
         # Create collections
         userDb = db["Users"]
         partneredPlacesDb = db["PartneredPlaces"]
+        trackedInfoDb = db["TrackedInfo"]
         placesBonusCodesDb = db["PlacesBonusCodes"]
         placesBonusCodesDb.create_index("Timestamp", expireAfterSeconds=1800)
         machineLearningReportDb = db["MachineLearningReports"]

@@ -104,14 +104,19 @@ class User:
 
 
 class TrackedPlace:
-    def __init__(self, userId, address, storeMean):
+    def __init__(self, userId, address, placeName, storeMean):
         self.__userId = userId
         self.__address = address
+        self.__placeName = placeName
         self.__storeMean = storeMean
         self.__frequency = 0
+        self.__timestamps = []
 
     def setAddress(self, address):
         self.__address = address
+
+    def setPlaceName(self, placeName):
+        self.__placeName = placeName
     
     def setStoreMean(self, storeMean):
         self.__storeMean = storeMean
@@ -119,17 +124,26 @@ class TrackedPlace:
     def setFrequency(self, frequency):
         self.__frequency = frequency
 
+    def setTimestamps(self, timestamps):
+        self.__timestamps = timestamps
+
     def getUserId(self):
         return self.__userId
     
     def getAddress(self):
         return self.__address
+
+    def getPlaceName(self):
+        return self.__placeName
     
     def getStoreMean(self):
         return self.__storeMean
 
     def getFrequency(self):
         return self.__frequency
+
+    def getTimestamps(self):
+        return self.__timestamps
 
 
 class UserPoints:
@@ -168,12 +182,14 @@ class Preferences:
 
 
 class SignedPlace:
-    def __init__(self, id, address, unitNo, shopName, organization, points, checkpoint, discount):
+    def __init__(self, id, address, unitNo, shopName, organization, category, details, points, checkpoint, discount):
         self.__id = str(id)
         self.__address = address
         self.__unitNo = unitNo
         self.__shopName = shopName
         self.__organization = organization
+        self.__category = category
+        self.__details = details
         self.__points = points
         self.__checkpoint = checkpoint
         self.__discount = float(discount)
@@ -189,6 +205,12 @@ class SignedPlace:
 
     def setOrganization(self, organization):
         self.__organization = organization
+
+    def setCategory(self, category):
+        self.__category = category
+
+    def setDetails(self, details):
+        self.__details = details
 
     def setPoints(self, points):
         self.__points = points
@@ -214,6 +236,12 @@ class SignedPlace:
     def getOrganization(self):
         return self.__organization
 
+    def getCategory(self):
+        return self.__category
+
+    def getDetails(self):
+        return self.__details
+        
     def getPoints(self):
         return self.__points
     
@@ -224,14 +252,16 @@ class SignedPlace:
         return self.__discount
 
     def dict(self):
-        return {"id": self.getId(), 
-                "address": self.getAddress(), 
-                "unitNo": self.getUnitNo(), 
-                "shopName": self.getShopName(),
+        return {"id":           self.getId(), 
+                "address":      self.getAddress(), 
+                "unitNo":       self.getUnitNo(), 
+                "shopName":     self.getShopName(),
                 "organization": self.getOrganization(),
-                "points": self.getPoints(),
-                "checkpoint": self.getCheckpoint(),
-                "discount": self.getDiscount()}
+                "category":     self.getCategory(),
+                "details":      self.getDetails(),
+                "points":       self.getPoints(),
+                "checkpoint":   self.getCheckpoint(),
+                "discount":     self.getDiscount()}
 
 
 class MachineLearningReport:
