@@ -264,6 +264,24 @@ class SignedPlace:
                 "discount":     self.getDiscount()}
 
 
+class Review:
+    def __init__(self, rating, review):
+        self.__rating = rating
+        self.__review = review
+    
+    def setRating(self, rating):
+        self.__rating = rating
+
+    def setReview(self, review):
+        self.__review = review
+
+    def getRating(self):
+        return self.__rating
+
+    def getReview(self):
+        return self.__review
+
+
 class MachineLearningReport:
     def __init__(self, modelName, attribute, data):
         self.__modelName = modelName
@@ -287,3 +305,4 @@ class MachineLearningReport:
 
     def getData(self):
         return self.__data
+
