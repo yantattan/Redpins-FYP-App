@@ -7,6 +7,7 @@ import hashlib
 
 from Model import Preferences
 from Model import UserPoints
+from Model import User
 
 
 class UserCon:
@@ -107,6 +108,15 @@ class UserCon:
         except Exception as e:
             print(e)
             return {"success": False, "error": "An error occurred"}
+
+    def GetUserById(self, userId):
+        try:
+            userInfo = self.__connection.find_one({"_id": userId})
+            return User(userInfo["Username"], userInfo["Email"], userInfo["Role"], userInfo["DateOfBirth"], userInfo["Contact"], 
+                        userInfo["Password"], userInfo["Points"], userInfo["TierPoints"], userInfo["Tier"])
+        except Exception as e:
+            print(e)
+            return {"error": "An error occurred trying to retrieve user information"}
 
 
     # Preferences functions

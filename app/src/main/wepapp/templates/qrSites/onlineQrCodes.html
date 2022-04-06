@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}Redpins Buffer - Scan QR for Arrival{% endblock %}
+
+{% block content %}
+<input type="text" id="placeId">
+<button class="btn btn-primary" onclick="genQrCode()">Generate Qr</button>
+<div class="row">
+    <img alt="QR Code" id="qrcode-usePoints" class="col-lg-6">
+    <img alt="QR Code" id="qrcode-claimBonus" class="col-lg-6">
+</div>
+
+<script>
+    function genQrCode() {
+        var placeId = $("#placeId").val()
+
+        $.ajax({
+            type: "POST",
+            url: `/funcs/check-valid-placeId`,
+            data: {
+                "placeId" : placeId
+            },
+            success: function(result) { 
+                if (JSON.parse(result).valid)
+                    genCodes(placeId) 
+            },
+            error: function(xhr, ajaxOptions, thrownError) {
+                console.log("Not found")
+            } 
+        })
+
+        function genCodes(placeId) {
+            var claimBonusPage = `http://10.0.2.2:5000/funcs/generate-claimBonus-qrcode/` + placeId;
+            var usePointsPage = `http://10.0.2.2:5000/funcs/generate-usePoints-qrcode/` + placeId;
+            
+
+            let formData = new FormData();
+            formData.append("data", claimBonusPage);
+            fetch("/funcs/generate-claimBonus-qrcode", {
+                method: "POST",
+                body: formData
+            }).then((res) => {
+                res.body.getReader().read().then((img) => {
+                    let imgBytes = img.value;
+                    let imgBytesString = String.fromCharCode(...imgBytes);
+                    let encodedVal = btoa(imgBytesString);
+                    $("#qrcode-claimBonus").attr("src", `data:image/png;base64,${encodedVal}`);
+                })
+            })
+
+            formData = new FormData();
+            formData.append("data", usePointsPage);
+            fetch("/funcs/generate-usePoints-qrcode", {
+                method: "POST",
+                body: formData
+            }).then((res) => {
+                res.body.getReader().read().then((img) => {
+                    let imgBytes = img.value;
+                    let imgBytesString = String.fromCharCode(...imgBytes);
+                    let encodedVal = btoa(imgBytesString);
+                    $("#qrcode-usePoints").attr("src", `data:image/png;base64,${encodedVal}`);
+                })
+            })
+        }
+
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,91 @@
+* {
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Open Sans', sans-serif;
+}
+
+body {
+  background-color: black;
+}
+
+.box {
+  background-image: url(../images/bg.png);
+  width: 360px;
+  height: 800px;
+  background-color: white;
+  padding: 1em;
+}
+
+.display {
+  width: 360px;
+  height: 740px;
+  overflow-y: scroll;
+}
+
+input {
+  height: 2.5em;
+  width: 80%
+}
+
+ul {
+  display: flex;
+  list-style: none;
+}
+
+ul li {
+  margin: 0 1em 0 0;
+}
+
+ul li a {
+  text-decoration: none;
+  color: black;
+  font-weight: bold;
+}
+
+.card-con {
+  overflow-x: scroll;
+  display: flex;
+}
+
+.card {
+  width: 150px;
+  height: 240px;
+  background-color: #eee;
+  border-radius: 8px;
+  margin: 0 1em 0 0;
+}
+
+.cardimg {
+  background-image: url(../images/ock.png);
+  width: 150px;
+  height: 120px;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+h4 {
+  margin: 0.5em;
+}
+
+.details {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5em;
+}
+
+.long-card {
+  width: 90%;
+  height: 4em;
+  background-color: green;
+  display: flex;
+}
+
+.longimg {
+  background-image: url(../images/ock.png);
+  width: 4em;
+  height: 100%;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}

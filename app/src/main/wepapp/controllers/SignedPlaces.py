@@ -49,10 +49,10 @@ class SignedPlacesCon:
                                     {"Name": "/{}/".format(search)}, {"Organization": "/{}/".format(search)}, {"Points": "/{}/".format(search)}] }
         
         signedPlaces = []
-        order = -1
+        order = 1
         if sort is not None:
             if order is not None and order == "desc":
-                order = 1 
+                order = -1 
         
             signedPlaces = self.__connection.find(whereCondition).sort({sort: order}).limit(int(limit)).skip(int(offset) * int(limit))
         else:
@@ -78,6 +78,7 @@ class SignedPlacesCon:
         try:
             self.__connection.insert_one({"Address": shopInfo.getAddress(), "UnitNo": shopInfo.getUnitNo(), 
                                         "Name": shopInfo.getShopName(), "Organization": shopInfo.getOrganization(), 
+                                        "Category": shopInfo.getCategory(), "Details": shopInfo.getDetails(),
                                         "Points": shopInfo.getPoints(), "Checkpoint": shopInfo.getCheckpoint(), 
                                         "Discount": float(shopInfo.getDiscount())})
         except Exception as e:
@@ -110,6 +111,7 @@ class SignedPlacesCon:
                                                 {
                                                     "Address": shopInfo.getAddress(), "UnitNo": shopInfo.getUnitNo(), 
                                                     "Name": shopInfo.getShopName(), "Organization": shopInfo.getOrganization(), 
+                                                    "Category": shopInfo.getCategory(), "Details": shopInfo.getDetails(),
                                                     "Points": shopInfo.getPoints(), "Checkpoint": shopInfo.getCheckpoint(), 
                                                     "Discount": shopInfo.getDiscount()
                                                 }
@@ -142,3 +144,11 @@ class SignedPlacesCon:
         
         return {"success": True}
     
+    def GetShopById(self, placeId):
+        try:
+            shop = self.__connection.find_one({"_id": ObjectId(placeId)})
+            if shop is not None:
+                return SignedPlace(shop["_id"], shop["Address"], shop["UnitNo"], shop["Name"], shop["Organization"], 
+                                    shop["Category"], shop["Details"], shop["Points"], shop["Checkpoint"], shop["Discount"])
+        except Exception as e:
+            return 
