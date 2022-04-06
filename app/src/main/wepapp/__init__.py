@@ -165,6 +165,12 @@ def pref1():
     return render_template("preferences/preference1.html")
 
 
+@app.route("/yourReview/<string:address>", methods=['GET', 'POST'])
+def editReview(address):
+    review_form = ReviewForm(request.form)
+    return render_template("editReview.html", form=review_form)
+
+
 def getpoints(isBonus):
     Utier = {"Bronze": 1, "Silver": 1.1, "Gold": 1.3, "Diamond": 1.5}
     Uid = session["current_user"]["userId"]
