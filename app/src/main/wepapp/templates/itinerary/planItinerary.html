@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Redpins Buffer - Choose a place{% endblock %}
+
+{% block content %}
+<div id="start">Start location: </div>
+<div class="btn btn-primary" onclick="recommend();">Test</div>
+<div class="form-control" onkeyup="chooseEnd();"></div>
+<div id="list">
+
+</div>
+
+<script>
+    var post;
+
+    function getLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showRoute)
+        }
+    }
+
+    function showRoute(position) {
+        document.getElementById("start").innerText = position.coords.latitude + "," + position.coords.longitude
+        post = position
+    }
+
+    function recommend() {
+        $.ajax({
+            type: "POST",
+            url: `/funcs/recommend-places`,
+            data: {
+                latitude: post.coords.latitude,
+                longitude: post.coords.longitude,
+                timeAllowance: 60,
+                category: "healthierdining",
+                transportMode: "pt"
+            },
+            success: function(result) {
+                document.write(JSON.parse(result))
+            }
+        })
+    }
+
+    function chooseEnd() {
+        $.ajax({
+            url: `https://developers.onemap.sg/commonapi/search?searchVal=${search}&returnGeom=Y&getAddrDetails=Y&pageNum=${pageNum}`,
+            success: function(result) {
+                //Set result to a variable for writing
+                var resultstr = JSON.stringify(result);
+                $("#list").text(resultstr);
+        }});
+    }
+
+    getLocation();
+
+</script>
+{% endblock %}

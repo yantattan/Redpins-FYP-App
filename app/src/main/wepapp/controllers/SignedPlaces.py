@@ -58,7 +58,7 @@ class SignedPlacesCon:
         else:
             signedPlaces = self.__connection.find(whereCondition).limit(int(limit)).skip(int(offset) * int(limit))
         print(signedPlaces)
-        resultDict = [SignedPlace(row["_id"], row["Address"], row["UnitNo"], row["Name"], row["Organization"], row["Points"], row["Checkpoint"], row["Discount"]).dict() for row in signedPlaces]
+        resultDict = [SignedPlace(row["_id"], row["Address"], row["UnitNo"], row["Name"], row["Organization"], row["Category"], {"Cuisine": ["Chinese"]}, row["Points"], row["Checkpoint"], row["Discount"]).dict() for row in signedPlaces]
         return resultDict
 
     def CreateEntry(self, shopInfo):

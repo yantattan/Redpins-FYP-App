@@ -44,10 +44,12 @@ class MainActivity : AppCompatActivity() {
         else {
             val claimBonusUrl = webAppUrl + "qrCode/claim-bonus/"
             val usePointsUrl = webAppUrl + "qrCode/use-points/"
+            Log.d("Hihello", newUrl)
+            Log.d("Hihello", newUrl.take(usePointsUrl.length))
             if (newUrl.take(claimBonusUrl.length) == claimBonusUrl || newUrl.take(usePointsUrl.length) == usePointsUrl)
                 webView.loadUrl(newUrl)
             else
-                webView.loadUrl("www.google.com")
+                webView.loadUrl(webAppUrl + "qrCode/invalid")
         }
 
 

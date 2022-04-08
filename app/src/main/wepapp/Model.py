@@ -1,6 +1,7 @@
 from audioop import add
 from decimal import Decimal
 import email
+from unicodedata import category
 from wtforms import Form, StringField, RadioField, SelectField, PasswordField, IntegerField, \
                     DecimalField, FileField, TextAreaField, validators
 from wtforms.fields.html5 import DateField
@@ -31,6 +32,7 @@ class SignedPlaceForm(Form):
     organization = StringField("Organization Name", [validators.DataRequired()])
     address = StringField("Address", [validators.DataRequired()])
     unitNo = StringField("Unit Number", [validators.DataRequired()])
+    category = SelectField("Category", [validators.DataRequired()], choices=[("Eateries", "Eateries"), ("Attraction", "Attraction")])
     points = IntegerField("Points", [validators.NumberRange(min=3, max=50), validators.Optional()])
     checkpoint = IntegerField("Points Needed", [validators.NumberRange(min=20, max=1000), validators.Optional()])
     discount = DecimalField("Discount (%)", [validators.Optional()], places=2)

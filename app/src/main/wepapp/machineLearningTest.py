@@ -45,3 +45,6 @@ model.fit(inp, oup)
 joblib.dump(model, "csv/dbcsv/music-recommender.joblib") # Saves the trained model as a file
 newModel = joblib.load("csv/dbcsv/music-recommender.joblib") # Loads the model file in
 print(model.predict([ [21, 1], [30, 0] ]))
+
+
+googleGetDetails = "https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=Marina bay sands&inputtype=textquery"
