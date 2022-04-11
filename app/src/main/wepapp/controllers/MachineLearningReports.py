@@ -1,3 +1,4 @@
+from sys import excepthook
 from DbContext import MongoDBContext
 from Model import MachineLearningReport
 
@@ -28,3 +29,8 @@ class MachineLearningReportCon:
             except Exception:
                 print("An error occurred registering new model to machine learning report")
 
+    def GetData(self, model):
+        try:
+            return self.__connection.find_one({"Model": model})
+        except Exception as e:
+            print(e)

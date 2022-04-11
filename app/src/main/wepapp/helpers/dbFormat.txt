@@ -24,7 +24,6 @@ SignedPlaces [
     {
         _id: <Obj sth>,
         address: "sth",
-        unitNo: "sth",
         name: "sth",
         organization: "sth",
         category: "eateries"
@@ -42,7 +41,6 @@ TrackedInfo [
 	{ 
         _id: <Obj sth>,
         userId: 1,
-        placeName: "sth",
         address: "sth",
         actions: [{
             action: "visited",

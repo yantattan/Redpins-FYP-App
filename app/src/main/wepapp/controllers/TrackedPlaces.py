@@ -1,6 +1,8 @@
+import csv
 from datetime import datetime
 from DbContext import MySql
 from DbContext import MongoDBContext
+
 from Model import TrackedPlace
 
 
@@ -145,3 +147,13 @@ class TrackedPlacesCon:
         except Exception as e:
             print(e)
             return 
+
+
+    # Data export csv functions
+    def ExportYourTrackedInfoCSV(self):
+        path = "csv/dbcsv/your-tracked-info.csv"
+        csvFile = open(path, "w", newline="")
+        csvWriter = csv.writer(csvFile)
+        # Header
+        csvWriter.writerow(["UserId", "Address", "Action", "Frequency"])
+        

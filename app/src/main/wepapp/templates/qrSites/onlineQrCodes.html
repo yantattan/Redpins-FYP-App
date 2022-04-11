@@ -29,9 +29,8 @@
         })
 
         function genCodes(placeId) {
-            var claimBonusPage = `http://10.0.2.2:5000/funcs/generate-claimBonus-qrcode/` + placeId;
-            var usePointsPage = `http://10.0.2.2:5000/funcs/generate-usePoints-qrcode/` + placeId;
-            
+            var claimBonusPage = `http://10.0.2.2:5000/qrCode/claim-bonus/` + placeId;
+            var usePointsPage = `http://10.0.2.2:5000/qrCode/use-points/` + placeId;
 
             let formData = new FormData();
             formData.append("data", claimBonusPage);
