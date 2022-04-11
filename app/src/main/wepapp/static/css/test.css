@@ -4,22 +4,33 @@
   font-family: 'Open Sans', sans-serif;
 }
 
+*::-webkit-scrollbar {
+  display: none;
+}
+
 body {
   background-color: black;
 }
 
 .box {
-  background-image: url(../images/bg.png);
+  /* background-image: url(../images/bg.png); */
   width: 360px;
   height: 800px;
-  background-color: white;
-  padding: 1em;
+  /* background-color: white; */
+  padding: 2em 1em;
 }
 
 .display {
   width: 360px;
-  height: 740px;
+  height: 710px;
   overflow-y: scroll;
+}
+
+.display-bg {
+  position: fixed;
+  left: 0.5em;
+  top: 0.5em;
+  z-index: -2;
 }
 
 input {
@@ -44,7 +55,9 @@ ul li a {
 
 .card-con {
   overflow-x: scroll;
+  overflow-y: hidden;
   display: flex;
+  margin-right: 1em;
 }
 
 .card {
@@ -52,7 +65,7 @@ ul li a {
   height: 240px;
   background-color: #eee;
   border-radius: 8px;
-  margin: 0 1em 0 0;
+  margin-right: 1em;
 }
 
 .cardimg {
@@ -74,11 +87,14 @@ h4 {
   padding: 0.5em;
 }
 
+
 .long-card {
   width: 90%;
+  margin-bottom: 1em;
   height: 4em;
-  background-color: green;
+  background-color: eeeeee;
   display: flex;
+  border-radius: 10px;
 }
 
 .longimg {
@@ -88,4 +104,21 @@ h4 {
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
+}
+
+.longinfo {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  width: 100%;
+}
+
+.background {
+  width: 360px;
+  height: 800px;
+  background-color: white;
+  position: fixed;
+  top: 0.5em;
+  left: 0.5em;
+  z-index: -3;
 }
