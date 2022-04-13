@@ -13,4 +13,4 @@ class ReviewCon:
         self.__connection.update_one({"UserId": userId, "Address": address}, {})
 
     def GetReviews(self, address):
-        print("Hello")
+        pass

@@ -91,7 +91,6 @@ class TrackedPlacesCon:
         try:
             results = self.__connection.aggregate([
                 {"$match": {"UserId": userId}},
-                {"$unwind": "$Places.Actions"},
                 {"$sort": {"$Places.Actions.Frequency": -1}},
                 {"$limit": 5}
             ])

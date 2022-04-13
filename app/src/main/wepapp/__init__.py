@@ -1,4 +1,5 @@
 from urllib.error import HTTPError
+from cv2 import reduce
 from flask import Flask, render_template, request, redirect, url_for, session, flash, send_file
 from apscheduler.scheduler import Scheduler
 from io import BytesIO
@@ -6,8 +7,9 @@ from io import BytesIO
 # Required libraries
 from datetime import datetime, timedelta, date
 from time import strftime
+from functools import reduce
 import geocoder, requests, random, string, json, geopy.distance, numpy
-import aiohttp, asyncio
+import asyncio, aiohttp
 # Machine learning, csv libraries
 import pandas, csv, joblib
 from sklearn import preprocessing
@@ -15,6 +17,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
+from sklearn.feature_extraction.text import TfidfVectorizer
 # Email libraries
 import smtplib
 from email.mime.multipart import MIMEMultipart
@@ -23,7 +26,7 @@ from email.mime.text import MIMEText
 import DbContext
 from helpers.permissionValidator import *
 from Model import *
-from controllers import MachineLearningReports, SignedPlaces, Users, TrackedPlaces, PlacesBonusCodes
+from controllers import MachineLearningReports, SignedPlaces, Users, TrackedPlaces, PlacesBonusCodes, Reviews
 # Qrcode libraries
 from flask_cors import CORS
 import qrcode
@@ -33,7 +36,7 @@ cron = Scheduler(daemon=True)
 cron.start()
 CORS(app)
 app.secret_key = "redp1n5Buffer"
-apiKey = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjg1NDQsInVzZXJfaWQiOjg1NDQsImVtYWlsIjoieWFudGF0dGFuNzIxQGdtYWlsLmNvbSIsImZvcmV2ZXIiOmZhbHNlLCJpc3MiOiJodHRwOlwvXC9vbTIuZGZlLm9uZW1hcC5zZ1wvYXBpXC92MlwvdXNlclwvc2Vzc2lvbiIsImlhdCI6MTY0ODQ0NTM1NCwiZXhwIjoxNjQ4ODc3MzU0LCJuYmYiOjE2NDg0NDUzNTQsImp0aSI6IjBkYWIzYTIyMDIwMmYxZDA5YzJhYmMxYjEyZjk0M2RhIn0.ygc_daPpwuKKaMqR1MHLVVKBCOtO9cYtGdAnLALGlGI"
+apiKey = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjg1NDQsInVzZXJfaWQiOjg1NDQsImVtYWlsIjoieWFudGF0dGFuNzIxQGdtYWlsLmNvbSIsImZvcmV2ZXIiOmZhbHNlLCJpc3MiOiJodHRwOlwvXC9vbTIuZGZlLm9uZW1hcC5zZ1wvYXBpXC92MlwvdXNlclwvc2Vzc2lvbiIsImlhdCI6MTY0OTYwNjIxMSwiZXhwIjoxNjUwMDM4MjExLCJuYmYiOjE2NDk2MDYyMTEsImp0aSI6IjUyNzUxNWQ2OWE5ZTg4YTQ4YmZiZTM4ZWE0ZGU3NmZkIn0.bAXYvn4nFZVloibogl7oTEQ3yYOa9odVoCybT73pwFY"
 
 # Init all controllers
 userCon = Users.UserCon()
@@ -41,7 +44,7 @@ trackedPlacesCon = TrackedPlaces.TrackedPlacesCon()
 signedPlaceCon = SignedPlaces.SignedPlacesCon()
 machineLearningReportCon = MachineLearningReports.MachineLearningReportCon()
 placesBonusCodesCon = PlacesBonusCodes.PlacesBonusCodesCon()
-
+reviewsCon = Reviews.ReviewCon()
 
 # preferencesCon = Preferences.PreferencesCon()
 # userRewardsCon = UserPoints.UserPointsCon()
@@ -55,7 +58,7 @@ def homePage():
     validateLoggedIn()
     yourLocation = geocoder.ip("me")
     userCon.ExportGlobalUserPreferenceCSV()
-    # scheduledJobs()
+    scheduledJobs()
 
     if request.method == 'POST':
         return redirect("/")
@@ -67,7 +70,6 @@ def homePage():
         yourLocation = geocoder.ipinfo("")
         return render_template("home.html", locationCoords=",".join("%.11f" % coord for coord in yourLocation.latlng),
                                y="Meh")
-
 
 # Accounts pages
 @app.route("/login", methods=['GET', 'POST'])
@@ -96,7 +98,7 @@ def register():
         if register_form.validate():
             userModel = User(register_form.username.data, register_form.email.data, "User",
                              register_form.dateOfBirth.data,
-                             register_form.contact.data, register_form.password.data, 0, "Bronze")
+                             register_form.contact.data, register_form.password.data, 0, 0, "Bronze")
             registerResponse = userCon.Register(userModel)
             print(registerResponse)
             if registerResponse.get("error"):
@@ -172,9 +174,9 @@ def showTrip():
 def pref1():
     validateLoggedIn()
     if request.method == 'POST':
-        category = "Cuisine"
+        category = "Eateries"
         allPrefs = request.form.getlist("preferences[]")
-        pref = Preferences.Preferences(session["current_user"]["userId"], allPrefs, category)
+        pref = Preferences(session["current_user"]["userId"], allPrefs, category)
         # preferencesCon.setPreferences(pref)
         userCon.SetPreferences(pref)
         print(allPrefs)
@@ -205,7 +207,7 @@ def getpoints(isBonus):
     total_pts_earned = points * uTierMultiplier
     new_upoints = total_pts_earned + uPoints
     new_tierPoints = total_pts_earned + result4
-    userCon.SetPoints(Uid, new_upoints, tierPoints)
+    userCon.SetPoints(Uid, new_upoints, new_tierPoints)
 
     def UpdateTier():
         OldRank = result3.getTier()
@@ -227,24 +229,31 @@ def getpoints(isBonus):
 def scanQR():
     return render_template("qrSites/qrScanner.html")
 
+@app.route("/qrCode/onlineQr")
+def onlineQR():
+    return render_template("qrSites/onlineQrCodes.html")
 
 @app.route("/qrCode/claim-bonus/<string:id>")
 def qrCodeClaimBonus(id):
     print("Claim bonus reached")
+    return redirect("/")
 
-
-@app.route("qrCode/use-points/<string:id>")
+@app.route("/qrCode/use-points/<string:id>")
 def qrCodeUsePoints(id):
     Total_price = " "
     Uid = session["current_user"]["userId"]
-    resultDic = {"shopName": "MARINA BAY SANDS", "address": "1 BAYFRONT AVENUE MARINA BAY SANDS SINGAPORE 018971"}
+    resultDic = {"shopName": "MARINA BAY SANDS", "address": "123B PornHub Hub Singapore 512345"}
     result = userCon.GetUserPointsInfo(Uid)
-    result2 = signedPlacesCon.GetShopInfo(resultDic["address"])
+    result2 = signedPlaceCon.GetShopInfo(resultDic["address"])
     discount = result2.getDiscount()
     uPoints = result.getPoints()
-    new_uPoints = uPOints - Total_price*(1 - discount)
-    userCon.SetPoints(Uid, new_upoints, tierPoints  )
-    print("Test")
+    # new_uPoints = uPoints - Total_price*(1 - discount)
+    # userCon.SetPoints(Uid, new_uPoints, tierPoints  )
+    return render_template("rewardPoints/usePoints.html")
+
+@app.route("/qrCode/invalidCode")
+def qrCodeInvalid():
+    return render_template("qrSites/invalid.html")
 
 
 # ADMIN SITES
@@ -329,7 +338,7 @@ def adminRegisterPurchase(id):
 # AJAX CALLS
 # Reward points -- Assign rewards point (Udhaya)
 @app.route("/funcs/recommend-places", methods=['POST'])
-async def recommendPlaces():
+def recommendPlaces():
     print("Start")
     averageSpeeds = {
         "walk": 4,
@@ -339,7 +348,7 @@ async def recommendPlaces():
     }
 
     categoriesInfo = {
-        "healthierdining": {"filename":"restaurants_info.csv", "category":"Eateries"}
+        "Eateries": {"filename":"restaurants_info.csv", "category":"Eateries"}
     }
 
     userId = session["current_user"]["userId"]
@@ -350,15 +359,17 @@ async def recommendPlaces():
         timeAllowance = int(request.form.get("timeAllowance"))
         category = request.form.get("category")
         transportMode = request.form.get("transportMode")
+        skipped = json.loads(request.form.get("skipped")) 
 
-        recommendList = []
-
-        async def ShortlistByDistance(placesList, transportMode):
-            finalList = []
-            for place in placesList:
+        recommendList = [] # FINAL LIST TO BE SENT
+        displaySize = 10
+        
+        def ShortlistByDistance(placesList, transportMode):
+            pList = []
+            for place in placesList.itertuples():
                 # 1st stage shortlisting - Determined by roughly estimated average speed of transports
                 # Find according to furthest distance possible (a and b distance)
-                placeLatlng = place[16].split("|")
+                placeLatlng = place.Latlng.split("|")
                 if len(placeLatlng) < 2:
                     continue
                 placeLatlng = list(map(lambda x: round(float(x), 7), placeLatlng))
@@ -369,27 +380,12 @@ async def recommendPlaces():
                 estTime = (furDist // averageSpeeds[transportMode] + 0.75) * 60
                 if estTime <= timeAllowance:
                     # 2nd stage shortlisting - Determined by the fastest route (actual timing needed)
-                    currentTime = datetime.now()
-
-                    routeResults = await requests.get("https://developers.onemap.sg/privateapi/routingsvc/route?start={},{}&end={},{}" \
-                                    "&routeType={}&token={}&date={}&time={}" \
-                                    "&mode=TRANSIT".format(latitude, longitude, placeLatlng[0],
-                                                        placeLatlng[1], transportMode, apiKey, currentTime.strftime("%Y-%m-%d"),
-                                                        currentTime.strftime("%H:%M:%S")) ).json()
-
-                    estTime = 0.75
-                    if transportMode == "pt":
-                        estTime += routeResults["plan"]["itineraries"][0]["duration"] / 60
-                    else:
-                        estTime += routeResults["route_summary"]["total_time"] / 60
-
-                    if estTime <= timeAllowance:
-                        finalList.append(place)
-
-            return finalList
+                    pList.append(place)
+                
+            return pList    
 
         # Shortlisted after calculating distance
-        webScrapData = csv.reader(open("csv/webcsv/"+categoriesInfo[category]["filename"]), delimiter=",")
+        webScrapData = pandas.read_csv("csv/webcsv/"+categoriesInfo[category]["filename"], encoding = "ISO-8859-1")
         shortlistedPlaces = ShortlistByDistance(webScrapData, transportMode)
 
         # CALCULATIONS BEFORE CHECKING AGAINST DIFFERENT PLACES
@@ -398,23 +394,27 @@ async def recommendPlaces():
 
         # Check preference against people of your age, tier, points, giving bonus points for them
         userInfo = userCon.GetUserById(userId)
-        proba = globalPreference.predict_proba([userInfo.getDateOfBirth()[:4], userInfo.getPoints(), userInfo.getTier(),
-                                        categoriesInfo[category]["category"]])
-        top5Pref = numpy.argsort(proba, axis=1)[:,-5:]
-        globalPrefAccuracy = machineLearningReportCon.GetData("GlobalUserPreferences")["Data"]["Accuracy"]
+        if type(userInfo) is not dict and userInfo is not None:
+            proba = globalPreference.predict_proba([le.fit_transform([userInfo.getDateOfBirth()[:4], userInfo.getPoints(), 
+                                                    userInfo.getTier(), category]) ])
+            top5Pref = numpy.argsort(proba, axis=1)[:,-5:]
+            globalPrefAccuracy = 0
+            try:
+                globalPrefAccuracy = machineLearningReportCon.GetData("GlobalUserPreferences")["Data"]["Accuracy"]
+            except TypeError:
+                globalPrefAccuracy = 0
 
-        # Get most recommended cuisines based on your tracked whereabouts, histories e.t.c
-        trackedPlacesCuisine = {} # Cuisines weighted
-        rerecommend = [] # Places to rerecommend again
-        yourTop5Frequent = trackedPlacesCon.GetTopAccessedInfo(userId)
-        yourTop5Recent = trackedPlacesCon.GetRecentlyAccessedInfo(userId)
-        actionPoints = {"Visited": -2, "Searched":1, "Planned": -1}
+            # Get most recommended cuisines based on your tracked whereabouts, histories e.t.c
+            trackedPlacesCuisine = {} # Cuisines weighted
+            rerecommend = [] # Places to rerecommend again
+            yourTop5Frequent = trackedPlacesCon.GetTopAccessedInfo(userId) or []
+            yourTop5Recent = trackedPlacesCon.GetRecentlyAccessedInfo(userId) or []
+            actionPoints = {"Visited": -2, "Searched":1, "Planned": -1}
 
-        for place in yourTop5Frequent:
-            trackedPlace = webScrapData.loc[webScrapData["Restaurant name"] == place["PlaceName"]]["Cuisines"]
-            if trackedPlace is not None:
+            for place in yourTop5Frequent:
                 # Determine if the place is good to re-recommend back to user (Kept searching but yet to plan/go)
                 rerecommendPoints = 0 # If >=0, can rerecommend
+                dataRow = webScrapData.loc[webScrapData["Address"] == place["Address"]]
                 for action in actionPoints:
                     addPoints = actionPoints[action] * place["Actions"]["Frequency"]
                     try:
@@ -423,20 +423,19 @@ async def recommendPlaces():
                         rerecommendPoints = addPoints
 
                 if rerecommendPoints >= 0:
-                    rerecommend.append(trackedPlace["Restaurant name"])
+                    rerecommend.append(dataRow["Name"])
 
-                cuisines = trackedPlace["Cuisines"].split(",")
+                cuisines = dataRow["Cuisines"].split(",")
                 for cuisine in cuisines:
                     try:
                         trackedPlacesCuisine[cuisine] += 1
                     except KeyError:
                         trackedPlacesCuisine[cuisine] = 1
 
-        for place in yourTop5Recent:
-            trackedPlace = webScrapData.loc[webScrapData["Restaurant name"] == place["PlaceName"]]["Cuisines"]
-            if trackedPlace is not None:
+            for place in yourTop5Recent:
                 # Determine if the place is good to re-recommend back to user (Kept searching but yet to plan/go)
                 rerecommendPoints = 0
+                dataRow = webScrapData.loc[webScrapData["Address"] == place["Address"]]
                 for action in actionPoints:
                     addPoints = actionPoints[action] * place["Actions"]["Frequency"] * 1.25
                     try:
@@ -444,10 +443,10 @@ async def recommendPlaces():
                     except KeyError:
                         rerecommendPoints = addPoints
 
-                if rerecommendPoints >= 0 and trackedPlace["Restaurant name"] not in rerecommend:
-                    rerecommend.append(trackedPlace["Restaurant name"])
+                if rerecommendPoints >= 0 and webScrapData["Name"] not in rerecommend:
+                    rerecommend.append(webScrapData["Name"])
 
-                cuisines = trackedPlace["Cuisines"].split(",")
+                cuisines = webScrapData["Cuisines"].split(",")
                 for cuisine in cuisines:
                     try:
                         trackedPlacesCuisine[cuisine] += 1.25
@@ -455,60 +454,129 @@ async def recommendPlaces():
                         trackedPlacesCuisine[cuisine] = 1.25
 
 
-        # START OF CHECK AGAINST LISTS
-        recommendationChances = {}
-        for place in shortlistedPlaces:
-            netChance = 0   # -- Chance calculation for every place shortlisted
-            # #1 - Check against global and your preference
-            if not place["Restaurants name"] in webScrapData["Restaurants name"]:
-                # Low chance to try and exclude restaurants outside of our dataset
-                netChance = 0.1
-            else:
-                cuisinesMatch = 0
-                yourPrefs = userCon.GetPreferences(userId, categoriesInfo[category]["category"])
-                restaurantDetails = webScrapData.loc[webScrapData["Restaurant name"] == place["NAME"]]
-                restaurantCuisines = restaurantDetails["Cuisines"].split("|")
+            # START OF CHECK AGAINST LISTS
+            scoredPlaces = []
+            for place in shortlistedPlaces:
+                netChance = 0   # -- Chance calculation for every place shortlisted
+                if not place.Restaurant_name in list(webScrapData["Restaurant_name"]):
+                    # Low chance to try and exclude restaurants outside of our dataset
+                    netChance = 0.1
+                else:
+                    # #1 - Check against global and your preference
+                    cuisinesMatch = 0
+                    yourPrefs = userCon.GetPreferences(userId, category)
+                    restaurantDetails = webScrapData.loc[webScrapData["Restaurant_name"] == place.Restaurant_name]
+                    restaurantCuisines = restaurantDetails["Cuisines"].values[0].split("|")
 
-                for pref in top5Pref:
-                    if pref in restaurantCuisines:
-                        cuisinesMatch += 1 * globalPrefAccuracy
-                for pref in yourPrefs:
-                    if pref in restaurantCuisines:
-                        cuisinesMatch += 2
+                    for pref in top5Pref:
+                        if pref in restaurantCuisines:
+                            cuisinesMatch += 1 * globalPrefAccuracy
+                    for pref in yourPrefs.getPreferences():
+                        if pref in restaurantCuisines:
+                            cuisinesMatch += 2
 
-                cuisinesMatch /= 15
-                netChance += cuisinesMatch * 0.4
+                    cuisinesMatch /= 15
+                    netChance += cuisinesMatch * 0.35
 
-                # #2 - Check reviews
-                calRating = restaurantDetails["Rating"] * 0.25 + reviewsCon.GetReviews(place["Address"]) * 0.75
-                calRating /= 5
-                # calRatingXVal = calRating * 0.5
-                # netChance += ((2 * calRatingXVal * (1 - calRatingXVal) + 0.5) * calRating) * 0.35
-                netChance += calRating * 0.35
+                    # #2 - Check reviews
+                    reviews = reviewsCon.GetReviews(place.Address)
+                    if reviews is not None:
+                        calRating = restaurantDetails["Rating"].values[0] * 0.25 + reviews * 0.75
+                        calRating /= 5
+                        # calRatingXVal = calRating * 0.5
+                        # netChance += ((2 * calRatingXVal * (1 - calRatingXVal) + 0.5) * calRating) * 0.35
+                        netChance += calRating * 0.25
+                    else:
+                        netChance += (restaurantDetails["Rating"].values[0] / 5) * 0.25
 
-                # #3 - Check against the cuisines & places recommended from your tracked history
-                trackedMatch = 0
-                if place["NAME"] in rerecommend:
-                    trackedMatch += 5
+                    # #3 - Check against the cuisines & places recommended from your tracked history
+                    trackedMatch = 0
+                    if trackedPlacesCuisine != {}:
+                        if place.Restaurant_name in rerecommend:
+                            trackedMatch += 5
 
-                for cuisine in restaurantCuisines:
-                    trackedMatch += trackedPlacesCuisine[cuisine]
+                        for cuisine in restaurantCuisines:
+                            trackedMatch += trackedPlacesCuisine[cuisine]
 
-                trackedMatch /= 15
-                netChance += trackedMatch * 0.25
+                    trackedMatch /= 15
+                    netChance += trackedMatch * 0.2
 
-            recommendationChances[place["NAME"]] = netChance
+                    # #4 - Check if the places are our partners
+                    partnered = signedPlaceCon.CheckPlace(place.Restaurant_name)
+                    if partnered:
+                        netChance += 0.2
+                
+                placeDict = dict(place._asdict())
+                placeDict["RecommendationScore"] = netChance
+                scoredPlaces.append(placeDict)
 
-        pageNum = request.args.get("page") or 1
-        orderedPlaces = sorted(recommendationChances.items(), key=lambda x:x[1], reverse=True)
+            pageNum = request.args.get("page") or 1
+            pageNum = int(pageNum)
+            orderedPlaces = sorted(scoredPlaces, key=lambda x:x["RecommendationScore"], reverse=True)
+            totalSkip = reduce(lambda x,y: x+y, skipped[:pageNum])
+            takenSet = []
 
-        try:
-            recommendList = orderedPlaces[(pageNum-1)*12: pageNum*12]
-        except IndexError:
-            recommendList = orderedPlaces[(pageNum-1)*12:]
+            try:
+                takenSet = orderedPlaces[((pageNum-1)*displaySize)+totalSkip: (pageNum*displaySize) + totalSkip]
+            except IndexError:
+                takenSet = orderedPlaces[((pageNum-1)*displaySize)+totalSkip: ]
 
-    print(recommendList)
-    return json.dumps(recommendList)
+            async def CheckRealDuration(placesList, transportMode):
+            # Final shortlisting - Ensure estimated shortlisted places can actually be reached in time
+                async with aiohttp.ClientSession() as clientSession:
+                    currentTime = datetime.now()
+
+                    skipped[pageNum-1] = 0
+                    async def getFinalDataset(subList, startIndex):
+                        routeTasks = []
+                        for place in subList:
+                            placeLatlng = place["Latlng"].split("|")
+                            if len(placeLatlng) < 2:
+                                continue
+                            placeLatlng = list(map(lambda x: round(float(x), 7), placeLatlng))
+
+                            routeApi = "https://developers.onemap.sg/privateapi/routingsvc/route?start={},{}&end={},{}" \
+                                        "&routeType={}&token={}&date={}&time={}" \
+                                        "&mode=TRANSIT&numItineraries=1".format(latitude, longitude, placeLatlng[0], placeLatlng[1], transportMode, apiKey,
+                                        currentTime.strftime("%Y-%m-%d"), currentTime.strftime("%H:%M:%S")) 
+                            
+                            routeTasks.append(clientSession.get(routeApi, ssl=False))
+                        
+                        responses = await asyncio.gather(*routeTasks)
+
+                        skippedCount = 0
+                        for i in range(len(responses)):
+                            routeResultsRaw = responses[i]
+                            estTime = 0.75
+                            try:
+                                routeResults = await routeResultsRaw.json()
+                            except Exception:
+                                continue
+
+                            if routeResults is not None:
+                                if transportMode == "pt":
+                                    estTime += routeResults["plan"]["itineraries"][0]["duration"] / 60
+                                else:
+                                    estTime += routeResults["route_summary"]["total_time"] / 60
+
+                                if estTime <= timeAllowance:
+                                    recommendList.append(placesList[i])
+                                else:
+                                    skippedCount += 1
+
+                        skipped[pageNum-1] += skippedCount
+                        # Recursively call the function till a definite 
+                        if skippedCount > 0:
+                            recurIndex = startIndex + len(placesList) 
+                            await getFinalDataset(orderedPlaces[recurIndex: recurIndex + skippedCount], recurIndex)
+                    
+                    await getFinalDataset(placesList, (pageNum-1)*displaySize)
+
+            asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())           
+            asyncio.run(CheckRealDuration(takenSet, transportMode))
+
+        print("Done")
+    return json.dumps({"list": recommendList, "skipped": skipped})
 
 @app.route("/funcs/reached-place/", methods=['GET', 'POST'])
 def reachedPlace():
@@ -542,8 +610,8 @@ def tableGetSignedPlaces():
                                                  args.get("limit"), args.get("offset"))
     return json.dumps(resultDict)
 
-
-@app.route("/funcs/generate-arrival-qrcode", methods=['POST'])
+@app.route("/funcs/generate-claimBonus-qrcode", methods=['POST'])
+@app.route("/funcs/generate-usePoints-qrcode", methods=['POST'])
 def genQRCode():
     buffer = BytesIO()
     data = request.form.get("data")
@@ -555,20 +623,26 @@ def genQRCode():
     response = send_file(buffer, mimetype='image/png')
     return response
 
-
 @app.route("/funcs/use-points", methods=['POST'])
 def usePoints():
     return
 
+@app.route("/funcs/check-valid-placeId", methods=['POST'])
+def checkValidPlace():
+    if request.method == 'POST':
+        placeId = request.form.get("placeId")
+        place = signedPlaceCon.GetShopById(placeId)
+        return json.dumps({"valid": place is not None}) 
+
 
 # Scheduled tasks to run every week - Web scrap, training of data models
+le = preprocessing.LabelEncoder()
 @cron.cron_schedule(day_of_week="3", hour="3")
 def scheduledJobs():
     # Encode label strings
-    def encodeColumns(data):
-        le = preprocessing.LabelEncoder()
+    def encodeColumns(data):   
         for column_name in data.columns:
-            if data[column_name].dtype == object:
+            if data[column_name].dtype != numpy.number:
                 data[column_name] = le.fit_transform(data[column_name])
 
         return data
@@ -585,20 +659,23 @@ def scheduledJobs():
         model = KNeighborsClassifier()
 
         # Calculating average accuracy of current model
-        model.fit(inp.values, oup)
-        meanAccuracyScore = 0
-        for i in range(1, 6):
-            inp_train, inp_test, oup_train, oup_test = train_test_split(inp, oup, test_size=0.2)
-            model.fit(inp_train, oup_train)
-            predictions = model.predict(inp_test)
-            print(accuracy_score(oup_test, predictions))
-        meanAccuracyScore /= 5
+        try:
+            model.fit(inp.values, oup)
+            meanAccuracyScore = 0
+            for i in range(1, 6):
+                inp_train, inp_test, oup_train, oup_test = train_test_split(inp, oup, test_size=0.2)
+                model.fit(inp_train, oup_train)
+                predictions = model.predict(inp_test)
+                print(accuracy_score(oup_test, predictions))
+            meanAccuracyScore /= 5
 
-        # Saving the model and accuracy results
-        model.fit(inp, oup)
-        joblib.dump(model, "csv/dbcsv/global-users-preferences.joblib")  # Saves the newly trained model as a file
-        machineLearningReportCon.SetData(MachineLearningReport("GlobalUserPreferences", "Accuracy",
-                                                               meanAccuracyScore))  # Save the accuracy score to db
+            # Saving the model and accuracy results
+            model.fit(inp.values, oup)
+            joblib.dump(model, "csv/dbcsv/global-users-preferences.joblib")  # Saves the newly trained model as a file
+            machineLearningReportCon.SetData(MachineLearningReport("GlobalUserPreferences", "Accuracy",
+                                                                meanAccuracyScore))  # Save the accuracy score to db
+        except ValueError:
+            pass
 
     # def trainYourTrackedInfo():
 

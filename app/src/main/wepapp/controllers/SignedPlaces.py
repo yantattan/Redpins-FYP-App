@@ -21,7 +21,8 @@ class SignedPlacesCon:
 
         shop = self.__connection.find_one({"Address": address})
         if shop is not None:
-            return SignedPlace(shop["_id"], shop["Address"], shop["UnitNo"], shop["Name"], shop["Organization"], shop["Points"], shop["Checkpoint"], shop["Discount"])
+            return SignedPlace(shop["_id"], shop["Address"], shop["UnitNo"], shop["Name"], shop["Organization"], 
+                                    shop["Category"], shop["Details"], shop["Points"], shop["Checkpoint"], shop["Discount"])
 
     def ViewListOfPlaces(self, search, sort, order, limit, offset):
         # cursor = self.__connection.cursor()
@@ -147,8 +148,12 @@ class SignedPlacesCon:
     def GetShopById(self, placeId):
         try:
             shop = self.__connection.find_one({"_id": ObjectId(placeId)})
+            print(shop)
             if shop is not None:
                 return SignedPlace(shop["_id"], shop["Address"], shop["UnitNo"], shop["Name"], shop["Organization"], 
                                     shop["Category"], shop["Details"], shop["Points"], shop["Checkpoint"], shop["Discount"])
         except Exception as e:
             return 
+
+    def CheckPlace(self, name):
+        return self.__connection.find_one({"Name": name}) is not None

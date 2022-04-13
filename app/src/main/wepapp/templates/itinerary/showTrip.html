@@ -3,5 +3,181 @@
 
 {% block content %}
 {% from "includes/_formHelper.html" import render_field %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css" />
+<script src="https://cdn.onemap.sg/leaflet/onemap-leaflet.js"></script>
+<script type="text/javascript" src="https://rawgit.com/jieter/Leaflet.encoded/master/Polyline.encoded.js"></script>
 
+<div id='mapdiv' style='height:100vh;'></div>
+
+<script>
+    // Map display init
+    var apiToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjg1NDQsInVzZXJfaWQiOjg1NDQsImVtYWlsIjoieWFudGF0dGFuNzIxQGdtYWlsLmNvbSIsImZvcmV2ZXIiOmZhbHNlLCJpc3MiOiJodHRwOlwvXC9vbTIuZGZlLm9uZW1hcC5zZ1wvYXBpXC92MlwvdXNlclwvc2Vzc2lvbiIsImlhdCI6MTY0OTYwNjIxMSwiZXhwIjoxNjUwMDM4MjExLCJuYmYiOjE2NDk2MDYyMTEsImp0aSI6IjUyNzUxNWQ2OWE5ZTg4YTQ4YmZiZTM4ZWE0ZGU3NmZkIn0.bAXYvn4nFZVloibogl7oTEQ3yYOa9odVoCybT73pwFY";
+    L.Icon.Default.imagePath = "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.4.0/images";
+    var center = L.bounds([1.56073, 104.11475], [1.16, 103.502]).getCenter();
+    var map = L.map('mapdiv').setView([center.x, center.y], 12);
+    var yourMarker;
+    var endMarker;
+
+    var routeTextures = {
+        WALK: {color: "black", dashArray: "10, 10"},
+        SUBWAY: {
+            NE: {color: "purple"},
+            NS: {color: "red"},
+            DT: {color: "blue"},
+            EW: {color: "green"},
+            CC: {color: "yellow"},
+            TE: {color: "brown"},
+            Default: {color: "grey"}
+        },
+        DRIVE: {color: "black"}
+    }
+
+    var basemap = L.tileLayer(`http://maps-{s}.onemap.sg/v2/Default/{z}/{x}/{y}.png`, {
+        detectRetina: true,
+        maxZoom: 18,
+        minZoom: 12
+    });
+
+    map.setMaxBounds([[1.56073, 104], [1.16, 103.502]]);
+
+    basemap.addTo(map);
+
+    var updatePosition = false;
+    var repeatedBuildings = {};
+    function getLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showRoute);
+
+            navigator.geolocation.watchPosition(showPosition, positioningError, {
+                timeout: 1000,
+                enableHighAccuracy: true
+            });
+        } 
+    }
+
+    function showPosition(position) {  
+        updatePosition = true;  
+        console.log(position);
+        
+        // Mark marker
+        if (yourMarker) {
+            map.removeLayer(yourMarker);
+        }
+        
+        yourMarker = new L.Marker([position.coords.latitude, position.coords.longitude], {bounceOnAdd: false, customId: "YouMarker"}).addTo(map); 
+
+        // var popup = L.popup()
+        // .setLatLng([position.coords.latitude, position.coords.longitude]) 
+        // .setContent('<img height="20px" width="20px" src="https://web-static.onemap.sg/images/main/misc/icons_Locator.png">')
+        // .openOn(map);   
+    }
+
+    function positioningError(error) {
+
+    }
+
+    function showRoute(position) {
+        // Routing display
+        var today = new Date();
+        const routeTypes = ["drive", "pt", "walk"]
+        var routeType = "pt";
+        var endCoords = ["1.2834542", "103.8608090"];
+
+        function decodeGeo(encodedRoute) {
+            if (encodedRoute !== undefined || encodedRoute !== '' || encodedRoute != null ) {
+                    var routeGeo = L.Polyline.fromEncoded(encodedRoute, {
+                        precision: 6
+                    });
+
+                    return routeGeo;
+                }
+        }
+
+        console.log(`https://developers.onemap.sg/privateapi/routingsvc/route?start=${position.coords.latitude},${position.coords.longitude}&end=${endCoords[0]},${endCoords[1]}&routeType=${routeType}&token=${apiToken}&date=${String(today.getFullYear())}-${String(today.getMonth()+1)}-${String(today.getDate())}&time=${String(today.getHours())}:${String(today.getMinutes())}:${String(today.getSeconds())}&mode=TRANSIT`)
+        $.ajax({
+            url: `https://developers.onemap.sg/privateapi/routingsvc/route?start=${position.coords.latitude},${position.coords.longitude}&end=${endCoords[0]},${endCoords[1]}&routeType=${routeType}&token=${apiToken}&date=${String(today.getFullYear())}-${String(today.getMonth()+1)}-${String(today.getDate())}&time=${String(today.getHours())}:${String(today.getMinutes())}:${String(today.getSeconds())}&mode=TRANSIT`,
+            success: function(result) {
+                //Set result to a variable for writing
+                var encodedRoute;
+                var modes = [];
+
+                // Mark end
+                if (endMarker) {
+                    map.removeLayer(endMarker);
+                }
+                endMarker = new L.Marker([endCoords[0], endCoords[1]], {bounceOnAdd: false}).addTo(map);
+                 
+                if (routeType == "pt") {
+                    var allRoutes = result.plan.itineraries;
+                    for (var i in allRoutes) {
+                        var transportMeans = allRoutes[i].legs;
+                        for (var j in transportMeans) {
+                            var details = transportMeans[j];
+                            var mode = details.mode;
+
+                            encodedRoute = details.legGeometry.points
+                            var routeGeo = decodeGeo(encodedRoute);
+                            modes = {endpoints: routeGeo._latlngs, mode: mode};
+
+                            if (mode == "SUBWAY") {
+                                var subwayLine = details.route;
+                                L.polyline(modes.endpoints, routeTextures.SUBWAY[subwayLine]).addTo(map);
+                            }
+                            else {
+                                L.polyline(modes.endpoints, routeTextures[modes.mode]).addTo(map);
+                            }
+                        }
+
+                        // Remove for the next time, only take 1st route
+                        break
+                    }
+                }
+                else {
+                    encodedRoute = result.route_geometry;
+                    var routeGeo = decodeGeo(encodedRoute);
+                    modes = {endpoints: routeGeo._latlngs, mode: routeType.toUpperCase()};
+
+                    L.polyline(modes.endpoints, routeTextures[modes.mode]).addTo(map);
+                }
+                
+
+                // Check for buildings around user
+                $.ajax({
+                    url: `https://developers.onemap.sg/privateapi/commonsvc/revgeocodexy?location=${position.coords.latitude},${position.coords.longitude}&token=${apiToken}&buffer=50`,
+                    success: function(result) {
+                        for (var i in result) {
+                            if (!repeatedBuildings[result[i]]) {
+                                repeatedBuildings[result[i]] = 1;
+                            }
+                            else {
+                                repeatedBuildings[result[i]]++;
+                            }
+                        } 
+                    }
+                });
+            }
+        });
+
+        var visited = [];
+        for (var place in repeatedBuildings) {
+            if (repeatedBuildings[place] >= 120) {
+                visited.push({latitude: 1.2834542, longitude: 103.8608090, address: "1 BAYFRONT AVENUE MARINA BAY SANDS SINGAPORE 018971"})
+                $.ajax({
+                    type: "POST",   
+                    url: `/funcs/mark-tracked/`,
+                    data: {
+                        start: getLocation.coords,
+                        storeMean: "visited",
+                        places: visited
+                    }
+                });
+
+                repeatedBuildings[place] = null;
+            }
+        }
+    }
+
+    // Do something with latlngs
+    getLocation();
+</script>
 {% endblock %}

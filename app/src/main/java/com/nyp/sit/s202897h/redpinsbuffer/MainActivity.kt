@@ -49,7 +49,7 @@ class MainActivity : AppCompatActivity() {
             if (newUrl.take(claimBonusUrl.length) == claimBonusUrl || newUrl.take(usePointsUrl.length) == usePointsUrl)
                 webView.loadUrl(newUrl)
             else
-                webView.loadUrl(webAppUrl + "qrCode/invalid")
+                webView.loadUrl(webAppUrl + "qrCode/invalidCode")
         }
 
 

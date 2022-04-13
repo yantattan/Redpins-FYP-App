@@ -1,6 +1,7 @@
 import hashlib
 import mysql.connector as mySqlDB
 from pymongo import MongoClient
+from bson.objectid import ObjectId
 import random
 import string
 
@@ -27,7 +28,7 @@ class MongoDBContext:
             passwordSalt = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(8))
             passwordHash = hashlib.sha512(("P@ssw0rd" + passwordSalt).encode("utf-8")).hexdigest()
 
-            userDb.insert_one({"_id": 0,
+            userDb.insert_one({"_id": "00000000000000000000000000000000",
                                 "Username": "Root", 
                                 "Email": "redpinsbuffer@gmail.com", 
                                 "Role": "Admin", 

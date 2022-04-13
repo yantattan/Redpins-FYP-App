@@ -1,8 +1,10 @@
 import random
 import string
 import csv
+import uuid
 from DbContext import MySql
 from DbContext import MongoDBContext
+from bson.objectid import ObjectId
 import hashlib
 
 from Model import Preferences
@@ -64,7 +66,7 @@ class UserCon:
             checkExist = self.__connection.find_one({"Username": user.getUsername(), "Email": user.getEmail(), "Contact": user.getContact()})
             if checkExist is None:
                 self.__connection.insert_one({
-                    "_id": self.__connection.find().sort("_id", -1).limit(1)[0]["_id"] + 1,
+                    "_id": uuid.uuid4().hex,
                     "Username": user.getUsername(), 
                     "Email": user.getEmail(), 
                     "Role": user.getRole(), 
@@ -222,7 +224,7 @@ class UserCon:
         #                 'WHERE UserId = {};'
         #                 .format(tier, userId))
         try:
-            self.__connection.update_one({"_id": userId}, {"$set": {"Tier": tier}})
+            self.__connection.update_one({"_id": ObjectId(userId)}, {"$set": {"Tier": tier}})
         except Exception as e:
             print(e)      
             
@@ -242,5 +244,5 @@ class UserCon:
             for cat in preferencesDict:
                 for pref in preferencesDict[cat]:
                     csvWriter.writerow([row["DateOfBirth"][:4], row["Points"], row["Tier"], cat, pref])
-
+        
         return path
