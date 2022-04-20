@@ -1,228 +1,1497 @@
 <!DOCTYPE html>
 <html>
-
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Preview</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    html,
-    body {
-      display: flex;
-      flex-direction: column;
-      flex: 1;
-      width: 100%;
-      height: 100%;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-    }
-  </style>
-</head>
-
-<body>
-  <div class="w-[360px] h-[800px] relative overflow-hidden rounded-[20px] bg-white">
-    <div class="w-[360px] h-[233px] absolute left-[-1px] top-4 rounded-[5px]" style="background: linear-gradient(60.65deg, #e4002b 14.73%, #e92c3d 41.42%, #f8a36f 91.41%);"></div>
-    <div class="w-[360px] h-[604px] absolute left-[-1px] top-[148px] rounded-tl-[20px] bg-[#fcfcfc]"></div>
-    <div class="w-[180px] h-[210px]">
-      <div class="w-[180px] h-[210px] absolute left-[19.5px] top-[512.5px] rounded-[5px] bg-white" style="box-shadow: 0px 10px 20px 0 rgba(207,207,207,0.3);"></div>
-      <div class="w-[180px] h-[120px]">
-        <div class="w-[180px] h-[120px] absolute left-[19.5px] top-[512.5px] rounded-[5px] bg-[#99d0a2]"></div>
-        <img src="image-67.png" class="w-[180px] h-[126px] absolute left-[19.5px] top-[512.5px] object-cover" />
-      </div>
-      <svg width="12" height="11" viewBox="0 0 12 11" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-[11.58px] h-[11px]" preserveAspectRatio="none">
-        <path d="M5.7915 0L7.60091 3.61665L11.5819 4.19586L8.68644 7.01899L9.33797 11L5.7915 9.11827L2.24503 11L2.89548 7.02332L0 4.20017L3.98101 3.62097L5.7915 0Z" fill="#FFC736"></path>
-      </svg>
-      <p class="w-6 h-5 absolute left-[30px] top-[692px] text-sm font-semibold text-left text-[#2b2b2b]">
-        4.6
-      </p>
-      <div class="w-[30px] h-[30px] absolute left-[159.5px] top-[522.5px] rounded-[5px] bg-white"></div>
-      <p class="w-[158px] h-[39px] absolute left-[30px] top-[643px] text-sm font-semibold text-left text-[#2b2b2b]">
-        Veganburg Singapore
-      </p>
-      <p class="w-[30px] h-5 absolute left-[164px] top-[692px] text-sm text-left">
-        <span class="w-[30px] h-5 text-sm font-semibold text-left text-[#2b2b2b]">$$</span><span class="w-[30px] h-5 text-sm text-left text-[#bbb]">$</span>
-      </p>
-      <svg width="12" height="15" viewBox="0 0 12 15" fill="none" xmlns="http://www.w3.org/2000/svg" class="absolute left-[168.5px] top-[530.5px]" preserveAspectRatio="xMidYMid meet">
-        <path
-          d="M9.83173 0H1.63886C1.2054 0.00154177 0.790237 0.177904 0.48447 0.49039C0.178703 0.802877 0.00730111 1.22597 0.00787237 1.66683L0 15L5.73529 12.4998L11.4706 15V1.66683C11.4687 1.22535 11.2954 0.802496 10.9885 0.490319C10.6816 0.178142 10.2658 0.00191534 9.83173 0V0Z"
-          fill="#BBBBBB"></path>
-      </svg>
-    </div>
-    <div class="w-[180px] h-[210px]">
-      <div class="w-[180px] h-[210px] absolute left-[209.5px] top-[512.5px] rounded-[5px] bg-white" style="box-shadow: 0px 10px 20px 0 rgba(207,207,207,0.3);"></div>
-      <div class="w-[180px] h-[120px]">
-        <div class="w-[180px] h-[120px] absolute left-[209.5px] top-[512.5px] rounded-[5px] bg-[#99d0a2]"></div>
-        <img src="image-67.png" class="w-[180px] h-[126px] absolute left-[209.5px] top-[512.5px] object-cover" />
-      </div>
-      <svg width="12" height="11" viewBox="0 0 12 11" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-[11.58px] h-[11px]" preserveAspectRatio="none">
-        <path d="M5.7915 0L7.60091 3.61665L11.5819 4.19586L8.68644 7.01899L9.33797 11L5.7915 9.11827L2.24503 11L2.89548 7.02332L0 4.20017L3.98101 3.62097L5.7915 0Z" fill="#FFC736"></path>
-      </svg>
-      <p class="w-6 h-5 absolute left-[220px] top-[692px] text-sm font-semibold text-left text-[#2b2b2b]">
-        4.6
-      </p>
-      <div class="w-[30px] h-[30px] absolute left-[349.5px] top-[522.5px] rounded-[5px] bg-white"></div>
-      <p class="w-[158px] h-[39px] absolute left-[220px] top-[643px] text-sm font-semibold text-left text-[#2b2b2b]">
-        Veganburg Singapore
-      </p>
-      <p class="w-[30px] h-5 absolute left-[354px] top-[692px] text-sm text-left">
-        <span class="w-[30px] h-5 text-sm font-semibold text-left text-[#2b2b2b]">$$</span><span class="w-[30px] h-5 text-sm text-left text-[#bbb]">$</span>
-      </p>
-      <svg width="1" height="15" viewBox="0 0 1 15" fill="none" xmlns="http://www.w3.org/2000/svg" class="absolute left-[358.5px] top-[530.5px]" preserveAspectRatio="xMidYMid meet">
-        <path
-          d="M9.83173 0H1.63886C1.2054 0.00154177 0.790237 0.177904 0.48447 0.49039C0.178703 0.802877 0.00730111 1.22597 0.00787237 1.66683L0 15L5.73529 12.4998L11.4706 15V1.66683C11.4687 1.22535 11.2954 0.802496 10.9885 0.490319C10.6816 0.178142 10.2658 0.00191534 9.83173 0V0Z"
-          fill="#BBBBBB"></path>
-      </svg>
-    </div>
-    <p class="w-[115px] h-[39px] absolute left-5 top-10 text-[25px] font-semibold text-left text-white">
-      Discover
-    </p>
-    <div class="w-[360px] h-5 absolute left-[-1px] top-[-1px] overflow-hidden bg-gradient-to-b from-white to-white/0">
-      <div class="w-[360px] h-[25px] absolute left-[-1px] top-[-1px]">
-        <div class="w-[360px] h-[25px] absolute left-[-1px] top-[-1px] bg-neutral-100"></div>
-        <div class="flex justify-start items-start w-[70px] absolute left-[277px] top-1.5 gap-1.5">
-          <svg width="18" height="12" viewBox="0 0 18 12" fill="none" xmlns="http://www.w3.org/2000/svg" class="flex-grow-0 flex-shrink-0" preserveAspectRatio="none">
-            <path fill-rule="evenodd" clip-rule="evenodd"
-              d="M16.9412 0H15.8824C15.2976 0 14.8235 0.50368 14.8235 1.125V10.875C14.8235 11.4963 15.2976 12 15.8824 12H16.9412C17.5259 12 18 11.4963 18 10.875V1.125C18 0.50368 17.5259 0 16.9412 0ZM10.9412 2.625H12C12.5848 2.625 13.0588 3.12868 13.0588 3.75V10.875C13.0588 11.4963 12.5848 12 12 12H10.9412C10.3564 12 9.88233 11.4963 9.88233 10.875V3.75C9.88233 3.12868 10.3564 2.625 10.9412 2.625ZM7.05884 5.25H6.00002C5.41525 5.25 4.9412 5.75368 4.9412 6.375V10.875C4.9412 11.4963 5.41525 12 6.00002 12H7.05884C7.64362 12 8.11767 11.4963 8.11767 10.875V6.375C8.11767 5.75368 7.64362 5.25 7.05884 5.25ZM2.11765 7.5H1.05882C0.474051 7.5 0 8.00368 0 8.625V10.875C0 11.4963 0.474051 12 1.05882 12H2.11765C2.70242 12 3.17647 11.4963 3.17647 10.875V8.625C3.17647 8.00368 2.70242 7.5 2.11765 7.5Z"
-              fill="#170E2B"></path>
-          </svg><svg width="16" height="12" viewBox="0 0 16 12" fill="none" xmlns="http://www.w3.org/2000/svg" class="flex-grow-0 flex-shrink-0" preserveAspectRatio="none">
-            <path fill-rule="evenodd" clip-rule="evenodd"
-              d="M8.00044 2.49216C10.3219 2.49226 12.5546 3.42402 14.2371 5.09485C14.3638 5.22384 14.5663 5.22222 14.691 5.0912L15.9021 3.81448C15.9653 3.74803 16.0005 3.65802 16 3.56436C15.9995 3.47071 15.9632 3.38114 15.8993 3.31546C11.4834 -1.10515 4.51678 -1.10515 0.100859 3.31546C0.0368916 3.38109 0.000597157 3.47063 7.30289e-06 3.56429C-0.000582551 3.65794 0.0345808 3.74798 0.0977163 3.81448L1.30914 5.0912C1.43384 5.22241 1.6365 5.22404 1.76312 5.09485C3.44579 3.42391 5.67875 2.49215 8.00044 2.49216ZM8.00043 6.64588C9.27592 6.6458 10.5059 7.14102 11.4514 8.03532C11.5792 8.16224 11.7807 8.15949 11.9053 8.02912L13.115 6.7524C13.1787 6.68543 13.2141 6.59458 13.2132 6.50018C13.2122 6.40578 13.1751 6.3157 13.1101 6.2501C10.231 3.45256 5.7723 3.45256 2.89317 6.2501C2.82813 6.3157 2.79102 6.40582 2.79017 6.50026C2.78932 6.59469 2.82479 6.68553 2.88863 6.7524L4.09795 8.02912C4.22261 8.15949 4.42405 8.16224 4.55193 8.03532C5.49677 7.14161 6.72577 6.64644 8.00043 6.64588ZM10.4236 9.44061C10.4255 9.53528 10.3898 9.62655 10.3251 9.69287L8.23266 11.8987C8.17132 11.9635 8.08769 12 8.00043 12C7.91317 12 7.82954 11.9635 7.7682 11.8987L5.67536 9.69287C5.61071 9.6265 5.57514 9.5352 5.57706 9.44053C5.57898 9.34586 5.61821 9.25622 5.68549 9.19276C7.02183 8.0121 8.97903 8.0121 10.3154 9.19276C10.3826 9.25627 10.4218 9.34594 10.4236 9.44061Z"
-              fill="#170E2B"></path>
-          </svg><svg width="24" height="12" viewBox="0 0 24 12" fill="none" xmlns="http://www.w3.org/2000/svg" class="flex-grow-0 flex-shrink-0 w-6 h-3" preserveAspectRatio="none">
-            <path opacity="0.4" fill-rule="evenodd" clip-rule="evenodd"
-              d="M2.66667 1H19.0367C19.9572 1 20.7034 1.74619 20.7034 2.66667V9.33333C20.7034 10.2538 19.9572 11 19.0367 11H2.66666C1.74619 11 1 10.2538 1 9.33333V2.66667C1 1.74619 1.74619 1 2.66667 1ZM0 2.66667C0 1.19391 1.19391 0 2.66667 0H19.0367C20.5094 0 21.7034 1.19391 21.7034 2.66667V9.33333C21.7034 10.8061 20.5094 12 19.0367 12H2.66666C1.19391 12 0 10.8061 0 9.33333V2.66667ZM24 6C24 6.9245 23.4838 7.75894 22.6899 8.11765V3.88235C23.4838 4.24106 24 5.07551 24 6Z"
-              fill="#170E2B"></path>
-            <rect x="1.97266" y="2.11768" width="17.7573" height="7.76471" rx="1.33333" fill="#170E2B"></rect>
-          </svg>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Preview</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      html, body {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        width: 100%;
+        height: 100%;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="w-[360px] h-[800px] relative overflow-hidden rounded-[20px] bg-white">
+      <div
+        class="w-[360px] h-[233px] absolute left-[-1px] top-[-2px] rounded-[5px]"
+        style="background: linear-gradient(60.65deg, #e4002b 14.73%, #e92c3d 41.42%, #f8a36f 91.41%);"
+      ></div>
+      <div
+        class="w-[360px] h-[640px] absolute left-[-1px] top-28 rounded-tl-[20px] bg-[#fcfcfc]"
+      ></div>
+      <div class="w-[340px] h-[492px] absolute left-[19px] top-[249px] overflow-hidden">
+        <div class="w-80 h-[492px] absolute left-[-1px] top-[-1px]"></div>
+        <div class="w-[1317px] h-[1261px] absolute left-[-49px] top-[-8px]">
+          <div class="w-[1317px] h-[1194px] absolute left-[-1px] top-[66px]">
+            <div class="w-[1318px] h-[1194px]">
+              <div
+                class="w-[155px] h-[55px] absolute left-[46.5px] top-[955.5px] overflow-hidden"
+              ></div>
+              <div
+                class="w-[155px] h-[55px] absolute left-[211.5px] top-[955.5px] overflow-hidden"
+              ></div>
+              <div class="absolute left-[46.5px] top-[1163.5px]"></div>
+              <div class="w-[360px] h-[180px] absolute left-[-0.5px] top-[536.5px]"></div>
+              <p
+                class="w-[46px] h-[13px] absolute left-[321px] top-[3px] text-xs font-semibold text-left text-[#bbb]"
+              >
+                View All
+              </p>
+              <p
+                class="w-[221px] h-5 absolute left-[47px] top-0 text-lg font-semibold text-left text-[#2b2b2b]"
+              >
+                Popular Today
+              </p>
+              <div
+                class="flex justify-start items-start absolute left-[47.5px] top-[39.5px] gap-2.5"
+              >
+                <div class="flex-grow-0 flex-shrink-0 w-[150px] h-[180px] relative">
+                  <div
+                    class="w-[150px] h-[180px] absolute left-[-1px] top-[-1px] rounded-[5px] bg-white"
+                    style="box-shadow: 0px 10px 20px 0 rgba(207,207,207,0.3);"
+                  ></div>
+                  <div class="w-[150px] h-[90px]">
+                    <div
+                      class="w-[150px] h-[90px] absolute left-[-0.5px] top-[-0.5px] rounded-[5px] bg-[#99d0a2]"
+                    ></div>
+                    <img
+                      src="image-59-4.png"
+                      class="w-[207.5px] h-[90px] absolute left-[-29.5px] top-[-0.69px] rounded-[5px] object-contain"
+                    />
+                  </div>
+                  <p
+                    class="w-[130px] h-[39px] absolute left-2.5 top-[100px] text-sm font-semibold text-left text-[#2b2b2b]"
+                  >
+                    Lazy Lizard - The Promenade
+                  </p>
+                  <svg
+                    width="11"
+                    height="10"
+                    viewBox="0 0 11 10"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="w-[10.53px] h-2.5"
+                    preserveAspectRatio="none"
+                  >
+                    <path
+                      d="M5.265 0L6.90992 3.28787L10.529 3.81441L7.89676 6.3809L8.48907 10L5.265 8.28933L2.04094 10L2.63226 6.38484L0 3.81834L3.6191 3.29179L5.265 0Z"
+                      fill="#E4002B"
+                    ></path>
+                  </svg>
+                  <p
+                    class="w-5 h-[13px] absolute left-[11px] top-[154px] text-xs font-semibold text-left text-[#2b2b2b]"
+                  >
+                    4.6
+                  </p>
+                  <p
+                    class="w-[25px] h-5 absolute left-[115px] top-[154px] text-xs font-semibold text-left"
+                  >
+                    <span class="w-[25px] h-5 text-xs font-semibold text-left text-[#2b2b2b]"
+                      >$$</span
+                    ><span class="w-[25px] h-5 text-xs font-semibold text-left text-[#bbb]">$</span>
+                  </p>
+                  <p
+                    class="w-[43px] h-5 absolute left-[45px] top-[153.81px] text-xs text-left text-[#707070]"
+                  >
+                    (661)
+                  </p>
+                  <svg
+                    width="30"
+                    height="30"
+                    viewBox="0 0 30 30"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="w-[30px] h-[30px] absolute left-[116px] top-0.5"
+                    preserveAspectRatio="none"
+                  >
+                    <rect width="30" height="30" rx="5" fill="white"></rect>
+                    <g clip-path="url(#clip0_1090_426)">
+                      <path
+                        d="M19.2855 7H10.7145C10.261 7.00164 9.82671 7.18976 9.50683 7.52308C9.18695 7.8564 9.00764 8.3077 9.00824 8.77795L9 23L15 20.3331L21 23V8.77795C20.998 8.30704 20.8168 7.856 20.4957 7.52301C20.1746 7.19002 19.7396 7.00204 19.2855 7V7Z"
+                        fill="#BBBBBB"
+                      ></path>
+                    </g>
+                    <defs>
+                      <clipPath id="clip0_1090_426">
+                        <rect width="12" height="16" fill="white" transform="translate(9 7)"></rect>
+                      </clipPath>
+                    </defs>
+                  </svg>
+                </div>
+                <div class="flex-grow-0 flex-shrink-0 w-[150px] h-[180px] relative">
+                  <div
+                    class="w-[150px] h-[180px] absolute left-[-1px] top-[-1px] rounded-[5px] bg-white"
+                    style="box-shadow: 0px 10px 20px 0 rgba(207,207,207,0.3);"
+                  ></div>
+                  <div class="w-[150px] h-[90px]">
+                    <div
+                      class="w-[150px] h-[90px] absolute left-[-0.5px] top-[-0.5px] rounded-[5px] bg-[#99d0a2]"
+                    ></div>
+                    <img
+                      src="image-59-3.jpeg"
+                      class="w-[207.5px] h-[90px] absolute left-[-29.5px] top-[-0.69px] rounded-[5px] object-cover"
+                    />
+                  </div>
+                  <p
+                    class="w-[130px] h-[39px] absolute left-2.5 top-[100px] text-sm font-semibold text-left text-[#2b2b2b]"
+                  >
+                    Veganburg Singapore
+                  </p>
+                  <svg
+                    width="11"
+                    height="10"
+                    viewBox="0 0 11 10"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="w-[10.53px] h-2.5"
+                    preserveAspectRatio="none"
+                  >
+                    <path
+                      d="M5.265 0L6.90992 3.28787L10.529 3.81441L7.89676 6.3809L8.48907 10L5.265 8.28933L2.04094 10L2.63226 6.38484L0 3.81834L3.6191 3.29179L5.265 0Z"
+                      fill="#E4002B"
+                    ></path>
+                  </svg>
+                  <p
+                    class="w-5 h-[13px] absolute left-[11px] top-[154px] text-xs font-semibold text-left text-[#2b2b2b]"
+                  >
+                    4.4
+                  </p>
+                  <p
+                    class="w-[25px] h-5 absolute left-[115px] top-[154px] text-xs font-semibold text-left"
+                  >
+                    <span class="w-[25px] h-5 text-xs font-semibold text-left text-[#2b2b2b]"
+                      >$$</span
+                    ><span class="w-[25px] h-5 text-xs font-semibold text-left text-[#bbb]">$</span>
+                  </p>
+                  <p
+                    class="w-[43px] h-5 absolute left-[45px] top-[153.81px] text-xs text-left text-[#707070]"
+                  >
+                    (1,917)
+                  </p>
+                  <svg
+                    width="30"
+                    height="30"
+                    viewBox="0 0 30 30"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="w-[30px] h-[30px] absolute left-[116px] top-0.5"
+                    preserveAspectRatio="none"
+                  >
+                    <rect width="30" height="30" rx="5" fill="white"></rect>
+                    <g clip-path="url(#clip0_1090_461)">
+                      <path
+                        d="M19.2855 7H10.7145C10.261 7.00164 9.82671 7.18976 9.50683 7.52308C9.18695 7.8564 9.00764 8.3077 9.00824 8.77795L9 23L15 20.3331L21 23V8.77795C20.998 8.30704 20.8168 7.856 20.4957 7.52301C20.1746 7.19002 19.7396 7.00204 19.2855 7V7Z"
+                        fill="#BBBBBB"
+                      ></path>
+                    </g>
+                    <defs>
+                      <clipPath id="clip0_1090_461">
+                        <rect width="12" height="16" fill="white" transform="translate(9 7)"></rect>
+                      </clipPath>
+                    </defs>
+                  </svg>
+                </div>
+                <div class="flex-grow-0 flex-shrink-0 w-[150px] h-[180px] relative">
+                  <div
+                    class="w-[150px] h-[180px] absolute left-[-1px] top-[-1px] rounded-[5px] bg-white"
+                    style="box-shadow: 0px 10px 20px 0 rgba(207,207,207,0.3);"
+                  ></div>
+                  <div class="w-[150px] h-[90px]">
+                    <div
+                      class="w-[150px] h-[90px] absolute left-[-0.5px] top-[-0.5px] rounded-[5px] bg-[#99d0a2]"
+                    ></div>
+                    <img
+                      src="image-59-2.png"
+                      class="w-[207.5px] h-[90px] absolute left-[-29.5px] top-[-0.69px] rounded-[5px] object-cover"
+                    />
+                  </div>
+                  <p
+                    class="w-[130px] h-[39px] absolute left-2.5 top-[100px] text-sm font-semibold text-left text-[#2b2b2b]"
+                  >
+                    Blu Kouzina
+                  </p>
+                  <div class="w-[10.53px] h-2.5"></div>
+                  <p
+                    class="w-5 h-[13px] absolute left-[11px] top-[154px] text-xs font-semibold text-left text-[#2b2b2b]"
+                  >
+                    4.3
+                  </p>
+                  <p
+                    class="w-[25px] h-5 absolute left-[115px] top-[154px] text-xs font-semibold text-left"
+                  >
+                    <span class="w-[25px] h-5 text-xs font-semibold text-left text-[#2b2b2b]"
+                      >$$</span
+                    ><span class="w-[25px] h-5 text-xs font-semibold text-left text-[#bbb]">$</span>
+                  </p>
+                  <p
+                    class="w-[43px] h-5 absolute left-[45px] top-[153.81px] text-xs text-left text-[#707070]"
+                  >
+                    (2082)
+                  </p>
+                  <div class="w-[30px] h-[30px] absolute left-[116px] top-0.5"></div>
+                </div>
+                <div class="flex-grow-0 flex-shrink-0 w-[150px] h-[180px] relative">
+                  <div
+                    class="w-[150px] h-[180px] absolute left-[-1px] top-[-1px] rounded-[5px] bg-white"
+                    style="box-shadow: 0px 10px 20px 0 rgba(207,207,207,0.3);"
+                  ></div>
+                  <div class="w-[150px] h-[90px]">
+                    <div
+                      class="w-[150px] h-[90px] absolute left-[-0.5px] top-[-0.5px] rounded-[5px] bg-[#99d0a2]"
+                    ></div>
+                    <img
+                      src="image-59.jpeg"
+                      class="w-[207.5px] h-[90px] absolute left-[-29.5px] top-[-0.69px] rounded-[5px] object-cover"
+                    />
+                  </div>
+                  <p
+                    class="w-[130px] h-[39px] absolute left-2.5 top-[100px] text-sm font-semibold text-left text-[#2b2b2b]"
+                  >
+                    Josephine - French Cuisine &#x26; Wine Bar
+                  </p>
+                  <div class="w-[10.53px] h-2.5"></div>
+                  <p
+                    class="w-5 h-[13px] absolute left-[11px] top-[154px] text-xs font-semibold text-left text-[#2b2b2b]"
+                  >
+                    4.3
+                  </p>
+                  <p
+                    class="w-[25px] h-5 absolute left-[115px] top-[154px] text-xs font-semibold text-left"
+                  >
+                    <span class="w-[25px] h-5 text-xs font-semibold text-left text-[#2b2b2b]"
+                      >$$</span
+                    ><span class="w-[25px] h-5 text-xs font-semibold text-left text-[#bbb]">$</span>
+                  </p>
+                  <p
+                    class="w-[43px] h-5 absolute left-[45px] top-[153.81px] text-xs text-left text-[#707070]"
+                  >
+                    (2082)
+                  </p>
+                  <div class="w-[30px] h-[30px] absolute left-[116px] top-0.5"></div>
+                </div>
+                <div class="flex-grow-0 flex-shrink-0 w-[150px] h-[180px] relative">
+                  <div
+                    class="w-[150px] h-[180px] absolute left-[-1px] top-[-1px] rounded-[5px] bg-white"
+                    style="box-shadow: 0px 10px 20px 0 rgba(207,207,207,0.3);"
+                  ></div>
+                  <div class="w-[150px] h-[90px]">
+                    <div
+                      class="w-[150px] h-[90px] absolute left-[-0.5px] top-[-0.5px] rounded-[5px] bg-[#99d0a2]"
+                    ></div>
+                    <img
+                      src="image-59-5.jpeg"
+                      class="w-[207.5px] h-[90px] absolute left-[-29.5px] top-[-0.69px] rounded-[5px] object-cover"
+                    />
+                  </div>
+                  <p
+                    class="w-[130px] h-[39px] absolute left-2.5 top-[100px] text-sm font-semibold text-left text-[#2b2b2b]"
+                  >
+                    PS.Cafe Ann Siang Hill
+                  </p>
+                  <div class="w-[10.53px] h-2.5"></div>
+                  <p
+                    class="w-5 h-[13px] absolute left-[11px] top-[154px] text-xs font-semibold text-left text-[#2b2b2b]"
+                  >
+                    4.3
+                  </p>
+                  <p
+                    class="w-[25px] h-5 absolute left-[115px] top-[154px] text-xs font-semibold text-left"
+                  >
+                    <span class="w-[25px] h-5 text-xs font-semibold text-left text-[#2b2b2b]"
+                      >$$</span
+                    ><span class="w-[25px] h-5 text-xs font-semibold text-left text-[#bbb]">$</span>
+                  </p>
+                  <p
+                    class="w-[43px] h-5 absolute left-[45px] top-[153.81px] text-xs text-left text-[#707070]"
+                  >
+                    (2082)
+                  </p>
+                  <div class="w-[30px] h-[30px] absolute left-[116px] top-0.5"></div>
+                </div>
+                <div class="flex-grow-0 flex-shrink-0 w-[150px] h-[180px] relative">
+                  <div
+                    class="w-[150px] h-[180px] absolute left-[-1px] top-[-1px] rounded-[5px] bg-white"
+                    style="box-shadow: 0px 10px 20px 0 rgba(207,207,207,0.3);"
+                  ></div>
+                  <div class="w-[150px] h-[90px]">
+                    <div
+                      class="w-[150px] h-[90px] absolute left-[-0.5px] top-[-0.5px] rounded-[5px] bg-[#99d0a2]"
+                    ></div>
+                    <img
+                      src="image-59-10.jpeg"
+                      class="w-[207.5px] h-[90px] absolute left-[-29.5px] top-[-0.69px] rounded-[5px] object-cover"
+                    />
+                  </div>
+                  <p
+                    class="w-[130px] h-[39px] absolute left-2.5 top-[100px] text-sm font-semibold text-left text-[#2b2b2b]"
+                  >
+                    Oso Ristorante
+                  </p>
+                  <div class="w-[10.53px] h-2.5"></div>
+                  <p
+                    class="w-5 h-[13px] absolute left-[11px] top-[154px] text-xs font-semibold text-left text-[#2b2b2b]"
+                  >
+                    4.3
+                  </p>
+                  <p
+                    class="w-[25px] h-5 absolute left-[115px] top-[154px] text-xs font-semibold text-left"
+                  >
+                    <span class="w-[25px] h-5 text-xs font-semibold text-left text-[#2b2b2b]"
+                      >$$</span
+                    ><span class="w-[25px] h-5 text-xs font-semibold text-left text-[#bbb]">$</span>
+                  </p>
+                  <p
+                    class="w-[43px] h-5 absolute left-[45px] top-[153.81px] text-xs text-left text-[#707070]"
+                  >
+                    (2082)
+                  </p>
+                  <div class="w-[30px] h-[30px] absolute left-[116px] top-0.5"></div>
+                </div>
+                <div class="flex-grow-0 flex-shrink-0 w-[150px] h-[180px] relative">
+                  <div
+                    class="w-[150px] h-[180px] absolute left-[-1px] top-[-1px] rounded-[5px] bg-white"
+                    style="box-shadow: 0px 10px 20px 0 rgba(207,207,207,0.3);"
+                  ></div>
+                  <div class="w-[150px] h-[90px]">
+                    <div
+                      class="w-[150px] h-[90px] absolute left-[-0.5px] top-[-0.5px] rounded-[5px] bg-[#99d0a2]"
+                    ></div>
+                    <img
+                      src="image-59-6.jpeg"
+                      class="w-[207.5px] h-[90px] absolute left-[-29.5px] top-[-0.69px] rounded-[5px] object-cover"
+                    />
+                  </div>
+                  <p
+                    class="w-[130px] h-[39px] absolute left-2.5 top-[100px] text-sm font-semibold text-left text-[#2b2b2b]"
+                  >
+                    The Orchard Cafe
+                  </p>
+                  <div class="w-[10.53px] h-2.5"></div>
+                  <p
+                    class="w-5 h-[13px] absolute left-[11px] top-[154px] text-xs font-semibold text-left text-[#2b2b2b]"
+                  >
+                    4.3
+                  </p>
+                  <p
+                    class="w-[25px] h-5 absolute left-[115px] top-[154px] text-xs font-semibold text-left"
+                  >
+                    <span class="w-[25px] h-5 text-xs font-semibold text-left text-[#2b2b2b]"
+                      >$$</span
+                    ><span class="w-[25px] h-5 text-xs font-semibold text-left text-[#bbb]">$</span>
+                  </p>
+                  <p
+                    class="w-[43px] h-5 absolute left-[45px] top-[153.81px] text-xs text-left text-[#707070]"
+                  >
+                    (2082)
+                  </p>
+                  <div class="w-[30px] h-[30px] absolute left-[116px] top-0.5"></div>
+                </div>
+                <div class="flex-grow-0 flex-shrink-0 w-[150px] h-[180px] relative">
+                  <div
+                    class="w-[150px] h-[180px] absolute left-[-1px] top-[-1px] rounded-[5px] bg-white"
+                    style="box-shadow: 0px 10px 20px 0 rgba(207,207,207,0.3);"
+                  ></div>
+                  <div class="w-[150px] h-[90px]">
+                    <div
+                      class="w-[150px] h-[90px] absolute left-[-0.5px] top-[-0.5px] rounded-[5px] bg-[#99d0a2]"
+                    ></div>
+                    <img
+                      src="image-59-11.jpeg"
+                      class="w-[207.5px] h-[90px] absolute left-[-29.5px] top-[-0.69px] rounded-[5px] object-cover"
+                    />
+                  </div>
+                  <p
+                    class="w-[130px] h-[39px] absolute left-2.5 top-[100px] text-sm font-semibold text-left text-[#2b2b2b]"
+                  >
+                    Spago Bar &#x26; Lounge
+                  </p>
+                  <div class="w-[10.53px] h-2.5"></div>
+                  <p
+                    class="w-5 h-[13px] absolute left-[11px] top-[154px] text-xs font-semibold text-left text-[#2b2b2b]"
+                  >
+                    4.3
+                  </p>
+                  <p
+                    class="w-[25px] h-5 absolute left-[115px] top-[154px] text-xs font-semibold text-left"
+                  >
+                    <span class="w-[25px] h-5 text-xs font-semibold text-left text-[#2b2b2b]"
+                      >$$</span
+                    ><span class="w-[25px] h-5 text-xs font-semibold text-left text-[#bbb]">$</span>
+                  </p>
+                  <p
+                    class="w-[43px] h-5 absolute left-[45px] top-[153.81px] text-xs text-left text-[#707070]"
+                  >
+                    (2082)
+                  </p>
+                  <div class="w-[30px] h-[30px] absolute left-[116px] top-0.5"></div>
+                </div>
+              </div>
+              <p
+                class="w-[197px] h-5 absolute left-12 top-[252px] text-lg font-semibold text-left text-[#2b2b2b]"
+              >
+                Amazing Attractions
+              </p>
+              <div
+                class="flex justify-start items-start absolute left-[47.5px] top-[289.5px] gap-2.5"
+              >
+                <div class="flex-grow-0 flex-shrink-0 w-[150px] h-[180px] relative">
+                  <div
+                    class="w-[150px] h-[180px] absolute left-[-1px] top-[-1px] rounded-[5px] bg-white"
+                    style="box-shadow: 0px 10px 20px 0 rgba(207,207,207,0.3);"
+                  ></div>
+                  <div class="w-[150px] h-[90px]">
+                    <div
+                      class="w-[150px] h-[90px] absolute left-[-0.5px] top-[-0.5px] rounded-[5px] bg-[#99d0a2]"
+                    ></div>
+                    <img
+                      src="image-59-7.jpeg"
+                      class="w-[207.5px] h-[90px] absolute left-[-29.5px] top-[-0.69px] rounded-[5px] object-cover"
+                    />
+                  </div>
+                  <p
+                    class="w-[130px] h-[39px] absolute left-2.5 top-[100px] text-sm font-semibold text-left text-[#2b2b2b]"
+                  >
+                    ArtScience Museum
+                  </p>
+                  <div class="w-[10.53px] h-2.5"></div>
+                  <p
+                    class="w-5 h-[13px] absolute left-[11px] top-[154px] text-xs font-semibold text-left text-[#2b2b2b]"
+                  >
+                    4.6
+                  </p>
+                  <p
+                    class="w-[25px] h-5 absolute left-[115px] top-[154px] text-xs font-semibold text-left"
+                  >
+                    <span class="w-[25px] h-5 text-xs font-semibold text-left text-[#2b2b2b]"
+                      >$$</span
+                    ><span class="w-[25px] h-5 text-xs font-semibold text-left text-[#bbb]">$</span>
+                  </p>
+                  <p
+                    class="w-[43px] h-5 absolute left-[45px] top-[153.81px] text-xs text-left text-[#707070]"
+                  >
+                    (661)
+                  </p>
+                  <svg
+                    width="30"
+                    height="30"
+                    viewBox="0 0 30 30"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="w-[30px] h-[30px] absolute left-[116px] top-0.5"
+                    preserveAspectRatio="none"
+                  >
+                    <rect width="30" height="30" rx="5" fill="white"></rect>
+                    <g clip-path="url(#clip0_1090_551)">
+                      <path
+                        d="M19.2855 7H10.7145C10.261 7.00164 9.82671 7.18976 9.50683 7.52308C9.18695 7.8564 9.00764 8.3077 9.00824 8.77795L9 23L15 20.3331L21 23V8.77795C20.998 8.30704 20.8168 7.856 20.4957 7.52301C20.1746 7.19002 19.7396 7.00204 19.2855 7V7Z"
+                        fill="#BBBBBB"
+                      ></path>
+                    </g>
+                    <defs>
+                      <clipPath id="clip0_1090_551">
+                        <rect width="12" height="16" fill="white" transform="translate(9 7)"></rect>
+                      </clipPath>
+                    </defs>
+                  </svg>
+                </div>
+                <div class="flex-grow-0 flex-shrink-0 w-[150px] h-[180px] relative">
+                  <div
+                    class="w-[150px] h-[180px] absolute left-[-1px] top-[-1px] rounded-[5px] bg-white"
+                    style="box-shadow: 0px 10px 20px 0 rgba(207,207,207,0.3);"
+                  ></div>
+                  <div class="w-[150px] h-[90px]">
+                    <div
+                      class="w-[150px] h-[90px] absolute left-[-0.5px] top-[-0.5px] rounded-[5px] bg-[#99d0a2]"
+                    ></div>
+                    <img
+                      src="image-59-8.jpeg"
+                      class="w-[207.5px] h-[90px] absolute left-[-29.5px] top-[-0.69px] rounded-[5px] object-contain"
+                    />
+                  </div>
+                  <p
+                    class="w-[130px] h-[39px] absolute left-2.5 top-[100px] text-sm font-semibold text-left text-[#2b2b2b]"
+                  >
+                    National Gallery Singapore
+                  </p>
+                  <div class="w-[10.53px] h-2.5"></div>
+                  <p
+                    class="w-5 h-[13px] absolute left-[11px] top-[154px] text-xs font-semibold text-left text-[#2b2b2b]"
+                  >
+                    4.4
+                  </p>
+                  <p
+                    class="w-[25px] h-5 absolute left-[115px] top-[154px] text-xs font-semibold text-left"
+                  >
+                    <span class="w-[25px] h-5 text-xs font-semibold text-left text-[#2b2b2b]"
+                      >$$</span
+                    ><span class="w-[25px] h-5 text-xs font-semibold text-left text-[#bbb]">$</span>
+                  </p>
+                  <p
+                    class="w-[43px] h-5 absolute left-[45px] top-[153.81px] text-xs text-left text-[#707070]"
+                  >
+                    (1,917)
+                  </p>
+                  <svg
+                    width="30"
+                    height="30"
+                    viewBox="0 0 30 30"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="w-[30px] h-[30px] absolute left-[116px] top-0.5"
+                    preserveAspectRatio="none"
+                  >
+                    <rect width="30" height="30" rx="5" fill="white"></rect>
+                    <g clip-path="url(#clip0_1090_567)">
+                      <path
+                        d="M19.2855 7H10.7145C10.261 7.00164 9.82671 7.18976 9.50683 7.52308C9.18695 7.8564 9.00764 8.3077 9.00824 8.77795L9 23L15 20.3331L21 23V8.77795C20.998 8.30704 20.8168 7.856 20.4957 7.52301C20.1746 7.19002 19.7396 7.00204 19.2855 7V7Z"
+                        fill="#BBBBBB"
+                      ></path>
+                    </g>
+                    <defs>
+                      <clipPath id="clip0_1090_567">
+                        <rect width="12" height="16" fill="white" transform="translate(9 7)"></rect>
+                      </clipPath>
+                    </defs>
+                  </svg>
+                </div>
+                <div class="flex-grow-0 flex-shrink-0 w-[150px] h-[180px] relative">
+                  <div
+                    class="w-[150px] h-[180px] absolute left-[-1px] top-[-1px] rounded-[5px] bg-white"
+                    style="box-shadow: 0px 10px 20px 0 rgba(207,207,207,0.3);"
+                  ></div>
+                  <div class="w-[150px] h-[90px]">
+                    <div
+                      class="w-[150px] h-[90px] absolute left-[-0.5px] top-[-0.5px] rounded-[5px] bg-[#99d0a2]"
+                    ></div>
+                    <img
+                      src="image-59-9.jpeg"
+                      class="w-[207.5px] h-[90px] absolute left-[-29.5px] top-[-0.69px] rounded-[5px] object-cover"
+                    />
+                  </div>
+                  <p
+                    class="w-[130px] h-[39px] absolute left-2.5 top-[100px] text-sm font-semibold text-left text-[#2b2b2b]"
+                  >
+                    Haw Par Villa
+                  </p>
+                  <div class="w-[10.53px] h-2.5"></div>
+                  <p
+                    class="w-5 h-[13px] absolute left-[11px] top-[154px] text-xs font-semibold text-left text-[#2b2b2b]"
+                  >
+                    4.3
+                  </p>
+                  <p
+                    class="w-[25px] h-5 absolute left-[115px] top-[154px] text-xs font-semibold text-left"
+                  >
+                    <span class="w-[25px] h-5 text-xs font-semibold text-left text-[#2b2b2b]"
+                      >$$</span
+                    ><span class="w-[25px] h-5 text-xs font-semibold text-left text-[#bbb]">$</span>
+                  </p>
+                  <p
+                    class="w-[43px] h-5 absolute left-[45px] top-[153.81px] text-xs text-left text-[#707070]"
+                  >
+                    (2082)
+                  </p>
+                  <div class="w-[30px] h-[30px] absolute left-[116px] top-0.5"></div>
+                </div>
+                <div class="flex-grow-0 flex-shrink-0 w-[150px] h-[180px] relative">
+                  <div
+                    class="w-[150px] h-[180px] absolute left-[-1px] top-[-1px] rounded-[5px] bg-white"
+                    style="box-shadow: 0px 10px 20px 0 rgba(207,207,207,0.3);"
+                  ></div>
+                  <div class="w-[150px] h-[90px]">
+                    <div
+                      class="w-[150px] h-[90px] absolute left-[-0.5px] top-[-0.5px] rounded-[5px] bg-[#99d0a2]"
+                    ></div>
+                    <img
+                      src="image-59-16.jpeg"
+                      class="w-[207.5px] h-[90px] absolute left-[-29.5px] top-[-0.69px] rounded-[5px] object-cover"
+                    />
+                  </div>
+                  <p
+                    class="w-[130px] h-[39px] absolute left-2.5 top-[100px] text-sm font-semibold text-left text-[#2b2b2b]"
+                  >
+                    Gardens by the Bay
+                  </p>
+                  <div class="w-[10.53px] h-2.5"></div>
+                  <p
+                    class="w-5 h-[13px] absolute left-[11px] top-[154px] text-xs font-semibold text-left text-[#2b2b2b]"
+                  >
+                    4.3
+                  </p>
+                  <p
+                    class="w-[25px] h-5 absolute left-[115px] top-[154px] text-xs font-semibold text-left"
+                  >
+                    <span class="w-[25px] h-5 text-xs font-semibold text-left text-[#2b2b2b]"
+                      >$$</span
+                    ><span class="w-[25px] h-5 text-xs font-semibold text-left text-[#bbb]">$</span>
+                  </p>
+                  <p
+                    class="w-[43px] h-5 absolute left-[45px] top-[153.81px] text-xs text-left text-[#707070]"
+                  >
+                    (2082)
+                  </p>
+                  <div class="w-[30px] h-[30px] absolute left-[116px] top-0.5"></div>
+                </div>
+                <div class="flex-grow-0 flex-shrink-0 w-[150px] h-[180px] relative">
+                  <div
+                    class="w-[150px] h-[180px] absolute left-[-1px] top-[-1px] rounded-[5px] bg-white"
+                    style="box-shadow: 0px 10px 20px 0 rgba(207,207,207,0.3);"
+                  ></div>
+                  <div class="w-[150px] h-[90px]">
+                    <div
+                      class="w-[150px] h-[90px] absolute left-[-0.5px] top-[-0.5px] rounded-[5px] bg-[#99d0a2]"
+                    ></div>
+                    <img
+                      src="image-59-13.jpeg"
+                      class="w-[207.5px] h-[90px] absolute left-[-29.5px] top-[-0.69px] rounded-[5px] object-cover"
+                    />
+                  </div>
+                  <p
+                    class="w-[130px] h-[39px] absolute left-2.5 top-[100px] text-sm font-semibold text-left text-[#2b2b2b]"
+                  >
+                    St John’s &#x26; Lazarus Island
+                  </p>
+                  <div class="w-[10.53px] h-2.5"></div>
+                  <p
+                    class="w-5 h-[13px] absolute left-[11px] top-[154px] text-xs font-semibold text-left text-[#2b2b2b]"
+                  >
+                    4.3
+                  </p>
+                  <p
+                    class="w-[25px] h-5 absolute left-[115px] top-[154px] text-xs font-semibold text-left"
+                  >
+                    <span class="w-[25px] h-5 text-xs font-semibold text-left text-[#2b2b2b]"
+                      >$$</span
+                    ><span class="w-[25px] h-5 text-xs font-semibold text-left text-[#bbb]">$</span>
+                  </p>
+                  <p
+                    class="w-[43px] h-5 absolute left-[45px] top-[153.81px] text-xs text-left text-[#707070]"
+                  >
+                    (2082)
+                  </p>
+                  <div class="w-[30px] h-[30px] absolute left-[116px] top-0.5"></div>
+                </div>
+                <div class="flex-grow-0 flex-shrink-0 w-[150px] h-[180px] relative">
+                  <div
+                    class="w-[150px] h-[180px] absolute left-[-1px] top-[-1px] rounded-[5px] bg-white"
+                    style="box-shadow: 0px 10px 20px 0 rgba(207,207,207,0.3);"
+                  ></div>
+                  <div class="w-[150px] h-[90px]">
+                    <div
+                      class="w-[150px] h-[90px] absolute left-[-0.5px] top-[-0.5px] rounded-[5px] bg-[#99d0a2]"
+                    ></div>
+                    <img
+                      src="image-59-12.jpeg"
+                      class="w-[207.5px] h-[90px] absolute left-[-29.5px] top-[-0.69px] rounded-[5px] object-cover"
+                    />
+                  </div>
+                  <p
+                    class="w-[130px] h-[39px] absolute left-2.5 top-[100px] text-sm font-semibold text-left text-[#2b2b2b]"
+                  >
+                    Universal Studios Singapore
+                  </p>
+                  <div class="w-[10.53px] h-2.5"></div>
+                  <p
+                    class="w-5 h-[13px] absolute left-[11px] top-[154px] text-xs font-semibold text-left text-[#2b2b2b]"
+                  >
+                    4.3
+                  </p>
+                  <p
+                    class="w-[25px] h-5 absolute left-[115px] top-[154px] text-xs font-semibold text-left"
+                  >
+                    <span class="w-[25px] h-5 text-xs font-semibold text-left text-[#2b2b2b]"
+                      >$$</span
+                    ><span class="w-[25px] h-5 text-xs font-semibold text-left text-[#bbb]">$</span>
+                  </p>
+                  <p
+                    class="w-[43px] h-5 absolute left-[45px] top-[153.81px] text-xs text-left text-[#707070]"
+                  >
+                    (2082)
+                  </p>
+                  <div class="w-[30px] h-[30px] absolute left-[116px] top-0.5"></div>
+                </div>
+                <div class="flex-grow-0 flex-shrink-0 w-[150px] h-[180px] relative">
+                  <div
+                    class="w-[150px] h-[180px] absolute left-[-1px] top-[-1px] rounded-[5px] bg-white"
+                    style="box-shadow: 0px 10px 20px 0 rgba(207,207,207,0.3);"
+                  ></div>
+                  <div class="w-[150px] h-[90px]">
+                    <div
+                      class="w-[150px] h-[90px] absolute left-[-0.5px] top-[-0.5px] rounded-[5px] bg-[#99d0a2]"
+                    ></div>
+                    <img
+                      src="image-59-14.png"
+                      class="w-[207.5px] h-[90px] absolute left-[-29.5px] top-[-0.69px] rounded-[5px] object-cover"
+                    />
+                  </div>
+                  <p
+                    class="w-[130px] h-[39px] absolute left-2.5 top-[100px] text-sm font-semibold text-left text-[#2b2b2b]"
+                  >
+                    Skyline Luge
+                  </p>
+                  <div class="w-[10.53px] h-2.5"></div>
+                  <p
+                    class="w-5 h-[13px] absolute left-[11px] top-[154px] text-xs font-semibold text-left text-[#2b2b2b]"
+                  >
+                    4.3
+                  </p>
+                  <p
+                    class="w-[25px] h-5 absolute left-[115px] top-[154px] text-xs font-semibold text-left"
+                  >
+                    <span class="w-[25px] h-5 text-xs font-semibold text-left text-[#2b2b2b]"
+                      >$$</span
+                    ><span class="w-[25px] h-5 text-xs font-semibold text-left text-[#bbb]">$</span>
+                  </p>
+                  <p
+                    class="w-[43px] h-5 absolute left-[45px] top-[153.81px] text-xs text-left text-[#707070]"
+                  >
+                    (2082)
+                  </p>
+                  <div class="w-[30px] h-[30px] absolute left-[116px] top-0.5"></div>
+                </div>
+                <div class="flex-grow-0 flex-shrink-0 w-[150px] h-[180px] relative">
+                  <div
+                    class="w-[150px] h-[180px] absolute left-[-1px] top-[-1px] rounded-[5px] bg-white"
+                    style="box-shadow: 0px 10px 20px 0 rgba(207,207,207,0.3);"
+                  ></div>
+                  <div class="w-[150px] h-[90px]">
+                    <div
+                      class="w-[150px] h-[90px] absolute left-[-0.5px] top-[-0.5px] rounded-[5px] bg-[#99d0a2]"
+                    ></div>
+                    <img
+                      src="image-59-15.jpeg"
+                      class="w-[207.5px] h-[90px] absolute left-[-29.5px] top-[-0.69px] rounded-[5px] object-cover"
+                    />
+                  </div>
+                  <p
+                    class="w-[130px] h-[39px] absolute left-2.5 top-[100px] text-sm font-semibold text-left text-[#2b2b2b]"
+                  >
+                    Spago Bar &#x26; Lounge
+                  </p>
+                  <div class="w-[10.53px] h-2.5"></div>
+                  <p
+                    class="w-5 h-[13px] absolute left-[11px] top-[154px] text-xs font-semibold text-left text-[#2b2b2b]"
+                  >
+                    4.3
+                  </p>
+                  <p
+                    class="w-[25px] h-5 absolute left-[115px] top-[154px] text-xs font-semibold text-left"
+                  >
+                    <span class="w-[25px] h-5 text-xs font-semibold text-left text-[#2b2b2b]"
+                      >$$</span
+                    ><span class="w-[25px] h-5 text-xs font-semibold text-left text-[#bbb]">$</span>
+                  </p>
+                  <p
+                    class="w-[43px] h-5 absolute left-[45px] top-[153.81px] text-xs text-left text-[#707070]"
+                  >
+                    (2082)
+                  </p>
+                  <div class="w-[30px] h-[30px] absolute left-[116px] top-0.5"></div>
+                </div>
+              </div>
+              <p
+                class="w-[197px] h-5 absolute left-[47px] top-[497px] text-lg font-semibold text-left text-[#2b2b2b]"
+              >
+                Exciting Eateries
+              </p>
+              <p
+                class="w-[197px] h-5 absolute left-[47px] top-[762px] text-lg font-semibold text-left text-[#2b2b2b]"
+              >
+                Go International
+              </p>
+              <p
+                class="w-[46px] h-[13px] absolute left-[321px] top-[257px] text-xs font-semibold text-left text-[#bbb]"
+              >
+                View All
+              </p>
+              <p
+                class="w-[46px] h-[13px] absolute left-[321px] top-[502px] text-xs font-semibold text-left text-[#bbb]"
+              >
+                View All
+              </p>
+              <p
+                class="w-[46px] h-[13px] absolute left-[321px] top-[767px] text-xs font-semibold text-left text-[#bbb]"
+              >
+                View All
+              </p>
+              <p
+                class="w-[127px] h-[13px] absolute left-[143px] top-[1151px] text-xs font-semibold text-left text-[#bbb]"
+              >
+                Stay Tuned For More!
+              </p>
+              <div class="w-[3px] h-1 absolute left-[185.5px] top-[536.5px] bg-[#c4c4c4]"></div>
+              <div class="w-[3px] h-1 absolute left-[345.5px] top-[536.5px] bg-[#c4c4c4]"></div>
+              <div class="w-[1270px] h-[180px]">
+                <div
+                  class="w-[150px] h-[180px] absolute left-[206.5px] top-[536.5px] rounded-[5px] bg-white"
+                  style="box-shadow: 0px 10px 20px 0 rgba(207,207,207,0.3);"
+                ></div>
+                <p
+                  class="w-[130px] h-[39px] absolute left-[217px] top-[637px] text-sm font-semibold text-left text-[#2b2b2b]"
+                >
+                  Pig N Whistle Singapore
+                </p>
+                <div class="w-[10.53px] h-2.5"></div>
+                <p
+                  class="w-5 h-[13px] absolute left-[217px] top-[691px] text-xs font-semibold text-left text-[#2b2b2b]"
+                >
+                  4.4
+                </p>
+                <p
+                  class="w-[25px] h-5 absolute left-[321px] top-[691px] text-xs font-semibold text-left"
+                >
+                  <span class="w-[25px] h-5 text-xs font-semibold text-left text-[#2b2b2b]">$$</span
+                  ><span class="w-[25px] h-5 text-xs font-semibold text-left text-[#bbb]">$</span>
+                </p>
+                <div
+                  class="w-[150px] h-[180px] absolute left-[46.5px] top-[536.5px] rounded-[5px] bg-white"
+                  style="box-shadow: 0px 10px 20px 0 rgba(207,207,207,0.3);"
+                ></div>
+                <p
+                  class="w-[130px] h-[39px] absolute left-[57px] top-[637px] text-sm font-semibold text-left text-[#2b2b2b]"
+                >
+                  Sin Hoi Sai Eating House
+                </p>
+                <div class="w-[10.53px] h-2.5"></div>
+                <p
+                  class="w-5 h-[13px] absolute left-[58px] top-[691px] text-xs font-semibold text-left text-[#2b2b2b]"
+                >
+                  4.6
+                </p>
+                <p
+                  class="w-[25px] h-5 absolute left-[162px] top-[691px] text-xs font-semibold text-left"
+                >
+                  <span class="w-[25px] h-5 text-xs font-semibold text-left text-[#2b2b2b]">$$</span
+                  ><span class="w-[25px] h-5 text-xs font-semibold text-left text-[#bbb]">$</span>
+                </p>
+                <p
+                  class="w-[29px] h-5 absolute left-[92px] top-[691px] text-xs text-left text-[#707070]"
+                >
+                  (661)
+                </p>
+                <p
+                  class="w-[41px] h-5 absolute left-[251px] top-[691px] text-xs text-left text-[#707070]"
+                >
+                  (1,917)
+                </p>
+                <div
+                  class="w-[150px] h-[180px] absolute left-[366.5px] top-[536.5px] rounded-[5px] bg-white"
+                  style="box-shadow: 0px 10px 20px 0 rgba(207,207,207,0.3);"
+                ></div>
+                <div
+                  class="w-[150px] h-[180px] absolute left-[526.5px] top-[536.5px] rounded-[5px] bg-white"
+                  style="box-shadow: 0px 10px 20px 0 rgba(207,207,207,0.3);"
+                ></div>
+                <div
+                  class="w-[150px] h-[180px] absolute left-[686.5px] top-[536.5px] rounded-[5px] bg-white"
+                  style="box-shadow: 0px 10px 20px 0 rgba(207,207,207,0.3);"
+                ></div>
+                <div
+                  class="w-[150px] h-[180px] absolute left-[846.5px] top-[536.5px] rounded-[5px] bg-white"
+                  style="box-shadow: 0px 10px 20px 0 rgba(207,207,207,0.3);"
+                ></div>
+                <div
+                  class="w-[150px] h-[180px] absolute left-[1006.5px] top-[536.5px] rounded-[5px] bg-white"
+                  style="box-shadow: 0px 10px 20px 0 rgba(207,207,207,0.3);"
+                ></div>
+                <div
+                  class="w-[150px] h-[180px] absolute left-[1166.5px] top-[536.5px] rounded-[5px] bg-white"
+                  style="box-shadow: 0px 10px 20px 0 rgba(207,207,207,0.3);"
+                ></div>
+                <p
+                  class="w-[130px] h-[39px] absolute left-[377px] top-[637px] text-sm font-semibold text-left text-[#2b2b2b]"
+                >
+                  Rebelicious
+                </p>
+                <p
+                  class="w-[130px] h-[39px] absolute left-[537px] top-[637px] text-sm font-semibold text-left text-[#2b2b2b]"
+                >
+                  Baba Chews Bar and Eatery
+                </p>
+                <p
+                  class="w-[130px] h-[39px] absolute left-[697px] top-[637px] text-sm font-semibold text-left text-[#2b2b2b]"
+                >
+                  Carnivori
+                </p>
+                <p
+                  class="w-[130px] h-[39px] absolute left-[857px] top-[637px] text-sm font-semibold text-left text-[#2b2b2b]"
+                >
+                  Bistro 101
+                </p>
+                <p
+                  class="w-[130px] h-[39px] absolute left-[1017px] top-[637px] text-sm font-semibold text-left text-[#2b2b2b]"
+                >
+                  South Union Park
+                </p>
+                <p
+                  class="w-[130px] h-[39px] absolute left-[1177px] top-[637px] text-sm font-semibold text-left text-[#2b2b2b]"
+                >
+                  Quentin's the Eurasian Restaur...
+                </p>
+                <div class="w-[10.53px] h-2.5"></div>
+                <div class="w-[10.53px] h-2.5"></div>
+                <div class="w-[10.53px] h-2.5"></div>
+                <div class="w-[10.53px] h-2.5"></div>
+                <div class="w-[10.53px] h-2.5"></div>
+                <div class="w-[10.53px] h-2.5"></div>
+                <p
+                  class="w-5 h-[13px] absolute left-[377px] top-[691px] text-xs font-semibold text-left text-[#2b2b2b]"
+                >
+                  4.3
+                </p>
+                <p
+                  class="w-5 h-[13px] absolute left-[537px] top-[691px] text-xs font-semibold text-left text-[#2b2b2b]"
+                >
+                  4.3
+                </p>
+                <p
+                  class="w-5 h-[13px] absolute left-[697px] top-[691px] text-xs font-semibold text-left text-[#2b2b2b]"
+                >
+                  4.3
+                </p>
+                <p
+                  class="w-5 h-[13px] absolute left-[857px] top-[691px] text-xs font-semibold text-left text-[#2b2b2b]"
+                >
+                  4.3
+                </p>
+                <p
+                  class="w-5 h-[13px] absolute left-[1017px] top-[691px] text-xs font-semibold text-left text-[#2b2b2b]"
+                >
+                  4.3
+                </p>
+                <p
+                  class="w-5 h-[13px] absolute left-[1177px] top-[691px] text-xs font-semibold text-left text-[#2b2b2b]"
+                >
+                  4.3
+                </p>
+                <p
+                  class="w-[25px] h-5 absolute left-[481px] top-[691px] text-xs font-semibold text-left"
+                >
+                  <span class="w-[25px] h-5 text-xs font-semibold text-left text-[#2b2b2b]">$$</span
+                  ><span class="w-[25px] h-5 text-xs font-semibold text-left text-[#bbb]">$</span>
+                </p>
+                <p
+                  class="w-[25px] h-5 absolute left-[642px] top-[691px] text-xs font-semibold text-left"
+                >
+                  <span class="w-[25px] h-5 text-xs font-semibold text-left text-[#2b2b2b]">$$</span
+                  ><span class="w-[25px] h-5 text-xs font-semibold text-left text-[#bbb]">$</span>
+                </p>
+                <p
+                  class="w-[25px] h-5 absolute left-[801px] top-[691px] text-xs font-semibold text-left"
+                >
+                  <span class="w-[25px] h-5 text-xs font-semibold text-left text-[#2b2b2b]">$$</span
+                  ><span class="w-[25px] h-5 text-xs font-semibold text-left text-[#bbb]">$</span>
+                </p>
+                <p
+                  class="w-[25px] h-5 absolute left-[961px] top-[691px] text-xs font-semibold text-left"
+                >
+                  <span class="w-[25px] h-5 text-xs font-semibold text-left text-[#2b2b2b]">$$</span
+                  ><span class="w-[25px] h-5 text-xs font-semibold text-left text-[#bbb]">$</span>
+                </p>
+                <p
+                  class="w-[25px] h-5 absolute left-[1121px] top-[691px] text-xs font-semibold text-left"
+                >
+                  <span class="w-[25px] h-5 text-xs font-semibold text-left text-[#2b2b2b]">$$</span
+                  ><span class="w-[25px] h-5 text-xs font-semibold text-left text-[#bbb]">$</span>
+                </p>
+                <p
+                  class="w-[25px] h-5 absolute left-[1281px] top-[691px] text-xs font-semibold text-left"
+                >
+                  <span class="w-[25px] h-5 text-xs font-semibold text-left text-[#2b2b2b]">$$</span
+                  ><span class="w-[25px] h-5 text-xs font-semibold text-left text-[#bbb]">$</span>
+                </p>
+                <p
+                  class="w-9 h-5 absolute left-[411px] top-[691px] text-xs text-left text-[#707070]"
+                >
+                  (2082)
+                </p>
+                <p
+                  class="w-9 h-5 absolute left-[571px] top-[691px] text-xs text-left text-[#707070]"
+                >
+                  (2082)
+                </p>
+                <p
+                  class="w-9 h-5 absolute left-[731px] top-[691px] text-xs text-left text-[#707070]"
+                >
+                  (2082)
+                </p>
+                <p class="w-9 h-5 absolute left-[891px] top-[691px] text-xs text-left text-[#bbb]">
+                  (2082)
+                </p>
+                <p class="w-9 h-5 absolute left-[1051px] top-[691px] text-xs text-left text-[#bbb]">
+                  (2082)
+                </p>
+                <p class="w-9 h-5 absolute left-[1211px] top-[691px] text-xs text-left text-[#bbb]">
+                  (2082)
+                </p>
+                <div class="w-[150px] h-[90px]">
+                  <div
+                    class="w-[150px] h-[90px] absolute left-[46.5px] top-[536.5px] rounded-[5px] bg-[#c4c4c4]"
+                  ></div>
+                  <img
+                    src="image-89.png"
+                    class="w-[153px] h-[102px] absolute left-[46.5px] top-[530.5px] object-cover"
+                  />
+                </div>
+                <div class="w-[150px] h-[90px]">
+                  <div
+                    class="w-[150px] h-[90px] absolute left-[206.5px] top-[536.5px] rounded-[5px] bg-[#c4c4c4]"
+                  ></div>
+                  <img
+                    src="image-90.png"
+                    class="w-[152px] h-[101px] absolute left-[206.5px] top-[536.5px] object-cover"
+                  />
+                </div>
+                <div class="w-[150px] h-[90px]">
+                  <div
+                    class="w-[150px] h-[90px] absolute left-[366.5px] top-[536.5px] rounded-[5px] bg-[#c4c4c4]"
+                  ></div>
+                  <img
+                    src="image-91.png"
+                    class="w-[151px] h-[105px] absolute left-[366.5px] top-[528.5px] object-cover"
+                  />
+                </div>
+                <div class="w-[150px] h-[90px]">
+                  <div
+                    class="w-[150px] h-[90px] absolute left-[526.5px] top-[536.5px] rounded-[5px] bg-[#c4c4c4]"
+                  ></div>
+                  <img
+                    src="image-92.png"
+                    class="w-[155px] h-[103px] absolute left-[521.5px] top-[536.5px] object-cover"
+                  />
+                </div>
+                <div class="w-[150px] h-[90px]">
+                  <div
+                    class="w-[150px] h-[90px] absolute left-[686.5px] top-[536.5px] rounded-[5px] bg-[#c4c4c4]"
+                  ></div>
+                  <img
+                    src="image-93.png"
+                    class="w-[172px] h-[97px] absolute left-[674.5px] top-[536.5px] object-cover"
+                  />
+                </div>
+                <div class="w-[150px] h-[90px]">
+                  <div
+                    class="w-[150px] h-[90px] absolute left-[846.5px] top-[536.5px] rounded-[5px] bg-[#c4c4c4]"
+                  ></div>
+                  <img
+                    src="image-94.png"
+                    class="w-[150px] h-[94px] absolute left-[846.5px] top-[536.5px] object-cover"
+                  />
+                </div>
+                <div class="w-[150px] h-[90px]">
+                  <div
+                    class="w-[150px] h-[90px] absolute left-[1006.5px] top-[536.5px] rounded-[5px] bg-[#c4c4c4]"
+                  ></div>
+                  <img
+                    src="image-95.png"
+                    class="w-[151px] h-[101px] absolute left-[1005.5px] top-[536.5px] object-cover"
+                  />
+                </div>
+                <div class="w-[150px] h-[90px]">
+                  <div
+                    class="w-[150px] h-[90px] absolute left-[1166.5px] top-[536.5px] rounded-[5px] bg-[#c4c4c4]"
+                  ></div>
+                  <img
+                    src="image-96.png"
+                    class="w-[150px] h-[100px] absolute left-[1166.5px] top-[526.5px] object-cover"
+                  />
+                </div>
+                <div
+                  class="w-[3px] h-[3px] absolute left-[196.5px] top-[541.5px] bg-[#c4c4c4]"
+                ></div>
+                <div
+                  class="w-[3px] h-[3px] absolute left-[356.5px] top-[541.5px] bg-[#c4c4c4]"
+                ></div>
+                <div class="w-[30px] h-[30px]"></div>
+                <div class="w-[30px] h-[30px]"></div>
+                <div class="w-[30px] h-[30px]"></div>
+                <div class="w-[30px] h-[30px]"></div>
+                <div class="w-[30px] h-[30px]"></div>
+                <div class="w-[30px] h-[30px]"></div>
+                <div class="w-[30px] h-[30px]"></div>
+                <div class="w-[30px] h-[30px]"></div>
+              </div>
+              <div
+                class="w-[155px] h-[49px] absolute left-[211.5px] top-[1071.5px] overflow-hidden"
+              ></div>
+              <div
+                class="w-[155px] h-[49px] absolute left-[46.5px] top-[1071.5px] overflow-hidden"
+              ></div>
+              <div
+                class="w-[155px] h-[50px] absolute left-[46.5px] top-[850.5px] overflow-hidden"
+              ></div>
+              <div
+                class="w-[155px] h-[50px] absolute left-[211.5px] top-[850.5px] overflow-hidden"
+              ></div>
+              <div class="w-[154.84px] h-[100px]">
+                <div class="w-[154.84px] h-[100px]">
+                  <div
+                    class="w-[154.84px] h-[100px] absolute left-[46.5px] top-[800.5px] rounded-[5px] bg-[#c4c4c4]"
+                  ></div>
+                  <img
+                    src="image-97.png"
+                    class="w-[209.55px] h-[114px] absolute left-[-2.02px] top-[800.5px] rounded-[5px] object-cover"
+                  />
+                </div>
+                <div class="absolute left-[46.5px] top-[850.5px]"></div>
+                <p
+                  class="w-[40.26px] h-[23px] absolute left-[156.42px] top-[873px] text-base font-semibold text-left text-white"
+                >
+                  Asia
+                </p>
+              </div>
+              <div class="w-[154.84px] h-[100px]">
+                <div class="w-[154.84px] h-[100px]">
+                  <div
+                    class="w-[154.84px] h-[100px] absolute left-[211.66px] top-[800.5px] rounded-[5px] bg-[#c4c4c4]"
+                  ></div>
+                  <img
+                    src="image-102.png"
+                    class="w-[155.87px] h-[100px] absolute left-[210.63px] top-[800.5px] object-cover"
+                  />
+                </div>
+                <div class="absolute left-[211.66px] top-[850.5px]"></div>
+                <p
+                  class="w-[71.23px] h-[23px] absolute left-[290.61px] top-[873px] text-base font-semibold text-left text-white"
+                >
+                  Oceania
+                </p>
+              </div>
+              <div class="w-[154.84px] h-[100px]">
+                <div class="w-[154.84px] h-[100px]">
+                  <div
+                    class="w-[154.84px] h-[100px] absolute left-[211.66px] top-[910.5px] rounded-[5px] bg-[#c4c4c4]"
+                  ></div>
+                  <img
+                    src="image-100.png"
+                    class="w-[185.81px] h-[101.61px] absolute left-[180.69px] top-[910.5px] object-cover"
+                  />
+                </div>
+                <div class="absolute left-[211.66px] top-[955.5px]"></div>
+                <p
+                  class="w-[124.9px] h-[23px] absolute left-[236.94px] top-[983px] text-base font-semibold text-left text-white"
+                >
+                  South America
+                </p>
+              </div>
+              <div class="w-[154.84px] h-[100px]">
+                <div class="w-[154.84px] h-[100px]">
+                  <div
+                    class="w-[154.84px] h-[100px] absolute left-[46.5px] top-[1020.5px] rounded-[5px] bg-[#c4c4c4]"
+                  ></div>
+                  <img
+                    src="image-101.png"
+                    class="w-[163.1px] h-[106px] absolute left-[38.24px] top-[1020.5px] object-cover"
+                  />
+                </div>
+                <div class="absolute left-[46.5px] top-[1071.5px]"></div>
+                <p
+                  class="w-[58.84px] h-[23px] absolute left-[137.84px] top-[1093px] text-base font-semibold text-left text-white"
+                >
+                  Europe
+                </p>
+              </div>
+              <div class="w-[154.84px] h-[100px]">
+                <div class="w-[154.84px] h-[100px]">
+                  <div
+                    class="w-[154.84px] h-[100px] absolute left-[211.66px] top-[1020.5px] rounded-[5px] bg-[#c4c4c4]"
+                  ></div>
+                  <img
+                    src="image-98.png"
+                    class="w-[159.95px] h-[100px] absolute left-[211.66px] top-[1020.5px] object-cover"
+                  />
+                </div>
+                <div class="absolute left-[211.66px] top-[1071.5px]"></div>
+                <p
+                  class="w-[50.58px] h-[23px] absolute left-[311.26px] top-[1093px] text-base font-semibold text-left text-white"
+                >
+                  Africa
+                </p>
+              </div>
+              <div class="w-[154.84px] h-[100px]">
+                <div class="w-[154.84px] h-[100px]">
+                  <div
+                    class="w-[154.84px] h-[100px] absolute left-[46.5px] top-[910.5px] rounded-[5px] bg-[#c4c4c4]"
+                  ></div>
+                  <img
+                    src="image-99.png"
+                    class="w-[189.94px] h-[103.56px] absolute left-[40.31px] top-[910.5px] object-cover"
+                  />
+                </div>
+                <div class="absolute left-[46.5px] top-[955.5px]"></div>
+                <p
+                  class="w-[123.87px] h-[23px] absolute left-[72.81px] top-[983px] text-base font-semibold text-left text-white"
+                >
+                  North America
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="w-[360px] h-[55px] absolute left-[27px] top-[-1px]">
+            <div class="w-[360px] h-[55px] absolute left-[-1px] top-[-1px]"></div>
+            <div class="w-[517px] h-10 absolute left-[19px] top-1.5">
+              <p
+                class="w-[90px] h-[13px] absolute left-[90px] top-3 text-sm font-semibold text-left text-[#707070]"
+              >
+                Popular Now
+              </p>
+              <div class="w-[70px] h-10">
+                <div
+                  class="w-[70px] h-10 absolute left-[-0.5px] top-[-0.5px] rounded-[5px] bg-[#e4002b]/10"
+                ></div>
+                <p
+                  class="w-[53px] h-[13px] absolute left-[9px] top-[13px] text-sm font-semibold text-left text-[#e4002b]"
+                >
+                  For You
+                </p>
+              </div>
+              <p
+                class="w-[62px] h-[13px] absolute left-[210px] top-[13px] text-sm font-semibold text-left text-[#707070]"
+              >
+                Activities
+              </p>
+              <p
+                class="w-[37px] h-[13px] absolute left-[302px] top-[13px] text-sm font-semibold text-left text-[#707070]"
+              >
+                Cafes
+              </p>
+              <p
+                class="w-[66px] h-[13px] absolute left-[359px] top-3.5 text-sm font-semibold text-left text-[#707070]"
+              >
+                Outdoors
+              </p>
+              <p
+                class="w-[52px] h-[13px] absolute left-[445px] top-3.5 text-sm font-semibold text-left text-[#707070]"
+              >
+                Indoors
+              </p>
+              <div class="w-2.5 h-2 absolute left-[496px] top-[17px] bg-transparent"></div>
+              <div class="w-2.5 h-2 absolute left-[506px] top-[17px] bg-transparent"></div>
+            </div>
+          </div>
         </div>
-        <p class="absolute left-3 top-[4.17px] text-sm font-medium text-left text-[#170e2b]">
-          12:30
+      </div>
+      <svg
+        width="15"
+        height="20"
+        viewBox="0 0 15 20"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        class="absolute left-[324px] top-12"
+        preserveAspectRatio="xMidYMid meet"
+      >
+        <path
+          d="M12.8569 0H2.14312C1.57629 0.00201616 1.03339 0.232643 0.633538 0.64128C0.233688 1.04992 0.00954761 1.60319 0.0102946 2.1797L0 19.6154L7.5 16.3458L15 19.6154V2.1797C14.9975 1.60238 14.771 1.04942 14.3696 0.641186C13.9682 0.232955 13.4245 0.00250468 12.8569 0V0Z"
+          fill="white"
+        ></path></svg
+      ><svg
+        width="360"
+        height="70"
+        viewBox="0 0 360 70"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        class="w-[360px] h-[58px] absolute left-[-1px] top-[741px]"
+        preserveAspectRatio="none"
+      >
+        <g filter="url(#filter0_d_819_1180)">
+          <g filter="url(#filter1_d_819_1180)">
+            <path d="M360 12H0V70H360V12Z" fill="white"></path>
+          </g>
+          <path
+            d="M70.5117 52.9923C67.4647 52.9923 64.4178 52.9923 61.3708 52.9923C60.8423 53.0188 60.3213 52.8612 59.8997 52.5472C59.4781 52.2332 59.1831 51.7831 59.0667 51.2763C59.022 51.0649 59.002 50.8491 59.0069 50.6333C59.003 46.0475 59.001 41.4617 59.001 36.8759C58.9901 36.497 59.0709 36.1211 59.2366 35.7788C59.4024 35.4365 59.6484 35.1377 59.9545 34.9068C62.9842 32.4676 66.0093 30.0246 69.0297 27.5776C69.4304 27.2087 69.9584 27.0024 70.5077 27C71.0569 26.9977 71.5868 27.1995 71.9907 27.5649C75.0609 30.0405 78.1281 32.5197 81.1924 35.0025C81.4493 35.2002 81.6555 35.4543 81.7945 35.7443C81.9335 36.0343 82.0013 36.3522 81.9926 36.6726C81.9886 41.3125 81.9886 45.9527 81.9926 50.5932C82.0192 50.9154 81.974 51.2394 81.8602 51.5427C81.7464 51.846 81.5667 52.1213 81.3337 52.3496C81.1006 52.5779 80.8197 52.7536 80.5105 52.8646C80.2013 52.9756 79.8712 53.0192 79.5431 52.9923H70.5117ZM70.5366 49.6697C72.7031 49.6697 74.8695 49.6697 77.036 49.6697C77.1764 49.6791 77.3173 49.6589 77.4491 49.6103C77.5809 49.5618 77.7006 49.4861 77.8001 49.3883C77.8996 49.2905 77.9766 49.1729 78.0259 49.0435C78.0752 48.914 78.0957 48.7757 78.086 48.6378C78.086 48.3857 78.086 48.1325 78.086 47.8804C78.09 47.7492 78.0666 47.6186 78.0173 47.4966C77.968 47.3746 77.8938 47.2638 77.7993 47.171C77.7048 47.0782 77.5919 47.0054 77.4677 46.957C77.3434 46.9085 77.2104 46.8856 77.0768 46.8895C72.7167 46.8895 68.3565 46.8895 63.9964 46.8895C63.8629 46.886 63.73 46.9093 63.6059 46.9579C63.4819 47.0065 63.3692 47.0795 63.2748 47.1723C63.1804 47.2652 63.1063 47.376 63.0571 47.4979C63.0078 47.6198 62.9843 47.7503 62.9882 47.8814C62.9882 48.0974 62.9882 48.3143 62.9882 48.5303C62.9631 48.6855 62.9758 48.8444 63.0253 48.9939C63.0747 49.1433 63.1595 49.2792 63.2727 49.3904C63.3859 49.5015 63.5243 49.5847 63.6765 49.6333C63.8288 49.6819 63.9906 49.6943 64.1487 49.6697H70.5376"
+            fill="url(#paint0_linear_819_1180)"
+          ></path>
+          <path
+            d="M296.501 39.9993C297.836 39.999 299.14 39.6176 300.25 38.9033C301.36 38.189 302.225 37.1739 302.735 35.9863C303.246 34.7987 303.38 33.4919 303.119 32.2313C302.859 30.9706 302.216 29.8126 301.272 28.9037C300.328 27.9948 299.126 27.3758 297.816 27.125C296.507 26.8741 295.15 27.0027 293.917 27.4945C292.684 27.9862 291.63 28.8191 290.888 29.8877C290.146 30.9564 289.75 32.2128 289.75 33.4982C289.749 34.352 289.924 35.1976 290.263 35.9865C290.602 36.7754 291.099 37.4922 291.726 38.096C292.353 38.6998 293.097 39.1786 293.917 39.5052C294.736 39.8318 295.614 39.9997 296.501 39.9993V39.9993ZM296.501 43.2498C291.994 43.2484 283 45.4261 283 49.7494V53H310V49.7494C310 45.4261 301.006 43.2484 296.501 43.2484V43.2498Z"
+            fill="#BBBBBB"
+          ></path>
+          <path
+            d="M191.053 25V28.8182H195V31.3636H191.053V35.1818H188.422V31.3636H184.475V28.8182H188.422V25H191.053ZM180.528 40.2727C181.048 40.2727 181.557 40.1234 181.99 39.8437C182.423 39.564 182.76 39.1665 182.959 38.7014C183.158 38.2363 183.21 37.7244 183.109 37.2307C183.007 36.7369 182.757 36.2834 182.389 35.9274C182.021 35.5714 181.552 35.3289 181.041 35.2307C180.531 35.1325 180.002 35.1829 179.521 35.3756C179.04 35.5682 178.629 35.8945 178.34 36.3131C178.051 36.7317 177.897 37.2238 177.897 37.7273C177.899 38.4017 178.177 39.048 178.67 39.525C179.163 40.0019 179.831 40.2707 180.528 40.2727V40.2727ZM183.159 27.8636V32.6364H187.106V36.4545H190.948C191.016 36.9609 191.052 37.4711 191.053 37.9818C191.053 42.2073 187.545 47.2133 180.528 53C173.516 47.2091 170.007 42.203 170.003 37.9818C169.965 36.4074 170.305 34.846 170.996 33.4199C171.686 31.9938 172.709 30.7417 173.983 29.7617C175.258 28.7817 176.749 28.1003 178.341 27.7711C179.933 27.4418 181.582 27.4734 183.159 27.8636V27.8636Z"
+            fill="#BBBBBB"
+          ></path>
+        </g>
+        <defs>
+          <filter
+            id="filter0_d_819_1180"
+            x="-10"
+            y="0"
+            width="380"
+            height="78"
+            filterUnits="userSpaceOnUse"
+            color-interpolation-filters="sRGB"
+          >
+            <feFlood flood-opacity="0" result="BackgroundImageFix"></feFlood>
+            <feColorMatrix
+              in="SourceAlpha"
+              type="matrix"
+              values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+              result="hardAlpha"
+            ></feColorMatrix>
+            <feOffset dy="-2"></feOffset>
+            <feGaussianBlur stdDeviation="5"></feGaussianBlur>
+            <feComposite in2="hardAlpha" operator="out"></feComposite>
+            <feColorMatrix
+              type="matrix"
+              values="0 0 0 0 0.8125 0 0 0 0 0.8125 0 0 0 0 0.8125 0 0 0 0.3 0"
+            ></feColorMatrix>
+            <feBlend
+              mode="normal"
+              in2="BackgroundImageFix"
+              result="effect1_dropShadow_819_1180"
+            ></feBlend>
+            <feBlend
+              mode="normal"
+              in="SourceGraphic"
+              in2="effect1_dropShadow_819_1180"
+              result="shape"
+            ></feBlend>
+          </filter>
+          <filter
+            id="filter1_d_819_1180"
+            x="-4"
+            y="12"
+            width="368"
+            height="66"
+            filterUnits="userSpaceOnUse"
+            color-interpolation-filters="sRGB"
+          >
+            <feFlood flood-opacity="0" result="BackgroundImageFix"></feFlood>
+            <feColorMatrix
+              in="SourceAlpha"
+              type="matrix"
+              values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+              result="hardAlpha"
+            ></feColorMatrix>
+            <feOffset dy="4"></feOffset>
+            <feGaussianBlur stdDeviation="2"></feGaussianBlur>
+            <feComposite in2="hardAlpha" operator="out"></feComposite>
+            <feColorMatrix
+              type="matrix"
+              values="0 0 0 0 0.894118 0 0 0 0 0.894118 0 0 0 0 0.894118 0 0 0 0.25 0"
+            ></feColorMatrix>
+            <feBlend
+              mode="normal"
+              in2="BackgroundImageFix"
+              result="effect1_dropShadow_819_1180"
+            ></feBlend>
+            <feBlend
+              mode="normal"
+              in="SourceGraphic"
+              in2="effect1_dropShadow_819_1180"
+              result="shape"
+            ></feBlend>
+          </filter>
+          <linearGradient
+            id="paint0_linear_819_1180"
+            x1="57.9458"
+            y1="45.412"
+            x2="80.9735"
+            y2="31.6516"
+            gradientUnits="userSpaceOnUse"
+          >
+            <stop stop-color="#E4002B"></stop>
+            <stop offset="0.384252" stop-color="#E92C3D"></stop>
+            <stop offset="1" stop-color="#F8A36F"></stop>
+          </linearGradient>
+        </defs>
+      </svg>
+      <div class="w-80 h-[70px] absolute left-[19px] top-[159px] rounded-[5px] bg-[#eee]"></div>
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 20 20"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        class="w-5 h-5"
+        preserveAspectRatio="xMidYMid meet"
+      >
+        <path
+          d="M9.98872 8.57078C8.01122 8.57078 6.03372 8.57078 4.05563 8.57078C3.28046 8.57078 2.85866 8.14774 2.85866 7.37066C2.85866 6.25563 2.85807 5.13999 2.85866 4.02496C2.85866 3.29489 3.29355 2.85815 4.02172 2.85815C8.00646 2.85815 11.9918 2.85815 15.9765 2.85815C16.7065 2.85815 17.1396 3.29251 17.1402 4.02436C17.1414 5.15427 17.1414 6.28478 17.1402 7.41469C17.1396 8.13167 16.7029 8.57019 15.9884 8.57019C13.9883 8.57138 11.9888 8.57019 9.98872 8.57019V8.57078Z"
+          fill="#707070"
+        ></path>
+        <path
+          d="M10.0215 11.4268C11.999 11.4268 13.9765 11.4268 15.9546 11.4268C16.7155 11.4268 17.1408 11.8528 17.1414 12.6144C17.1414 13.7372 17.1426 14.8599 17.1414 15.9821C17.1408 16.6997 16.7048 17.1388 15.9903 17.1388C11.9978 17.1394 8.00531 17.1394 4.01283 17.1388C3.29834 17.1388 2.86048 16.6991 2.85929 15.9845C2.8581 14.8468 2.8581 13.7092 2.85929 12.5721C2.85989 11.8712 3.30131 11.4274 3.99915 11.4274C6.00639 11.4262 8.01364 11.4274 10.0215 11.4274V11.4268Z"
+          fill="#707070"
+        ></path>
+        <path
+          d="M10.0071 10.7126C6.95757 10.7126 3.90803 10.7126 0.858499 10.7108C0.740706 10.7108 0.618154 10.7067 0.506905 10.6739C0.174347 10.5758 -0.0297089 10.2586 0.00598603 9.92186C0.0422759 9.57854 0.325455 9.309 0.67586 9.28639C0.750225 9.28163 0.824589 9.28461 0.898954 9.28461C6.96828 9.28461 13.0376 9.28461 19.1069 9.28461C19.6638 9.28461 19.9951 9.54998 19.9963 9.99623C19.9975 10.4449 19.6667 10.7126 19.1111 10.7126C16.0764 10.7126 13.0418 10.7126 10.0071 10.7126V10.7126Z"
+          fill="#707070"
+        ></path>
+        <path
+          d="M1.42996 1.42961C1.42996 2.7654 1.42996 4.06607 1.42996 5.36675C1.42996 5.93915 1.43175 6.51154 1.42937 7.08393C1.42758 7.53614 1.12596 7.85744 0.712495 7.85565C0.300219 7.85387 0.00276131 7.53137 0.00216639 7.07739C0.000976562 5.20432 -0.000213268 3.33065 0.00335622 1.45758C0.00454605 0.620408 0.617309 0.00457954 1.45257 0.00279453C3.3331 -0.0013705 5.21362 0.000414511 7.09415 0.00219952C7.53201 0.00219952 7.85088 0.302081 7.85624 0.706089C7.861 1.12021 7.53974 1.42842 7.09058 1.42842C5.29929 1.43021 3.50741 1.42902 1.71612 1.42902C1.62866 1.42902 1.54121 1.42902 1.43056 1.42902L1.42996 1.42961Z"
+          fill="#707070"
+        ></path>
+        <path
+          d="M18.5692 1.42955C18.4609 1.42955 18.3734 1.42955 18.2866 1.42955C16.4953 1.42955 14.7034 1.43074 12.9121 1.42836C12.3547 1.42777 11.9977 0.935699 12.1941 0.447796C12.3095 0.161004 12.5665 0.00154319 12.9234 0.00154319C14.4922 0.000353178 16.0604 0.00154319 17.6292 0.00154319C17.9487 0.00154319 18.2687 -0.00262184 18.5882 0.00273319C19.3723 0.0164183 19.9922 0.625107 19.9952 1.40932C20.0029 3.31214 19.9993 5.21556 19.9964 7.11838C19.9958 7.53786 19.687 7.85202 19.2902 7.85559C18.8851 7.85916 18.5709 7.54084 18.5704 7.10946C18.568 5.30303 18.5692 3.4966 18.5692 1.69016C18.5692 1.61043 18.5692 1.5307 18.5692 1.42955V1.42955Z"
+          fill="#707070"
+        ></path>
+        <path
+          d="M1.43034 18.568H1.72304C3.51433 18.568 5.30621 18.5674 7.0975 18.5686C7.44315 18.5686 7.69955 18.7406 7.8114 19.0369C7.91432 19.3094 7.85245 19.6271 7.61448 19.8026C7.47944 19.902 7.29442 19.9865 7.13141 19.9877C5.22114 20.0002 3.31027 20.0014 1.4 19.9924C0.618876 19.9889 0.00670837 19.3629 0.00373379 18.5763C-0.00221536 16.6807 0.000164304 14.785 0.00254396 12.8893C0.00254396 12.4549 0.3119 12.139 0.719417 12.1414C1.12396 12.1432 1.42856 12.4621 1.42856 12.8982C1.43094 14.7118 1.42975 16.526 1.42975 18.3395C1.42975 18.4056 1.42975 18.4716 1.42975 18.5674L1.43034 18.568Z"
+          fill="#707070"
+        ></path>
+        <path
+          d="M18.5689 18.5679C18.5689 18.0979 18.5689 17.6599 18.5689 17.2226C18.5689 15.7803 18.5677 14.338 18.5695 12.8958C18.5695 12.5596 18.7367 12.299 19.0199 12.1925C19.3042 12.0854 19.5791 12.1258 19.7748 12.3549C19.8872 12.4864 19.986 12.681 19.9872 12.8476C20.0015 14.773 20.0038 16.6984 19.9919 18.6239C19.9872 19.3724 19.3679 19.987 18.6183 19.9918C16.7003 20.0025 14.7823 19.9983 12.8643 19.9942C12.4502 19.9936 12.1379 19.6705 12.1426 19.273C12.1474 18.8749 12.4597 18.5703 12.8809 18.5691C14.6799 18.5661 16.479 18.5679 18.278 18.5679C18.366 18.5679 18.4541 18.5679 18.5689 18.5679V18.5679Z"
+          fill="#707070"
+        ></path>
+      </svg>
+      <div class="w-[200px] h-12">
+        <p
+          class="absolute left-[34px] top-[171px] text-base font-semibold text-left text-[#2b2b2b]"
+        >
+          Ready for an adventure?
+        </p>
+        <p class="absolute left-[34px] top-[197px] text-sm text-left text-[#2b2b2b]">
+          Start creating a trip!
         </p>
       </div>
-    </div>
-    <div class="w-80 h-10 absolute left-[19px] top-[87px] rounded-[5px] bg-white" style="box-shadow: 0px 10px 20px 0 rgba(207,207,207,0.3);"></div>
-    <p class="w-[190px] h-[13px] absolute left-[60px] top-[101px] text-sm text-left text-[#bbb]">
-      Search by Address or Name
-    </p>
-    <svg width="360" height="50" viewBox="0 0 360 50" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-[361px] h-[50px] absolute left-[-1px] top-[749px]" preserveAspectRatio="none">
-      <rect width="361" height="50" fill="#F5F5F5"></rect>
-      <rect x="274" y="18" width="14" height="14" rx="2" fill="#797979"></rect>
-      <path fill-rule="evenodd" clip-rule="evenodd" d="M84.4842 18.1461C85.1507 17.7449 86 18.2249 86 19.0028V30.9973C86 31.7752 85.1507 32.2553 84.4842 31.854L74.5222 25.8568C73.8765 25.4681 73.8765 24.532 74.5222 24.1433L84.4842 18.1461Z"
-        fill="#797979"></path>
-      <path fill-rule="evenodd" clip-rule="evenodd"
-        d="M189 25C189 29.4183 185.418 33 181 33C176.582 33 173 29.4183 173 25C173 20.5817 176.582 17 181 17C185.418 17 189 20.5817 189 25ZM188 25C188 28.866 184.866 32 181 32C177.134 32 174 28.866 174 25C174 21.134 177.134 18 181 18C184.866 18 188 21.134 188 25ZM181 31C184.314 31 187 28.3137 187 25C187 21.6863 184.314 19 181 19C177.686 19 175 21.6863 175 25C175 28.3137 177.686 31 181 31Z"
-        fill="#797979"></path>
-    </svg><svg width="360" height="78" viewBox="0 0 360 78" fill="none" xmlns="http://www.w3.org/2000/svg" class="absolute left-[-1px] top-[691px]" preserveAspectRatio="none">
-      <g filter="url(#filter0_d_595_2124)">
-        <path d="M360 12H0V70H360V12Z" fill="white"></path>
-      </g>
-      <defs>
-        <filter id="filter0_d_595_2124" x="-10" y="0" width="380" height="78" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
-          <feFlood flood-opacity="0" result="BackgroundImageFix"></feFlood>
-          <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"></feColorMatrix>
-          <feOffset dy="-2"></feOffset>
-          <feGaussianBlur stdDeviation="5"></feGaussianBlur>
-          <feComposite in2="hardAlpha" operator="out"></feComposite>
-          <feColorMatrix type="matrix" values="0 0 0 0 0.8125 0 0 0 0 0.8125 0 0 0 0 0.8125 0 0 0 0.3 0"></feColorMatrix>
-          <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_595_2124"></feBlend>
-          <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_595_2124" result="shape"></feBlend>
-        </filter>
-      </defs>
-    </svg><svg width="23" height="26" viewBox="0 0 23 26" fill="none" xmlns="http://www.w3.org/2000/svg" class="absolute left-[58px] top-[706px]" preserveAspectRatio="xMidYMid meet">
-      <path
-        d="M11.5117 25.9923C8.46474 25.9923 5.41777 25.9923 2.3708 25.9923C1.84233 26.0188 1.3213 25.8612 0.899702 25.5472C0.478107 25.2332 0.18306 24.7831 0.0666556 24.2763C0.0220353 24.0649 0.00200091 23.8491 0.00693707 23.6333C0.00295583 19.0475 0.000965211 14.4617 0.000965211 9.87588C-0.00988491 9.49704 0.0708722 9.12106 0.236615 8.77878C0.402358 8.4365 0.648367 8.13767 0.954471 7.90677C3.98419 5.46762 7.00927 3.02455 10.0297 0.577578C10.4304 0.208712 10.9584 0.00237697 11.5077 2.04092e-05C12.0569 -0.00233615 12.5868 0.199461 12.9907 0.564874C16.0609 3.04051 19.1281 5.51974 22.1924 8.00254C22.4493 8.20023 22.6555 8.45425 22.7945 8.74427C22.9335 9.03429 23.0013 9.35223 22.9926 9.67262C22.9886 14.3125 22.9886 18.9527 22.9926 23.5932C23.0192 23.9154 22.974 24.2394 22.8602 24.5427C22.7464 24.846 22.5667 25.1213 22.3337 25.3496C22.1006 25.5779 21.8197 25.7536 21.5105 25.8646C21.2013 25.9756 20.8712 26.0192 20.5431 25.9923H11.5117ZM11.5366 22.6697C13.7031 22.6697 15.8695 22.6697 18.036 22.6697C18.1764 22.6791 18.3173 22.6589 18.4491 22.6103C18.5809 22.5618 18.7006 22.4861 18.8001 22.3883C18.8996 22.2905 18.9766 22.1729 19.0259 22.0435C19.0752 21.914 19.0957 21.7757 19.086 21.6378C19.086 21.3857 19.086 21.1325 19.086 20.8804C19.09 20.7492 19.0666 20.6186 19.0173 20.4966C18.968 20.3746 18.8938 20.2638 18.7993 20.171C18.7048 20.0782 18.5919 20.0054 18.4677 19.957C18.3434 19.9085 18.2104 19.8856 18.0768 19.8895C13.7167 19.8895 9.35654 19.8895 4.99642 19.8895C4.86287 19.886 4.73 19.9093 4.60593 19.9579C4.48185 20.0065 4.36919 20.0795 4.27481 20.1723C4.18044 20.2652 4.10635 20.376 4.05706 20.4979C4.00778 20.6198 3.98434 20.7503 3.98817 20.8814C3.98817 21.0974 3.98817 21.3143 3.98817 21.5303C3.96311 21.6855 3.97582 21.8444 4.02527 21.9939C4.07473 22.1433 4.15952 22.2792 4.27272 22.3904C4.38591 22.5015 4.5243 22.5847 4.67655 22.6333C4.8288 22.6819 4.9906 22.6943 5.1487 22.6697H11.5376"
-        fill="#BBBBBB"></path>
-    </svg><svg width="27" height="26" viewBox="0 0 27 26" fill="none" xmlns="http://www.w3.org/2000/svg" class="absolute left-[282px] top-[706px]" preserveAspectRatio="xMidYMid meet">
-      <path
-        d="M13.5008 12.9993C14.8356 12.999 16.1403 12.6176 17.2501 11.9033C18.3598 11.189 19.2247 10.1739 19.7354 8.98626C20.246 7.79867 20.3796 6.49193 20.1191 5.23126C19.8586 3.97059 19.2158 2.8126 18.2719 1.9037C17.3281 0.9948 16.1256 0.375799 14.8164 0.124963C13.5072 -0.125873 12.1502 0.00271748 10.917 0.494478C9.68371 0.986239 8.62954 1.81909 7.88777 2.88772C7.146 3.95636 6.74992 5.21279 6.74962 6.49817C6.74922 7.35202 6.92357 8.19757 7.26271 8.98649C7.60184 9.77541 8.09911 10.4922 8.72609 11.096C9.35307 11.6998 10.0975 12.1786 10.9167 12.5052C11.736 12.8318 12.6141 12.9997 13.5008 12.9993V12.9993ZM13.5008 16.2498C8.99444 16.2484 0 18.4261 0 22.7494V26H27V22.7494C27 18.4261 18.0056 16.2484 13.5008 16.2484V16.2498Z"
-        fill="#BBBBBB"></path>
-    </svg><svg width="25" height="28" viewBox="0 0 25 28" fill="none" xmlns="http://www.w3.org/2000/svg" class="absolute left-[169px] top-[704px]" preserveAspectRatio="none">
-      <path
-        d="M21.0531 0V3.81818H25V6.36364H21.0531V10.1818H18.4218V6.36364H14.4749V3.81818H18.4218V0H21.0531ZM10.5279 15.2727C11.0483 15.2727 11.5571 15.1234 11.9898 14.8437C12.4225 14.564 12.7598 14.1665 12.9589 13.7014C13.1581 13.2363 13.2102 12.7244 13.1087 12.2307C13.0071 11.7369 12.7565 11.2834 12.3885 10.9274C12.0205 10.5714 11.5517 10.3289 11.0413 10.2307C10.5308 10.1325 10.0018 10.1829 9.52097 10.3756C9.04017 10.5682 8.62922 10.8945 8.34009 11.3131C8.05096 11.7317 7.89664 12.2238 7.89664 12.7273C7.89872 13.4017 8.17661 14.048 8.66962 14.525C9.16263 15.0019 9.8307 15.2707 10.5279 15.2727V15.2727ZM13.1592 2.86364V7.63636H17.1061V11.4545H20.9478C21.0165 11.9609 21.0516 12.4711 21.0531 12.9818C21.0531 17.2073 17.5447 22.2133 10.5279 28C3.51555 22.2091 0.00716287 17.203 0.00277739 12.9818C-0.0345788 11.4074 0.305338 9.84602 0.995906 8.41991C1.68647 6.99381 2.70894 5.74172 3.98324 4.7617C5.25753 3.78168 6.74905 3.10035 8.34099 2.77105C9.93292 2.44176 11.582 2.47345 13.1592 2.86364V2.86364Z"
-        fill="#BBBBBB"></path>
-    </svg>
-    <div class="w-[15px] h-[3px] absolute left-[62px] top-[738px] opacity-80 rounded-sm bg-[#e4002b]"></div>
-    <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" class="absolute left-12 top-[99px]" preserveAspectRatio="xMidYMid meet">
-      <path
-        d="M0 6.15234V6.97266C0.0421875 7.26602 0.0707035 7.56211 0.128516 7.85273C0.691016 10.6687 3.02109 12.7934 5.89063 13.0875C7.40156 13.2426 8.80586 12.9027 10.0918 12.0887C10.218 12.0086 10.3406 11.9234 10.4836 11.8281C10.5223 11.8762 10.552 11.9219 10.5902 11.9594C11.4648 12.8238 12.343 13.6848 13.2137 14.5531C13.4176 14.7562 13.6285 14.9348 13.916 15H14.209C14.3438 14.9391 14.4875 14.8922 14.6109 14.8141C14.8301 14.6754 14.9328 14.4512 15 14.209V13.8867C14.9188 13.5934 14.7187 13.3852 14.5098 13.1777C13.6504 12.3254 12.7965 11.4672 11.9406 10.6113C11.9004 10.5711 11.8621 10.5289 11.8277 10.4926C11.8375 10.468 11.8398 10.4582 11.8449 10.4504C11.8695 10.4141 11.8953 10.3785 11.9207 10.3426C12.8496 9.0082 13.2422 7.52734 13.0867 5.9125C12.9496 4.49023 12.3949 3.23867 11.4359 2.17773C10.4379 1.07422 9.20391 0.380859 7.73672 0.114063C7.47422 0.0664063 7.20781 0.0375 6.94336 0C6.68945 0 6.43555 0 6.18164 0C6.14414 0.00820312 6.10664 0.021875 6.06875 0.0242188C5.1707 0.0855469 4.31836 0.319531 3.52813 0.748047C1.67109 1.75547 0.525 3.29648 0.113281 5.37344C0.0624998 5.63047 0.0371094 5.89258 0 6.15195V6.15234ZM1.875 6.56289C1.875 3.97656 3.97422 1.87578 6.55977 1.87617C9.14414 1.87617 11.2473 3.97852 11.2473 6.56211C11.2473 9.14531 9.14336 11.2492 6.56055 11.2488C3.97422 11.2484 1.87539 9.14961 1.875 6.56289Z"
-        fill="#BBBBBB"></path>
-    </svg><svg width="16" height="20" viewBox="0 0 16 20" fill="none" xmlns="http://www.w3.org/2000/svg" class="absolute left-[324px] top-12" preserveAspectRatio="xMidYMid meet">
-      <path
-        d="M13.109 0H2.18515C1.6072 0.00205569 1.05365 0.237205 0.64596 0.653854C0.23827 1.0705 0.00973481 1.63462 0.0104965 2.22244L0 20L7.64706 16.6663L15.2941 20V2.22244C15.2916 1.6338 15.0606 1.06999 14.6513 0.653759C14.2421 0.237523 13.6877 0.00255379 13.109 0V0Z"
-        fill="white"></path>
-    </svg>
-    <p class="w-[90px] h-[13px] absolute left-[142px] top-[171px] text-sm font-semibold text-left text-[#2b2b2b]">
-      Popular Now
-    </p>
-    <p class="w-[52px] h-[13px] absolute left-10 top-[171px] text-sm font-semibold text-left text-[#2b2b2b]">
-      For You
-    </p>
-    <p class="w-[67px] h-[13px] absolute left-[265px] top-[170px] text-sm font-semibold text-left text-[#2b2b2b]">
-      Activities
-    </p>
-    <div class="w-[180px] h-[210px] absolute left-[19px] top-[248px] rounded-[5px] bg-white" style="box-shadow: 0px 10px 20px 0 rgba(207,207,207,0.3);"></div>
-    <div class="w-[180px] h-[120px]">
-      <div class="w-[180px] h-[120px] absolute left-[19.5px] top-[248.5px] rounded-[5px] bg-[#99d0a2]"></div>
-      <img src="image-59.png" class="w-[249px] h-[120px] absolute left-[0.5px] top-[248.5px] rounded-[5px] object-cover" />
-    </div>
-    <p class="w-[46px] h-[13px] absolute left-[294px] top-[220px] text-xs font-semibold text-left text-[#bbb]">
-      View All
-    </p>
-    <p class="w-[221px] h-5 absolute left-5 top-[213px] text-lg font-semibold text-left text-[#2b2b2b]">
-      Recommended For You
-    </p>
-    <svg width="12" height="11" viewBox="0 0 12 11" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-[11.58px] h-[11px]" preserveAspectRatio="none">
-      <path d="M5.7915 0L7.60091 3.61665L11.5819 4.19586L8.68644 7.01899L9.33797 11L5.7915 9.11827L2.24503 11L2.89548 7.02332L0 4.20017L3.98101 3.62097L5.7915 0Z" fill="#FFC736"></path>
-    </svg>
-    <p class="w-6 h-5 absolute left-[30px] top-[428px] text-sm font-semibold text-left text-[#2b2b2b]">
-      4.6
-    </p>
-    <div class="w-[30px] h-[30px] absolute left-[159px] top-[258px] rounded-[5px] bg-white"></div>
-    <p class="w-[158px] h-[39px] absolute left-[30px] top-[379px] text-sm font-semibold text-left text-[#2b2b2b]">
-      Lazy Lizard - The Promenade
-    </p>
-    <p class="w-[27px] h-5 absolute left-[163px] top-[428px] text-sm text-left">
-      <span class="w-[27px] h-5 text-sm font-semibold text-left text-[#2b2b2b]">$$</span><span class="w-[27px] h-5 text-sm text-left text-[#bbb]">$</span>
-    </p>
-    <svg width="12" height="15" viewBox="0 0 12 15" fill="none" xmlns="http://www.w3.org/2000/svg" class="absolute left-[168px] top-[266px]" preserveAspectRatio="xMidYMid meet">
-      <path
-        d="M9.83173 0H1.63886C1.2054 0.00154177 0.790237 0.177904 0.48447 0.49039C0.178703 0.802877 0.00730111 1.22597 0.00787237 1.66683L0 15L5.73529 12.4998L11.4706 15V1.66683C11.4687 1.22535 11.2954 0.802496 10.9885 0.490319C10.6816 0.178142 10.2658 0.00191534 9.83173 0V0Z"
-        fill="#BBBBBB"></path>
-    </svg>
-    <p class="w-[197px] h-5 absolute left-5 top-[483px] text-lg font-semibold text-left text-[#2b2b2b]">
-      Amazing Attractions
-    </p>
-    <div class="w-[180px] h-[210px]">
-      <div class="w-[180px] h-[210px] absolute left-[209.5px] top-[248.5px] rounded-[5px] bg-white" style="box-shadow: 0px 10px 20px 0 rgba(207,207,207,0.3);"></div>
-      <div class="w-[180px] h-[120px]">
-        <div class="w-[180px] h-[120px] absolute left-[209.5px] top-[248.5px] rounded-[5px] bg-[#99d0a2]"></div>
-        <img src="image-67.png" class="w-[180px] h-[126px] absolute left-[209.5px] top-[248.5px] object-cover" />
+      <svg
+        width="1"
+        height="70"
+        viewBox="0 0 1 70"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        class="absolute left-[279px] top-[159px]"
+        preserveAspectRatio="xMidYMid meet"
+      >
+        <line x1="0.5" y1="2.18561e-8" x2="0.499997" y2="70" stroke="#BBBBBB"></line>
+      </svg>
+      <p
+        class="w-[115px] h-[39px] absolute left-5 top-10 text-[25px] font-semibold text-left text-white"
+      >
+        Discover
+      </p>
+      <div class="w-80 h-[50px]">
+        <div
+          class="w-80 h-[50px] absolute left-[19.5px] top-[89.5px] rounded-[5px] bg-white"
+          style="box-shadow: 0px 10px 20px 0 rgba(207,207,207,0.3);"
+        ></div>
+        <p
+          class="w-[242px] h-[13px] absolute left-[60px] top-[108px] text-sm text-left text-[#bbb]"
+        >
+          Search Activities, Restaurants, Cafes
+        </p>
+        <svg
+          width="15"
+          height="15"
+          viewBox="0 0 15 15"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          class="absolute left-[48.5px] top-[106.5px]"
+          preserveAspectRatio="xMidYMid meet"
+        >
+          <path
+            d="M0 6.15234V6.97266C0.0421875 7.26602 0.0707035 7.56211 0.128516 7.85273C0.691016 10.6687 3.02109 12.7934 5.89063 13.0875C7.40156 13.2426 8.80586 12.9027 10.0918 12.0887C10.218 12.0086 10.3406 11.9234 10.4836 11.8281C10.5223 11.8762 10.552 11.9219 10.5902 11.9594C11.4648 12.8238 12.343 13.6848 13.2137 14.5531C13.4176 14.7562 13.6285 14.9348 13.916 15H14.209C14.3438 14.9391 14.4875 14.8922 14.6109 14.8141C14.8301 14.6754 14.9328 14.4512 15 14.209V13.8867C14.9188 13.5934 14.7187 13.3852 14.5098 13.1777C13.6504 12.3254 12.7965 11.4672 11.9406 10.6113C11.9004 10.5711 11.8621 10.5289 11.8277 10.4926C11.8375 10.468 11.8398 10.4582 11.8449 10.4504C11.8695 10.4141 11.8953 10.3785 11.9207 10.3426C12.8496 9.0082 13.2422 7.52734 13.0867 5.9125C12.9496 4.49023 12.3949 3.23867 11.4359 2.17773C10.4379 1.07422 9.20391 0.380859 7.73672 0.114063C7.47422 0.0664063 7.20781 0.0375 6.94336 0C6.68945 0 6.43555 0 6.18164 0C6.14414 0.00820312 6.10664 0.021875 6.06875 0.0242188C5.1707 0.0855469 4.31836 0.319531 3.52813 0.748047C1.67109 1.75547 0.525 3.29648 0.113281 5.37344C0.0624998 5.63047 0.0371094 5.89258 0 6.15195V6.15234ZM1.875 6.56289C1.875 3.97656 3.97422 1.87578 6.55977 1.87617C9.14414 1.87617 11.2473 3.97852 11.2473 6.56211C11.2473 9.14531 9.14336 11.2492 6.56055 11.2488C3.97422 11.2484 1.87539 9.14961 1.875 6.56289Z"
+            fill="#BBBBBB"
+          ></path>
+        </svg>
       </div>
-      <svg width="12" height="11" viewBox="0 0 12 11" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-[11.58px] h-[11px]" preserveAspectRatio="none">
-        <path d="M5.7915 0L7.60091 3.61665L11.5819 4.19586L8.68644 7.01899L9.33797 11L5.7915 9.11827L2.24503 11L2.89548 7.02332L0 4.20017L3.98101 3.62097L5.7915 0Z" fill="#FFC736"></path>
-      </svg>
-      <p class="w-6 h-5 absolute left-[220px] top-[428px] text-sm font-semibold text-left text-[#2b2b2b]">
-        4.6
-      </p>
-      <div class="w-[30px] h-[30px] absolute left-[349.5px] top-[258.5px] rounded-[5px] bg-white"></div>
-      <p class="w-[158px] h-[39px] absolute left-[220px] top-[379px] text-sm font-semibold text-left text-[#2b2b2b]">
-        Veganburg Singapore
-      </p>
-      <p class="w-[30px] h-5 absolute left-[354px] top-[428px] text-sm text-left">
-        <span class="w-[30px] h-5 text-sm font-semibold text-left text-[#2b2b2b]">$$</span><span class="w-[30px] h-5 text-sm text-left text-[#bbb]">$</span>
-      </p>
-      <svg width="1" height="15" viewBox="0 0 1 15" fill="none" xmlns="http://www.w3.org/2000/svg" class="absolute left-[358.5px] top-[266.5px]" preserveAspectRatio="xMidYMid meet">
-        <path
-          d="M9.83173 0H1.63886C1.2054 0.00154177 0.790237 0.177904 0.48447 0.49039C0.178703 0.802877 0.00730111 1.22597 0.00787237 1.66683L0 15L5.73529 12.4998L11.4706 15V1.66683C11.4687 1.22535 11.2954 0.802496 10.9885 0.490319C10.6816 0.178142 10.2658 0.00191534 9.83173 0V0Z"
-          fill="#BBBBBB"></path>
-      </svg>
     </div>
-    <div class="w-10 h-[3px] absolute left-[45px] top-[187px] opacity-80 rounded-sm" style="background: linear-gradient(60.65deg, #e4002b 14.73%, #e92c3d 41.42%, #f8a36f 91.41%);"></div>
-    <p class="w-[46px] h-[13px] absolute left-[295px] top-[486px] text-xs font-semibold text-left text-[#bbb]">
-      View All
-    </p>
-  </div>
-</body>
-
+  </body>
 </html>
