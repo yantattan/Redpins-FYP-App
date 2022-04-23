@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% block title %}Choose your activitiy 1{% endblock %}
+
+{% block content %}
+{% from "includes/_formHelper.html" import render_field %}
+<form method="post">
+    <h5>Select your top 5 cuisines</h5>
+    <br>
+    <br>
+        <input type="checkbox" value="Italian" id="pref1" name="preferences[]">
+        <label for="pref1">Italian</label>
+
+    <br>
+        <input type="checkbox" value="Chinese" id="pref2" name="preferences[]">
+        <label for="pref2">Chinese</label>
+
+    <br>
+        <input type="checkbox" value="Japanese" id="pref3" name="preferences[]">
+        <label for="pref3">Japanese</label>
+
+    <br>
+        <input type="checkbox" value="Thai" id="pref4" name="preferences[]">
+        <label for="pref4">Thai</label>
+
+    <br>
+        <input type="checkbox" value="French" id="pref5" name="preferences[]">
+        <label for="pref5">French</label>
+
+    <br>
+
+        <input type="checkbox" value="Spanish" id="pref6" name="preferences[]">
+        <label for="pref6">Spanish</label>
+
+    <br>
+
+        <input type="checkbox" value="American" id="pref7" name="preferences[]">
+        <label for="pref7">American</label>
+
+    <br>
+
+        <input type="checkbox" value="Mexican" id="pref8" name="preferences[]">
+        <label for="pref8">Mexican</label>
+
+    <br>
+        <input type="checkbox" value="Indian" id="pref9" name="preferences[]">
+        <label for="pref9">Indian</label>
+
+    <br>
+
+        <input type="checkbox" value="Turkish" id="pref10" name="preferences[]">
+        <label for="pref10">Turkish</label>
+
+    <br>
+        <input type="checkbox" value="Korean" id="pref11" name="preferences[]">
+        <label for="pref11">Korean</label>
+
+    <br>
+        <input type="checkbox" value="Vietnamese" id="pref12" name="preferences[]">
+        <label for="pref12">Vietnamese</label>
+
+    <br>
+        <input type="checkbox" value="Hong Kong" id="pref13" name="preferences[]">
+        <label for="pref13">Hong Kong</label>
+
+    <br>
+        <input type="checkbox" value="German" id="pref14" name="preferences[]">
+        <label for="pref14">German</label>
+
+    <br>
+        <input type="checkbox" value="British" id="pref15" name="preferences[]">
+        <label for="pref15">British</label>
+
+    <br>
+        <input type="checkbox" value="Taiwanese" id="pre16" name="preferences[]">
+        <label for="pref16">Taiwanese</label>
+
+    <br>
+        <input type="checkbox" value="Singaporean" id="pref17" name="preferences[]">
+        <label for="pref17">Singaporean</label>
+
+    <br>
+        <input type="checkbox" value="Indonesian" id="pref18" name="preferences[]">
+        <label for="pref18">Indonesian</label>
+
+    <br>
+        <input type="checkbox" value="Malaysian" id="pref19" name="preferences[]">
+        <label for="pref19">Malaysian</label>
+
+    <br>
+        <input type="checkbox" value="Australian" id="pref20" name="preferences[]">
+        <label for="pref20">Australian</label>
+
+    <br>
+        <input type="checkbox" value="Swedish" id="pref21" name="preferences[]">
+        <label for="pref21">Swedish</label>
+
+    <br>
+
+    <input type="submit" value="Next" class="btn btn-danger">
+</form>
+{% endblock %}

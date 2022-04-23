@@ -1,0 +1,87 @@
+User [
+	{
+        _id: 1,
+	    username: "sth",
+        email: "sth@sth.sth",
+        role: "user",
+        dob: "some date",
+        contact: 88888888,
+        password: "some hash"
+        pwdsalt: "sth"
+	    preferences: 
+        {
+            cuisine: ["cui1", "cui2"...],
+            activity: ["act1", "act2"...]
+        },
+        points: 0,
+        tierPoints: 50,
+        tier: "Bronze"
+	}
+]
+
+
+Itineraries [
+    {
+        _id: <Obj sth>,
+        userId: 1,
+        date: "22-04-2022",
+        name: "sth",
+        type: "Explorer",
+        transportMode: "pt",
+        timeAllowance: 360,
+        timeLeft: 25,
+        places: [{
+            name: "sth",
+            address: "sth sth",
+            activityDuration: 45,
+            totalDuration: 85
+        }]
+    }
+]
+
+
+SignedPlaces [
+    {
+        _id: <Obj sth>,
+        address: "sth",
+        name: "sth",
+        organization: "sth",
+        category: "eateries"
+        details: {
+            cuisines: ["sth1", "sth2"]
+        }
+        points: 20,
+        checkpoint: 200,
+        discount: 12.3
+    }
+]
+
+
+TrackedInfo [
+	{ 
+        _id: <Obj sth>,
+        userId: 1,
+        address: "sth",
+        actions: {
+            searched: {
+                frequency: 5,
+                timestamps: [time1, time2] --ascending
+            },
+            visited: {
+                frequency: 2,
+                timestamps: [time1, time2] --ascending
+            }
+        },
+	}
+]
+
+
+MachineLearningReport [
+    {
+        _id: <Obj sth>,
+        model: "sth",
+        data: {
+            "accuracy": 0.95
+        }
+    }
+]
