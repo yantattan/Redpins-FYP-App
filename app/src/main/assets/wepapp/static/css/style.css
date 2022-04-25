@@ -1,0 +1,25 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: 'Open Sans', sans-serif;
+}
+
+*::-webkit-scrollbar {
+  display: none;
+}
+
+.device {
+  position: relative;
+  width: 360px;
+  height: 800px;
+  background: linear-gradient(193.74deg, #E4002B 3.02%, #E82038 31.9%, #F8A36F 95.45%);
+}
+
+.logogif {
+  position: absolute;
+  left: 26.39%;
+  right: 30.56%;
+  top: 37.38%;
+  bottom: 37.25%;
+}
