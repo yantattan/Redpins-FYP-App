@@ -19,8 +19,8 @@ html, body {
 }
 
 .mobile-size {
-  max-width: 430px; 
-  min-width: 360px; 
+  max-width: 430px;
+  min-width: 360px;
   min-height: 100%;
   display: table;
   height: auto;
@@ -100,7 +100,6 @@ h4 {
   justify-content: space-between;
   padding: 0.5em;
 }
-
 
 .long-card {
   width: 90%;
