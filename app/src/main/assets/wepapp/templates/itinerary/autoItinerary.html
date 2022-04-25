@@ -1,0 +1,169 @@
+{% extends "base.html" %}
+{% block title %}Redpins Buffer - Explorer{% endblock %}
+
+{% block content %}
+<div>
+    <label>End Time</label>
+    <input id="endTime" type="time" class="form-control"></input>
+</div>
+<div>Transport mode: Transit</div>
+<div>Category: Eateries</div>
+<div id="start">Start location: </div>
+<div class="float-right">
+    <a href="/itinerary/showTrip">Map</a>
+</div>
+<div id="recommendation-listings"></div>
+<br>
+<div>
+    <label>End destination</label>
+    <input type="text" id="endDestination" class="form-control" onkeyup="pauseSearch();"></input>
+</div>
+
+<div id="showDestinations" class="row" style="width: 100%; height: 200px; overflow: auto;"></div>
+<button class="btn btn-primary">Create Trip</button>
+
+<div id="list"></div>
+
+<script>
+    var post;
+    var skipped = [0];
+    var pageNum = 2;
+    const currentTime = new Date();
+
+    // function initFunctions() {
+    //     $("#recommend-btn").on("click", function() {
+    //         recommend(1);
+    //     })
+    //     $("#next-recommend-btn").on("click", function() {
+    //         recommend(pageNum);
+    //         pageNum += 1;
+    //     })
+    // }
+
+    function nextRecommend() {
+        recommend(pageNum);
+        pageNum += 1;
+    }
+
+    function getLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showRoute)
+        }
+    }
+
+    function showRoute(position) {
+        document.getElementById("start").innerText += position.coords.latitude + "," + position.coords.longitude
+        post = position
+        recommend(1);
+    }
+
+    function recommend(pageNum) {
+        endTime = document.getElementById("endTime").value;
+        timeAllow = Math.ceil(Math.abs(endTime - currentTime) / (1000 * 60));
+        console.log(timeAllow);
+
+        $.ajax({
+            type: "POST",
+            url: `/funcs/explorer-recommend-places?page=${pageNum}`,
+            data: {
+                latitude: post.coords.latitude,
+                longitude: post.coords.longitude,
+                endLatitude: 1.2834542,
+                endLongitude: 103.8608090,
+                timeAllowance: 360,
+                category: "Eateries",
+                transportMode: "pt",
+            },
+            success: function(result) {
+                cleanedResult = result.replaceAll("\\u", "").replaceAll("NaN", `""`);
+                result = JSON.parse(cleanedResult);
+
+                console.log(result)
+                div = document.getElementById("recommendation-listings");
+                placesName = placesAddress = placesActivityDuration = placesDuration = [];
+
+                // Display function
+                for (var i in result) {
+                    div.innerHTML += `<div class="card" style="width:150px; height:175px; margin-right: 1em; max-width:
+                        flex-basis: 33.333%;
+                        flex-grow: 0;
+                        flex-shrink: 0;">
+                        <h5>${result[i].Restaurant_name}</h5>
+                        <br />
+                        <p>Matching ${result[i].RecommendationScore.toFixed(2)}</p>
+                    </div>`;
+
+                    placesName.push(result[i].Restaurant_name)
+                    placesAddress.push(result[i].Address)
+                    placesActivityDuration.push(result[i].ActivityDuration)
+                    placesDuration.push(result[i].Duration)
+                }
+            }
+        })
+       
+    }
+
+    function saveTrips() {
+        // Update db function
+        $.ajax({
+            type: "POST",
+            url: `/funcs/save-trip`,
+            data: {
+                tripType: "Explorer",
+                tripName: "Hello",
+                date: "Today",
+                names: placesName,
+                addresses: placesAddress,
+                activityDuration: placesActivityDuration,
+                duration: placesDuration,
+                timeAllowance: 360,
+                timeLeft: 360,
+                transportMode: "pt"
+            },
+            success: function(result) {
+                console.log("Trip has been autosaved");
+            }
+        })
+    }
+
+    var canSearch = true;
+
+    function pauseSearch() {
+        canSearch = false;
+        console.log("Here")
+        setTimeout(function() {
+            canSearch = true;
+            search()
+        }, 1000)
+    }
+
+    function search() {
+        if (canSearch) {
+            console.log("Here2")
+            const search = $("#endDestination").val()
+            const pageNum = 1
+            if (!search) {
+                $("#showDestinations").text("Will show maybe some recommended places");
+            }
+            else {
+                $.ajax({
+                url: `https://developers.onemap.sg/commonapi/search?searchVal=${search}&returnGeom=Y&getAddrDetails=Y&pageNum=${pageNum}`,
+                success: function(result) {
+                    //Set result to a variable for writing
+                    var resultstr = JSON.stringify(result);
+                    $("#showDestinations").text(resultstr);
+                }});
+            }
+            
+        }       
+    } 
+
+    function searchNextPage() {
+        $("#searchPage").text(parseInt($("#searchPage").text()) + 1)
+    }
+
+    // initFunctions();
+    getLocation();
+
+</script>
+{% endblock %}

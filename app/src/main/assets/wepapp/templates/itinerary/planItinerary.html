@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+{% block title %}Redpins Buffer - Planner{% endblock %}
+
+{% block content %}
+<div>
+    <label>End Time</label>
+    <input id="endTime" type="time" class="form-control"></input>
+</div>
+<div>Transport mode: Transit</div>
+<div>Category: Eateries</div>
+<div id="start">Start location: </div>
+<div class="btn btn-primary" id="recommend-btn" onclick="recommend(1);">Recommend</div>
+<div class="float-right">
+    <a href="/itinerary/showTrip">Map</a>
+</div>
+<div id="recommendation-listings" style="width: 100%;align-items: stretch;
+display: flex;
+flex-direction: row;
+flex-wrap: nowrap;
+overflow-x: auto; overflow-y: hidden;">
+
+</div>
+<button class="btn btn-primary" id="next-recommend-btn" onclick="nextRecommend();">Next</button>
+<br>
+<label>End destination</label>
+<input type="text" id="endDestination" class="form-control" onkeyup="pauseSearch();"></input>
+<div id="showDestinations" class="row" style="height: 200px;overflow: auto;"></div>
+
+<button class="btn btn-primary">Create Trip</button>
+
+<script>
+    var post;
+    var skipped = [0];
+    var pageNum = 2;
+
+    // function initFunctions() {
+    //     $("#recommend-btn").on("click", function() {
+    //         recommend(1);
+    //     })
+    //     $("#next-recommend-btn").on("click", function() {
+    //         recommend(pageNum);
+    //         pageNum += 1;
+    //     })
+    // }
+
+    function nextRecommend() {
+        recommend(pageNum);
+        pageNum += 1;
+    }
+
+    function getLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showRoute)
+        }
+    }
+
+    function showRoute(position) {
+        document.getElementById("start").innerText += position.coords.latitude + "," + position.coords.longitude
+        post = position
+    }
+
+    function recommend(pageNum) {
+        $.ajax({
+            type: "POST",
+            url: `/funcs/planner-recommend-places?page=${pageNum}`,
+            data: {
+                latitude: post.coords.latitude,
+                longitude: post.coords.longitude,
+                timeAllowance: 100,
+                category: "Eateries",
+                transportMode: "pt",
+                skipped: JSON.stringify(skipped)
+            },
+            success: function(result) {
+                cleanedResult = result.replaceAll("\\u", "").replaceAll("NaN", `""`);
+                result = JSON.parse(cleanedResult);
+
+                skipped = result.skipped;
+                console.log(result)
+                console.log(result.skipped);
+                div = document.getElementById("recommendation-listings");
+                for (var i in result.list) {
+                    div.innerHTML += `<div class="card" style="width:150px; height:175px; margin-right: 1em; max-width:
+                        flex-basis: 33.333%;
+                        flex-grow: 0;
+                        flex-shrink: 0;">
+                        <h5>${result.list[i].Restaurant_name}</h5>
+                        <br />
+                        <p>Matching ${result.list[i].RecommendationScore.toFixed(2)}</p>
+                    </div>`;
+                }
+            }
+        })
+       
+    }
+
+    var canSearch = true;
+
+    function pauseSearch() {
+        canSearch = false;
+        console.log("Here")
+        setTimeout(function() {
+            canSearch = true;
+            search()
+        }, 1000)
+    }
+
+    function search() {
+        if (canSearch) {
+            console.log("Here2")
+            const search = $("#endDestination").val()
+            const pageNum = 1
+            if (!search) {
+                $("#showDestinations").text("Will show maybe some recommended places");
+            }
+            else {
+                $.ajax({
+                url: `https://developers.onemap.sg/commonapi/search?searchVal=${search}&returnGeom=Y&getAddrDetails=Y&pageNum=${pageNum}`,
+                success: function(result) {
+                    //Set result to a variable for writing
+                    var resultstr = JSON.stringify(result);
+                    $("#showDestinations").text(resultstr);
+                }});
+            }
+            
+        }       
+    } 
+
+    function searchNextPage() {
+        $("#searchPage").text(parseInt($("#searchPage").text()) + 1)
+    }
+
+    // initFunctions();
+    getLocation();
+
+</script>
+{% endblock %}

@@ -1,12 +1,10 @@
 package com.nyp.sit.s202897h.redpinsbuffer
 
+import android.annotation.SuppressLint
 import android.app.Service
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
-import android.os.IBinder
 import android.util.Log
-import android.view.View
 import android.view.animation.AnimationUtils
 import android.webkit.*
 import android.webkit.WebResourceResponse
@@ -19,16 +17,18 @@ import android.webkit.WebResourceError
 
 import android.webkit.WebViewClient
 
-import android.view.Gravity
-
 import android.graphics.PixelFormat
-import android.view.ViewGroup
+import android.os.*
+import android.view.*
+import android.webkit.JavascriptInterface
+import android.widget.Toast
 
-import android.view.WindowManager
+
 
 
 class MainActivity : AppCompatActivity() {
     var webAppUrl = "http://10.0.2.2:5000/"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -36,6 +36,7 @@ class MainActivity : AppCompatActivity() {
         var webView = findViewById<WebView>(R.id.webview)
         webView.settings.domStorageEnabled = true
         webView.settings.javaScriptEnabled = true
+        webView.settings.setGeolocationEnabled(true)
         webView.scrollBarStyle = View.SCROLLBARS_INSIDE_OVERLAY
 
         val newUrl = intent.getStringExtra("newUrl")
@@ -55,8 +56,6 @@ class MainActivity : AppCompatActivity() {
 
         class CustWebViewClient: WebViewClient() {
             override fun onPageFinished(view: WebView?, url: String?) {
-                super.onPageFinished(view, url)
-
                 // Check if the site goes to qr-scanner
                 Log.d("Hi", url!!)
                 if (url == webAppUrl + "qr-scanner") {
@@ -66,8 +65,10 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 // Animation to next page
-                val anim = AnimationUtils.loadAnimation(baseContext, android.R.anim.fade_out)
-                webView.startAnimation(anim)
+//                val anim = AnimationUtils.loadAnimation(baseContext, android.R.anim.slide_in_left)
+//                webView.startAnimation(anim)
+
+                super.onPageFinished(view, url)
             }
         }
 

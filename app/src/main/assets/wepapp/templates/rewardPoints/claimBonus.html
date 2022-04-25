@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Redpins Buffer - Scan QR for Arrival{% endblock %}
+
+{% block content %}
+<div style="text-align:center;">
+    <h4>Please enter the 4-digit bonus code on your receipt to obtain bonus points</h3>
+    <div style="margin: 0 auto;height: 60px;" class="row" >
+        {% for i in range(4) %}
+        <div class="col-3">
+            <input type="text" style="width: 60px;">
+        </div>
+        {% endfor %}
+    </div>
+    
+    <a class="btn btn-primary" href="#"> Redeem </a>
+</div>
+
+
+{% endblock %}
