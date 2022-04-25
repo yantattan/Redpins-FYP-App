@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Preview</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    html,
+    body {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      width: 100%;
+      height: 100%;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="w-[360px] h-[800px] relative overflow-hidden rounded-[20px] bg-[#fcfcfc]">
+    <svg width="360" height="366" viewBox="0 0 360 366" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-[360px] h-[365px]" preserveAspectRatio="none">
+      <path d="M315 364.5L45 364.5C20.7751 364.5 1.5 347.556 1.5 327.121L1.5 2.49997L358.5 2.49997L358.5 327.121C358.5 347.556 339.225 364.5 315 364.5Z" stroke="black" stroke-width="3"></path>
+      <path d="M360 1L14 349.179M1 1L349 349.179" stroke="#3A3434" stroke-width="2"></path>
+    </svg>
+
+    <p class="w-[315px] h-11 absolute left-[23px] top-[406px] text-[25px] font-semibold text-center text-black">
+      Only The Best.
+    </p>
+
+    <p class="w-80 absolute left-[23px] top-[480px] text-base text-center text-black">
+      With machine-learning, you’ll always get the new &#x26; exciting recommendations tailored
+      for you.
+    </p>
+
+    <div class="w-[15px] h-1 absolute left-[145px] top-[589px] rounded-sm bg-[#e7e7e7]" onclick="window.open('onboarding01.html','_self')"></div>
+    <div class="w-[29px] h-1 absolute left-[164px] top-[589px] rounded-sm bg-[#e4002b]"></div>
+    <div class="w-3.5 h-1 absolute left-[198px] top-[589px] rounded-sm bg-[#e7e7e7]" onclick="window.open('onboarding03.html','_self')"></div>
+
+    <div class="w-80 h-[50px] absolute left-[19px] top-[619px] overflow-hidden" onclick="window.open('registration.html','_self')">
+      <div class="w-80 h-[50px] absolute left-[-1px] top-[-1px]">
+        <div class="w-80 h-[50px] absolute left-[-1px] top-[-1px] rounded-[5px] bg-[#eee]"></div>
+        <div class="w-80 h-[50px] absolute left-[-1px] top-[-1px] rounded-[5px]" style="background: linear-gradient(238.86deg, #e4002b 1.57%, #e92c3d 15.84%, #f8a36f 86.66%);"></div>
+        <p class="absolute left-[114px] top-[13px] text-base font-semibold text-center text-white">
+          Get Started
+        </p>
+      </div>
+    </div>
+
+    <p class="absolute left-[95px] top-[700px] text-sm text-left">
+      <span class="text-sm text-left text-black">Have an account? </span><span class="text-sm font-bold text-left text-[#e4002b]" onclick="window.open('login.html','_self')">Sign In</span>
+    </p>
+
+  </div>
+</body>
+
+</html>
