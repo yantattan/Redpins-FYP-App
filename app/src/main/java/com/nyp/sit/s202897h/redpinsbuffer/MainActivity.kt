@@ -19,6 +19,7 @@ import android.webkit.WebViewClient
 
 import android.graphics.PixelFormat
 import android.os.*
+import android.util.Base64
 import android.view.*
 import android.webkit.JavascriptInterface
 import android.widget.Toast
@@ -33,9 +34,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        var webView = findViewById<WebView>(R.id.webview)
+        val webView = findViewById<WebView>(R.id.webview)
         webView.settings.domStorageEnabled = true
         webView.settings.javaScriptEnabled = true
+        webView.settings.allowFileAccess = true
+        webView.settings.mixedContentMode = WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE
         webView.settings.setGeolocationEnabled(true)
         webView.scrollBarStyle = View.SCROLLBARS_INSIDE_OVERLAY
 

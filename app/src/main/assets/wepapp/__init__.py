@@ -2,6 +2,7 @@ from urllib.error import HTTPError
 from flask import Flask, render_template, request, redirect, url_for, session, flash, send_file
 from apscheduler.scheduler import Scheduler
 from io import BytesIO
+import uuid
 
 # Required libraries
 from datetime import datetime, timedelta, date
@@ -70,10 +71,9 @@ def homePage():
         if session.get("current_user") is None:
             return redirect("/login")
         
-        # trackedPlacesCon.SetInfo(TrackedPlace(session.get("current_user").get("userId"), "390 Havelock Road King's Centre, Singapore 169662 Singapore", "Grand Shanghai Restaurant", "Searched"))
-        # yourLocation = geocoder.ipinfo("")
-        return render_template("home.html",
-                               y="Meh")
+        trackedPlacesCon.SetInfo(TrackedPlace(session.get("current_user").get("userId"), "390 Havelock Road King's Centre, Singapore 169662 Singapore", 
+                                                "Grand Shanghai Restaurant", "Searched"))
+        return render_template("home.html", y="Meh")
 
 # Accounts pages
 @app.route("/login", methods=['GET', 'POST'])
@@ -81,6 +81,7 @@ def login():
     # To render the page (pathing starts from templates folder after). After the filename, variables defined behind are
     # data that the site needs to use
     login_form = LoginForm(request.form)
+    session["session_id"] = str(uuid.uuid4())
 
     if request.method == 'POST' and login_form.validate():
         userInfo = userCon.Login(login_form)
@@ -436,12 +437,13 @@ def calculateAndReturnList(userId, category, webScrapData, shortlistedPlaces, di
             rerecommendPoints = 0 # If >=0, can rerecommend
             dataRow = webScrapData.loc[webScrapData["Address"] == place["Address"].replace(", ", "|")]
 
-            for action in place["Actions"]:
-                addPoints = actionPoints[action] * place["Actions"]["Searched"]["Frequency"]
-                rerecommendPoints += addPoints
+            if len(dataRow.values) > 0:
+                for action in place["Actions"]:
+                    addPoints = actionPoints[action] * place["Actions"]["Searched"]["Frequency"]
+                    rerecommendPoints += addPoints
 
-            if rerecommendPoints >= 0:
-                rerecommend.append(dataRow["Restaurant_name"].values[0])
+                if rerecommendPoints >= 0:
+                    rerecommend.append(dataRow["Restaurant_name"].values[0])
 
         # Score preferences based on regression of his preferences 
         for action in actionPoints:
@@ -1080,12 +1082,16 @@ def autoSaveTrip():
         itinerary = Itinerary(None, userId, tripName, date, tripType, transportMode, timeAllowance, timeLeft, places)
         itinerariesCon.SetItinerary(itinerary)
 
-def trackPlaces(places, storeMean):
+def trackPlaces(places, names, storeMean, sessionId):
     # Track down the destinations for future recommendation algorithm
-    for place in places:
-        trackedPlacesCon.SetInfo(TrackedPlace(session["current_user"]["user_id"], place["address"], storeMean))
+    if sessionId == session.get("session_id"):
+        for i in range(len(places)):
+            res = trackedPlacesCon.SetInfo(TrackedPlace(session["current_user"]["userId"], places[i], names[i], storeMean))
+            return res
+    
+    return {"success": False, "error": "Your session is invalid. Please login again"}
 
-@app.route("/funcs/post-places/", methods=['POST'])
+@app.route("/funcs/post-places", methods=['POST'])
 def recommendPlace():
     finalResult = {}
     trackPlaces(request.form.get("destinations"), request.form.get("storeMean"))
@@ -1093,10 +1099,10 @@ def recommendPlace():
     return json.dumps(finalResult)
 
 
-@app.route("/funcs/mark-tracked/", methods=['POST'])
+@app.route("/funcs/mark-tracked", methods=['POST'])
 def markTracked():
-    trackPlaces(request.form.get("places"), request.form.get("storeMean"))
-
+    res = trackPlaces([request.form.get("address")], [request.form.get("name")], request.form.get("action"), request.form.get("sessionId"))
+    return json.dumps(res)
 
 @app.route("/funcs/admin/table_getSignedPlaces")
 def tableGetSignedPlaces():
@@ -1213,6 +1219,19 @@ def scheduledJobs():
     trainGlobalUserPreferenceModel()
     trainFutureTrackedInfoModel()
     webScrap()
+
+
+@app.after_request
+def add_header(r):
+    """
+    Add headers to both force latest IE rendering engine or Chrome Frame,
+    and also to cache the rendered page for 10 minutes.
+    """
+    r.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    r.headers["Pragma"] = "no-cache"
+    r.headers["Expires"] = "0"
+    r.headers['Cache-Control'] = 'public, max-age=0'
+    return r
 
 
 # Error pages handling

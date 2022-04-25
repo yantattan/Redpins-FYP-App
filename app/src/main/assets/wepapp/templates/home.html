@@ -8,10 +8,14 @@
     <a href="/qr-scanner">Scan me</a>
     <br />
     <br>
-    <input type="text" id="searchBar" onkeyup="pauseSearch()">
+    <div>
+        <input type="text" class="form-control" id="searchBar" onkeyup="pauseSearch();" autocomplete="off">
+        <div id="search-dropdown">
+        </div>
+    </div>
+    
     <div id="searchPage">1</div>
-    <button class="btn btn-primary" id="searchNextPageBtn" onclick="searchNextPage()">Next page</button>
-    <div id="searchResults" style="height: 200px; max-width: 100%; overflow: auto;"></div>
+    <button class="btn btn-primary" id="searchNextPageBtn" onclick="searchNextPage();">Next page</button>
 </div>
 
 <script>
@@ -42,18 +46,37 @@
 
     function search() {
         if (canSearch) {
+            var dropdownMenu = document.getElementById("search-dropdown");
             const search = $("#searchBar").val()
             const pageNum = $("#searchPage").val()
             if (!search) {
-                $("#searchResults").text("Will show maybe some recommended places");
+                dropdownMenu.innerHTML = ""; 
             }
             else {
                 $.ajax({
                 url: `https://developers.onemap.sg/commonapi/search?searchVal=${search}&returnGeom=Y&getAddrDetails=Y&pageNum=${pageNum}`,
                 success: function(result) {
-                    //Set result to a variable for writing
-                    var resultstr = JSON.stringify(result);
-                    $("#searchResults").text(resultstr);
+                    dropdownMenu.innerHTML = "";
+                    showLength = 6;
+                    if (result.results.length > 0) {
+                        if (result.results.length < 6) {
+                            showLength = result.results.length;
+                        }
+
+                        for (var i=0; i<showLength; i++) {
+                            record = result.results[i]
+                            dropdownMenu.innerHTML += `
+                            <div class="dropdown-item" onclick="saveSearch('${record.ADDRESS}', '${record.SEARCHVAL}')" style="cursor: pointer">
+                                <p style="font-size: 14px;"><b>${record.SEARCHVAL}</b></p>
+                                <p style="font-size: 11px; max-width: 100%; overflow: auto;">${record.ADDRESS}</p>
+                            </div>
+                            `;
+                        }
+                    }
+                    else {
+                        dropdownMenu.innerHTML = `<div class="dropdown-item">No results found</div>`; 
+                    }
+                    
                 }});
             }
             
@@ -62,6 +85,24 @@
 
     function searchNextPage() {
         $("#searchPage").text(parseInt($("#searchPage").text()) + 1)
+    }
+
+    function saveSearch(addr, n) {
+        document.getElementById("search-dropdown").innerHTML = "";
+        
+        $.ajax({
+            type: "POST",
+            url: `/funcs/mark-tracked`,
+            data: {
+                sessionId: '{{session.get("session_id")}}',
+                action: "Searched",
+                address: addr,
+                name: n
+            },
+            success: function(result) {
+                console.log(result)
+            }
+        })
     }
 
     function submitRecommendedPlaces() {

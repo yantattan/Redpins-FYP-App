@@ -70,7 +70,7 @@
                 longitude: post.coords.longitude,
                 endLatitude: 1.2834542,
                 endLongitude: 103.8608090,
-                timeAllowance: 360,
+                timeAllowance: 150,
                 category: "Eateries",
                 transportMode: "pt",
             },
@@ -87,7 +87,7 @@
                     div.innerHTML += `<div class="card" style="width:150px; height:175px; margin-right: 1em; max-width:
                         flex-basis: 33.333%;
                         flex-grow: 0;
-                        flex-shrink: 0;">
+                        flex-shrink: 0; clear: both;">
                         <h5>${result[i].Restaurant_name}</h5>
                         <br />
                         <p>Matching ${result[i].RecommendationScore.toFixed(2)}</p>

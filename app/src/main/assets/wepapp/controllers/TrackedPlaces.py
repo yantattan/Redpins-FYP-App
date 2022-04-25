@@ -13,7 +13,7 @@ class TrackedPlacesCon:
     def __init__(self):
         self.__connection = MongoDBContext.Connect()["TrackedInfo"]
     
-    def SetInfo(self, trackedPlace):
+    def SetInfo(self, trackedPlace: TrackedPlace):
         '''cursor = self.__connection.cursor()
         # Check if today with the store mean has already been registered
         cursor.execute('SELECT LastRegistered FROM TrackedPlaces '
@@ -57,18 +57,16 @@ class TrackedPlacesCon:
                 timestamps = trackedInfo["Actions"][trackedPlace.getAction()]["Timestamps"]
                 lastRegisteredDate = timestamps[-1]
 
-                if lastRegisteredDate.strftime("%Y-%m-%d") != currentTime.strftime("%Y-%m-%d"):
+                if trackedPlace.getAction() != "Visited" or lastRegisteredDate.strftime("%Y-%m-%d") != currentTime.strftime("%Y-%m-%d"):
                     timestamps.append(currentTime)
                     trackedInfo["Actions"][trackedPlace.getAction()]["Frequency"] += 1
                 
                     try:  
                         self.__connection.update_one({"UserId": trackedPlace.getUserId(), 
                                                         "Address": trackedPlace.getAddress()},
-                                                        {"$set": {"Actions": trackedInfo}
+                                                        {"$set": {"Actions": trackedInfo["Actions"]}
                                                     }) 
-                        print("I reached here")
                     except Exception as e:
-                        print(e)
                         try:
                             self.__connection.insert_one({"UserId": trackedPlace.getUserId(), "Address": trackedPlace.getAddress(), 
                                                 "Actions": {
@@ -83,20 +81,17 @@ class TrackedPlacesCon:
 
             except KeyError or IndexError as e:
                 print(e)
-                trackedInfo["Actions"][trackedPlace.getAction()] = {"Frequency": 1, "Timestamps": [currentTime]}
-                try:
-                    self.__connection.update_one({"UserId": trackedPlace.getUserId(), "Address": trackedPlace.getAddress()}, 
-                                                    {"$set": {"Actions": trackedInfo["Actions"]}
-                                                }) 
-                except Exception as e:
-                    print(e)
-                    return {"success": False, "error": "An error occurred"}                    
+                return {"success": False, "error": "An error occurred"}                 
         else:
-            self.__connection.insert_one({"UserId": trackedPlace.getUserId(), "Address": trackedPlace.getAddress(), 
-                                            "Actions": {
-                                                trackedPlace.getAction() : {"Frequency": 1, "Timestamps": [currentTime]}
-                                            }
-                                        }) 
+            try:
+                self.__connection.insert_one({"UserId": trackedPlace.getUserId(), "Address": trackedPlace.getAddress(), 
+                                    "Actions": {
+                                        trackedPlace.getAction() : {"Frequency": 1, "Timestamps": [currentTime]}
+                                    }
+                                })
+            except Exception as e:
+                print(e)
+                return {"success": False, "error": "An error occurred"}
 
         return {"success": True}
 

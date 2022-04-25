@@ -19,9 +19,11 @@ html, body {
 }
 
 .mobile-size {
-  max-width: 410px; 
+  max-width: 430px; 
   min-width: 360px; 
-  min-height: 800px;
+  min-height: 100%;
+  display: table;
+  height: auto;
 }
 
 .box {

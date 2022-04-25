@@ -24,7 +24,8 @@ overflow-x: auto; overflow-y: hidden;">
 <br>
 <label>End destination</label>
 <input type="text" id="endDestination" class="form-control" onkeyup="pauseSearch();"></input>
-<div id="showDestinations" class="row" style="height: 200px;overflow: auto;"></div>
+<div id="show-destinations">   
+</div>
 
 <button class="btn btn-primary">Create Trip</button>
 
@@ -98,7 +99,7 @@ overflow-x: auto; overflow-y: hidden;">
 
     function pauseSearch() {
         canSearch = false;
-        console.log("Here")
+        console.log("Here");
         setTimeout(function() {
             canSearch = true;
             search()
@@ -107,19 +108,35 @@ overflow-x: auto; overflow-y: hidden;">
 
     function search() {
         if (canSearch) {
-            console.log("Here2")
+            var dropdownMenu = document.getElementById("show-destinations");
             const search = $("#endDestination").val()
-            const pageNum = 1
+            const pageNum = $("#searchPage").val()
             if (!search) {
-                $("#showDestinations").text("Will show maybe some recommended places");
+                dropdownMenu.innerHTML = ""; 
             }
             else {
                 $.ajax({
                 url: `https://developers.onemap.sg/commonapi/search?searchVal=${search}&returnGeom=Y&getAddrDetails=Y&pageNum=${pageNum}`,
                 success: function(result) {
-                    //Set result to a variable for writing
-                    var resultstr = JSON.stringify(result);
-                    $("#showDestinations").text(resultstr);
+                    dropdownMenu.innerHTML = "";
+                    showLength = 6;
+                    if (result.results.length > 0) {
+                        if (result.results.length < 6) {
+                            showLength = result.results.length;
+                        }
+
+                        for (var i=0; i<showLength; i++) {
+                            record = result.results[i]
+                            dropdownMenu.innerHTML += `
+                            <div class="dropdown-item" onclick="">
+                                <p style="font-size: 14px;"><b>${record.SEARCHVAL}</b></p>
+                                <p style="font-size: 11px; max-width: 100%; overflow: auto;">${record.ADDRESS}</p>
+                            </div>`;
+                        }
+                    }
+                    else {
+                        dropdownMenu.innerHTML = `<div class="dropdown-item">No results found</div>`; 
+                    }
                 }});
             }
             
