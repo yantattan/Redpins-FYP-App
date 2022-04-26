@@ -18,34 +18,38 @@
   /* max-width: 430px; */
   height: 800px;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
   flex-direction: column;
   /* background-color: green; */
 }
 
-.script-controller, #main-div{
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
+.onboarding {
+  justify-content: space-between;
   align-items: center;
 }
 
-#main-div {
-  width: 100%;
-  flex: 1;
-}
-
 #registrationbg {
+  justify-content: space-between;
   position: relative;
   width: 360px;
   height: 230px;
 }
 
-#loadingbg, #registrationbg {
+#loginbg {
+  justify-content: space-between;
+  position: relative;
+  width: 360px;
+  height: 265px;
+}
+
+#preferences {
+  justify-content: space-around;
+}
+
+#loadingbg, #registrationbg, #loginbg {
   background: linear-gradient(193.74deg, #E4002B 3.02%, #E82038 31.9%, #F8A36F 95.45%);
 }
 
+/* landing page */
 .logogif {
   position: absolute;
   left: 26.39%;
@@ -54,6 +58,7 @@
   bottom: 37.25%;
 }
 
+/* onboarding page */
 .onboardingchange {
   display: flex;
   justify-content: center;
@@ -112,7 +117,6 @@
 .onboardingbars {
   display: flex;
   margin: 1em auto;
-
 }
 
 .activebar {
@@ -171,6 +175,7 @@
   line-height: 19px;
 }
 
+/* registration page */
 #registrationbg p {
   position: absolute;
   width: 180px;
@@ -205,7 +210,7 @@ input {
   padding: 1em;
   font-family: 'Open Sans';
   font-style: normal;
-  font-weight: 600;
+  font-weight: 400;
   font-size: 16px;
   line-height: 22px;
   display: flex;
@@ -225,6 +230,144 @@ input {
 }
 
 .next h1 {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 24px;
+  color: #FFFFFF;
+}
+
+/* Login page */
+#loginbg h1 {
+  position: relative;
+  width: 211px;
+  height: 90px;
+  left: 20px;
+  top: 115px;
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 30px;
+  line-height: 45px;
+  color: #FFFFFF;
+}
+
+.loginfields {
+  position: absolute;
+  width: 360px;
+  height: 570px;
+  left: 0px;
+  top: 230px;
+  background: #FFFFFF;
+  box-shadow: 0px 10px 20px rgba(207, 207, 207, 0.3);
+  border-radius: 20px 0px 0px 0px;
+}
+
+.loginfields p {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 19px;
+  color: #2B2B2B;
+  text-align: right;
+}
+
+.forgot {
+  margin-right: 5%;
+}
+
+.login {
+  margin: 2em auto;
+  width: 320px;
+  height: 50px;
+  background: #EEEEEE;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.login p {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 24px;
+  color: #FFFFFF;
+}
+
+.signup {
+  display: flex;
+  justify-content: center;
+  margin: 13em 0 0 0;
+}
+
+.signup p {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 19px;
+  color: #000000;
+}
+
+.signup a {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 19px;
+  color: #E4002B;
+  margin: 0;
+  text-decoration: none;
+}
+
+/* preferences page */
+.preference {
+  margin: 120px 10px;
+}
+
+#preferences h1 {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 30px;
+  line-height: 40px;
+  color: #2B2B2B;
+}
+
+#preferences p {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 40px;
+  color: #2B2B2B;
+  margin: 0 0 20px 0;
+}
+
+
+.activities ul {
+  display: flex;
+  flex-wrap: wrap;
+  text-align: center;
+}
+
+.activities li {
+  background-color: #eeeeee;
+  padding: 10px;
+  margin: 0 10px 10px 0;
+  border-radius: 5px;
+  list-style-type: none;
+}
+
+#preferences .next {
+  width: 95%;
+}
+
+#preferences .next h1 {
   font-family: 'Poppins';
   font-style: normal;
   font-weight: 600;
