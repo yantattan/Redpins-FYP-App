@@ -16,7 +16,7 @@
     <!--JQuery-->
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     
-    <link rel="stylesheet" href="/static/css/test.css">
+    <link rel="stylesheet" href="/static/css/style.css">
 </head>
 
 <body>
@@ -24,10 +24,10 @@
         {% if session.get("current_user").get("role") == "Admin" %}
         <div style="border: 1px solid black;">
         {% else %}
-        <div class="mobile-size" style="border: 1px solid black;">
+        <div class="device" style="border: 1px solid black;">
         {% endif %}
     {% else %}
-    <div class="mobile-size" style="border: 1px solid black;">
+    <div class="device" style="border: 1px solid black;">
     {% endif %}
         {% block loading %}
             {% include "includes/_loading.html" %}
@@ -50,7 +50,7 @@
     <script src="https://unpkg.com/bootstrap-table@1.19.1/dist/bootstrap-table.min.js"></script>
     <script>
         var mainDiv = $("#main-div")
-        var loadingScreen = $("#loading-screen")
+        var loadingScreen = $("#loadingbg")
         var navbar = $("#navbar")
       
         mainDiv.hide();

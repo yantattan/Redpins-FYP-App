@@ -54,8 +54,12 @@ itinerariesCon = Itineraries.ItinerariesCon()
 # Init label encoders
 globalPrefLE = trackedInfoLE = preprocessing.LabelEncoder()
 
+categoriesInfo = {
+    "Eateries": {"filename":"restaurants_info.csv", "category":"Eateries", "activityTime": 45}
+}
+
 # Functions to perform before showing the page
-@app.route("/", methods=['GET', 'POST'])
+@app.route("/")
 def homePage():
     # To render the page (pathing starts from templates folder after). After the filename, variables defined behind are
     # data that the site needs to use
@@ -63,17 +67,20 @@ def homePage():
 
     # yourLocation = geocoder.ip("me")
     # scheduledJobs()
+    if session.get("current_user") is None:
+        return redirect("/login")
+    
+    return render_template("home.html", y="Meh")
 
-    if request.method == 'POST':
-        return redirect("/")
-    # For functions to perform before loading of site
+@app.route("/discover/<string:category>")
+def discoverCategories(category):
+    if category == "popular-places":
+        print("Most popular")
     else:
-        if session.get("current_user") is None:
-            return redirect("/login")
-        
-        trackedPlacesCon.SetInfo(TrackedPlace(session.get("current_user").get("userId"), "390 Havelock Road King's Centre, Singapore 169662 Singapore", 
-                                                "Grand Shanghai Restaurant", "Searched"))
-        return render_template("home.html", y="Meh")
+        webScrapData = pandas.read_csv("csv/webcsv/"+categoriesInfo[category]["filename"], encoding = "ISO-8859-1")
+        # trackedPlacesCon.
+
+    return render_template("discoverCategories.html")
 
 # Accounts pages
 @app.route("/login", methods=['GET', 'POST'])
@@ -166,7 +173,7 @@ def forgetPassword():
 #Onboarding page
 @app.route("/onboarding")
 def onBoardingPage():
-    return render_template("pages/onboarding01.html")
+    return render_template("onboarding/onboarding01.html")
 
 @app.route("/loading")
 def loading():
@@ -389,9 +396,7 @@ averageSpeeds = {
     "pt": (80 * 0.45 + 50 * 0.45 + 4 * 0.1),
     "cycle": 18
 }
-categoriesInfo = {
-    "Eateries": {"filename":"restaurants_info.csv", "category":"Eateries", "activityTime": 45}
-}
+
 def calculateAndReturnList(userId, category, webScrapData, shortlistedPlaces, displaySize, activityTime, skipped):
     # CALCULATIONS BEFORE CHECKING AGAINST DIFFERENT PLACES
     # From here, every different checks contributes to different weightage to the final chance.

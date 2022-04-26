@@ -24,6 +24,10 @@
 
 <div id="list"></div>
 
+{% endblock %}
+
+{% block scripts %}
+{{super()}}
 <script>
     var post;
     var skipped = [0];
@@ -70,7 +74,7 @@
                 longitude: post.coords.longitude,
                 endLatitude: 1.2834542,
                 endLongitude: 103.8608090,
-                timeAllowance: 150,
+                timeAllowance: 360,
                 category: "Eateries",
                 transportMode: "pt",
             },

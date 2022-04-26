@@ -8,10 +8,11 @@ from Model import TrackedPlace
 
 
 class TrackedPlacesCon:
-    __connection = None
+    __connection = _connection2 = None
 
     def __init__(self):
         self.__connection = MongoDBContext.Connect()["TrackedInfo"]
+        self.__connection2 = MongoDBContext.Connect()["PlacesStats"]
     
     def SetInfo(self, trackedPlace: TrackedPlace):
         '''cursor = self.__connection.cursor()
@@ -66,6 +67,8 @@ class TrackedPlacesCon:
                                                         "Address": trackedPlace.getAddress()},
                                                         {"$set": {"Actions": trackedInfo["Actions"]}
                                                     }) 
+                        self.RecordAction(trackedPlace.getAction())
+                        
                     except Exception as e:
                         try:
                             self.__connection.insert_one({"UserId": trackedPlace.getUserId(), "Address": trackedPlace.getAddress(), 
@@ -73,6 +76,8 @@ class TrackedPlacesCon:
                                                     trackedPlace.getAction() : {"Frequency": 1, "Timestamps": [currentTime]}
                                                 }
                                             })
+                            self.RecordAction(trackedPlace.getAction())
+
                         except Exception as e:
                             print(e)
                             return {"success": False, "error": "An error occurred"}
@@ -89,11 +94,37 @@ class TrackedPlacesCon:
                                         trackedPlace.getAction() : {"Frequency": 1, "Timestamps": [currentTime]}
                                     }
                                 })
+                self.RecordAction(trackedPlace.getAction())
+
             except Exception as e:
                 print(e)
                 return {"success": False, "error": "An error occurred"}
 
         return {"success": True}
+
+    def RecordAction(self, trackedPlace: TrackedPlace):
+        today = datetime.now().strftime("%Y_%m_%d")
+        place = self.__connection2.find_one({"Address": trackedPlace.getAddress()})
+
+        defActions = {"Searched": 0, "Planned": 0, "Visited": 0}
+        defActions[trackedPlace.getAction()] += 1
+
+        if place is not None:
+            place["Dates"][today][trackedPlace.getAction()] += 1
+            self.__connection2.update_one({"Address": trackedPlace.getAddress()}, 
+                                            {"Dates": place["Dates"]})
+        else:
+            place = {
+                "Address": trackedPlace.getAddress(),
+                "Dates": {today: defActions}
+            }
+            self.__connection2.insert_one(place)
+
+    def GetMostVisited(self, category=None, span=None, limit=None):
+        # try:
+        #     self.__connection2.find()
+        # except Exception as e:
+        print("Hello")
 
     def GetTopAccessedInfo(self, userId):
         # Return top 5 most frequently accessed places
