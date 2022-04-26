@@ -62,6 +62,7 @@ TrackedInfo [
         _id: <Obj sth>,
         userId: 1,
         address: "sth",
+        category: "sth",
         actions: {
             searched: {
                 frequency: 5,
@@ -73,6 +74,21 @@ TrackedInfo [
             }
         },
 	}
+]
+
+PlacesStats [
+    {
+        _id: <Obj sth>,
+        address: "sth",
+        category: "sth",
+        dates: {
+            2022_04_26: {
+                searched: 126
+                planned: 96
+                visited: 69
+            }
+        }
+    }
 ]
 
 

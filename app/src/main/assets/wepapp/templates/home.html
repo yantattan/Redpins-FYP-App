@@ -54,30 +54,31 @@
             }
             else {
                 $.ajax({
-                url: `https://developers.onemap.sg/commonapi/search?searchVal=${search}&returnGeom=Y&getAddrDetails=Y&pageNum=${pageNum}`,
-                success: function(result) {
-                    dropdownMenu.innerHTML = "";
-                    showLength = 6;
-                    if (result.results.length > 0) {
-                        if (result.results.length < 6) {
-                            showLength = result.results.length;
-                        }
+                    // url: `https://developers.onemap.sg/commonapi/search?searchVal=${search}&returnGeom=Y&getAddrDetails=Y&pageNum=${pageNum}`,
+                    url: `/funcs/search?s=${search}`,
+                    success: function(result) {
+                        dropdownMenu.innerHTML = "";
+                        showLength = 6;
+                        if (result.length > 0) {
+                            if (result.length < 6) {
+                                showLength = result.length;
+                            }
 
-                        for (var i=0; i<showLength; i++) {
-                            record = result.results[i]
-                            dropdownMenu.innerHTML += `
-                            <div class="dropdown-item" onclick="saveSearch('${record.ADDRESS}', '${record.SEARCHVAL}')" style="cursor: pointer">
-                                <p style="font-size: 14px;"><b>${record.SEARCHVAL}</b></p>
-                                <p style="font-size: 11px; max-width: 100%; overflow: auto;">${record.ADDRESS}</p>
-                            </div>
-                            `;
+                            for (var i=0; i<showLength; i++) {
+                                record = result[i]
+                                dropdownMenu.innerHTML += `
+                                <div class="dropdown-item" onclick="saveSearch('${record.Address}', '${record.Name}')" style="cursor: pointer">
+                                    <p style="font-size: 14px;"><b>${record.Name}</b></p>
+                                    <p style="font-size: 11px; max-width: 100%; overflow: auto;">${record.Address}</p>
+                                </div>
+                                `;
+                            }
                         }
-                    }
-                    else {
-                        dropdownMenu.innerHTML = `<div class="dropdown-item">No results found</div>`; 
-                    }
-                    
-                }});
+                        else {
+                            dropdownMenu.innerHTML = `<div class="dropdown-item">No results found</div>`; 
+                        }
+                        
+                    }});
             }
             
         }       

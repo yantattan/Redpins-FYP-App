@@ -3,7 +3,7 @@
 
 {% block content %}
 <!-- 1st page -->
-<div id="onboarding-page1" class="script-controller">
+<div id="onboarding-page1" class="onboardingchange">
   <div class="onboarding01img">
   </div>
 
@@ -17,7 +17,7 @@
   </div>
 </div>
 <!-- 2nd page -->
-<div id="onboarding-page2" class="script-controller">
+<div id="onboarding-page2" class="onboardingchange">
   <div class="onboarding02img">
   </div>
 
@@ -31,7 +31,7 @@
   </div>
 </div>
 <!-- 3rd page -->
-<div id="onboarding-page3" class="script-controller">
+<div id="onboarding-page3" class="onboardingchange">
   <div class="onboarding03img">
   </div>
 
@@ -45,11 +45,11 @@
   </div>
 </div>
 
-<div class="onboardingcta" onclick="window.open('registration.html','_self')">
+<div class="onboardingcta" onclick="window.open('/register','_self')">
   <p>Get Started</p>
 </div>
 
-<p class="onboardingacc">Have an account? <a href="login.html">Sign In</a></p>
+<p class="onboardingacc">Have an account? <a href="/login">Sign In</a></p>
 {% endblock %}
 
 {% block scripts %}
@@ -72,9 +72,9 @@
 
     var fadeOutPage = $("#onboarding-page"+page);
     var fadeInPage = $("#onboarding-page"+nextPage);
-    fadeOutPage.fadeOut();
+    fadeOutPage.fadeOut(1000);
     fadeOutPage.promise().done(function() {
-      fadeInPage.fadeIn();
+      fadeInPage.fadeIn(1000);
     })
 
     if (page == 3) {
@@ -83,6 +83,6 @@
     else {
       page++;
     }
-  }, 5000)
+  }, 7000)
 </script>
 {% endblock %}

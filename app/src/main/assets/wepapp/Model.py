@@ -110,10 +110,11 @@ class User:
 
 
 class TrackedPlace:
-    def __init__(self, userId, address, placeName, action):
+    def __init__(self, userId, address, placeName, category, action):
         self.__userId = userId
         self.__address = address
         self.__placeName = placeName
+        self.__category = category
         self.__action = action
         self.__frequency = 0
         self.__timestamps = []
@@ -124,6 +125,9 @@ class TrackedPlace:
     def setPlaceName(self, placeName):
         self.__placeName = placeName
     
+    def setCategory(self, category):
+        self.__category = category
+
     def setAction(self, action):
         self.__action = action
 
@@ -142,6 +146,9 @@ class TrackedPlace:
     def getPlaceName(self):
         return self.__placeName
     
+    def getCategory(self):
+        return self.__category
+
     def getAction(self):
         return self.__action
 

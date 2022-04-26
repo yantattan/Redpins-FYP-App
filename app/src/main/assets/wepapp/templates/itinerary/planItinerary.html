@@ -28,7 +28,10 @@ overflow-x: auto; overflow-y: hidden;">
 </div>
 
 <button class="btn btn-primary">Create Trip</button>
+{% endblock %}
 
+{% block scripts %}
+{{super()}}
 <script>
     var post;
     var skipped = [0];

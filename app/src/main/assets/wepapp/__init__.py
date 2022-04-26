@@ -55,7 +55,7 @@ itinerariesCon = Itineraries.ItinerariesCon()
 globalPrefLE = trackedInfoLE = preprocessing.LabelEncoder()
 
 categoriesInfo = {
-    "Eateries": {"filename":"restaurants_info.csv", "category":"Eateries", "activityTime": 45}
+    "Eateries": {"filename":"restaurants_info.csv", "category":"Eateries", "colName": "Cuisines", "activityTime": 45}
 }
 
 # Functions to perform before showing the page
@@ -74,13 +74,7 @@ def homePage():
 
 @app.route("/discover/<string:category>")
 def discoverCategories(category):
-    if category == "popular-places":
-        print("Most popular")
-    else:
-        webScrapData = pandas.read_csv("csv/webcsv/"+categoriesInfo[category]["filename"], encoding = "ISO-8859-1")
-        # trackedPlacesCon.
-
-    return render_template("discoverCategories.html")
+    return render_template("discoverCategories.html", category=category)
 
 # Accounts pages
 @app.route("/login", methods=['GET', 'POST'])
@@ -1060,6 +1054,58 @@ def recommendPlacesExplorer():
 def reachedPlace():
     # Placeholder returned data
     getpoints(False)
+
+# Home pages functions
+allWebscrapData = []
+
+def getAllWebscrapData():
+    for cat in categoriesInfo:
+        data = pandas.read_csv("csv/webcsv/"+categoriesInfo[cat]["filename"])
+        allWebscrapData + list(map(lambda x: dict(x.as_dict()), data))
+
+    return allWebscrapData.sort()
+
+@app.route("/funcs/search")
+def search():
+    query = request.args.get("s")
+    limit = 0
+    resultList = []
+    for row in allWebscrapData:
+        if query in row["Name"]:
+            resultList.append(row)
+            limit += 1
+            if limit >= 6:
+                return resultList
+
+@app.route("/funcs/discover-recommend/<string:category>", methods=['POST'])
+def discoverRecommend(category):
+    today = datetime.now()
+    section = request.form.get("section")
+
+    if category == "popularPlaces":
+        rangeDateEnd = (today - timedelta(days=31)).date()
+
+        csvFiles = {"Eateries": pandas.read_csv("csv/webcsv/"+categoriesInfo["Eateries"]["filename"], encoding = "ISO-8859-1")} 
+
+        # Popular places
+        returnDict = {}
+        popularPlaces = trackedPlacesCon.GetHighestAction("Visited", span=[today.strftime("%Y_%m_%d"), rangeDateEnd.strftime("%Y_%m_%d")], limit=9)
+
+        for place in popularPlaces:
+            dataRow = csvFiles[place["Category"]].loc[csvFiles[place["Category"]]["Address"] == place.getAddress()]
+            place["Name"] = dataRow["Restaurant_name"]
+            place["Ratings"] = dataRow["Ratings"]
+
+        returnDict["popularPlaces"] = popularPlaces
+
+        # Eateries
+        for cat in categoriesInfo:
+            topCat = trackedPlacesCon.GetHighestAction("Visited", cat, span=[today.strftime("%Y_%m_%d"), rangeDateEnd.strftime("%Y_%m_%d")], limit=9)
+            returnDict[cat] = topCat
+            
+        return json.dumps(returnDict)
+    else:
+        return json.dumps({})
 
 @app.route("/funcs/save-trip", methods=['POST'])
 def autoSaveTrip():
