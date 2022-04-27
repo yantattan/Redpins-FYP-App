@@ -167,7 +167,7 @@ def forgetPassword():
 #Onboarding page
 @app.route("/onboarding")
 def onBoardingPage():
-    return render_template("onboarding/onboarding01.html")
+    return render_template("onboarding.html")
 
 @app.route("/loading")
 def loading():
@@ -215,10 +215,28 @@ def pref1():
         newUserInfo = userCon.SetSetupComplete(session["current_user"]["userId"])
         session["current_user"] = newUserInfo
         print(allPrefs)
-        return redirect("/")
-    else:
-        print("Hello")
+        return redirect("/preferences/2")
+    
     return render_template("preferences/preference1.html")
+
+@app.route("/preferences/2", methods=['GET', 'POST'])
+def pref2():
+    invalidRedirect = validateSession()
+    if invalidRedirect is not None:
+        print(invalidRedirect)
+        return redirect(invalidRedirect)
+
+    if request.method == 'POST':
+        category = "Activities"
+        allPrefs = request.form.getlist("preferences[]")
+        pref = Preferences(session["current_user"]["userId"], allPrefs, category)
+        userCon.SetPreferences(pref)
+        newUserInfo = userCon.SetSetupComplete(session["current_user"]["userId"])
+        session["current_user"] = newUserInfo
+        print(allPrefs)
+        return redirect("/")
+    
+    return render_template("preferences/preference2.html")
 
 
 @app.route("/yourReview/<string:address>", methods=['GET', 'POST'])
@@ -442,7 +460,7 @@ def calculateAndReturnList(userId, category, webScrapData, shortlistedPlaces, di
                     rerecommendPoints += addPoints
 
                 if rerecommendPoints >= 0:
-                    rerecommend.append(dataRow["Restaurant_name"].values[0])
+                    rerecommend.append(dataRow["Name"].values[0])
 
         # Score preferences based on regression of his preferences 
         for action in actionPoints:
@@ -456,14 +474,14 @@ def calculateAndReturnList(userId, category, webScrapData, shortlistedPlaces, di
         scoredPlaces = []
         for place in shortlistedPlaces:
             netChance = 0   # -- Chance calculation for every place shortlisted
-            if not place.Restaurant_name in list(webScrapData["Restaurant_name"]):
+            if not place.Name in list(webScrapData["Name"]):
                 # Low chance to try and exclude restaurants outside of our dataset
                 netChance = 0.1
             else:
                 # #1 - Check against global and your preference
                 cuisinesMatch = 0
                 yourPrefs = userCon.GetPreferences(userId, category)
-                restaurantDetails = webScrapData.loc[webScrapData["Restaurant_name"] == place.Restaurant_name]
+                restaurantDetails = webScrapData.loc[webScrapData["Name"] == place.Name]
                 restaurantCuisines = restaurantDetails["Cuisines"].values[0].split("|")
 
                 for pref in top5Pref:
@@ -491,7 +509,7 @@ def calculateAndReturnList(userId, category, webScrapData, shortlistedPlaces, di
                 # #3 - Check against the cuisines & places recommended from your tracked history
                 trackedMatch = 0
                 if freqtrackedPlacesCuisine != {}:
-                    if place.Restaurant_name in rerecommend:
+                    if place.Name in rerecommend:
                         trackedMatch += 5
 
                     for cuisine in restaurantCuisines:
@@ -503,7 +521,7 @@ def calculateAndReturnList(userId, category, webScrapData, shortlistedPlaces, di
                 netChance += trackedMatch * 0.2
 
                 # #4 - Check if the places are our partners
-                partnered = signedPlaceCon.CheckPlace(place.Restaurant_name)
+                partnered = signedPlaceCon.CheckPlace(place.Name)
                 if partnered:
                     netChance += 0.2
             
@@ -871,7 +889,7 @@ def recommendPlacesExplorer():
                                 resultDictEatery = recommenderAlgorithm(userId, 140, 5, latitude, longitude, "Eateries", transportMode, activityTime, [0], pageNum)["list"]
                                 while True:
                                     try:
-                                        if resultDictEatery[i]["Restaurant_name"] not in list(map(lambda x: x["Restaurant_name"], destinations)):
+                                        if resultDictEatery[i]["Name"] not in list(map(lambda x: x["Name"], destinations)):
                                             destinations.append(resultDictEatery[i])
                                             totalEateries += 1
                                             break   
@@ -986,7 +1004,7 @@ def recommendPlacesExplorer():
                             resultDictEatery = recommenderAlgorithm(userId, 140, 5, latitude, longitude, "Eateries", transportMode, activityTime, [0], pageNum)["list"]
                             while True:
                                 try:
-                                    if resultDictEatery[i]["Restaurant_name"] not in list(map(lambda x: x["Restaurant_name"], destinations)):
+                                    if resultDictEatery[i]["Name"] not in list(map(lambda x: x["Name"], destinations)):
                                         destinations.append(resultDictEatery[i])
                                         totalEateries += 1
                                         break   
@@ -1093,7 +1111,7 @@ def discoverRecommend(category):
 
         for place in popularPlaces:
             dataRow = csvFiles[place["Category"]].loc[csvFiles[place["Category"]]["Address"] == place.getAddress()]
-            place["Name"] = dataRow["Restaurant_name"]
+            place["Name"] = dataRow["Name"]
             place["Ratings"] = dataRow["Ratings"]
 
         returnDict["popularPlaces"] = popularPlaces

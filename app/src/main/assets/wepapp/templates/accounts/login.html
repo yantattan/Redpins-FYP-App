@@ -3,17 +3,52 @@
 
 {% block content %}
 {% from "includes/_formHelper.html" import render_field %}
-<h1>Login</h1>
-<p></p>
-<form method="post">
-    <div class="form-group">
-        {{form.username.label}}
-        {{form.username(class="form-control")}}
-    </div>
-    <div class="form-group">
-        {{ render_field(form.password, class="form-control") }}
+<div id="loginbg">
+    <h1>Good To Have<br>You Back!</h1>
+
+    <div class="loginfields">
+        <form method="post">
+            {{render_field(form.username, placeholder=form.username.label.text, onkeyup="checkValid()")}}
+            {{render_field(form.password, placeholder=form.password.label.text, onkeyup="checkValid()")}}
+            <p class="forgot" onclick="window.open('/forgetPassword','_self')">Forgot Password?</p>
+
+            <input id="login-btn" type="submit" value="Login" class="login" disabled>
+
+            <div class="signup">
+                <p>Have an account? <a href="registration.html">Sign Up</a></p>
+            </div>
+        </form>
     </div>
 
-    <input type="submit" class="btn btn-primary" value="Log In" />
-</form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{super()}}
+<script>
+    var allInp = [].slice.call(document.getElementsByTagName("input"));
+    allInp.pop()
+
+    function checkValid() {
+        var valid = 0;
+        for (var i=0; i< allInp.length; i++) {
+            var inp = allInp[i];
+            if (inp && inp.value.length > 0) {
+                valid++;
+            }
+        }
+
+        loginBtn = document.getElementById("login-btn");
+        if (valid == allInp.length) {
+            loginBtn.style.background = "linear-gradient(193.74deg, #E4002B 3.02%, #E82038 31.9%, #F8A36F 95.45%)";
+            loginBtn.style.color = "white";
+            loginBtn.disabled = false;
+        }
+        else {
+            loginBtn.style.background = "#EEEEEE";
+            loginBtn.style.color = "#BBBBBB";
+            loginBtn.disabled = true;
+        }
+    }
+</script>
 {% endblock %}

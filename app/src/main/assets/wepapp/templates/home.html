@@ -3,7 +3,7 @@
 
 {% block content %}
 <!--START YOUR HTML WITHIN block content and endblock-->
-<div id="mobile-view">
+<div class="device">
     <h1>Hello {{session["current_user"]["username"]}}</h1>
     <a href="/qr-scanner">Scan me</a>
     <br />
@@ -17,22 +17,10 @@
     <div id="searchPage">1</div>
     <button class="btn btn-primary" id="searchNextPageBtn" onclick="searchNextPage();">Next page</button>
 </div>
+{% endblock %}
 
-<script>
-    // var locationCoords = "{{locationCoords}}"
-    // function GeoXY(){
-    // $.ajax({
-    // url: `https://developers.onemap.sg/privateapi/commonsvc/revgeocodexy?location=${locationCoords}&token=0v9hsciobp1ifa5bgpkin21cs3?revgeocodexy?&buffer=100&addressType=all`,
-    // success: function(result){
-    //     //Set result to a variable for writing
-    //     var TrueResult = JSON.stringify(result);
-    //     document.write(TrueResult);
-    //     }});
-    // }
-
-    
-</script>
-
+{% block scripts %}
+{{super()}}
 <script>
     var canSearch = true;
 
