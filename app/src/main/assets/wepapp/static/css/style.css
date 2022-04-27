@@ -239,12 +239,12 @@ input {
 }
 
 /* Login page */
-.fielderror{
+.fielderror {
   position: relative;
   display: block;
 }
 
-.fielderror > span {
+.fielderror>span {
   position: absolute;
   top: -20px;
   left: 1.5em;
@@ -392,6 +392,49 @@ input {
 }
 
 /* navbar */
+nav {
+  position: sticky;
+  top: 711px;
+}
+
+.home {
+  z-index: 1;
+  position: absolute;
+  height: 26px;
+  width: 23px;
+  left: 59px;
+  top: 44px;
+  border-radius: 0px;
+
+}
+
+.explore {
+  z-index: 1;
+  position: absolute;
+  width: 75px;
+  height: 75px;
+  left: 142px;
+  top: 0px;
+
+}
+
+.account {
+  z-index: 1;
+  position: absolute;
+  height: 26px;
+  width: 27.000001907348633px;
+  left: 275px;
+  top: 44px;
+  border-radius: 0px;
+
+}
+
 .navbar {
+  position: absolute;
+  width: 360px;
+  left: 0px;
+  top: 15px;
+  border-radius: 0px;
+
   box-shadow: 0px -3px 10px rgba(207, 207, 207, 0.5);
 }
