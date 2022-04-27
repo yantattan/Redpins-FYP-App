@@ -1102,7 +1102,6 @@ def discoverRecommend(category):
 
     if category == "popularPlaces":
         rangeDateEnd = (today - timedelta(days=31)).date()
-
         csvFiles = {"Eateries": pandas.read_csv("csv/webcsv/"+categoriesInfo["Eateries"]["filename"], encoding = "ISO-8859-1")} 
 
         # Popular places
@@ -1116,13 +1115,16 @@ def discoverRecommend(category):
 
         returnDict["popularPlaces"] = popularPlaces
 
-        # Eateries
+        # Display for every categories
         for cat in categoriesInfo:
             topCat = trackedPlacesCon.GetHighestAction("Visited", cat, span=[today.strftime("%Y_%m_%d"), rangeDateEnd.strftime("%Y_%m_%d")], limit=9)
             returnDict[cat] = topCat
             
         return json.dumps(returnDict)
     else:
+        userId = session["current_user"]["userId"]
+
+        prefs = userCon.GetPreferences(userId, category)
         return json.dumps({})
 
 @app.route("/funcs/save-trip", methods=['POST'])

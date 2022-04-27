@@ -2,6 +2,7 @@ package com.nyp.sit.s202897h.redpinsbuffer
 
 import android.annotation.SuppressLint
 import android.app.Service
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
@@ -23,6 +24,10 @@ import android.util.Base64
 import android.view.*
 import android.webkit.JavascriptInterface
 import android.widget.Toast
+import android.view.WindowManager
+
+
+
 
 
 
@@ -40,6 +45,7 @@ class MainActivity : AppCompatActivity() {
         webView.settings.allowFileAccess = true
         webView.settings.mixedContentMode = WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE
         webView.settings.setGeolocationEnabled(true)
+        webView.setInitialScale(getScale())
         webView.scrollBarStyle = View.SCROLLBARS_INSIDE_OVERLAY
 
         val newUrl = intent.getStringExtra("newUrl")
@@ -137,5 +143,13 @@ class MainActivity : AppCompatActivity() {
                 return super.onConsoleMessage(consoleMessage)
             }
         }
+    }
+
+    private fun getScale(): Int {
+        val display = (getSystemService(Context.WINDOW_SERVICE as WindowManager)).getDefaultDisplay()
+        val width = display.width
+        var `val`: Double = width / PIC_WIDTH
+        `val` = `val` * 100.0
+        return `val`.toInt()
     }
 }
