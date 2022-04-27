@@ -1,4 +1,6 @@
+from ast import List
 import csv, pandas
+from cv2 import reduce
 from datetime import datetime
 from DbContext import MySql
 from DbContext import MongoDBContext
@@ -8,12 +10,13 @@ from Model import TrackedPlace
 
 
 class TrackedPlacesCon:
-    __connection = None
+    __connection = _connection2 = None
 
     def __init__(self):
         self.__connection = MongoDBContext.Connect()["TrackedInfo"]
+        self.__connection2 = MongoDBContext.Connect()["PlacesStats"]
     
-    def SetInfo(self, trackedPlace):
+    def SetInfo(self, trackedPlace: TrackedPlace):
         '''cursor = self.__connection.cursor()
         # Check if today with the store mean has already been registered
         cursor.execute('SELECT LastRegistered FROM TrackedPlaces '
@@ -57,24 +60,27 @@ class TrackedPlacesCon:
                 timestamps = trackedInfo["Actions"][trackedPlace.getAction()]["Timestamps"]
                 lastRegisteredDate = timestamps[-1]
 
-                if lastRegisteredDate.strftime("%Y-%m-%d") != currentTime.strftime("%Y-%m-%d"):
+                if trackedPlace.getAction() != "Visited" or lastRegisteredDate.strftime("%Y-%m-%d") != currentTime.strftime("%Y-%m-%d"):
                     timestamps.append(currentTime)
                     trackedInfo["Actions"][trackedPlace.getAction()]["Frequency"] += 1
                 
                     try:  
                         self.__connection.update_one({"UserId": trackedPlace.getUserId(), 
-                                                        "Address": trackedPlace.getAddress()},
-                                                        {"$set": {"Actions": trackedInfo}
+                                                        "Address": trackedPlace.getAddress(),
+                                                        "Category": trackedPlace.getCategory()},
+                                                        {"$set": {"Actions": trackedInfo["Actions"]}
                                                     }) 
-                        print("I reached here")
+                        self.RecordAction(trackedPlace.getAction())
+                        
                     except Exception as e:
-                        print(e)
                         try:
-                            self.__connection.insert_one({"UserId": trackedPlace.getUserId(), "Address": trackedPlace.getAddress(), 
+                            self.__connection.insert_one({"UserId": trackedPlace.getUserId(), "Address": trackedPlace.getAddress(), "Category": trackedPlace.getCategory(),
                                                 "Actions": {
                                                     trackedPlace.getAction() : {"Frequency": 1, "Timestamps": [currentTime]}
                                                 }
                                             })
+                            self.RecordAction(trackedPlace.getAction())
+
                         except Exception as e:
                             print(e)
                             return {"success": False, "error": "An error occurred"}
@@ -83,22 +89,69 @@ class TrackedPlacesCon:
 
             except KeyError or IndexError as e:
                 print(e)
-                trackedInfo["Actions"][trackedPlace.getAction()] = {"Frequency": 1, "Timestamps": [currentTime]}
-                try:
-                    self.__connection.update_one({"UserId": trackedPlace.getUserId(), "Address": trackedPlace.getAddress()}, 
-                                                    {"$set": {"Actions": trackedInfo["Actions"]}
-                                                }) 
-                except Exception as e:
-                    print(e)
-                    return {"success": False, "error": "An error occurred"}                    
+                return {"success": False, "error": "An error occurred"}                 
         else:
-            self.__connection.insert_one({"UserId": trackedPlace.getUserId(), "Address": trackedPlace.getAddress(), 
-                                            "Actions": {
-                                                trackedPlace.getAction() : {"Frequency": 1, "Timestamps": [currentTime]}
-                                            }
-                                        }) 
+            try:
+                self.__connection.insert_one({"UserId": trackedPlace.getUserId(), "Address": trackedPlace.getAddress(), "Category": trackedPlace.getCategory(),
+                                    "Actions": {
+                                        trackedPlace.getAction() : {"Frequency": 1, "Timestamps": [currentTime]}
+                                    }
+                                })
+                self.RecordAction(trackedPlace.getAction())
+
+            except Exception as e:
+                print(e)
+                return {"success": False, "error": "An error occurred"}
 
         return {"success": True}
+
+    def RecordAction(self, trackedPlace: TrackedPlace):
+        today = datetime.now().strftime("%Y_%m_%d")
+        place = self.__connection2.find_one({"Address": trackedPlace.getAddress()})
+
+        defActions = {"Searched": 0, "Planned": 0, "Visited": 0}
+        defActions[trackedPlace.getAction()] += 1
+
+        if place is not None:
+            place["Dates"][today][trackedPlace.getAction()] += 1
+            self.__connection2.update_one({"Address": trackedPlace.getAddress()}, 
+                                            {"Dates": place["Dates"]})
+        else:
+            place = {
+                "Address": trackedPlace.getAddress(),
+                "Dates": {today: defActions}
+            }
+            self.__connection2.insert_one(place)
+
+    def GetHighestAction(self, action, category=None, prefCategory=None, span:list=None, limit=None):
+        whereCond = {}
+
+        if category is not None:
+            whereCond["Category"] = category
+        if prefCategory is not None:
+            whereCond["Category.Preferences"] = prefCategory
+
+        try:
+            endDict = {}
+
+            records = self.__connection2.find(whereCond)
+            count = 0
+            if span is not None:
+                for date in records["Dates"]:
+                    if datetime.strptime(span[0], "%Y_%m_%d") <= datetime.strptime(date, "%Y_%m_%d") <= datetime.strptime(span[1], "%Y_%m_%d"):
+                        endDict[date] = records["Dates"][date][action]
+                        count += 1
+
+                        if limit is not None:
+                            if count == limit:
+                                break
+            if span is not None:
+                return sorted(endDict.items(), key=lambda x: x[1], reverse=True)[:span]
+
+            return sorted(endDict.items(), key=lambda x: x[1], reverse=True)
+            
+        except Exception as e:
+            print(e)
 
     def GetTopAccessedInfo(self, userId):
         # Return top 5 most frequently accessed places

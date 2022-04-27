@@ -3,29 +3,51 @@
 
 {% block content %}
 {% from "includes/_formHelper.html" import render_field %}
-<!--START YOUR HTML WITHIN block content and endblock-->
-<h1>Register an account</h1>
-<p></p>
-<form method="POST">
-    <div class="form-group">
-        {{ render_field(form.username, class="form-control") }}
-    </div>
-    <div class="form-group">
-        {{ render_field(form.email, class="form-control") }}
-    </div>
-    <div class="form-group">
-        {{ render_field(form.dateOfBirth, class="form-control") }}
-    </div>
-    <div class="form-group">
-        {{ render_field(form.contact, class="form-control") }}
-    </div>
-    <div class="form-group">
-        {{ render_field(form.password, class="form-control") }}
-    </div>
-    <div class="form-group">
-        {{ render_field(form.confirm_password, class="form-control") }}
-    </div>
+<div id="registrationbg">
+    <p>Welcome!</p>
 
-    <input type="submit" class="btn btn-primary" value="Sign up" />
-</form>
+    <form method="POST">
+        <div class="inputfields">
+            {{render_field(form.username, placeholder=form.username.label.text, onkeyup="checkValid()")}}
+            {{render_field(form.email, placeholder=form.email.label.text, onkeyup="checkValid()")}}
+            {{render_field(form.dateOfBirth, placeholder=form.dateOfBirth.label.text, onkeyup="checkValid()")}}
+            {{render_field(form.contact, placeholder=form.contact.label.text, onkeyup="checkValid()")}}
+            {{render_field(form.password, placeholder=form.password.label.text, onkeyup="checkValid()")}}
+            {{render_field(form.confirmPassword, placeholder=form.confirmPassword.label.text, onkeyup="checkValid()")}}
+            
+            <input id="register-btn" type="submit" value="Next" class="next" disabled>
+        </div>
+    </form>
+
+  </div>
+{% endblock %}
+
+{% block scripts %}
+{{super()}}
+<script>
+  var allInp = [].slice.call(document.getElementsByTagName("input"));
+    allInp.pop()
+
+    function checkValid() {
+        var valid = 0;
+        for (var i=0; i< allInp.length; i++) {
+            var inp = allInp[i];
+            if (inp && inp.value.length > 0) {
+                valid++;
+            }
+        }
+
+        registerBtn = document.getElementById("register-btn");
+        if (valid == allInp.length) {
+            registerBtn.style.background = "linear-gradient(193.74deg, #E4002B 3.02%, #E82038 31.9%, #F8A36F 95.45%)";
+            registerBtn.style.color = "white";
+            registerBtn.disabled = false;
+        }
+        else {
+            registerBtn.style.background = "#EEEEEE";
+            registerBtn.style.color = "#BBBBBB";
+            registerBtn.disabled = true;
+        }
+    }
+</script>
 {% endblock %}

@@ -15,7 +15,8 @@
 .device {
   position: relative;
   width: 360px;
-  height: 800px;
+  /* max-width: 430px; */
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   background-color: green;
@@ -69,7 +70,7 @@
 .onboarding01img {
   width: 100%;
   height: 360px;
-  background-image: url("../../../../assets/wepapp/static/images/ock.png");
+  background-image: url("/static/images/ock.png");
   background-position: center;
   background-size: contain;
   background-repeat: no-repeat;
@@ -78,7 +79,7 @@
 .onboarding02img {
   width: 100%;
   height: 360px;
-  background-image: url("../../../../assets/wepapp/static/images/ock.png");
+  background-image: url("/static/images/ock.png");
   background-position: center;
   background-size: contain;
   background-repeat: no-repeat;
@@ -87,7 +88,7 @@
 .onboarding03img {
   width: 100%;
   height: 360px;
-  background-image: url("../../../../assets/wepapp/static/images/ock.png");
+  background-image: url("/static/images/ock.png");
   background-position: center;
   background-size: contain;
   background-repeat: no-repeat;
@@ -143,6 +144,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
 }
 
 .onboardingcta p {
@@ -237,6 +239,21 @@ input {
 }
 
 /* Login page */
+.fielderror{
+  position: relative;
+  display: block;
+}
+
+.fielderror > span {
+  position: absolute;
+  top: -20px;
+  left: 1.5em;
+  color: #d9534f;
+  font-size: 13px;
+  margin-left: 2%;
+  width: 100%;
+}
+
 #loginbg h1 {
   position: relative;
   width: 211px;
@@ -358,6 +375,7 @@ input {
   margin: 0 10px 10px 0;
   border-radius: 5px;
   list-style-type: none;
+  cursor: pointer;
 }
 
 #preferences .next {

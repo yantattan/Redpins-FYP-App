@@ -4,137 +4,39 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Preview</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    html,
-    body {
-      display: flex;
-      flex-direction: column;
-      flex: 1;
-      width: 100%;
-      height: 100%;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-    }
-  </style>
+  <title>Preferences 1</title>
+  <link rel="stylesheet" href="../../../assets/wepapp/static/css/style.css">
 </head>
 
 <body>
-  <div class="w-[360px] h-[800px] relative overflow-hidden rounded-[20px] bg-[#fcfcfc]">
+  <div class="device" id="preferences">
+    <div class="preference">
+      <h1>Getting You<br>Started</h1>
+      <p>Pick at least <b>3</b> activities which suits you best!</p>
 
-    <p class="w-[190px] h-16 absolute left-5 top-[118px] text-3xl font-semibold text-left text-[#2b2b2b]">
-      Getting You Started.
-    </p>
-
-    <p class="absolute left-5 top-[195px] text-base text-left text-[#2b2b2b]">
-      <span class="text-base text-left text-[#2b2b2b]">Pick </span><span class="text-base font-bold text-left text-[#2b2b2b]">5</span><span class="text-base text-left text-[#2b2b2b]"> activities which suits you best!</span>
-    </p>
-
-    <div class="flex flex-col justify-start items-start absolute left-[19px] top-[260px] gap-2.5">
-      <div class="flex justify-start items-start flex-grow-0 flex-shrink-0 gap-2.5">
-        <div class="flex flex-col justify-center items-center flex-grow-0 flex-shrink-0 overflow-hidden gap-2.5 p-2.5 rounded-[5px] bg-[#eee]">
-          <div class="flex justify-start items-start flex-grow-0 flex-shrink-0 relative gap-2">
-            <p class="flex-grow-0 flex-shrink-0 text-sm font-semibold text-left text-[#2b2b2b]">
-              Foodie
-            </p>
-          </div>
-        </div>
-        <div class="flex flex-col justify-center items-center flex-grow-0 flex-shrink-0 overflow-hidden gap-2.5 p-2.5 rounded-[5px] bg-[#eee]">
-          <div class="flex justify-start items-start flex-grow-0 flex-shrink-0 relative gap-2">
-            <p class="flex-grow-0 flex-shrink-0 text-sm font-semibold text-left text-[#2b2b2b]">
-              Animals
-            </p>
-          </div>
-        </div>
-        <div class="flex flex-col justify-center items-center flex-grow-0 flex-shrink-0 overflow-hidden gap-2.5 p-2.5 rounded-[5px] bg-[#eee]">
-          <div class="flex justify-start items-start flex-grow-0 flex-shrink-0 relative gap-2">
-            <p class="flex-grow-0 flex-shrink-0 text-sm font-semibold text-left text-[#2b2b2b]">
-              Photography
-            </p>
-          </div>
-        </div>
-      </div>
-      <div class="flex justify-start items-start flex-grow-0 flex-shrink-0 gap-2.5">
-        <div class="flex flex-col justify-center items-center flex-grow-0 flex-shrink-0 overflow-hidden gap-2.5 p-2.5 rounded-[5px] bg-[#eee]">
-          <div class="flex justify-start items-start flex-grow-0 flex-shrink-0 relative gap-2">
-            <p class="flex-grow-0 flex-shrink-0 text-sm font-semibold text-left text-[#2b2b2b]">
-              Museums
-            </p>
-          </div>
-        </div>
-        <div class="flex flex-col justify-center items-center flex-grow-0 flex-shrink-0 overflow-hidden gap-2.5 p-2.5 rounded-[5px] bg-[#eee]">
-          <div class="flex justify-start items-start flex-grow-0 flex-shrink-0 relative gap-2">
-            <p class="flex-grow-0 flex-shrink-0 text-sm font-semibold text-left text-[#2b2b2b]">
-              Hiking
-            </p>
-          </div>
-        </div>
-        <div class="flex flex-col justify-center items-center flex-grow-0 flex-shrink-0 overflow-hidden gap-2.5 p-2.5 rounded-[5px] bg-[#eee]">
-          <div class="flex justify-start items-start flex-grow-0 flex-shrink-0 relative gap-2">
-            <p class="flex-grow-0 flex-shrink-0 text-sm font-semibold text-left text-[#2b2b2b]">
-              Sports
-            </p>
-          </div>
-        </div>
-        <div class="flex flex-col justify-center items-center flex-grow-0 flex-shrink-0 overflow-hidden gap-2.5 p-2.5 rounded-[5px] bg-[#eee]">
-          <div class="flex justify-start items-start flex-grow-0 flex-shrink-0 relative gap-2">
-            <p class="flex-grow-0 flex-shrink-0 text-sm font-semibold text-left text-[#2b2b2b]">
-              Cafes
-            </p>
-          </div>
-        </div>
-      </div>
-      <div class="flex justify-start items-start flex-grow-0 flex-shrink-0 gap-2.5">
-        <div class="flex flex-col justify-center items-center flex-grow-0 flex-shrink-0 overflow-hidden gap-2.5 p-2.5 rounded-[5px] bg-[#eee]">
-          <div class="flex justify-start items-start flex-grow-0 flex-shrink-0 relative gap-2">
-            <p class="flex-grow-0 flex-shrink-0 text-sm font-semibold text-left text-[#2b2b2b]">
-              Heritage Sites
-            </p>
-          </div>
-        </div>
-        <div class="flex flex-col justify-center items-center flex-grow-0 flex-shrink-0 overflow-hidden gap-2.5 p-2.5 rounded-[5px] bg-[#eee]">
-          <div class="flex justify-start items-start flex-grow-0 flex-shrink-0 relative gap-2">
-            <p class="flex-grow-0 flex-shrink-0 text-sm font-semibold text-left text-[#2b2b2b]">
-              Thrifting
-            </p>
-          </div>
-        </div>
-        <div class="flex flex-col justify-center items-center flex-grow-0 flex-shrink-0 overflow-hidden gap-2.5 p-2.5 rounded-[5px] bg-[#eee]">
-          <div class="flex justify-start items-start flex-grow-0 flex-shrink-0 relative gap-2">
-            <p class="flex-grow-0 flex-shrink-0 text-sm font-semibold text-left text-[#2b2b2b]">
-              Concerts
-            </p>
-          </div>
-        </div>
-      </div>
-      <div class="flex justify-start items-start flex-grow-0 flex-shrink-0 gap-2.5">
-        <div class="flex flex-col justify-center items-center flex-grow-0 flex-shrink-0 overflow-hidden gap-2.5 p-2.5 rounded-[5px] bg-[#eee]">
-          <div class="flex justify-start items-start flex-grow-0 flex-shrink-0 relative gap-2">
-            <p class="flex-grow-0 flex-shrink-0 text-sm font-semibold text-left text-[#2b2b2b]">
-              Island Hopping
-            </p>
-          </div>
-        </div>
-        <div class="flex flex-col justify-center items-center flex-grow-0 flex-shrink-0 overflow-hidden gap-2.5 p-2.5 rounded-[5px] bg-[#eee]">
-          <div class="flex justify-start items-start flex-grow-0 flex-shrink-0 relative gap-2">
-            <p class="flex-grow-0 flex-shrink-0 text-sm font-semibold text-left text-[#2b2b2b]">
-              Bars &#x26; Clubs
-            </p>
-          </div>
-        </div>
+      <div class="activities">
+        <ul>
+          <li>Foodie</li>
+          <li>Animals</li>
+          <li>Photography</li>
+          <li>Museums</li>
+          <li>Hiking</li>
+          <li>Sports</li>
+          <li>Cafes</li>
+          <li>Heritage Sites</li>
+          <li>Thrifting</li>
+          <li>Concerts</li>
+          <li>Island Hopping</li>
+          <li>Bars & Clubs</li>
+          <li>Music</li>
+        </ul>
       </div>
     </div>
 
-    <div class="w-80 h-[50px] absolute left-[19px] top-[669px] overflow-hidden" onclick="window.open('preferences02.html','_self')">
-      <div class="w-80 h-[50px] absolute left-[-1px] top-[-1px]">
-        <div class="w-80 h-[50px] absolute left-[-1px] top-[-1px] rounded-[5px] bg-[#eee]"></div>
-        <div class="w-80 h-[50px] absolute left-[-1px] top-[-1px] rounded-[5px]" style="background: linear-gradient(238.86deg, #e4002b 1.57%, #e92c3d 15.84%, #f8a36f 86.66%);"></div>
-        <p class="absolute left-[142px] top-[13px] text-base font-semibold text-center text-white">
-          Next
-        </p>
-      </div>
+    <div class="next" onclick="window.open('preferences02.html','_self')">
+      <h1>Next</h1>
     </div>
+
   </div>
 </body>
 

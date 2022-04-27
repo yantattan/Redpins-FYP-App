@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Redpins Buffer{% endblock %}
+
+{% block content %}
+<div id="recommendation-listings" style="width: 100%;align-items: stretch;
+display: flex;
+flex-direction: row;
+flex-wrap: nowrap;
+overflow-x: auto; overflow-y: hidden;">
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{super()}}
+<script>
+    function getCards() {
+        $.ajax({
+            type: "POST",
+            url: `/funcs/discover-recommend/{{category}}`,
+            data: {
+                section: "Popular places"
+            },
+            success: function(result) {
+                div = document.getElementById("recommendation-listings");
+                for (var i in result) {
+                    div.innerHTML += `<div class="card" style="width:150px; height:175px; margin-right: 1em; max-width:
+                        flex-basis: 33.333%;
+                        flex-grow: 0;
+                        flex-shrink: 0;">
+                        <h5>${result[i].Name}</h5>
+                        <br />
+                        <p>Matching ${result[i].Ratings.toFixed(2)}</p>
+                    </div>`;
+                }
+            }
+        })
+    }
+
+    getCards();
+</script>
+{% endblock %}

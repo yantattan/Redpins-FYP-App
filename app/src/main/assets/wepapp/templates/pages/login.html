@@ -4,53 +4,28 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Preview</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    html,
-    body {
-      display: flex;
-      flex-direction: column;
-      flex: 1;
-      width: 100%;
-      height: 100%;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-    }
-  </style>
+  <title>login</title>
+  <link rel="stylesheet" href="../../static/css/style.css">
 </head>
 
 <body>
-  <div class="w-[360px] h-[800px] relative overflow-hidden rounded-[20px] bg-[#fcfcfc]">
-    <div class="w-[360px] h-[230px] absolute left-[-1px] top-[-1px] rounded-[5px]" style="background: linear-gradient(227.04deg, #e4002b 2.14%, #e92c3d 35.18%, #f8a36f 101.51%);">
-      <p class="absolute left-5 top-[115px] text-3xl font-semibold text-left text-white">
-        <span class="text-3xl font-semibold text-left text-white">Good To Have</span><br /><span class="text-3xl font-semibold text-left text-white">You Back!</span>
-      </p>
-    </div>
-    <div class="w-[360px] h-[800px] absolute left-[-1px] top-[229px] rounded-tl-[20px] bg-white" style="box-shadow: 0px 10px 20px 0 rgba(207,207,207,0.3);"></div>
+  <div class="device" id="loginbg">
+    <h1>Good To Have<br>You Back!</h1>
 
-    <input type="text" class="w-80 h-[50px] absolute left-5 top-[249px] rounded-[5px] bg-white" style="box-shadow: 0px 10px 20px 0 rgba(207,207,207,0.3);" name="Username" value="" placeholder="Username">
-    <input type="text" class="w-80 h-[50px] absolute left-[19px] top-[329px] rounded-[5px] bg-white" style="box-shadow: 0px 10px 20px 0 rgba(207,207,207,0.3);" name="Password" value="" placeholder="Password">
+    <div class="loginfields">
+      <input type="text" class="" name="Username" value="" placeholder="Username">
+      <input type="text" class="" name="Password" value="" placeholder="Password">
+      <p class="forgot" onclick="window.open('forgotpassword.html','_self')">Forgot Password?</p>
 
-    <p class="absolute left-[225px] top-[405px] text-sm text-left text-[#2b2b2b]">
-      Forgot Password?
-    </p>
-
-    <div class="w-[76px] h-[22px] absolute left-[34px] top-[343px]">
-      <div class="w-80 h-[50px] absolute left-[-16px] top-[100px] overflow-hidden" onclick="window.open('preferences01.html','_self')">
-        <div class="w-80 h-[50px] absolute left-[-1px] top-[-1px] rounded-[5px] bg-[#eee]"></div>
-        <div class="w-[7px] h-[50px] absolute left-[-9px] top-[-1px] rounded-[5px]" style="background: linear-gradient(238.86deg, #e4002b 1.57%, #e92c3d 15.84%, #f8a36f 86.66%);"></div>
-        <p class="absolute left-[138px] top-[13px] text-base font-semibold text-center text-white">
-          Login
-        </p>
+      <div class="login" onclick="window.open('home.html','_self')">
+        <p>Login</p>
       </div>
+
+      <div class="signup">
+        <p>Have an account? <a href="registration.html">Sign Up</a></p>
+      </div>
+
     </div>
-
-    <p class="w-[215px] h-3.5 absolute left-[72px] top-[696px] text-sm text-left">
-      <span class="w-[215px] h-3.5 text-sm text-left text-black">Don’t have an account? </span>
-      <span class="w-[215px] h-3.5 text-sm font-bold text-left text-[#e4002b]"><a href="registration.html">Sign Up</a></span>
-    </p>
-
   </div>
 </body>
 

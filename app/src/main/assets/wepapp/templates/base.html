@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %} {% endblock %}</title>
     <!-- Tailwind -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- <script src="https://cdn.tailwindcss.com"></script> -->
     <!--Boostrap-->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
     <!--Font awesome-->
@@ -16,37 +16,50 @@
     <!--JQuery-->
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     
-    <link rel="stylesheet" href="/static/css/test.css">
+    <link rel="stylesheet" href="/static/css/style.css">
 </head>
 
-<body>
+{% if session.get("current_user") != None %}
+{% if session.get("current_user").get("role") == "Admin" %}
+<body style="border: 1px solid black;">
+{% else %}
+<body class="device" style="border: 1px solid black;">
+{% endif %}
+{% else %}
+<body class="device" style="border: 1px solid black;">
+{% endif %}
+    {% block loading %}
+        {% include "includes/_loading.html" %}
+    {% endblock %}
+    
     {% block navbar %}
         {% include "includes/_navbar.html" %}
     {% endblock %}
 
-    {% if session.get("current_user") != None %}
-        {% if session.get("current_user").get("role") == "Admin" %}
-        <div style="border: 1px solid black;">
-        {% else %}
-        <div class="mobile-size" style="border: 1px solid black;">
-        {% endif %}
-    {% else %}
-    <div class="mobile-size" style="border: 1px solid black;">
-    {% endif %}
-        <div id="main-div">
-            {% block content %}
-            {% endblock %}
-        </div>
-        {% block loading %}
-            {% include "includes/_loading.html" %}
-        {% endblock %}
-    </div>
+    {% block content %}
+    {% endblock %}
     
     {% block scripts %}
     <!-- jQuery 3.5.1, Popper 1.16.1, Bootstrap 4.5.2 JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/bootstrap-table@1.19.1/dist/bootstrap-table.min.js"></script>
+    <script>
+        var mainDiv = $(".main-div")
+        var loadingScreen = $("#loadingbg")
+        var navbar = $("#navbar")
+      
+        mainDiv.hide();
+        navbar.hide();
+        $(window).on('load', function() {
+          setTimeout(function () {
+            loadingScreen.fadeOut(150);
+            mainDiv.fadeIn(150);
+            navbar.fadeIn(150);
+            loadingScreen.remove();
+          }, 350)
+        })
+      </script>
     {% endblock %}
 </body>
 </html>
