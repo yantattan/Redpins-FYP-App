@@ -27,11 +27,6 @@ import android.widget.Toast
 import android.view.WindowManager
 
 
-
-
-
-
-
 class MainActivity : AppCompatActivity() {
     var webAppUrl = "http://10.0.2.2:5000/"
 
@@ -146,10 +141,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getScale(): Int {
-        val display = (getSystemService(Context.WINDOW_SERVICE as WindowManager)).getDefaultDisplay()
+        val display = (getSystemService(WINDOW_SERVICE) as WindowManager).defaultDisplay
         val width = display.width
-        var `val`: Double = width / PIC_WIDTH
-        `val` = `val` * 100.0
-        return `val`.toInt()
+        var value: Double = width / 360.0
+        value = value * 100.0
+        return value.toInt()
     }
 }

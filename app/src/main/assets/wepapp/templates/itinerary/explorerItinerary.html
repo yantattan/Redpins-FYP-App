@@ -1,0 +1,364 @@
+{% extends "base.html" %}
+{% block title %}Redpins Buffer - Explorer{% endblock %}
+
+{% block content %}
+<div class="device" id="reloadingbg" style="display: none;">
+    <img src="/static/images/logo.gif" alt="logo" class="relogogif">
+    <p>Hang tight while we find the best places for you...</p>
+</div>
+
+<div class="main-div">
+    {% if itinerary != None %}
+    <div class="device" id="firstSelection" style="position: absolute; z-index:2; background-color: white; display: none;">
+    {% else %}
+    <div class="device" id="firstSelection" style="position: absolute; z-index:2; background-color: white;">
+    {% endif %}
+        {% if itinerary != None %}
+        <div id="itinerary-id" hidden>{{itinerary.getId()}}</div>
+        <div>
+            <label>Start Time</label>
+            <input id="start-time" type="time" class="form-control" value="{{itinerary.getStartTime()}}" onkeyup="checkFirstPage();" required>
+        </div>
+        <div>
+            <label>End Time</label>
+            <input id="end-time" type="time" class="form-control" value="{{itinerary.getEndTime()}}" onkeyup="checkFirstPage();" required>
+        </div>
+        {% else %}
+        <div id="itinerary-id" hidden></div>
+        <div>
+            <label>Start Time</label>
+            <input id="start-time" type="time" class="form-control" onkeyup="checkFirstPage();" required>
+        </div>
+        <div>
+            <label>End Time</label>
+            <input id="end-time" type="time" class="form-control" onkeyup="checkFirstPage();" required>
+        </div>
+        {% endif %}
+        <div>
+            <h5>Select mode of transport</h5>
+            <div style="display: inline;" onclick="checkFirstPage();">
+                <label for="trans-walk">Walk</label>
+                <input type="radio" name="transportMode" id="trans-walk" value="walk">
+                <label for="trans-publicTransport">Public Transport</label>
+                <input type="radio" name="transportMode" id="trans-publicTransport" value="pt">
+                <label for="trans-drive">Drive</label>
+                <input type="radio" name="transportMode" id="trans-drive" value="drive">
+                <label for="trans-cycle">Cycle</label>
+                <input type="radio" name="transportMode" id="trans-cycle" value="cycle">
+            </div>
+        </div>
+
+        <button class="next" id="firstPageNext" onclick="dismissFirst();" disabled>Next</button>
+    </div>
+
+    {% if itinerary != None %}
+    <div class="device" id="planPage">
+    {% else %}
+    <div class="device" id="planPage" style="display: none;">
+    {% endif %}
+        <div class="float-right">
+            <a href="/itinerary/showTrip">Map</a>
+        </div>
+        
+        {% if itinerary != None %}
+        <div id="startTime-text">Start time: {{itinerary.getStartTime()}}</div>
+        <div id="endTime-text">End time: {{itinerary.getEndTime()}}</div>
+        <div id="time-left">Duration left: <span>{{itinerary.getTimeLeft()}}</span></div>
+    
+        <div id="transport-text">Transport mode: {{itinerary.getTransportMode()}}</div>
+        <div>Category: Eateries</div>
+        {% else %}
+        <div id="startTime-text">Start time: </div>
+        <div id="endTime-text">End time: </div>
+        <div id="time-left">Duration left: <span></span></div>
+    
+        <div id="transport-text">Transport mode: </div>
+        <div>Category: Eateries</div>
+        {% endif %}
+
+        <div id="start">Start location: </div>
+        
+        <button class="btn btn-primary" onclick="recommend(1);">Draw new plan</button>
+    
+        <br>
+        <div id="recommendation-listings">
+            {% if itinerary != None %}
+                {% for place in itinerary.getPlaces() %}
+                <button class="btn-addColor" onclick="recommend(1);">  +  </button>
+                <div class="card plan-selection">
+                    <h5 class="plan-name">{{place["Name"]}}</h5>
+                    <p class="plan-address" style="font-size:12px">{{place["Address"]}}</p>
+                    <br />
+                    <p class="plan-activity-duration"><span>{{place.ActivityDuration}}</span> min</p>
+                    <p class="plan-total-duration"><span>{{place.TotalDuration|int}}</span> min</p>
+                </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <br>
+        <div>
+            <label>End destination</label>
+            <input type="text" id="endDestination" class="form-control" onkeyup="pauseSearch();"></input>
+        </div>
+        
+        <div id="show-destinations" class="row" style="width: 100%; height: 200px; overflow: auto;"></div>
+    
+        <form method="POST">
+            <input type="submit" value="Create Trip" class="btn btn-primary">
+        </form>
+    </div>
+    
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+{{super()}}
+<script>
+    var post;
+    var skipped = [0];
+    var pageNum = 2;
+    var allowanceLeft = parseInt(document.getElementById("time-left").innerText) || 0;
+    const currentTime = new Date();
+
+    /*function initFunctions() {
+        $("#recommend-btn").on("click", function() {
+            recommend(1);
+        })
+        $("#next-recommend-btn").on("click", function() {
+            recommend(pageNum);
+            pageNum += 1;
+        })
+    }*/
+    
+    function checkFirstPage() {
+        var firstSelection = document.getElementById("firstSelection");
+        var allInps = firstSelection.getElementsByTagName("input");
+        var radioChecked = firstSelection.querySelector('input[type="radio"]:checked');
+
+        var nextBtn = document.getElementById("firstPageNext");
+        if (allInps[0].value != "" && allInps[1].value != "" && radioChecked) {
+            nextBtn.style.background = "linear-gradient(193.74deg, #E4002B 3.02%, #E82038 31.9%, #F8A36F 95.45%)";
+            nextBtn.style.color = "white";
+            nextBtn.disabled = false;
+        }
+        else {
+            nextBtn.style.background = "#EEEEEE";
+            nextBtn.style.color = "#BBBBBB";
+            nextBtn.disabled = true;
+        }
+    }
+
+    function dismissFirst() {
+        startTme = $("#start-time").val();
+        endTme = $("#end-time").val();
+        if (startTme == "") {
+            $("#start-time").focus()
+        }
+        else if (endTme == "") {
+            $("#end-time").focus()
+        }
+        else if ($("input[type=radio]:checked").length == 0) {
+            console.log("Check checkboxes");
+        }
+        else {
+            document.getElementById("startTime-text").innerText += startTme;
+            document.getElementById("endTime-text").innerText += endTme;
+            document.getElementById("transport-text").innerText += document.querySelector(`label[for="${document.querySelector('input[name="transportMode"]:checked').id}"]`).innerText;
+            startTmeArr = startTme.split(":");
+            endTmeArr = endTme.split(":");
+            var startDate = new Date(0, 0, 0, startTmeArr[0], startTmeArr[1], 0);
+            var endDate = new Date(0, 0, 0, endTmeArr[0], endTmeArr[1], 0);
+            var diff = endDate.getTime() - startDate.getTime();
+            allowanceLeft = Math.floor(diff / 1000 / 60);
+            document.getElementById("time-left").querySelector("span").innerText = allowanceLeft;
+
+            $("#firstSelection").animate({
+                bottom: "-200vh"
+            }, 350, function() {
+                $("#firstSelection").hide();
+            })
+            $("#planPage").show();
+        }
+    }
+
+    function nextRecommend() {
+        recommend(pageNum);
+        pageNum += 1;
+    }
+
+    function getLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showRoute)
+        }
+    }
+
+    function showRoute(position) {
+        document.getElementById("start").innerText += position.coords.latitude + "," + position.coords.longitude
+        post = position
+
+        var listingNo = document.getElementById("recommendation-listings").children.length;
+        if (listingNo == 0) {
+            recommend(1);
+        } 
+    }
+
+    function recommend(pageNum) {
+        startTme = $("#start-time").val();
+        endTme = $("#end-time").val();
+        if (startTme == "") {
+            $("#start-time").focus()
+        }
+        else if (endTme == "") {
+            $("#end-time").focus()
+        }
+        else {
+            div = document.getElementById("recommendation-listings");
+            div.innerHTML = "";
+            
+            $("#reloadingbg").show();
+
+            $.ajax({
+                type: "POST",
+                url: `/funcs/explorer-recommend-places?page=${pageNum}`,
+                data: {
+                    startTime: startTme,
+                    endTime: endTme,
+                    latitude: post.coords.latitude,
+                    longitude: post.coords.longitude,
+                    endLatitude: 1.2834542,
+                    endLongitude: 103.8608090,
+                    category: "Eateries",
+                    transportMode: "pt",
+                },
+                success: function(result) {
+                    cleanedResult = result.replaceAll("\\u", "").replaceAll("NaN", `""`);
+                    result = JSON.parse(cleanedResult);
+
+                    placesName = [];
+                    placesAddress = [];
+                    placesActivityDuration = [];
+                    placesDuration = [];
+
+                    // Display function
+                    for (var i in result) {
+                        div.innerHTML += `
+                        <button class="btn-addColor" onclick="recommend(1);">  +  </button>
+                        
+                        <div class="card plan-selection">
+                            <h5 class="plan-name">${result[i].Name}</h5>
+                            <p class="plan-address" style="font-size:12px">${result[i].Address}</p>
+                            <br />
+                            <p class="plan-activity-duration"><span>${Math.round(result[i].ActivityDuration)}</span> min</p>
+                            <p class="plan-total-duration"><span>${Math.round(result[i].Duration)}</span> min</p>
+                        </div>`;
+
+                        allowanceLeft -= result[i].Duration;
+                        document.getElementById("time-left").querySelector("span").innerText = parseInt(allowanceLeft);
+
+                        placesName.push(result[i].Name)
+                        placesAddress.push(result[i].Address)
+                        placesActivityDuration.push(parseFloat(result[i].ActivityDuration))
+                        placesDuration.push(parseFloat(result[i].Duration))
+                    }
+
+                    saveTrips(placesName, placesAddress, placesActivityDuration, placesDuration)
+                },
+                complete: function(result) {
+                    $("#reloadingbg").hide();
+                }
+            })
+        }
+       
+    }
+
+    function saveTrips(placesName, placesAddress, placesActivityDuration, placesDuration) {
+        startTme = $("#start-time").val();
+        endTme = $("#end-time").val();
+
+        // Update db function
+        itineraryId = document.getElementById("itinerary-id").innerText;
+        $.ajax({
+            type: "POST",
+            url: `/funcs/save-trip`,
+            data: {
+                id: itineraryId,
+                tripType: "Explorer",
+                tripName: "Hello",
+                date: "Today",
+                startTime: startTme,
+                endTime: endTme,
+                names: placesName,
+                addresses: placesAddress,
+                activityDuration: placesActivityDuration,
+                duration: placesDuration,
+                timeAllowance: 360,
+                timeLeft: 360,
+                transportMode: "pt",
+                confirmed: false,
+                status: "Planned"
+            },
+            success: function(result) {
+                console.log("System: Trip has been autosaved");
+                document.getElementById("itinerary-id").innerText = JSON.parse(result).id;
+            }
+        })
+    }
+
+    var canSearch = true;
+
+    function pauseSearch() {
+        canSearch = false;
+        console.log("Here")
+        setTimeout(function() {
+            canSearch = true;
+            search()
+        }, 1000)
+    }
+
+    function search() {
+        if (canSearch) {
+            var dropdownMenu = document.getElementById("show-destinations");
+            const search = $("#endDestination").val()
+            const pageNum = 1
+            if (!search) {
+                dropdownMenu.innerHTML = "";
+            }
+            else {
+                $.ajax({
+                    url: `https://developers.onemap.sg/commonapi/search?searchVal=${search}&returnGeom=Y&getAddrDetails=Y&pageNum=${pageNum}`,
+                    success: function(result) {
+                        dropdownMenu.innerHTML = "";
+                        showLength = 6;
+                        if (result.results.length > 0) {
+                            if (result.results.length < 6) {
+                                showLength = result.results.length;
+                            }
+
+                            for (var i=0; i<showLength; i++) {
+                                record = result.results[i]
+                                dropdownMenu.innerHTML += `
+                                <div class="dropdown-item" onclick="">
+                                    <p style="font-size: 14px;"><b>${record.SEARCHVAL}</b></p>
+                                    <p style="font-size: 11px; max-width: 100%; overflow: auto;">${record.ADDRESS}</p>
+                                </div>`;
+                            }
+                        }
+                        else {
+                            dropdownMenu.innerHTML = `<div class="dropdown-item">No results found</div>`; 
+                        }
+                }});
+            }
+            
+        }       
+    } 
+
+    function searchNextPage() {
+        $("#searchPage").text(parseInt($("#searchPage").text()) + 1)
+    }
+
+    // initFunctions();
+    getLocation();
+
+</script>
+{% endblock %}

@@ -1,137 +1,38 @@
-* {
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Open Sans', sans-serif;
+.btn-addColor {
+  background: linear-gradient(193.74deg, #E4002B 3.02%, #E82038 31.9%, #F8A36F 95.45%); 
+  color: white;
 }
 
-*::-webkit-scrollbar {
-  display: none;
-}
-
-html, body {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  width: 100%;
-  height: 100%;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-.mobile-size {
-  max-width: 430px;
-  min-width: 360px;
-  min-height: 100%;
-  display: table;
-  height: auto;
-}
-
-.box {
-  /* background-image: url(../images/bg.png); */
-  width: 360px;
-  height: 800px;
-  /* background-color: white; */
-  padding: 2em 1em;
-}
-
-.display {
-  width: 360px;
-  height: 710px;
-  overflow-y: scroll;
-}
-
-.display-bg {
+#reloadingbg {
+  background: linear-gradient(193.74deg, #E4002B 3.02%, #E82038 31.9%, #F8A36F 95.45%);
+  opacity: 0.8;
+  color: white;
   position: fixed;
-  left: 0.5em;
-  top: 0.5em;
-  z-index: -2;
+  z-index: 999;
 }
 
-input {
-  height: 2.5em;
-  width: 80%
+.relogogif {
+  position: absolute;
+  left: 26.39%;
+  right: 30.56%;
+  top: 27.38%;
+  bottom: 37.25%;
 }
 
-ul {
-  display: flex;
-  list-style: none;
+#reloadingbg > p {
+  position: absolute;
+  left: 26.39%;
+  right: 30.56%;
+  top: 40.38%;
+  bottom: 37.25%;
+  z-index: 9999;
 }
 
-ul li {
-  margin: 0 1em 0 0;
-}
-
-ul li a {
-  text-decoration: none;
-  color: black;
-  font-weight: bold;
-}
-
-.card-con {
-  overflow-x: scroll;
-  overflow-y: hidden;
-  display: flex;
-  margin-right: 1em;
-}
-
-.card {
-  width: 150px;
-  height: 240px;
-  background-color: #eee;
-  border-radius: 8px;
-  margin-right: 1em;
-}
-
-.cardimg {
-  background-image: url(../images/ock.png);
-  width: 150px;
-  height: 120px;
-  background-position: center;
-  background-size: cover;
-  background-repeat: no-repeat;
-}
-
-h4 {
-  margin: 0.5em;
-}
-
-.details {
-  display: flex;
-  justify-content: space-between;
-  padding: 0.5em;
-}
-
-.long-card {
-  width: 90%;
-  margin-bottom: 1em;
-  height: 4em;
-  background-color: eeeeee;
-  display: flex;
-  border-radius: 10px;
-}
-
-.longimg {
-  background-image: url(../images/ock.png);
-  width: 4em;
-  height: 100%;
-  background-position: center;
-  background-size: cover;
-  background-repeat: no-repeat;
-}
-
-.longinfo {
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
+.plan-choices-list {
   width: 100%;
-}
-
-.background {
-  width: 360px;
-  height: 800px;
-  background-color: white;
-  position: fixed;
-  top: 0.5em;
-  left: 0.5em;
-  z-index: -3;
+  align-items: stretch;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  overflow-x: auto; overflow-y: hidden;
 }

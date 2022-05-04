@@ -123,7 +123,7 @@ class TrackedPlacesCon:
             }
             self.__connection2.insert_one(place)
 
-    def GetHighestAction(self, action, category=None, prefCategory=None, span:list=None, limit=None):
+    def GetHighestAction(self, action, category=None, prefCategory=None, timespan:list=None, limit=None):
         whereCond = {}
 
         if category is not None:
@@ -134,19 +134,21 @@ class TrackedPlacesCon:
         try:
             endDict = {}
 
-            records = self.__connection2.find(whereCond)
+            records = list(self.__connection2.find(whereCond))
             count = 0
-            if span is not None:
-                for date in records["Dates"]:
-                    if datetime.strptime(span[0], "%Y_%m_%d") <= datetime.strptime(date, "%Y_%m_%d") <= datetime.strptime(span[1], "%Y_%m_%d"):
-                        endDict[date] = records["Dates"][date][action]
-                        count += 1
+            if timespan is not None:
+                for i in range(len(records)):
+                    for date in records[i]["Dates"]:
+                        if datetime.strptime(timespan[0], "%Y_%m_%d") <= datetime.strptime(date, "%Y_%m_%d") <= datetime.strptime(timespan[1], "%Y_%m_%d"):
+                            endDict[date] = records[i]["Dates"][date][action]
+                            count += 1
 
-                        if limit is not None:
-                            if count == limit:
-                                break
-            if span is not None:
-                return sorted(endDict.items(), key=lambda x: x[1], reverse=True)[:span]
+                            if limit is not None:
+                                if count == limit:
+                                    break
+
+            if timespan is not None:
+                return sorted(endDict.items(), key=lambda x: x[1], reverse=True)[:limit]
 
             return sorted(endDict.items(), key=lambda x: x[1], reverse=True)
             

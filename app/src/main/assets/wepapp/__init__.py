@@ -37,7 +37,7 @@ cron = Scheduler(daemon=True)
 cron.start()
 CORS(app)
 app.secret_key = "redp1n5Buffer"
-apiKey = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjg1NDQsInVzZXJfaWQiOjg1NDQsImVtYWlsIjoieWFudGF0dGFuNzIxQGdtYWlsLmNvbSIsImZvcmV2ZXIiOmZhbHNlLCJpc3MiOiJodHRwOlwvXC9vbTIuZGZlLm9uZW1hcC5zZ1wvYXBpXC92MlwvdXNlclwvc2Vzc2lvbiIsImlhdCI6MTY1MDUwODg4MSwiZXhwIjoxNjUwOTQwODgxLCJuYmYiOjE2NTA1MDg4ODEsImp0aSI6ImE4OWQwZGQwNmM0MjExNTFkYzk5ODk4ZjE1MjlhYzY5In0.sLMl9j1EUUjMa9-LWgrDkRHQonIk9CxGBJMazxTNC8g"
+apiKey = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjg1NDQsInVzZXJfaWQiOjg1NDQsImVtYWlsIjoieWFudGF0dGFuNzIxQGdtYWlsLmNvbSIsImZvcmV2ZXIiOmZhbHNlLCJpc3MiOiJodHRwOlwvXC9vbTIuZGZlLm9uZW1hcC5zZ1wvYXBpXC92MlwvdXNlclwvc2Vzc2lvbiIsImlhdCI6MTY1MTU2ODI5OCwiZXhwIjoxNjUyMDAwMjk4LCJuYmYiOjE2NTE1NjgyOTgsImp0aSI6IjMzYjUwNWNlNmE4OGJhMjIyZmQ0Y2IwNjlmOWViZmU4In0.YwGkAQBmDKtaM-N01zpbJ44U2lJR-W3AjdxXQtfwn3E"
 
 # Init all controllers
 userCon = Users.UserCon()
@@ -55,7 +55,9 @@ itinerariesCon = Itineraries.ItinerariesCon()
 globalPrefLE = trackedInfoLE = preprocessing.LabelEncoder()
 
 categoriesInfo = {
-    "Eateries": {"filename":"restaurants_info.csv", "category":"Eateries", "colName": "Cuisines", "activityTime": 45}
+    "Eateries": {"filename":"restaurants_info.csv", "category":"Eateries", "colName": "Cuisines", "activityTime": 45, 
+                "preferences": ["Italian", "Chinese", "Japanese", "Thai", "French", "Spanish", "American", "Mexican", "Indian", "Turkish", "Korean", "Vietnamese", "Hong Kong", 
+                                "German", "British", "Taiwanese", "Singaporean", "Indonesian", "Malaysian", "Australian", "Swedish"]}
 }
 
 # Functions to perform before showing the page
@@ -74,7 +76,10 @@ def homePage():
 
 @app.route("/discover/<string:category>")
 def discoverCategories(category):
-    return render_template("discoverCategories.html", category=category)
+    if category == "PopularPlaces":
+        return render_template("discoverCategories.html", category=category, prefs=list(map(lambda x: x, categoriesInfo)) )
+
+    return render_template("discoverCategories.html", category=category, prefs=categoriesInfo[category]["preferences"])
 
 # Accounts pages
 @app.route("/login", methods=['GET', 'POST'])
@@ -168,6 +173,7 @@ def forgetPassword():
 @app.route("/onboarding")
 def onBoardingPage():
     return render_template("onboarding.html")
+    
 
 @app.route("/loading")
 def loading():
@@ -183,12 +189,28 @@ def selectItineraryPlan():
     return render_template("itinerary/selectPlan.html")
 
 @app.route("/itinerary/planning/planner", methods=['GET', 'POST'])
-def planItinerary():
-    return render_template("/itinerary/planItinerary.html")
+def plannerItinerary():
+    itinerary = itinerariesCon.GetUnconfimredItinerary(session["current_user"]["userId"], "Planner")
+
+    if request.method == 'POST':
+        itinerary.setConfirmed(True)
+        itinerariesCon.SetItinerary(itinerary)
+        itineraryId = itinerariesCon.GetItineraryById(session["current_user"]["userId"]).getId()
+        return redirect(f"/itinerary/showTrip?id={itineraryId}")
+
+    return render_template("/itinerary/plannerItinerary.html", itinerary=itinerary)
 
 @app.route("/itinerary/planning/explorer", methods=['GET', 'POST'])
-def recommendItinerary():
-    return render_template("/itinerary/autoItinerary.html")
+def explorerItinerary():
+    itinerary = itinerariesCon.GetUnconfimredItinerary(session["current_user"]["userId"], "Explorer")
+
+    if request.method == 'POST':
+        itinerary.setConfirmed(True)
+        itinerariesCon.SetItinerary(itinerary)
+        itineraryId = itinerariesCon.GetItineraryById(session["current_user"]["userId"]).getId()
+        return redirect(f"/itinerary/showTrip?id={itineraryId}")
+
+    return render_template("/itinerary/explorerItinerary.html", itinerary=itinerary)
 
 @app.route("/itinerary/confirmation")
 def confirmItinerary():
@@ -196,7 +218,10 @@ def confirmItinerary():
 
 @app.route("/itinerary/showTrip")
 def showTrip():
-    return render_template("/itinerary/showTrip.html")
+    itineraryId = request.args.get("id")
+    currItinerary = itinerariesCon.GetItineraryById(session["current_user"]["userId"], itineraryId)
+
+    return render_template("/itinerary/showTrip.html", itinerary=currItinerary)
 
 
 # Preferences pages -- Send pref to db (Daoying)
@@ -617,17 +642,18 @@ def recommenderAlgorithm(userId, timeAllowance, displaySize, latitude, longitude
                             continue
 
                         if routeResults is not None:
-                            if transportMode == "pt":
-                                estTime += routeResults["plan"]["itineraries"][0]["duration"] / 60
-                            else:
-                                estTime += routeResults["route_summary"]["total_time"] / 60
+                            if routeResults.get("error") is None:
+                                if transportMode == "pt":
+                                    estTime += routeResults["plan"]["itineraries"][0]["duration"] / 60
+                                else:
+                                    estTime += routeResults["route_summary"]["total_time"] / 60
 
-                            if estTime <= timeAllowance:
-                                subList[i]["Duration"] = estTime
-                                subList[i]["Category"] = category
-                                recommendList.append(subList[i])
-                            else:
-                                skippedCount += 1
+                                if estTime <= timeAllowance:
+                                    subList[i]["Duration"] = estTime
+                                    subList[i]["Category"] = category
+                                    recommendList.append(subList[i])
+                                else:
+                                    skippedCount += 1
 
                     skipped[pageNum-1] += skippedCount
                     # Recursively call the function till a definite 
@@ -763,9 +789,11 @@ def recommendPlacesPlanner():
     if request.method == 'POST':
         print("Start")
         userId = session["current_user"]["userId"]
-        latitude = request.form.get("latitude")
-        longitude = request.form.get("longitude")
-        timeAllowance = int(request.form.get("timeAllowance"))
+        latitude = float(request.form.get("latitude"))
+        longitude = float(request.form.get("longitude"))
+        startTime = datetime.now().strptime(request.form.get("startTime"), "%H:%M")
+        endTime = datetime.now().strptime(request.form.get("endTime"), "%H:%M")
+        timeAllowance = int(float(request.form.get("timeLeft")))
         category = request.form.get("category")
         transportMode = request.form.get("transportMode")
         skipped = json.loads(request.form.get("skipped")) 
@@ -776,7 +804,7 @@ def recommendPlacesPlanner():
             activityTime = round(activityTime * 0.75)
 
         resultDict = recommenderAlgorithm(userId, timeAllowance, 10, latitude, longitude, category, transportMode, activityTime, skipped, pageNum)
-
+        
         print("Done")
     return json.dumps(resultDict)
 
@@ -789,11 +817,13 @@ def recommendPlacesExplorer():
         userId = session["current_user"]["userId"]
         latitude = float(request.form.get("latitude"))
         longitude = float(request.form.get("longitude"))
-        timeAllowance = int(request.form.get("timeAllowance"))
+        startTime = datetime.now().strptime(request.form.get("startTime"), "%H:%M")
+        endTime = datetime.now().strptime(request.form.get("endTime"), "%H:%M")
         transportMode = request.form.get("transportMode")
         endLatitude = float(request.form.get("endLatitude"))
         endLongitude = float(request.form.get("endLongitude"))
 
+        timeAllowance = (endTime - startTime).seconds / 60
         destinations = []
         totalEateries = 0
         
@@ -1099,48 +1129,50 @@ def search():
 def discoverRecommend(category):
     today = datetime.now()
     section = request.form.get("section")
+    rangeDateEnd = (today - timedelta(days=31)).date()
+    timespan = [today.strftime("%Y_%m_%d"), rangeDateEnd.strftime("%Y_%m_%d")]
 
-    if category == "popularPlaces":
-        rangeDateEnd = (today - timedelta(days=31)).date()
+    if category == "PopularPlaces":
         csvFiles = {"Eateries": pandas.read_csv("csv/webcsv/"+categoriesInfo["Eateries"]["filename"], encoding = "ISO-8859-1")} 
 
         # Popular places
-        returnDict = {}
-        popularPlaces = trackedPlacesCon.GetHighestAction("Visited", span=[today.strftime("%Y_%m_%d"), rangeDateEnd.strftime("%Y_%m_%d")], limit=9)
+        popularPlaces = trackedPlacesCon.GetHighestAction("Visited", span=timespan, limit=10)
 
         for place in popularPlaces:
             dataRow = csvFiles[place["Category"]].loc[csvFiles[place["Category"]]["Address"] == place.getAddress()]
             place["Name"] = dataRow["Name"]
             place["Ratings"] = dataRow["Ratings"]
 
-        returnDict["popularPlaces"] = popularPlaces
-
-        # Display for every categories
-        for cat in categoriesInfo:
-            topCat = trackedPlacesCon.GetHighestAction("Visited", cat, span=[today.strftime("%Y_%m_%d"), rangeDateEnd.strftime("%Y_%m_%d")], limit=9)
-            returnDict[cat] = topCat
-            
-        return json.dumps(returnDict)
+        return json.dumps({"list": popularPlaces, "index": request.form.get("index")})
     else:
-        userId = session["current_user"]["userId"]
-
-        prefs = userCon.GetPreferences(userId, category)
-        return json.dumps({})
+        topPlaces = trackedPlacesCon.GetHighestAction("Visited", category, section, timespan, 8) or []
+        for place in topPlaces:
+            dataRow = csvFiles[place["Category"]].loc[csvFiles[place["Category"]]["Address"] == place.getAddress()]
+            place["Name"] = dataRow["Name"]
+            place["Ratings"] = dataRow["Ratings"]
+        return json.dumps({"list": topPlaces, "index": request.form.get("index")})
 
 @app.route("/funcs/save-trip", methods=['POST'])
-def autoSaveTrip():
+def saveTrip():
     if request.method == 'POST':
         userId = session["current_user"]["userId"]
+        itineraryId = request.form.get("id")
         tripType = request.form.get("tripType")
         tripName = request.form.get("tripName")
         date = request.form.get("date")
-        names = request.form.get("names")
-        addresses = request.form.get("addresses")
-        activitiesDuration = request.form.get("activityDuration")
-        durations = request.form.get("duration")
+        startTime = request.form.get("startTime")
+        endTime = request.form.get("endTime")
+        names = request.form.getlist("names[]")
+        addresses = request.form.getlist("addresses[]")
+        activitiesDuration = request.form.getlist("activityDuration[]")
+        durations = request.form.getlist("duration[]")
         timeAllowance = float(request.form.get("timeAllowance"))
         timeLeft = float(request.form.get("timeLeft"))
         transportMode = request.form.get("transportMode")
+        confirmed = request.form.get("confirmed").lower() == "true"
+        status = request.form.get("status")
+        if not itineraryId:
+            itineraryId = None
 
         if date == "Today":
             date = datetime.now()
@@ -1150,8 +1182,11 @@ def autoSaveTrip():
             places.append({"Name": names[i], "Address": addresses[i], "ActivityDuration": activitiesDuration[i], 
                             "TotalDuration": durations[i]})
 
-        itinerary = Itinerary(None, userId, tripName, date, tripType, transportMode, timeAllowance, timeLeft, places)
-        itinerariesCon.SetItinerary(itinerary)
+        if len(addresses) > 0:
+            itinerary = Itinerary(itineraryId, userId, tripName, date, startTime, endTime, tripType, transportMode, timeAllowance, timeLeft, confirmed, status, places)
+            itinerariesCon.SetItinerary(itinerary)
+            itineraryId = itinerariesCon.GetUnconfimredItinerary(userId, tripType).getId()
+    return json.dumps({"id": str(itineraryId)})
 
 def trackPlaces(places, names, storeMean, sessionId):
     # Track down the destinations for future recommendation algorithm

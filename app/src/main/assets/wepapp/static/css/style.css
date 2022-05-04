@@ -16,10 +16,10 @@
   position: relative;
   width: 360px;
   /* max-width: 430px; */
-  height: 800px;
+  min-height: 800px;
   display: flex;
   flex-direction: column;
-  background-color: green;
+  /* background-color: green; */
 }
 
 .onboarding {
