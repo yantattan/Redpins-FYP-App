@@ -15,11 +15,10 @@
 .device {
   position: relative;
   width: 360px;
-  /* max-width: 430px; */
   min-height: 800px;
   display: flex;
   flex-direction: column;
-  /* background-color: green; */
+  background-color: green;
 }
 
 .onboarding {
@@ -197,13 +196,14 @@
   left: 0px;
   top: 180px;
   background: white;
-  border-radius: 20px 0px 0px 0px;
+  border-radius: 10px 10px 0px 0px;
 }
 
 input {
   width: 90%;
   height: 50px;
-  box-shadow: 0px 10px 20px rgba(207, 207, 207, 0.3);
+  mix-blend-mode: normal;
+  box-shadow: 0px 0px 20px rgba(207, 207, 207, 0.3);
   border-radius: 5px;
   border: none;
   margin: 20px;
@@ -276,7 +276,7 @@ input {
   top: 230px;
   background: #FFFFFF;
   box-shadow: 0px 10px 20px rgba(207, 207, 207, 0.3);
-  border-radius: 20px 0px 0px 0px;
+  border-radius: 10px 10px 0px 0px;
 }
 
 .loginfields p {
@@ -392,12 +392,59 @@ input {
 }
 
 /* navbar */
+#home {
+  background: linear-gradient(55.96deg, #E4002B 9.03%, #E92C3D 40.19%, #F8A36F 90.12%);
+}
+
+#home img {
+  position: absolute;
+  z-index: 0;
+}
+
+.homeheader {
+  margin: 26px 20px 16px 20px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.homeheader h1 {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 25px;
+  line-height: 38px;
+  color: #FFFFFF;
+}
+
+.homeheader ul {
+  display: flex;
+  list-style: none;
+}
+
+.homeheader ul li {
+  margin: 10px 20px;
+}
+
+.homecontent {
+  position: absolute;
+width: 360px;
+height: 720px;
+left: 0px;
+top: 80px;
+
+background: #FCFCFC;
+border-radius: 20px 20px 0px 0px;
+}
+
+
+
 nav {
   position: sticky;
   top: 711px;
+  z-index: 3;
 }
 
-.home {
+.homebutton {
   z-index: 1;
   position: absolute;
   height: 26px;
@@ -405,20 +452,18 @@ nav {
   left: 59px;
   top: 44px;
   border-radius: 0px;
-
 }
 
-.explore {
+.explorebutton {
   z-index: 1;
   position: absolute;
   width: 75px;
   height: 75px;
   left: 142px;
   top: 0px;
-
 }
 
-.account {
+.accountbutton {
   z-index: 1;
   position: absolute;
   height: 26px;
@@ -426,15 +471,12 @@ nav {
   left: 275px;
   top: 44px;
   border-radius: 0px;
-
 }
 
-.navbar {
+.navbarbutton {
   position: absolute;
   width: 360px;
   left: 0px;
   top: 15px;
   border-radius: 0px;
-
-  box-shadow: 0px -3px 10px rgba(207, 207, 207, 0.5);
 }
