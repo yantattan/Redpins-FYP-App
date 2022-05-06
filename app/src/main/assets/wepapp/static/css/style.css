@@ -215,7 +215,7 @@ input {
   line-height: 22px;
   display: flex;
   align-items: center;
-  color: #BBBBBB;
+  color: black;
 }
 
 .next {
