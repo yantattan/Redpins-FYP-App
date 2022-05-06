@@ -391,7 +391,7 @@ input {
   color: #FFFFFF;
 }
 
-/* navbar */
+/* homepage */
 #home {
   background: linear-gradient(55.96deg, #E4002B 9.03%, #E92C3D 40.19%, #F8A36F 90.12%);
 }
@@ -427,17 +427,176 @@ input {
 
 .homecontent {
   position: absolute;
-width: 360px;
-height: 720px;
-left: 0px;
-top: 80px;
-
-background: #FCFCFC;
-border-radius: 20px 20px 0px 0px;
+  width: 360px;
+  height: 720px;
+  left: 0px;
+  top: 80px;
+  background: #FCFCFC;
+  border-radius: 20px 20px 0px 0px;
 }
 
+/* homecontent */
+.homecontent {}
 
+/* banner */
+.banner {
+  width: 320px;
+  height: 140px;
+  border-radius: 5px;
+  background-color: grey;
+  margin: 20px auto;
+}
 
+/* hotspot */
+.categories {
+  overflow-x: scroll;
+  overflow-y: hidden;
+}
+
+.categories ul {
+  width: 640px;
+  display: flex;
+  justify-content: space-around;
+  list-style: none;
+  margin: auto 20px;
+  text-align: center;
+}
+
+.categories ul li {
+  margin: 20px 0;
+}
+
+.categories ul li p {
+  margin: 4px 0 0 0;
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 16px;
+  color: #2B2B2B;
+}
+
+.categoriesbutton {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(234.68deg, #E4002B 1.73%, #E92C3D 15.75%, #F8A36F 85.31%);
+  border-radius: 5px;
+}
+
+/* recent searches */
+.recentsearches {
+  margin: 0 20px;
+  overflow-x: scroll;
+  overflow-y: hidden;
+}
+
+.recentheader {
+  margin: 0 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.recentheader h1 {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 20px;
+  color: #2B2B2B;
+}
+
+.recentheader p {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 12px;
+  color: #BBBBBB;
+}
+
+.recentcardscon {
+  display: flex;
+  margin: 10px 0;
+  width: 1000%;
+}
+
+.recentcards {
+  width: 300px;
+  height: 110px;
+  box-shadow: 0px 10px 10px rgba(207, 207, 207, 0.5);
+  border-radius: 5px;
+  margin: 0 10px 0 0;
+  display: flex;
+}
+
+.cardimg {
+  width: 110px;
+  height: 110px;
+  background-color: green;
+  border-radius: 5px;
+  position: relative;
+}
+
+.save {
+  width: 30px;
+  height: 30px;
+  background-color: white;
+  border-radius: 5px;
+  position: absolute;
+  left: 66.1%;
+  right: 91.46%;
+  top: 4.55%;
+  bottom: 68.18%;
+}
+
+.save svg {
+  position: absolute;
+  left: 9px;
+  top: 7px;
+}
+
+.cardinfo {
+  margin: 10px;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+}
+
+.recentname {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 21px;
+  color: #2B2B2B;
+}
+
+.recentcat {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  color: #707070;
+  margin: 0 0 10px 0;
+}
+
+.rating {
+  display: flex;
+}
+
+.rating svg {
+  margin: 0 4px 0 0;
+}
+
+.ratingvalue {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 10px;
+  color: #707070;
+  margin: 0 0 0 4px;
+}
+
+/* navbar */
 nav {
   position: sticky;
   top: 711px;
