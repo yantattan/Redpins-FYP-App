@@ -483,15 +483,12 @@ input {
   border-radius: 5px;
 }
 
-/* recent searches */
-.recentheader {
-  margin: 20px 20px 0 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
+/* homeheaders */
+.sectionheader {
+  margin: 10px 20px 0 20px;
 }
 
-.recentheader h1 {
+.sectionheader h1 {
   font-family: 'Poppins';
   font-style: normal;
   font-weight: 600;
@@ -499,16 +496,39 @@ input {
   color: #2B2B2B;
 }
 
-.recentheader p {
+.sectionheader h2 {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 22px;
+  color: #707070;
+}
+
+.sectionheader h3 {
   font-family: 'Open Sans';
   font-style: normal;
   font-weight: 600;
   font-size: 12px;
+  line-height: 16px;
   color: #BBBBBB;
 }
 
+/* recent searches */
+.recentheader {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.manyheadertags {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .recentsearches {
-  margin: 0 20px;
+  padding: 0 20px;
   overflow-x: scroll;
   overflow-y: hidden;
 }
@@ -517,6 +537,9 @@ input {
   display: flex;
   margin: 10px 0;
   width: 1000%;
+  height: 130px;
+  overflow-x: scroll;
+  overflow-y: hidden;
 }
 
 .recentcards {
@@ -597,31 +620,20 @@ input {
 }
 
 /* Top10 */
-.top10header {
-  display: flex;
-  flex-direction: column;
-  margin: 20px 20px;
+.top10 {
+  padding: 0 20px;
+  overflow-x: scroll;
+  overflow-y: hidden;
 }
 
-.top10header h1 {
-  font-family: 'Poppins';
-  font-style: normal;
-  font-weight: 600;
-  font-size: 20px;
-  color: #2B2B2B;
-}
-
-.top10header p {
-  font-family: 'Open Sans';
-  font-style: normal;
-  font-weight: 400;
-  font-size: 14px;
-  color: #707070;
+.top10 .cardscon {
+  height: 240px;
 }
 
 .top10cards {
   margin: 0 10px 0 0;
   display: flex;
+  flex-direction: column;
   width: 200px;
   height: 217px;
   background: #FFFFFF;
@@ -629,10 +641,223 @@ input {
   border-radius: 5px;
 }
 
+.top10cards .cardimg {
+  width: 100%;
+  height: 110px;
+  background-color: green;
+  border-radius: 5px;
+  position: relative;
+}
+
+.top10cards .ranking {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  left: 0px;
+  top: 0px;
+  background: #E4002B;
+  border-radius: 5px 0px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.top10cards .ranking h1 {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 18px;
+  color: #FFFFFF;
+}
+
+.top10cards .save {
+  width: 30px;
+  height: 30px;
+  background-color: white;
+  border-radius: 5px;
+  position: absolute;
+  left: 82.1%;
+  right: 91.46%;
+  top: 4.55%;
+  bottom: 68.18%;
+}
+
+.save svg {
+  position: absolute;
+  left: 9px;
+  top: 7px;
+}
+
+.top10cardinfo {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  margin: 10px;
+  height: 80px
+}
+
+.recentname {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 21px;
+  color: #2B2B2B;
+}
+
+.recentcat {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  color: #707070;
+  margin: 0 0 10px 0;
+}
+
+.rating {
+  display: flex;
+}
+
+.rating svg {
+  margin: 0 4px 0 0;
+}
+
+.ratingvalue {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 10px;
+  color: #707070;
+  margin: 0 0 0 4px;
+}
+
+/* dazzling card */
+.dazzlingcardscon {
+  margin: 20px;
+  height: auto;
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.dazzlingcard {
+  height: 200px;
+  width: 155px;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  margin: 0 10px 20px 0px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0) 67.95%, rgba(0, 0, 0, 0.7) 94.44%);
+}
+
+.dazzlingcard h1 {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 24px;
+  color: #FFFFFF;
+  margin: 0 10px;
+}
+
+.dazzlingcard h2 {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 160%;
+  color: #FFFFFF;
+  margin: 5px 10px 10px 10px;
+}
+
+/* maindcard */
+.maincardcon {
+  margin: 10px 20px;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  height: 225px;
+  display: flex;
+}
+
+.maincard {
+  width: 150px;
+  height: 197px;
+  background: #FFFFFF;
+  box-shadow: 0px 10px 10px rgba(207, 207, 207, 0.5);
+  border-radius: 5px;
+  margin: 0 10px 0 0;
+}
+
+.maincard .save {
+  background-color: white;
+  border-radius: 5px;
+  position: absolute;
+  left: 76.5%;
+  right: 91.46%;
+  top: 4.55%;
+  bottom: 68.18%;
+}
+
+.maincard .cardimg {
+  height: 90px;
+  width: 150px;
+  border-radius: 5px;
+}
+
+.maincardinfo {
+  height: 90px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin: 10px;
+}
+
+/* dazzling card */
+.globalcardscon {
+  margin: 10px 20px;
+  height: auto;
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.globalcard {
+  width: 154.84px;
+  height: 100px;
+  background: #C4C4C4;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  text-align: right;
+  margin: 10px 10px 0 0;
+}
+
+.globalcard h1 {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 24px;
+  color: #FFFFFF;
+  margin: 10px;
+}
+
+.more {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 12px;
+  color: #BBBBBB;
+text-align: center;
+margin: 20px 0 100px 0;
+}
+
 /* navbar */
 nav {
   position: sticky;
-  top: 711px;
+  top: 712px;
   z-index: 3;
 }
 
