@@ -6,7 +6,7 @@ import uuid
 
 # Required libraries
 from datetime import datetime, timedelta, date
-from time import strftime
+import time
 from functools import reduce
 import geocoder, requests, random, string, json, geopy.distance, numpy
 import asyncio, aiohttp
@@ -37,7 +37,7 @@ cron = Scheduler(daemon=True)
 cron.start()
 CORS(app)
 app.secret_key = "redp1n5Buffer"
-apiKey = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjg1NDQsInVzZXJfaWQiOjg1NDQsImVtYWlsIjoieWFudGF0dGFuNzIxQGdtYWlsLmNvbSIsImZvcmV2ZXIiOmZhbHNlLCJpc3MiOiJodHRwOlwvXC9vbTIuZGZlLm9uZW1hcC5zZ1wvYXBpXC92MlwvdXNlclwvc2Vzc2lvbiIsImlhdCI6MTY1MTU2ODI5OCwiZXhwIjoxNjUyMDAwMjk4LCJuYmYiOjE2NTE1NjgyOTgsImp0aSI6IjMzYjUwNWNlNmE4OGJhMjIyZmQ0Y2IwNjlmOWViZmU4In0.YwGkAQBmDKtaM-N01zpbJ44U2lJR-W3AjdxXQtfwn3E"
+apiKey = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjg1NDQsInVzZXJfaWQiOjg1NDQsImVtYWlsIjoieWFudGF0dGFuNzIxQGdtYWlsLmNvbSIsImZvcmV2ZXIiOmZhbHNlLCJpc3MiOiJodHRwOlwvXC9vbTIuZGZlLm9uZW1hcC5zZ1wvYXBpXC92MlwvdXNlclwvc2Vzc2lvbiIsImlhdCI6MTY1MjAwNzczNSwiZXhwIjoxNjUyNDM5NzM1LCJuYmYiOjE2NTIwMDc3MzUsImp0aSI6ImFlNDYzMWEyNzUyNDhiMDVkNGE5NjU0ZWM3YTIyYzdlIn0.DzuObpzVc9M4ZtGolRXAaXQ1lisWIjLcKlf5H0RmjWE"
 
 # Init all controllers
 userCon = Users.UserCon()
@@ -71,8 +71,8 @@ def homePage():
     # scheduledJobs()
     if session.get("current_user") is None:
         return redirect("/login")
-    
-    return render_template("home.html", y="Meh")
+
+    return render_template("home.html", catInfo=categoriesInfo)
 
 @app.route("/discover/<string:category>")
 def discoverCategories(category):
@@ -193,10 +193,7 @@ def plannerItinerary():
     itinerary = itinerariesCon.GetUnconfimredItinerary(session["current_user"]["userId"], "Planner")
 
     if request.method == 'POST':
-        itinerary.setConfirmed(True)
-        itinerariesCon.SetItinerary(itinerary)
-        itineraryId = itinerariesCon.GetItineraryById(session["current_user"]["userId"]).getId()
-        return redirect(f"/itinerary/showTrip?id={itineraryId}")
+        return redirect(f"/itinerary/review/{itinerary.getId()}")
 
     return render_template("/itinerary/plannerItinerary.html", itinerary=itinerary)
 
@@ -205,21 +202,30 @@ def explorerItinerary():
     itinerary = itinerariesCon.GetUnconfimredItinerary(session["current_user"]["userId"], "Explorer")
 
     if request.method == 'POST':
-        itinerary.setConfirmed(True)
-        itinerariesCon.SetItinerary(itinerary)
-        itineraryId = itinerariesCon.GetItineraryById(session["current_user"]["userId"]).getId()
-        return redirect(f"/itinerary/showTrip?id={itineraryId}")
+        return redirect(f"/itinerary/review/{itinerary.getId()}")
 
     return render_template("/itinerary/explorerItinerary.html", itinerary=itinerary)
 
-@app.route("/itinerary/confirmation")
-def confirmItinerary():
-    return render_template("/itinerary/confirmItinerary.html")
+@app.route("/itinerary/review/<string:id>")
+def confirmItinerary(id):
+    itinerary = itinerariesCon.GetItineraryById(id)
 
-@app.route("/itinerary/showTrip")
-def showTrip():
-    itineraryId = request.args.get("id")
-    currItinerary = itinerariesCon.GetItineraryById(session["current_user"]["userId"], itineraryId)
+    if request.method == 'POST':
+        itinerary = itinerariesCon.GetItineraryById(id)
+        itinerary.setConfirmed(True)
+        itinerariesCon.SetItinerary(itinerary)
+        return redirect(f"/itinerary/showTrip/{id}")
+    else:
+        if itinerary.getUserId() != session["current_user"]["userId"]:
+            return render_template("/itinerary/reviewItinerary.html", error="You are not permitted to view this itinerary")
+
+    return render_template("/itinerary/reviewItinerary.html")
+
+@app.route("/itinerary/showTrip/<string:id>")
+def showTrip(id):
+    currItinerary = itinerariesCon.GetItineraryById(id)
+    if currItinerary.getUserId() != session["current_user"]["userId"]:
+        return render_template("/itinerary/reviewItinerary.html", error="You are not permitted to view this itinerary")
 
     return render_template("/itinerary/showTrip.html", itinerary=currItinerary)
 
@@ -477,7 +483,7 @@ def calculateAndReturnList(userId, category, webScrapData, shortlistedPlaces, di
         # Check for rerecommend places on top 5 searches 
         for place in yourTop5Search:
             rerecommendPoints = 0 # If >=0, can rerecommend
-            dataRow = webScrapData.loc[webScrapData["Address"] == place["Address"].replace(", ", "|")]
+            dataRow = webScrapData.loc[webScrapData["Address"] == place["Address"]]
 
             if len(dataRow.values) > 0:
                 for action in place["Actions"]:
@@ -507,7 +513,7 @@ def calculateAndReturnList(userId, category, webScrapData, shortlistedPlaces, di
                 cuisinesMatch = 0
                 yourPrefs = userCon.GetPreferences(userId, category)
                 restaurantDetails = webScrapData.loc[webScrapData["Name"] == place.Name]
-                restaurantCuisines = restaurantDetails["Cuisines"].values[0].split("|")
+                restaurantCuisines = restaurantDetails["Cuisines"].values[0].split(",")
 
                 for pref in top5Pref:
                     if pref in restaurantCuisines:
@@ -577,15 +583,15 @@ def calculateAndReturnList(userId, category, webScrapData, shortlistedPlaces, di
 
         return takenSet, orderedPlaces
 
-def recommenderAlgorithm(userId, timeAllowance, displaySize, latitude, longitude, category, transportMode, activityTime, skipped, pageNum):
+def recommenderAlgorithm(userId, timeAllowance, displaySize, latitude, longitude, category, transportMode, skipped, pageNum):
     recommendList = []
 
-    def ShortlistByDistance(placesList, transportMode):
+    def ShortlistByDistance(placesList, transportMode, activityTime):
         pList = []
         for place in placesList.itertuples():
             # 1st stage shortlisting - Determined by roughly estimated average speed of transports
             # Find according to furthest distance possible (a and b distance)
-            placeLatlng = place.Latlng.split("|")
+            placeLatlng = place.Latlng.split(",")
             if len(placeLatlng) < 2:
                 continue
             placeLatlng = list(map(lambda x: round(float(x), 7), placeLatlng))
@@ -602,13 +608,16 @@ def recommenderAlgorithm(userId, timeAllowance, displaySize, latitude, longitude
 
      # Shortlisted after calculating distance
     webScrapData = pandas.read_csv("csv/webcsv/"+categoriesInfo[category]["filename"], encoding = "ISO-8859-1")
-    shortlistedPlaces = ShortlistByDistance(webScrapData, transportMode)
+    activityTime = 90
+    if category == "Eateries":
+        activityTime = categoriesInfo[category]["activityTime"]
+    shortlistedPlaces = ShortlistByDistance(webScrapData, transportMode, activityTime)
 
     if len(shortlistedPlaces) > 0:
         returnList = calculateAndReturnList(userId, category, webScrapData, shortlistedPlaces, displaySize, activityTime, skipped)
 
         async def CheckRealDuration(placesList, orderedPlaces, transportMode):
-        # Final shortlisting - Ensure estimated shortlisted places can actually be reached in time
+            # Final shortlisting - Ensure estimated shortlisted places can actually be reached in time
             async with aiohttp.ClientSession() as clientSession:
                 currentTime = datetime.now()
                 try:
@@ -618,7 +627,7 @@ def recommenderAlgorithm(userId, timeAllowance, displaySize, latitude, longitude
                 async def getFinalDataset(subList, startIndex):
                     routeTasks = []
                     for place in subList:
-                        placeLatlng = place["Latlng"].split("|")
+                        placeLatlng = place["Latlng"].split(",")
                         if len(placeLatlng) < 2:
                             continue
                         placeLatlng = list(map(lambda x: round(float(x), 7), placeLatlng))
@@ -636,6 +645,7 @@ def recommenderAlgorithm(userId, timeAllowance, displaySize, latitude, longitude
                     for i in range(len(responses)):
                         routeResultsRaw = responses[i]
                         estTime = activityTime
+                        routeResults = None
                         try:
                             routeResults = await routeResultsRaw.json()
                         except Exception:
@@ -669,15 +679,15 @@ def recommenderAlgorithm(userId, timeAllowance, displaySize, latitude, longitude
 
     return {"list": recommendList, "skipped": skipped}
 
-def recommenderAlgorithmEndPoint(userId, timeAllowance, displaySize, latitude, longitude, endLatitude, endLongitude, category, transportMode, activityTime, skipped, pageNum):
+def recommenderAlgorithmEndPoint(userId, timeAllowance, displaySize, latitude, longitude, endLatitude, endLongitude, category, transportMode, skipped, pageNum):
     recommendList = []
 
-    def ShortlistByDistance(placesList, transportMode):
+    def ShortlistByDistance(placesList, transportMode, activityTime):
         pList = []
         for place in placesList.itertuples():
             # 1st stage shortlisting - Determined by roughly estimated average speed of transports
             # Find according to furthest distance possible (a and b distance)
-            placeLatlng = place.Latlng.split("|")
+            placeLatlng = place.Latlng.split(",")
             if len(placeLatlng) < 2:
                 continue
             placeLatlng = list(map(lambda x: round(float(x), 7), placeLatlng))
@@ -697,7 +707,10 @@ def recommenderAlgorithmEndPoint(userId, timeAllowance, displaySize, latitude, l
 
      # Shortlisted after calculating distance
     webScrapData = pandas.read_csv("csv/webcsv/"+categoriesInfo[category]["filename"], encoding = "ISO-8859-1")
-    shortlistedPlaces = ShortlistByDistance(webScrapData, transportMode)
+    activityTime = 90
+    if category == "Eateries":
+        activityTime = categoriesInfo[category]["activityTime"]
+    shortlistedPlaces = ShortlistByDistance(webScrapData, transportMode, activityTime)
 
     if len(shortlistedPlaces) > 0:
         returnList = calculateAndReturnList(userId, category, webScrapData, shortlistedPlaces, displaySize, activityTime, skipped)
@@ -713,7 +726,7 @@ def recommenderAlgorithmEndPoint(userId, timeAllowance, displaySize, latitude, l
                 async def getFinalDataset(subList, startIndex):
                     routeTasks = []
                     for place in subList:
-                        placeLatlng = place["Latlng"].split("|")
+                        placeLatlng = place["Latlng"].split(",")
                         if len(placeLatlng) < 2:
                             continue
                         placeLatlng = list(map(lambda x: round(float(x), 7), placeLatlng))
@@ -791,8 +804,6 @@ def recommendPlacesPlanner():
         userId = session["current_user"]["userId"]
         latitude = float(request.form.get("latitude"))
         longitude = float(request.form.get("longitude"))
-        startTime = datetime.now().strptime(request.form.get("startTime"), "%H:%M")
-        endTime = datetime.now().strptime(request.form.get("endTime"), "%H:%M")
         timeAllowance = int(float(request.form.get("timeLeft")))
         category = request.form.get("category")
         transportMode = request.form.get("transportMode")
@@ -800,10 +811,8 @@ def recommendPlacesPlanner():
         pageNum = int(request.args.get("page")) or 1
 
         activityTime = categoriesInfo[category]["activityTime"]
-        if timeAllowance < 105:
-            activityTime = round(activityTime * 0.75)
 
-        resultDict = recommenderAlgorithm(userId, timeAllowance, 10, latitude, longitude, category, transportMode, activityTime, skipped, pageNum)
+        resultDict = recommenderAlgorithm(userId, timeAllowance, 10, latitude, longitude, category, transportMode, skipped, pageNum)
         
         print("Done")
     return json.dumps(resultDict)
@@ -828,55 +837,41 @@ def recommendPlacesExplorer():
         totalEateries = 0
         
         # Suggest eateries 1st. If time too little, check if there is any available places he/she can go
-        activityTime = 45
         if timeAllowance < 120:
-            if timeAllowance < 105:
-                activityTime = round(activityTime * 0.75)
-
-            resultList = recommenderAlgorithmEndPoint(userId, timeAllowance, 1, latitude, longitude, endLatitude, endLongitude, "Eateries", transportMode, activityTime, [0], 1)
+            resultList = recommenderAlgorithmEndPoint(userId, timeAllowance, 1, latitude, longitude, endLatitude, endLongitude, "Eateries", transportMode, [0], 1)
             if len(resultList) > 0:
                 destinations.append(resultList[0])
         # Recommend a place to eat and go if only has < 160min allowance
-        elif timeAllowance < 180:
-            activityTime = 30
-            resultDictEatery = recommenderAlgorithm(userId, 80, 1, latitude, longitude, "Eateries", transportMode, activityTime, [0], 1)["list"][0]
+        elif timeAllowance < 230:
+            resultDictEatery = recommenderAlgorithm(userId, 105, 1, latitude, longitude, "Eateries", transportMode, [0], 1)["list"][0]
             destinations.append(resultDictEatery)
             timeAllowance -= resultDictEatery["Duration"]
 
-            activityTime = 45
             randomPlaceNum = random.randint(0, len(categoriesIndexMap)-1)
-            lastLatlng = resultDictEatery["Latlng"].split("|")
-            resultDictExplore = recommenderAlgorithmEndPoint(userId, timeAllowance, 1, lastLatlng[0], lastLatlng[1], endLatitude, endLongitude, categoriesIndexMap[randomPlaceNum], transportMode, activityTime, [0], 1)
+            lastLatlng = resultDictEatery["Latlng"].split(",")
+            resultDictExplore = recommenderAlgorithmEndPoint(userId, timeAllowance, 1, lastLatlng[0], lastLatlng[1], endLatitude, endLongitude, categoriesIndexMap[randomPlaceNum], transportMode, [0], 1)
             if len(resultDictExplore) > 0:
                 destinations.append(resultDictExplore[0])
-            activityTime = 45
+            timeAllowance -= resultDictExplore["Duration"]
         else:
             foodCheck = 0
             checkTime = datetime.now()
 
-            def recommendShortEnd(timeAllowance, checkTime, foodCheck, totalEateries, activityTime):
-                vectorDirection = [1, 1]
-                originalTimeAllowance = timeAllowance
-
-                if endLatitude < latitude:
-                    vectorDirection[0] = -1
-                if endLongitude < longitude:
-                    vectorDirection[1] = -1
-                
+            def recommendShortEnd(timeAllowance, checkTime, foodCheck, totalEateries):
                 while timeAllowance >= 180:
                     if foodCheck == 0:
                         print("Using algorithm 1")
-                        resultDictEatery = recommenderAlgorithm(userId, 140, 1, latitude, longitude, "Eateries", transportMode, activityTime, [0], 1)["list"][0]
+                        resultDictEatery = recommenderAlgorithm(userId, 140, 1, latitude, longitude, "Eateries", transportMode, [0], 1)["list"][0]
                         destinations.append(resultDictEatery)
-                        timeAllowance -= resultDictEatery["Duration"]
                         checkTime += timedelta(minutes=resultDictEatery["Duration"])
                         foodCheck += 1
                         totalEateries += 1
+                        timeAllowance -= resultDictEatery["Duration"]
                     else:
                         # If time left is already halfway, start leading them back
                         if timeAllowance <= originalTimeAllowance / 2:
                             print("Using algorithm 2")
-                            recommendFarEnd(timeAllowance, checkTime, foodCheck, totalEateries, activityTime)
+                            recommendFarEnd(timeAllowance, checkTime, foodCheck, totalEateries)
                             return
                         # Recommend places at any direction in the tophalf
                         else:
@@ -885,23 +880,23 @@ def recommendPlacesExplorer():
                                 randomPlaceNum = random.randint(0, len(categoriesIndexMap)-1)
                                 if timeAllowance < 120:
                                     print("Using algorithm 3")
-                                    resultDict = recommenderAlgorithm(userId, timeAllowance, 1, latitude, longitude, categoriesIndexMap[randomPlaceNum], transportMode, activityTime, [0], 1)["list"][0]
+                                    resultDict = recommenderAlgorithm(userId, timeAllowance, 1, latitude, longitude, categoriesIndexMap[randomPlaceNum], transportMode, [0], 1)["list"][0]
                                     destinations.append(resultDict)
-                                    timeAllowance -= resultDict["Duration"]
                                     checkTime += timedelta(minutes=resultDict["Duration"])
+                                    timeAllowance -= resultDict["Duration"]
                                 else:
                                     placesCount = random.randint(1, 2)
                                     for i in range(placesCount):
                                         print("Using algorithm 4")
-                                        resultDict = recommenderAlgorithm(userId, timeAllowance / placesCount, 1, latitude, longitude, categoriesIndexMap[randomPlaceNum], transportMode, activityTime, [0], 1)["list"]
+                                        resultDict = recommenderAlgorithm(userId, timeAllowance / placesCount, 1, latitude, longitude, categoriesIndexMap[randomPlaceNum], transportMode, [0], 1)["list"]
                                         if len(resultDict) == 0 and i == 2:
-                                            resultDict = recommenderAlgorithm(userId, timeAllowance, 1, latitude, longitude, categoriesIndexMap[randomPlaceNum], transportMode, activityTime, [0], 1)["list"][0]
+                                            resultDict = recommenderAlgorithm(userId, timeAllowance, 1, latitude, longitude, categoriesIndexMap[randomPlaceNum], transportMode, [0], 1)["list"][0]
                                         else:
                                             resultDict = resultDict[0]
                                         
                                         destinations.append(resultDict)
-                                        timeAllowance -= resultDict["Duration"]
                                         checkTime += timedelta(minutes=resultDict["Duration"])
+                                        timeAllowance -= resultDict["Duration"]
                             
                             nextEatTime = 0
                             if foodCheck == 1:
@@ -916,12 +911,15 @@ def recommendPlacesExplorer():
                                 i = 0
                                 pageNum = 1
                                 print("Using algorithm 5")
-                                resultDictEatery = recommenderAlgorithm(userId, 140, 5, latitude, longitude, "Eateries", transportMode, activityTime, [0], pageNum)["list"]
+                                resultDictEatery = recommenderAlgorithm(userId, 140, 5, latitude, longitude, "Eateries", transportMode, [0], pageNum)["list"]
                                 while True:
                                     try:
                                         if resultDictEatery[i]["Name"] not in list(map(lambda x: x["Name"], destinations)):
                                             destinations.append(resultDictEatery[i])
                                             totalEateries += 1
+                                            foodCheck -= 1
+                                            checkTime += timedelta(minutes=resultDictEatery[i]["Duration"])
+                                            timeAllowance -= resultDictEatery[i]["Duration"]
                                             break   
                                         else:
                                             i += 1
@@ -929,31 +927,27 @@ def recommendPlacesExplorer():
                                         pageNum += 1
                                         i = 0
                                         print("Using algorithm 6")
-                                        resultDictEatery = recommenderAlgorithm(userId, 140, 5, latitude, longitude, "Eateries", transportMode, activityTime, [0], pageNum)["list"]
+                                        resultDictEatery = recommenderAlgorithm(userId, 140, 5, latitude, longitude, "Eateries", transportMode, [0], pageNum)["list"]
 
-                                timeAllowance -= resultDictEatery[i]["Duration"]
-                                checkTime += timedelta(minutes=resultDictEatery[i]["Duration"])
-                                totalEateries += 1
-                                foodCheck -= 1
                             else:
                                 break
                     
-                if timeAllowance > 100:
+                if timeAllowance > 140:
+                    print(f"\n{timeAllowance}\n")
                     resultList = {}
                     randomPlaceNum = random.randint(0, len(categoriesIndexMap)-1)
                     if destinations[-1]["Category"] == "Eateries":
-                        activityTime = 45
                         skipped = 0
                         found = False
                         while True:
                             checkScore = 0
                             print("Using algorithm 7")
-                            resultList = recommenderAlgorithmEndPoint(userId, timeAllowance, 5, latitude, longitude, endLatitude, endLongitude, categoriesIndexMap[randomPlaceNum], transportMode, activityTime, [skipped], 2)
+                            resultList = recommenderAlgorithmEndPoint(userId, timeAllowance, 5, latitude, longitude, endLatitude, endLongitude, categoriesIndexMap[randomPlaceNum], transportMode, [skipped], 2)
                             if len(resultList) > 0:
                                 for place in resultList:
                                     checkScore = 0
                                     # Check if the location is heading towards the end point
-                                    latLng = list(map(lambda x: float(x), place["Latlng"].split("|")))
+                                    latLng = list(map(lambda x: float(x), place["Latlng"].split(",")))
                                     if vectorDirection[0] == 1:
                                         if latLng[0] > latitude or geopy.distance.distance((latLng[0], 0), (latitude,0)).km < 1:
                                             checkScore += 1
@@ -982,118 +976,128 @@ def recommendPlacesExplorer():
                                 break
 
                     else:
-                        activityTime = round(activityTime * 0.75)
                         print("Using algorithm 8")
-                        resultList = recommenderAlgorithmEndPoint(userId, timeAllowance, 1, latitude, longitude, endLatitude, endLongitude, "Eateries", transportMode, activityTime, [0], 1)
+                        resultList = recommenderAlgorithmEndPoint(userId, timeAllowance, 1, latitude, longitude, endLatitude, endLongitude, "Eateries", transportMode, [0], 1)
 
-            def recommendFarEnd(timeAllowance, checkTime, foodCheck, totalEateries, activityTime):
-                vectorDirection = [1, 1]
-
-                if endLatitude < latitude:
-                    vectorDirection[0] = -1
-                if endLongitude < longitude:
-                    vectorDirection[1] = -1
-
+            def recommendFarEnd(timeAllowance, checkTime, foodCheck, totalEateries):
                 while timeAllowance >= 180:
-                    if foodCheck == 0:
-                        resultDictEatery = recommenderAlgorithm(userId, 140, 1, latitude, longitude, "Eateries", transportMode, activityTime, [0], 1)["list"][0]
+                    # Food check 0 - Recommend food time
+                    if foodCheck == 0 and totalEateries < 3:
+                        resultDictEatery = recommenderAlgorithm(userId, 140, 1, latitude, longitude, "Eateries", transportMode, [0], 1)["list"][0]
                         destinations.append(resultDictEatery)
                         timeAllowance -= resultDictEatery["Duration"]
                         checkTime += timedelta(minutes=resultDictEatery["Duration"])
                         foodCheck += 1
                         totalEateries += 1
                     else:
+                        # Recommend other places - attractions, entertainment e.t.c
                         eatTimes = ["10 30 00", "3 30 00", "9 00 00"]
-                        def getOtherPlaces(timeAllowance, checkTime):
-                            if timeAllowance < 200:
+                        def getOtherPlaces(othersTimeAllow, timeAllowance, checkTime):
+                            if othersTimeAllow < 200:
                                 randomPlaceNum = random.randint(0, len(categoriesIndexMap)-1)
-                                resultDict = recommenderAlgorithm(userId, timeAllowance, 1, latitude, longitude, categoriesIndexMap[randomPlaceNum], transportMode, activityTime, [0], 1)["list"][0]
-                                destinations.append(resultDict)
-                                timeAllowance -= resultDict["Duration"]
-                                checkTime += timedelta(minutes=resultDict["Duration"])
+                                try:
+                                    resultDict = recommenderAlgorithm(userId, othersTimeAllow, 1, latitude, longitude, categoriesIndexMap[randomPlaceNum], transportMode, [0], 1)["list"][0]
+                                    destinations.append(resultDict)
+                                    othersTimeAllow -= resultDict["Duration"]
+                                    timeAllowance -= resultDict["Duration"]
+                                    print(timeAllowance)
+                                    checkTime += timedelta(minutes=resultDict["Duration"])
+                                except Exception:
+                                    return False
                             else:
                                 placesCount = random.randint(1, 2)
                                 for _ in range(placesCount):
                                     randomPlaceNum = random.randint(0, len(categoriesIndexMap)-1)
-                                    resultDict = recommenderAlgorithm(userId, timeAllowance / placesCount, 1, latitude, longitude, categoriesIndexMap[randomPlaceNum], transportMode, activityTime, [0], 1)["list"][0]
+                                    resultDict = recommenderAlgorithm(userId, othersTimeAllow / placesCount, 1, latitude, longitude, categoriesIndexMap[randomPlaceNum], transportMode, [0], 1)["list"][0]
                                     destinations.append(resultDict)
+                                    othersTimeAllow -= resultDict["Duration"]
                                     timeAllowance -= resultDict["Duration"]
+                                    print(timeAllowance)
                                     checkTime += timedelta(minutes=resultDict["Duration"])
+                            return True
                         
-                        nextEatTime = 0
-                        if foodCheck == 1:
-                            nextEatTime = eatTimes[totalEateries-1]
-                            # If food has already been added before, recommend other places
-                            otherPeriods = datetime.now().strptime(nextEatTime, "%H %M %S") - checkTime
-                            getOtherPlaces(otherPeriods.seconds / (60*60), checkTime)
-                            foodCheck += 1
-                        elif totalEateries < 3:
-                            # Recommend eateries after
-                            i = 0
-                            pageNum = 1
-                            resultDictEatery = recommenderAlgorithm(userId, 140, 5, latitude, longitude, "Eateries", transportMode, activityTime, [0], pageNum)["list"]
-                            while True:
-                                try:
-                                    if resultDictEatery[i]["Name"] not in list(map(lambda x: x["Name"], destinations)):
-                                        destinations.append(resultDictEatery[i])
-                                        totalEateries += 1
-                                        break   
-                                    else:
-                                        i += 1
-                                except IndexError:
-                                    pageNum += 1
-                                    i = 0
-                                    resultDictEatery = recommenderAlgorithm(userId, 140, 5, latitude, longitude, "Eateries", transportMode, activityTime, [0], pageNum)["list"]
-
-                            timeAllowance -= resultDictEatery[i]["Duration"]
-                            checkTime += timedelta(minutes=resultDictEatery[i]["Duration"])
-                            totalEateries += 1
-                            foodCheck -= 1
-                        else:
+                        nextEatTime = eatTimes[totalEateries-1]
+                        # If food has already been added before, recommend other places
+                        otherPeriods = datetime.now().strptime(nextEatTime, "%H %M %S") - checkTime
+                        if not getOtherPlaces(otherPeriods.seconds / (60*60), timeAllowance, checkTime):
                             break
-                    
-                if timeAllowance > 60:
+                        foodCheck -= 1
+                        # elif totalEateries < 3:
+                        #     # Recommend eateries after
+                        #     i = 0
+                        #     pageNum = 1
+                        #     resultDictEatery = recommenderAlgorithm(userId, 140, 5, latitude, longitude, "Eateries", transportMode, [0], pageNum)["list"]
+                        #     while True:
+                        #         try:
+                        #             if resultDictEatery[i]["Name"] not in list(map(lambda x: x["Name"], destinations)):
+                        #                 destinations.append(resultDictEatery[i])
+                        #                 totalEateries += 1
+                        #                 break   
+                        #             else:
+                        #                 i += 1
+                        #         except IndexError:
+                        #             pageNum += 1
+                        #             i = 0
+                        #             resultDictEatery = recommenderAlgorithm(userId, 140, 5, latitude, longitude, "Eateries", transportMode, [0], pageNum)["list"]
+
+                        #     timeAllowance -= resultDictEatery[i]["Duration"]
+                        #     checkTime += timedelta(minutes=resultDictEatery[i]["Duration"])
+                        #     totalEateries += 1
+                        #     foodCheck -= 1
+                        # else:
+                        #     break
+                        
+            
+                if timeAllowance > 140:
                     resultList = {}
                     randomPlaceNum = random.randint(0, len(categoriesIndexMap)-1)
                     if destinations[-1]["Category"] == "Eateries":
-                        activityTime = 45
                         while True:
                             checkScore = 0
-                            resultList = recommenderAlgorithmEndPoint(userId, timeAllowance, 1, latitude, longitude, endLatitude, endLongitude, categoriesIndexMap[randomPlaceNum], transportMode, activityTime, [0], 1)
+                            resultList = recommenderAlgorithmEndPoint(userId, timeAllowance, 1, latitude, longitude, endLatitude, endLongitude, categoriesIndexMap[randomPlaceNum], transportMode, [0], 1)
                             if len(resultList) > 0:
                                 # Check if the location is heading towards the end point
-                                latLng = resultList[0]["Latlng"].split("|")
+                                latLng = list(map(lambda x: float(x), resultList[0]["Latlng"].split(",") ))
                                 if vectorDirection[0] == 1:
 
-                                    if latLng[0] > latitude or geopy.distance.distance((latLng[0] - latitude), (0,0)) < 1:
+                                    if latLng[0] > latitude or geopy.distance.distance((latLng[0] - 0), (latitude,0)) < 1:
                                         checkScore += 1
                                 else:
-                                    if latLng[0] <= latitude or geopy.distance.distance((latLng[0] - latitude), (0,0)) < 1:
+                                    if latLng[0] <= latitude or geopy.distance.distance((latLng[0] - 0), (latitude,0)) < 1:
                                         checkScore += 1
                                 if vectorDirection[1] == 1:
-                                    if latLng[1] > longitude or geopy.distance.distance((latLng[1] - longitude), (0,0)) < 1:
+                                    if latLng[1] > longitude or geopy.distance.distance((0, latLng[1]), (0, longitude)) < 1:
                                         checkScore += 1
                                 else:
-                                    if latLng[1] <= longitude or geopy.distance.distance((latLng[1] - longitude), (0,0)) < 1:
+                                    if latLng[1] <= longitude or geopy.distance.distance((0, latLng[1]), (0, longitude)) < 1:
                                         checkScore += 1
                                 
                                 if checkScore == 2:
                                     destinations.append(resultList[0])
+                                    break
                             else:
                                 break
 
                     else:
-                        activityTime = round(activityTime * 0.75)
-                        resultList = recommenderAlgorithmEndPoint(userId, timeAllowance, 1, latitude, longitude, endLatitude, endLongitude, "Eateries", transportMode, activityTime, [0], 1)
+                        resultList = recommenderAlgorithmEndPoint(userId, timeAllowance, 1, latitude, longitude, endLatitude, endLongitude, "Eateries", transportMode, [0], 1)
+
+            # Determine the direction of endPoint to startPoint
+            vectorDirection = [1, 1]
+            originalTimeAllowance = timeAllowance
+
+            if endLatitude < latitude:
+                vectorDirection[0] = -1
+            if endLongitude < longitude:
+                vectorDirection[1] = -1
 
             # Check if the distance is considered far or short
             dist = geopy.distance.distance((latitude, longitude), (endLatitude, longitude)).km
             if dist <= 25:
                 print("Recommend by short")
-                recommendShortEnd(timeAllowance, checkTime, foodCheck, totalEateries, activityTime)
+                recommendShortEnd(timeAllowance, checkTime, foodCheck, totalEateries)
             else:
                 print("Recommend by long")
-                recommendFarEnd(timeAllowance, checkTime, foodCheck, totalEateries, activityTime)
+                recommendFarEnd(timeAllowance, checkTime, foodCheck, totalEateries)
 
         print("Done")
     return json.dumps(destinations)
@@ -1166,6 +1170,7 @@ def saveTrip():
         addresses = request.form.getlist("addresses[]")
         activitiesDuration = request.form.getlist("activityDuration[]")
         durations = request.form.getlist("duration[]")
+        latlngs = request.form.getlist("latlngs[]")
         timeAllowance = float(request.form.get("timeAllowance"))
         timeLeft = float(request.form.get("timeLeft"))
         transportMode = request.form.get("transportMode")
@@ -1173,19 +1178,30 @@ def saveTrip():
         status = request.form.get("status")
         if not itineraryId:
             itineraryId = None
-
         if date == "Today":
             date = datetime.now()
 
         places = []
         for i in range(len(addresses)):
-            places.append({"Name": names[i], "Address": addresses[i], "ActivityDuration": activitiesDuration[i], 
-                            "TotalDuration": durations[i]})
+            activityDuration = activitiesDuration[i]
+            duration = durations[i]
+            if not activityDuration:
+                activityDuration = None
+            else:
+                activityDuration = int(activityDuration)
+            if not duration:
+                duration = None
+            else:
+                duration = float(duration)
 
+            places.append({"Name": names[i], "Address": addresses[i], "ActivityDuration": activityDuration, 
+                            "TotalDuration": duration, "Latlng": latlngs[i]})
+        
         if len(addresses) > 0:
             itinerary = Itinerary(itineraryId, userId, tripName, date, startTime, endTime, tripType, transportMode, timeAllowance, timeLeft, confirmed, status, places)
             itinerariesCon.SetItinerary(itinerary)
             itineraryId = itinerariesCon.GetUnconfimredItinerary(userId, tripType).getId()
+
     return json.dumps({"id": str(itineraryId)})
 
 def trackPlaces(places, names, storeMean, sessionId):
@@ -1325,7 +1341,6 @@ def scheduledJobs():
     trainGlobalUserPreferenceModel()
     trainFutureTrackedInfoModel()
     webScrap()
-
 
 @app.after_request
 def add_header(r):

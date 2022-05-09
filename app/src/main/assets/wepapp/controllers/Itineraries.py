@@ -10,25 +10,28 @@ class ItinerariesCon:
         self.__connection = MongoDBContext.Connect()["Itineraries"]
 
     def SetItinerary(self, itinerary: Itinerary):
-        recordExists = self.__connection.find_one({"_id": ObjectId(itinerary.getId())})
-        try:
-            if recordExists is None:
+        if itinerary.getId() is None:
+            try:
                 self.__connection.insert_one({"Name": itinerary.getName(), "UserId":itinerary.getUserId(), "Date": itinerary.getDate(), "StartTime": itinerary.getStartTime(), 
                                             "EndTime": itinerary.getEndTime(), "Type": itinerary.getType(), "TransportMode": itinerary.getTransportMode(), 
                                             "TimeAllowance": itinerary.getTimeAllowance(), "TimeLeft": itinerary.getTimeLeft(), "Places": itinerary.getPlaces(), 
                                             "Confirmed": itinerary.getConfirmed(), "Status": itinerary.getStatus()})
 
                 return {"success": True}
-            else:
+            except Exception as e:
+                print(e)
+                return {"success": False, "error": e}
+        else:
+            try:
                 self.__connection.update_one({"_id": ObjectId(itinerary.getId())}, {"$set": {"Name": itinerary.getName(), "UserId":itinerary.getUserId(), "Date": itinerary.getDate(), "StartTime": itinerary.getStartTime(), 
                                             "EndTime": itinerary.getEndTime(), "Type": itinerary.getType(), "TransportMode": itinerary.getTransportMode(), 
                                             "TimeAllowance": itinerary.getTimeAllowance(), "TimeLeft": itinerary.getTimeLeft(), "Places": itinerary.getPlaces(), 
                                             "Confirmed": itinerary.getConfirmed(), "Status": itinerary.getStatus()}})
 
                 return {"success": True}
-        except Exception as e:
-            print(e)
-            return {"success": False, "error": e}
+            except Exception as e:
+                print(e)
+                return {"success": False, "error": e}
 
     def GetUnconfimredItinerary(self, userId, tripType):
         try:

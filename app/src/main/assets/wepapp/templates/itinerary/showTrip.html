@@ -6,7 +6,17 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css" />
 <script src="https://cdn.onemap.sg/leaflet/onemap-leaflet.js"></script>
 <script type="text/javascript" src="https://rawgit.com/jieter/Leaflet.encoded/master/Polyline.encoded.js"></script>
-
+<div style="position:relative;z-index: 5;">
+    {% if itinerary != None %}
+        {% for place in itinerary.getPlaces() %}
+        <div class="card places-card">
+            <h5>{{place["Name"]}}</h5>
+            <p>{{place["TotalDuration"]}}</p>
+            <p hidden>{{place["Latlng"]}}</p>
+        </div>
+        {% endfor %}
+    {% endif %}
+</div>
 <div id='mapdiv' style='height:100vh;'></div>
 {% endblock %}
 
@@ -14,7 +24,7 @@
 {{super()}}
 <script>
     // Map display init
-    var apiToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjg1NDQsInVzZXJfaWQiOjg1NDQsImVtYWlsIjoieWFudGF0dGFuNzIxQGdtYWlsLmNvbSIsImZvcmV2ZXIiOmZhbHNlLCJpc3MiOiJodHRwOlwvXC9vbTIuZGZlLm9uZW1hcC5zZ1wvYXBpXC92MlwvdXNlclwvc2Vzc2lvbiIsImlhdCI6MTY1MTU2ODI5OCwiZXhwIjoxNjUyMDAwMjk4LCJuYmYiOjE2NTE1NjgyOTgsImp0aSI6IjMzYjUwNWNlNmE4OGJhMjIyZmQ0Y2IwNjlmOWViZmU4In0.YwGkAQBmDKtaM-N01zpbJ44U2lJR-W3AjdxXQtfwn3E";
+    var apiToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjg1NDQsInVzZXJfaWQiOjg1NDQsImVtYWlsIjoieWFudGF0dGFuNzIxQGdtYWlsLmNvbSIsImZvcmV2ZXIiOmZhbHNlLCJpc3MiOiJodHRwOlwvXC9vbTIuZGZlLm9uZW1hcC5zZ1wvYXBpXC92MlwvdXNlclwvc2Vzc2lvbiIsImlhdCI6MTY1MjAwNzczNSwiZXhwIjoxNjUyNDM5NzM1LCJuYmYiOjE2NTIwMDc3MzUsImp0aSI6ImFlNDYzMWEyNzUyNDhiMDVkNGE5NjU0ZWM3YTIyYzdlIn0.DzuObpzVc9M4ZtGolRXAaXQ1lisWIjLcKlf5H0RmjWE";
     L.Icon.Default.imagePath = "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.4.0/images";
     var center = L.bounds([1.56073, 104.11475], [1.16, 103.502]).getCenter();
     var map = L.map('mapdiv').setView([center.x, center.y], 12);
@@ -82,18 +92,18 @@
     function showRoute(position) {
         // Routing display
         var today = new Date();
-        const routeTypes = ["drive", "pt", "walk"]
+        const routeTypes = ["drive", "pt", "walk"];
         var routeType = "pt";
-        var endCoords = ["1.2834542", "103.8608090"];
+        var endCoords = $(".places-card").text().split(",");
 
         function decodeGeo(encodedRoute) {
             if (encodedRoute !== undefined || encodedRoute !== '' || encodedRoute != null ) {
-                    var routeGeo = L.Polyline.fromEncoded(encodedRoute, {
-                        precision: 6
-                    });
+                var routeGeo = L.Polyline.fromEncoded(encodedRoute, {
+                    precision: 6
+                });
 
-                    return routeGeo;
-                }
+                return routeGeo;
+            }
         }
 
         console.log(`https://developers.onemap.sg/privateapi/routingsvc/route?start=${position.coords.latitude},${position.coords.longitude}&end=${endCoords[0]},${endCoords[1]}&routeType=${routeType}&token=${apiToken}&date=${String(today.getFullYear())}-${String(today.getMonth()+1)}-${String(today.getDate())}&time=${String(today.getHours())}:${String(today.getMinutes())}:${String(today.getSeconds())}&mode=TRANSIT`)

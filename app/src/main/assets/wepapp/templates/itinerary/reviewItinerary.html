@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Redpins Buffer - Review Details{% endblock %}
+<div class="main-div">
+    {% if itinerary != None %}
+    <div class="device" id="planPage">
+    {% else %}
+    <div class="device" id="planPage" style="display: none;">
+    {% endif %}
+        <div class="float-right">
+            <a href="/itinerary/showTrip">Map</a>
+        </div>
+    
+        {% if itinerary != None %}
+        <div id="startTime-text">Start time: {{itinerary.getStartTime()}}</div>
+        <div id="endTime-text">End time: {{itinerary.getEndTime()}}</div>
+        <div id="time-left">Duration left: <span>{{itinerary.getTimeLeft()}}</span></div>
+    
+        <div id="transport-text">Transport mode: {{itinerary.getTransportMode()}}</div>
+        <div>Category: Eateries</div>
+        {% else %}
+        <div id="startTime-text">Start time: </div>
+        <div id="endTime-text">End time: </div>
+        <div id="time-left">Duration left: <span></span></div>
+    
+        <div id="transport-text">Transport mode: </div>
+        <div>Category: Eateries</div>
+        {% endif %}
+
+        <div id="start">Start location: </div>
+    
+        <div id="recommendation-listings">
+            {% if itinerary != None %}
+            <button class="btn-addColor" onclick="recommend(1, 1);">  +  </button>
+                {% for i in range(itinerary.getPlaces()| length) %}
+                <div class="card plan-selection">
+                    <h5 class="plan-name">{{itinerary.getPlaces()[i]["Name"]}}</h5>
+                    <p class="plan-address" style="font-size:12px">{{itinerary.getPlaces()[i]["Address"]}}</p>
+                    <br />
+                    <p class="plan-activity-duration"><span>{{itinerary.getPlaces()[i].ActivityDuration}}</span> min</p>
+                    <p class="plan-total-duration"><span>{{itinerary.getPlaces()[i]["TotalDuration"]|int}}</span> min</p>
+                </div>
+                <button class="btn-addColor" onclick="recommend(1, parseInt('{{i+2}}'));">  +  </button>
+                {% endfor %}
+            {% else %}
+            <button style="background: linear-gradient(193.74deg, #E4002B 3.02%, #E82038 31.9%, #F8A36F 95.45%); color: white;" onclick="removeFirstBtn(this);recommend(1, 1);">+ Add place</button>
+            {% endif %}
+        </div>
+        <button class="btn btn-primary" id="next-recommend-btn" onclick="nextRecommend();">Next</button>
+        <br>
+        <label>End destination</label>
+    
+        <form method="POST">
+            <input type="submit" value="Start Trip" class="btn btn-primary">
+        </form>
+    </div>
+    
+</div>
+{% block content %}

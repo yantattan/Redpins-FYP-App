@@ -23,6 +23,24 @@
             <label>End Time</label>
             <input id="end-time" type="time" class="form-control" value="{{itinerary.getEndTime()}}" onkeyup="checkFirstPage();" required>
         </div>
+        <div>
+            <label>Start Location</label>
+            <input id="start-location" type="text" class="form-control" value="{{itinerary.getPlaces()[0]['Name']}}" onkeyup="pauseSearch(this, 'Start');checkFirstPage();" required>
+            <div class="dropdown-menu-search" style="display: none;">
+            </div>
+            {% for attr in itinerary.getPlaces()[0] %}
+                {% if itinerary.getPlaces()[-1][attr] != None %}<span id="start-location-{{attr | lower}}" hidden>{{itinerary.getPlaces()[0][attr]}}</span>{% endif %}
+            {% endfor %}
+        </div>
+        <div>
+            <label>End Location</label>
+            <input id="end-location" type="text" class="form-control" value="{{itinerary.getPlaces()[-1]['Name']}}" onkeyup="pauseSearch(this, 'End');checkFirstPage();" required>
+            <div class="dropdown-menu-search" style="display: none;">
+            </div>
+            {% for attr in itinerary.getPlaces()[-1] %}
+                {% if itinerary.getPlaces()[-1][attr] != None %}<span id="end-location-{{attr | lower}}" hidden>{{itinerary.getPlaces()[-1][attr]}}</span>{% endif %}
+            {% endfor %}
+        </div>
         {% else %}
             <div id="itinerary-id" hidden></div>
             <div>
@@ -32,6 +50,25 @@
             <div>
                 <label>End Time</label>
                 <input id="end-time" type="time" class="form-control" onkeyup="checkFirstPage();" required>
+            </div>
+            {% set attributes = ["name", "address", "latlng"] %}
+            <div style="position: relative;">
+                <label>Start Location</label>
+                <input id="start-location" type="text" class="form-control" value="Your Location" onkeyup="pauseSearch(this, 'Start');checkFirstPage();" required>
+                <div class="dropdown-menu-search" style="display: none;">
+                </div>
+                <span id="start-location-name" hidden>Current Location</span>
+                <span id="start-location-address" hidden></span>
+                <span id="start-location-latlng" hidden></span>
+            </div>
+            <div style="position: relative;">
+                <label>End Location</label>
+                <input id="end-location" type="text" class="form-control" onkeyup="pauseSearch(this, 'End');checkFirstPage();" required>
+                <div class="dropdown-menu-search" style="display: none;">
+                </div>
+                {% for attr in attributes %}
+                <span id="end-location-{{attr}}" hidden></span>
+                {% endfor %}
             </div>
         {% endif %}
         <div>
@@ -77,9 +114,9 @@
         {% if itinerary != None %}
         <div id="startTime-text">Start time: {{itinerary.getStartTime()}}</div>
         <div id="endTime-text">End time: {{itinerary.getEndTime()}}</div>
-        <div id="time-left">Duration left: <span>{{itinerary.getTimeLeft()}}</span></div>
+        <div id="time-left">Duration left: <span>{{itinerary.getTimeLeft()| int}}</span></div>
     
-        <div id="transport-text">Transport mode: {{itinerary.getTransportMode()}}</div>
+        <div id="transport-text">Transport mode: {% if itinerary.getTransportMode() == "pt" %}Public Transport{% else %}{{itinerary.getTransportMode()}}{% endif %}</div>
         <div>Category: Eateries</div>
         {% else %}
         <div id="startTime-text">Start time: </div>
@@ -94,33 +131,32 @@
     
         <div id="recommendation-listings">
             {% if itinerary != None %}
-            <button class="btn-addColor" onclick="recommend(1, 1);">  +  </button>
                 {% for i in range(itinerary.getPlaces()| length) %}
                 <div class="card plan-selection">
-                    <h5 class="plan-name">{{itinerary.getPlaces()[i]["Name"]}}</h5>
-                    <p class="plan-address" style="font-size:12px">{{itinerary.getPlaces()[i]["Address"]}}</p>
+                    <h5 class="plan-name">{{itinerary.getPlaces()[i].Name}}</h5>
+                    <p class="plan-address" style="font-size:12px">{{itinerary.getPlaces()[i].Address}}</p>
                     <br />
-                    <p class="plan-activity-duration"><span>{{itinerary.getPlaces()[i].ActivityDuration}}</span> min</p>
-                    <p class="plan-total-duration"><span>{{itinerary.getPlaces()[i]["TotalDuration"]|int}}</span> min</p>
+                    <p class="plan-activity-duration">{% if itinerary.getPlaces()[i].ActivityDuration %}<span>{{itinerary.getPlaces()[i].ActivityDuration}}</span> min{% else %}<span></span>{% endif %}</p>
+                    <p class="plan-total-duration">{% if itinerary.getPlaces()[i].TotalDuration %}<span>{{itinerary.getPlaces()[i].TotalDuration|int}}</span> min{% else %}<span></span>{% endif %}</p>
+                    <p class="plan-latlng" hidden>{{itinerary.getPlaces()[i].Latlng}}</p>
                 </div>
-                <button class="btn-addColor" onclick="recommend(1, parseInt('{{i+2}}'));">  +  </button>
+                {% if i != itinerary.getPlaces()| length - 1 %}<button class="btn-addPlan btn-addColor" onclick="recommend(1, parseInt('{{i+1}}'));">  +  </button>{% endif %}
                 {% endfor %}
             {% else %}
-            <button style="background: linear-gradient(193.74deg, #E4002B 3.02%, #E82038 31.9%, #F8A36F 95.45%); color: white;" onclick="removeFirstBtn(this);recommend(1, 1);">+ Add place</button>
+            <button class="btn-addColor" onclick="removeFirstBtn(this); recommend(1, 1);">+ Add place</button>
             {% endif %}
         </div>
         <button class="btn btn-primary" id="next-recommend-btn" onclick="nextRecommend();">Next</button>
         <br>
-        <label>End destination</label>
-        <input type="text" id="endDestination" class="form-control" onkeyup="pauseSearch();"></input>
-        <div id="show-destinations">   
-        </div>
     
         <form method="POST">
-            <input type="submit" value="Create Trip" class="btn btn-primary">
+            <input type="submit" value="Done" class="btn btn-primary">
         </form>
     </div>
     
+    <div id="listingPage" style="display: none;">
+
+    </div>
 </div>
 {% endblock %}
 
@@ -129,6 +165,7 @@
 <script>
     var post;
     var skipped = [0];
+    var originalDuration = parseInt(document.getElementById("time-left").querySelector("span").innerText) || 0;
     var allowanceLeft = parseInt(document.getElementById("time-left").querySelector("span").innerText) || 0;
     var pendingChooseList = {};
 
@@ -148,7 +185,14 @@
         var radioChecked = firstSelection.querySelector('input[type="radio"]:checked');
 
         var nextBtn = document.getElementById("firstPageNext");
-        if (allInps[0].value != "" && allInps[1].value != "" && radioChecked) {
+        var valid = true;
+        for (var i=0; i<allInps.length; i++) {
+            if (allInps[i].value.trim() == "") {
+                valid = false;
+                break;
+            }
+        }
+        if (valid && radioChecked) {
             nextBtn.style.background = "linear-gradient(193.74deg, #E4002B 3.02%, #E82038 31.9%, #F8A36F 95.45%)";
             nextBtn.style.color = "white";
             nextBtn.disabled = false;
@@ -173,6 +217,7 @@
             console.log("Check checkboxes");
         }
         else {
+            // Displays
             document.getElementById("startTime-text").innerText += startTme;
             document.getElementById("endTime-text").innerText += endTme;
             document.getElementById("transport-text").innerText += document.querySelector(`label[for="${document.querySelector('input[name="transportMode"]:checked').id}"]`).innerText;
@@ -182,19 +227,41 @@
             var endDate = new Date(0, 0, 0, endTmeArr[0], endTmeArr[1], 0);
             var diff = endDate.getTime() - startDate.getTime();
             allowanceLeft = Math.floor(diff / 1000 / 60);
+            originalDuration = Math.floor(diff / 1000 / 60);
             document.getElementById("time-left").querySelector("span").innerText = allowanceLeft;
 
+            div = document.getElementById("recommendation-listings");
+            var startPlace = new DOMParser().parseFromString(`
+                <div class="card plan-selection">
+                    <h5 class="plan-name">${$("#start-location").val()}</h5>
+                    <p class="plan-address" style="font-size:12px">${$("#start-location-address").text()}</p>
+                    <br />
+                    <p class="plan-latlng" hidden>${$("#start-location-latlng").text()}</p>
+                </div>`, "text/html").body.firstElementChild;
+            var endPlace = new DOMParser().parseFromString(`
+                <div class="card plan-selection">
+                    <h5 class="plan-name">${$("#end-location").val()}</h5>
+                    <p class="plan-address" style="font-size:12px">${$("#end-location-address").text()}</p>
+                    <br />
+                    <p class="plan-latlng" hidden>${$("#end-location-latlng").text()}</p>
+                </div>`, "text/html").body.firstElementChild;
+
+            div.insertBefore(startPlace, div.firstChild);
+            div.appendChild(endPlace);
+
+            // Pull screen down
             $("#firstSelection").animate({
                 bottom: "-200vh"
             }, 350, function() {
                 $("#firstSelection").hide();
             })
             $("#planPage").show();
+
         }
     }
 
     function removeFirstBtn(btn) {
-        btn.classList.add("btn-add-place")
+        btn.classList.add("btn-addPlan")
         btn.innerText = " +  ";
     }
 
@@ -210,7 +277,12 @@
     }
 
     function showRoute(position) {
-        document.getElementById("start").innerText += position.coords.latitude + "," + position.coords.longitude
+        latLngStr = position.coords.latitude + "," + position.coords.longitude
+        document.getElementById("start").innerText += latLngStr
+        if (document.getElementById("start-location-name").innerText == "Current Location") {
+            document.getElementById("start-location-latlng").innerText = latLngStr
+        }
+
         post = position
     }
 
@@ -245,41 +317,50 @@
 
                 var listing = new DOMParser().parseFromString(
                     `<div class="plan-choices-list">
-                    </div>`, "text/xml").documentElement;
-                var beforeDiv = div.getElementsByClassName("plan-selection")[order-2];
-                console.log(order);
-                if (order-2 == -1) {
-                    div.insertBefore(listing, div.children[1]);
-                }
-                else if (beforeDiv && beforeDiv.nextSibling) {
-                    div.insertBefore(listing, beforeDiv.nextSibling);
+                    </div>`, "text/html").body.firstElementChild;
+
+                var allAddBtns = div.getElementsByClassName("btn-addPlan");
+                console.log(order+", "+allAddBtns.length)
+                
+                div.insertBefore(listing, allAddBtns[order-1].nextSibling);
+
+                if (result.list.length > 0) {
+                    for (var i in result.list) {
+                        listing.innerHTML += 
+                        `<div class="card plan-selection" style="width:150px; height:175px; margin-right: 1em; max-width:
+                            flex-basis: 33.333%;
+                            flex-grow: 0;
+                            flex-shrink: 0;" onclick="choosePlace(this, ${order}, ${i});">
+                            <h5>${result.list[i].Name}</h5>
+                            <p style="font-size:12px">${result.list[i].Address}</p>
+                            <br />
+                            <p>Matching ${result.list[i].RecommendationScore.toFixed(2)}</p>
+                        </div>`;
+
+                    }
                 }
                 else {
-                    div.appendChild(listing);
-                }
-
-                for (var i in result.list) {
-                    listing.innerHTML += 
-                    `<div class="card plan-selection" style="width:150px; height:175px; margin-right: 1em; max-width:
-                        flex-basis: 33.333%;
-                        flex-grow: 0;
-                        flex-shrink: 0;" onclick="choosePlace(this, ${order}, ${i});">
-                        <h5>${result.list[i].Name}</h5>
-                        <p style="font-size:12px">${result.list[i].Address}</p>
-                        <br />
-                        <p>Matching ${result.list[i].RecommendationScore.toFixed(2)}</p>
-                    </div>`;
-
+                    listing.innerHTML += `<div class="card">There isn't any available places to be added</div>`;
+                    var allBtns = div.getElementsByClassName("btn-addPlan");
+                    for (var i=0; i<allBtns.length; i++) {
+                        allBtns[i].disabled = true;
+                        allBtns[i].classList.remove("btn-addColor");
+                    }
                 }
 
                 listing.innerHTML += `<p onclick="nextRecommend()" class="list-load-more">Load more</p>`;
                 reAssignValues();
             },
+            error: function(jq, status, errorMsg) {
+                div.innerText = 
+                `<div class="plan-choices-list">
+                    Something went wrong. Try again
+                </div>`;
+            },
             complete: function(result) {
                 $("#reloadingbg").hide();
             }
-        })
-       
+        });
     }
 
     function choosePlace(btn, order, itemNo) {
@@ -294,27 +375,25 @@
                 <br />
                 <p class="plan-activity-duration"><span>${Math.round(info.ActivityDuration)}</span> min</p>
                 <p class="plan-total-duration"><span>${Math.round(info.Duration)}</span> min</p>
-            </div>
-            <button class="btn-addColor" onclick="recommend(1, ${order+1});">  +  </button>`).documentElement;
+                <p class="plan-latlng" hidden>${info.Latlng}</p>
+            </div>`, "text/html").body.firstElementChild;
+        var newBtn = new DOMParser().parseFromString(`   
+            <button class="btn-addPlan btn-addColor" onclick="recommend(1, ${order+1});">  +  </button>`, "text/html").body.firstElementChild;
 
-        var beforeDiv = div.getElementsByClassName("plan-selection")[order-2];
+        var allAddBtns = div.getElementsByClassName("btn-addPlan");
+        console.log(order, allAddBtns.length)
         
-        if (order-2 == -1) {
-            div.insertBefore(listing, div.children[1]);
-        }
-        else if (beforeDiv && beforeDiv.nextSibling) {
-            div.insertBefore(newPlace, beforeDiv.nextSibling);
-        }
-        else {
-            div.appendChild(newPlace);
-        }
+        div.insertBefore(newBtn, allAddBtns[order-1].nextSibling);
+        div.insertBefore(newPlace, allAddBtns[order-1].nextSibling);
         
         allowanceLeft -= info.Duration;
+        console.log(allowanceLeft);
         document.getElementById("time-left").querySelector("span").innerText = parseInt(allowanceLeft);
         
         // Fill up info for autosaving data
 
         saveTrips();
+        reAssignValues();
     }
 
     function reAssignValues() {
@@ -335,12 +414,20 @@
         var placesAddress = [];
         var placesActivityDuration = [];
         var placesDuration = [];
+        var placesLatlng = [];
 
         for (var i=0; i<allPlacesDiv.length; i++) {
             placesName.push(allPlacesDiv[i].querySelector(".plan-name").innerText);
             placesAddress.push(allPlacesDiv[i].querySelector(".plan-address").innerText);
-            parseInt(placesActivityDuration.push(allPlacesDiv[i].querySelector(".plan-activity-duration").querySelector("span").innerText));
-            parseInt(placesDuration.push(allPlacesDiv[i].querySelector(".plan-total-duration").querySelector("span").innerText));
+            if (i == 0 || i == allPlacesDiv.length-1) {
+                placesActivityDuration.push(null);
+                placesDuration.push(null);
+            }
+            else {
+                placesActivityDuration.push(parseInt(allPlacesDiv[i].querySelector(".plan-activity-duration").querySelector("span").innerText));
+                placesDuration.push(parseInt(allPlacesDiv[i].querySelector(".plan-total-duration").querySelector("span").innerText));
+            }
+            placesLatlng.push(allPlacesDiv[i].querySelector(".plan-latlng").innerText);
         }
 
         $.ajax({
@@ -357,37 +444,38 @@
                 addresses: placesAddress,
                 activityDuration: placesActivityDuration,
                 duration: placesDuration,
-                timeAllowance: 360,
-                timeLeft: 360,
+                latlngs: placesLatlng,
+                timeAllowance: originalDuration,
+                timeLeft: allowanceLeft,
                 transportMode: "pt",
                 confirmed: false,
                 status: "Planned"
             },
             success: function(result) {
+                document.getElementById("itinerary-id").innerText = JSON.parse(result).id;
                 console.log("System: Trip has been autosaved");
-                document.getElementById("itinerary-id").innerText = result.id;
             }
         })
     }
 
     var canSearch = true;
+    var dropdownCooldown = false;
 
-    function pauseSearch() {
+    function pauseSearch(inp, type) {
         canSearch = false;
-        console.log("Here");
         setTimeout(function() {
             canSearch = true;
-            search()
+            search(inp, type)
         }, 1000)
     }
 
-    function search() {
+    function search(inp, type) {
         if (canSearch) {
-            var dropdownMenu = document.getElementById("show-destinations");
-            const search = $("#endDestination").val()
+            var dropdownMenu = inp.parentElement.querySelector(".dropdown-menu-search");
+            const search = inp.value;
             const pageNum = $("#searchPage").val()
             if (!search) {
-                dropdownMenu.innerHTML = ""; 
+                dropdownMenu.style.display = "none"; 
             }
             else {
                 $.ajax({
@@ -396,17 +484,22 @@
                         dropdownMenu.innerHTML = "";
                         showLength = 6;
                         if (result.results.length > 0) {
+                            dropdownMenu.style.display = "block";
                             if (result.results.length < 6) {
                                 showLength = result.results.length;
                             }
 
                             for (var i=0; i<showLength; i++) {
+                                dropdownCooldown = true;
                                 record = result.results[i]
                                 dropdownMenu.innerHTML += `
-                                <div class="dropdown-item" onclick="">
-                                    <p style="font-size: 14px;"><b>${record.SEARCHVAL}</b></p>
-                                    <p style="font-size: 11px; max-width: 100%; overflow: auto;">${record.ADDRESS}</p>
+                                <div class="dropdown-item" onclick="add${type}(this);">
+                                    <p style="font-size: 14px; margin-bottom: 3px; font-weight: bold;">${capitalize(record.SEARCHVAL)}</p>
+                                    <p style="font-size: 11px; max-width: 100%; overflow: auto; margin-bottom: 3px;">${capitalize(record.ADDRESS)}</p>
+                                    <p hidden>${record.LATITUDE},${record.LONGITUDE}</p>
                                 </div>`;
+
+                                setTimeout(function () { dropdownCooldown = false; }, 126)
                             }
                         }
                         else {
@@ -422,8 +515,40 @@
         $("#searchPage").text(parseInt($("#searchPage").text()) + 1)
     }
 
+    startEndAttr = ["name", "address", "latlng"];
+
+    function addStart(div) {
+        $("#start-location").val(div.children[0].innerText);
+        for (var i=0; i<startEndAttr.length; i++) {
+            document.querySelector(`#start-location-${startEndAttr[i]}`).innerText = div.children[i].innerText;
+        }
+    }
+
+    function addEnd(div) {
+        $("#end-location").val(div.children[0].innerText);
+        for (var i=0; i<startEndAttr.length; i++) {
+            document.querySelector(`#end-location-${startEndAttr[i]}`).innerText = div.children[i].innerText;
+        }
+    }
+
     // initFunctions();
     getLocation();
+
+    window.addEventListener('load', function () {
+        document.addEventListener('click', function (event) {
+            const allTabs = document.getElementsByClassName("dropdown-menu-search");
+            const endInp = document.getElementById("end-location");
+            const startInp = document.getElementById("start-location");
+
+            if (![].slice.call(allTabs).find(x => x === event.target) && event.target != endInp && event.target != startInp) {
+                if (!dropdownCooldown) {
+                    for (var i in allTabs) {
+                        allTabs.item(i).style.display = "none";
+                    }
+                }
+            }
+        });
+    });
 
 </script>
 {% endblock %}

@@ -61,6 +61,44 @@
           }, 350)
         })
       </script>
+      <script>
+        const isDescendant = (el, parent) => {
+          let isChild = false;
+
+          if (el === parent) {
+            isChild = true;
+          }
+
+          while (el = el.parentNode) {
+            if (el == parent) {
+              isChild = true;
+            }
+          }
+
+          return isChild;
+        }
+
+        function capitalize(str) {
+          var result = "";
+
+          for (var i=0; i<str.length; i++) {
+            try {
+              if (str[i-1] == " " || i == 0) {
+                result += str[i];
+              }
+              else {
+                result += str[i].toLowerCase();
+              }
+            }
+            catch(error) {
+              result += str[i];
+              continue;
+            }
+          }
+
+          return result.trim();
+        }
+      </script>
     {% endblock %}
 </body>
 </html>
