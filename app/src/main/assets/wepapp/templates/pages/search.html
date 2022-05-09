@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Home</title>
+  <link rel="stylesheet" href="../../static/css/style.css">
+</head>
+
+<body>
+  <div class="device" id="search">
+    <div class="searchheader">
+      <svg onclick="window.open('home.html','_self')" width="12" height="20" viewBox="0 0 12 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M10.2642 0C10.8582 0.203504 11.2215 0.68581 11.6052 1.12894C11.9081 1.47897 11.8687 2.05183 11.5761 2.4156C11.5052 2.50072 11.4295 2.58174 11.3494 2.65828C8.94914 5.0464 6.54751 7.43334 4.14452 9.81909C4.0819 9.87251 4.01519 9.92099 3.94498 9.96409C4.03554 10.0582 4.08722 10.1167 4.14145 10.1676C6.56048 12.5737 8.9795 14.9796 11.3985 17.3854C11.8298 17.8148 11.9613 18.3439 11.6385 18.7738C11.3346 19.1709 10.9778 19.5251 10.5779 19.8264C10.2074 20.1093 9.70807 20.0259 9.34174 19.7247C9.28648 19.6794 9.23276 19.6311 9.18211 19.5807L0.412125 10.8636C-0.0248138 10.4296 -0.119978 9.92084 0.153748 9.45024C0.222198 9.33957 0.304744 9.23817 0.399334 9.14854C3.33272 6.23165 6.26697 3.31661 9.20206 0.403448C9.37602 0.231995 9.61905 0.132787 9.8324 0H10.2642Z"
+          fill="#2B2B2B" />
+      </svg>
+
+      <h1>Search</h1>
+
+
+      <svg onclick="window.open('saved.html','_self')" width="15" height="20" viewBox="0 0 15 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M12.8569 0H2.14312C1.57629 0.00205569 1.03339 0.237205 0.633538 0.653854C0.233688 1.0705 0.00954761 1.63462 0.0102946 2.22244L0 20L7.5 16.6663L15 20V2.22244C14.9975 1.6338 14.771 1.06999 14.3696 0.653759C13.9682 0.237523 13.4245 0.00255379 12.8569 0V0Z"
+          fill="#2B2B2B" />
+      </svg>
+    </div>
+
+    <input type="text" class="Username" name="search" value="" placeholder="Search Activities, Restaurants, Cafes">
+
+    <div class="sectionheader">
+      <h1>Popular Tags</h1>
+    </div>
+
+    <div class="activities">
+      <ul>
+        <li>Heritage Sites</li>
+        <li>Foodie</li>
+        <li>Hiking</li>
+        <li>Cafes</li>
+        <li>Photography</li>
+      </ul>
+    </div>
+
+
+    <div class="sectionheader recentheader">
+      <h1>Recent Searches</h1>
+      <h3>Clear</h3>
+    </div>
+
+    <div class="searchcardscon">
+
+      <div class="recentcards searchcard">
+        <div class="cardimg">
+          <div class="save">
+            <svg>
+              <path
+                d="M10.2855 0H1.7145C1.26103 0.00164455 0.82671 0.189764 0.50683 0.523083C0.18695 0.856402 0.00763808 1.3077 0.0082357 1.77795L0 16L6 13.3331L12 16V1.77795C11.998 1.30704 11.8168 0.855995 11.4957 0.523007C11.1746 0.190018 10.7396 0.00204303 10.2855 0V0Z"
+                fill="#BBBBBB" />
+            </svg>
+          </div>
+        </div>
+
+        <div class="cardinfo">
+          <h1 class="recentname">Lorem</h1>
+          <div class="recenttype">
+            <h3 class="recentcat">Lorem</h3>
+            <div class="rating">
+              <svg width="12" height="12" fill="none">
+                <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+              </svg>
+              <svg width="12" height="12" fill="none">
+                <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+              </svg>
+              <svg width="12" height="12" fill="none">
+                <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+              </svg>
+              <svg width="12" height="12" fill="none">
+                <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+              </svg>
+              <svg width="12" height="12" fill="none">
+                <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+              </svg>
+
+              <p class="ratingvalue">234</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- duplicated -->
+
+      <div class="recentcards searchcard">
+        <div class="cardimg">
+          <div class="save">
+            <svg width="12" height="16" viewBox="0 0 12 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M10.2855 0H1.7145C1.26103 0.00164455 0.82671 0.189764 0.50683 0.523083C0.18695 0.856402 0.00763808 1.3077 0.0082357 1.77795L0 16L6 13.3331L12 16V1.77795C11.998 1.30704 11.8168 0.855995 11.4957 0.523007C11.1746 0.190018 10.7396 0.00204303 10.2855 0V0Z"
+                fill="#BBBBBB" />
+              <path
+                d="M10.2855 0H1.7145C1.26103 0.00164455 0.82671 0.189764 0.50683 0.523083C0.18695 0.856402 0.00763808 1.3077 0.0082357 1.77795L0 16L6 13.3331L12 16V1.77795C11.998 1.30704 11.8168 0.855995 11.4957 0.523007C11.1746 0.190018 10.7396 0.00204303 10.2855 0V0Z"
+                fill="#E4002B" />
+            </svg>
+          </div>
+        </div>
+
+        <div class="cardinfo">
+          <h1 class="recentname">Lorem</h1>
+          <div class="recenttype">
+            <h3 class="recentcat">Lorem</h3>
+            <div class="rating">
+              <svg width="12" height="12" fill="none">
+                <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+              </svg>
+              <svg width="12" height="12" fill="none">
+                <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+              </svg>
+              <svg width="12" height="12" fill="none">
+                <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+              </svg>
+              <svg width="12" height="12" fill="none">
+                <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+              </svg>
+              <svg width="12" height="12" fill="none">
+                <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+              </svg>
+
+              <p class="ratingvalue">234</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="recentcards searchcard">
+        <div class="cardimg">
+          <div class="save">
+            <svg width="12" height="16" viewBox="0 0 12 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M10.2855 0H1.7145C1.26103 0.00164455 0.82671 0.189764 0.50683 0.523083C0.18695 0.856402 0.00763808 1.3077 0.0082357 1.77795L0 16L6 13.3331L12 16V1.77795C11.998 1.30704 11.8168 0.855995 11.4957 0.523007C11.1746 0.190018 10.7396 0.00204303 10.2855 0V0Z"
+                fill="#BBBBBB" />
+              <path
+                d="M10.2855 0H1.7145C1.26103 0.00164455 0.82671 0.189764 0.50683 0.523083C0.18695 0.856402 0.00763808 1.3077 0.0082357 1.77795L0 16L6 13.3331L12 16V1.77795C11.998 1.30704 11.8168 0.855995 11.4957 0.523007C11.1746 0.190018 10.7396 0.00204303 10.2855 0V0Z"
+                fill="#E4002B" />
+            </svg>
+          </div>
+        </div>
+
+        <div class="cardinfo">
+          <h1 class="recentname">Lorem</h1>
+          <div class="recenttype">
+            <h3 class="recentcat">Lorem</h3>
+            <div class="rating">
+              <svg width="12" height="12" fill="none">
+                <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+              </svg>
+              <svg width="12" height="12" fill="none">
+                <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+              </svg>
+              <svg width="12" height="12" fill="none">
+                <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+              </svg>
+              <svg width="12" height="12" fill="none">
+                <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+              </svg>
+              <svg width="12" height="12" fill="none">
+                <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+              </svg>
+
+              <p class="ratingvalue">234</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="recentcards searchcard">
+        <div class="cardimg">
+          <div class="save">
+            <svg width="12" height="16" viewBox="0 0 12 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M10.2855 0H1.7145C1.26103 0.00164455 0.82671 0.189764 0.50683 0.523083C0.18695 0.856402 0.00763808 1.3077 0.0082357 1.77795L0 16L6 13.3331L12 16V1.77795C11.998 1.30704 11.8168 0.855995 11.4957 0.523007C11.1746 0.190018 10.7396 0.00204303 10.2855 0V0Z"
+                fill="#BBBBBB" />
+              <path
+                d="M10.2855 0H1.7145C1.26103 0.00164455 0.82671 0.189764 0.50683 0.523083C0.18695 0.856402 0.00763808 1.3077 0.0082357 1.77795L0 16L6 13.3331L12 16V1.77795C11.998 1.30704 11.8168 0.855995 11.4957 0.523007C11.1746 0.190018 10.7396 0.00204303 10.2855 0V0Z"
+                fill="#E4002B" />
+            </svg>
+          </div>
+        </div>
+
+        <div class="cardinfo">
+          <h1 class="recentname">Lorem</h1>
+          <div class="recenttype">
+            <h3 class="recentcat">Lorem</h3>
+            <div class="rating">
+              <svg width="12" height="12" fill="none">
+                <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+              </svg>
+              <svg width="12" height="12" fill="none">
+                <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+              </svg>
+              <svg width="12" height="12" fill="none">
+                <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+              </svg>
+              <svg width="12" height="12" fill="none">
+                <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+              </svg>
+              <svg width="12" height="12" fill="none">
+                <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+              </svg>
+
+              <p class="ratingvalue">234</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="recentcards searchcard">
+        <div class="cardimg">
+          <div class="save">
+            <svg width="12" height="16" viewBox="0 0 12 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M10.2855 0H1.7145C1.26103 0.00164455 0.82671 0.189764 0.50683 0.523083C0.18695 0.856402 0.00763808 1.3077 0.0082357 1.77795L0 16L6 13.3331L12 16V1.77795C11.998 1.30704 11.8168 0.855995 11.4957 0.523007C11.1746 0.190018 10.7396 0.00204303 10.2855 0V0Z"
+                fill="#BBBBBB" />
+              <path
+                d="M10.2855 0H1.7145C1.26103 0.00164455 0.82671 0.189764 0.50683 0.523083C0.18695 0.856402 0.00763808 1.3077 0.0082357 1.77795L0 16L6 13.3331L12 16V1.77795C11.998 1.30704 11.8168 0.855995 11.4957 0.523007C11.1746 0.190018 10.7396 0.00204303 10.2855 0V0Z"
+                fill="#E4002B" />
+            </svg>
+          </div>
+        </div>
+
+        <div class="cardinfo">
+          <h1 class="recentname">Lorem</h1>
+          <div class="recenttype">
+            <h3 class="recentcat">Lorem</h3>
+            <div class="rating">
+              <svg width="12" height="12" fill="none">
+                <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+              </svg>
+              <svg width="12" height="12" fill="none">
+                <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+              </svg>
+              <svg width="12" height="12" fill="none">
+                <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+              </svg>
+              <svg width="12" height="12" fill="none">
+                <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+              </svg>
+              <svg width="12" height="12" fill="none">
+                <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+              </svg>
+
+              <p class="ratingvalue">234</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="recentcards searchcard">
+        <div class="cardimg">
+          <div class="save">
+            <svg width="12" height="16" viewBox="0 0 12 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M10.2855 0H1.7145C1.26103 0.00164455 0.82671 0.189764 0.50683 0.523083C0.18695 0.856402 0.00763808 1.3077 0.0082357 1.77795L0 16L6 13.3331L12 16V1.77795C11.998 1.30704 11.8168 0.855995 11.4957 0.523007C11.1746 0.190018 10.7396 0.00204303 10.2855 0V0Z"
+                fill="#BBBBBB" />
+              <path
+                d="M10.2855 0H1.7145C1.26103 0.00164455 0.82671 0.189764 0.50683 0.523083C0.18695 0.856402 0.00763808 1.3077 0.0082357 1.77795L0 16L6 13.3331L12 16V1.77795C11.998 1.30704 11.8168 0.855995 11.4957 0.523007C11.1746 0.190018 10.7396 0.00204303 10.2855 0V0Z"
+                fill="#E4002B" />
+            </svg>
+          </div>
+        </div>
+
+        <div class="cardinfo">
+          <h1 class="recentname">Lorem</h1>
+          <div class="recenttype">
+            <h3 class="recentcat">Lorem</h3>
+            <div class="rating">
+              <svg width="12" height="12" fill="none">
+                <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+              </svg>
+              <svg width="12" height="12" fill="none">
+                <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+              </svg>
+              <svg width="12" height="12" fill="none">
+                <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+              </svg>
+              <svg width="12" height="12" fill="none">
+                <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+              </svg>
+              <svg width="12" height="12" fill="none">
+                <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+              </svg>
+
+              <p class="ratingvalue">234</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="recentcards searchcard">
+        <div class="cardimg">
+          <div class="save">
+            <svg width="12" height="16" viewBox="0 0 12 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M10.2855 0H1.7145C1.26103 0.00164455 0.82671 0.189764 0.50683 0.523083C0.18695 0.856402 0.00763808 1.3077 0.0082357 1.77795L0 16L6 13.3331L12 16V1.77795C11.998 1.30704 11.8168 0.855995 11.4957 0.523007C11.1746 0.190018 10.7396 0.00204303 10.2855 0V0Z"
+                fill="#BBBBBB" />
+              <path
+                d="M10.2855 0H1.7145C1.26103 0.00164455 0.82671 0.189764 0.50683 0.523083C0.18695 0.856402 0.00763808 1.3077 0.0082357 1.77795L0 16L6 13.3331L12 16V1.77795C11.998 1.30704 11.8168 0.855995 11.4957 0.523007C11.1746 0.190018 10.7396 0.00204303 10.2855 0V0Z"
+                fill="#E4002B" />
+            </svg>
+          </div>
+        </div>
+
+        <div class="cardinfo">
+          <h1 class="recentname">Lorem</h1>
+          <div class="recenttype">
+            <h3 class="recentcat">Lorem</h3>
+            <div class="rating">
+              <svg width="12" height="12" fill="none">
+                <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+              </svg>
+              <svg width="12" height="12" fill="none">
+                <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+              </svg>
+              <svg width="12" height="12" fill="none">
+                <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+              </svg>
+              <svg width="12" height="12" fill="none">
+                <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+              </svg>
+              <svg width="12" height="12" fill="none">
+                <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+              </svg>
+
+              <p class="ratingvalue">234</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="recentcards searchcard">
+        <div class="cardimg">
+          <div class="save">
+            <svg width="12" height="16" viewBox="0 0 12 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M10.2855 0H1.7145C1.26103 0.00164455 0.82671 0.189764 0.50683 0.523083C0.18695 0.856402 0.00763808 1.3077 0.0082357 1.77795L0 16L6 13.3331L12 16V1.77795C11.998 1.30704 11.8168 0.855995 11.4957 0.523007C11.1746 0.190018 10.7396 0.00204303 10.2855 0V0Z"
+                fill="#BBBBBB" />
+              <path
+                d="M10.2855 0H1.7145C1.26103 0.00164455 0.82671 0.189764 0.50683 0.523083C0.18695 0.856402 0.00763808 1.3077 0.0082357 1.77795L0 16L6 13.3331L12 16V1.77795C11.998 1.30704 11.8168 0.855995 11.4957 0.523007C11.1746 0.190018 10.7396 0.00204303 10.2855 0V0Z"
+                fill="#E4002B" />
+            </svg>
+          </div>
+        </div>
+
+        <div class="cardinfo">
+          <h1 class="recentname">Lorem</h1>
+          <div class="recenttype">
+            <h3 class="recentcat">Lorem</h3>
+            <div class="rating">
+              <svg width="12" height="12" fill="none">
+                <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+              </svg>
+              <svg width="12" height="12" fill="none">
+                <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+              </svg>
+              <svg width="12" height="12" fill="none">
+                <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+              </svg>
+              <svg width="12" height="12" fill="none">
+                <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+              </svg>
+              <svg width="12" height="12" fill="none">
+                <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+              </svg>
+
+              <p class="ratingvalue">234</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="recentcards searchcard">
+        <div class="cardimg">
+          <div class="save">
+            <svg width="12" height="16" viewBox="0 0 12 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M10.2855 0H1.7145C1.26103 0.00164455 0.82671 0.189764 0.50683 0.523083C0.18695 0.856402 0.00763808 1.3077 0.0082357 1.77795L0 16L6 13.3331L12 16V1.77795C11.998 1.30704 11.8168 0.855995 11.4957 0.523007C11.1746 0.190018 10.7396 0.00204303 10.2855 0V0Z"
+                fill="#BBBBBB" />
+              <path
+                d="M10.2855 0H1.7145C1.26103 0.00164455 0.82671 0.189764 0.50683 0.523083C0.18695 0.856402 0.00763808 1.3077 0.0082357 1.77795L0 16L6 13.3331L12 16V1.77795C11.998 1.30704 11.8168 0.855995 11.4957 0.523007C11.1746 0.190018 10.7396 0.00204303 10.2855 0V0Z"
+                fill="#E4002B" />
+            </svg>
+          </div>
+        </div>
+
+        <div class="cardinfo">
+          <h1 class="recentname">Lorem</h1>
+          <div class="recenttype">
+            <h3 class="recentcat">Lorem</h3>
+            <div class="rating">
+              <svg width="12" height="12" fill="none">
+                <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+              </svg>
+              <svg width="12" height="12" fill="none">
+                <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+              </svg>
+              <svg width="12" height="12" fill="none">
+                <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+              </svg>
+              <svg width="12" height="12" fill="none">
+                <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+              </svg>
+              <svg width="12" height="12" fill="none">
+                <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+              </svg>
+
+              <p class="ratingvalue">234</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="recentcards searchcard">
+        <div class="cardimg">
+          <div class="save">
+            <svg width="12" height="16" viewBox="0 0 12 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M10.2855 0H1.7145C1.26103 0.00164455 0.82671 0.189764 0.50683 0.523083C0.18695 0.856402 0.00763808 1.3077 0.0082357 1.77795L0 16L6 13.3331L12 16V1.77795C11.998 1.30704 11.8168 0.855995 11.4957 0.523007C11.1746 0.190018 10.7396 0.00204303 10.2855 0V0Z"
+                fill="#BBBBBB" />
+              <path
+                d="M10.2855 0H1.7145C1.26103 0.00164455 0.82671 0.189764 0.50683 0.523083C0.18695 0.856402 0.00763808 1.3077 0.0082357 1.77795L0 16L6 13.3331L12 16V1.77795C11.998 1.30704 11.8168 0.855995 11.4957 0.523007C11.1746 0.190018 10.7396 0.00204303 10.2855 0V0Z"
+                fill="#E4002B" />
+            </svg>
+          </div>
+        </div>
+
+        <div class="cardinfo">
+          <h1 class="recentname">Lorem</h1>
+          <div class="recenttype">
+            <h3 class="recentcat">Lorem</h3>
+            <div class="rating">
+              <svg width="12" height="12" fill="none">
+                <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+              </svg>
+              <svg width="12" height="12" fill="none">
+                <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+              </svg>
+              <svg width="12" height="12" fill="none">
+                <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+              </svg>
+              <svg width="12" height="12" fill="none">
+                <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+              </svg>
+              <svg width="12" height="12" fill="none">
+                <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+              </svg>
+
+              <p class="ratingvalue">234</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="recentcards searchcard">
+        <div class="cardimg">
+          <div class="save">
+            <svg width="12" height="16" viewBox="0 0 12 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M10.2855 0H1.7145C1.26103 0.00164455 0.82671 0.189764 0.50683 0.523083C0.18695 0.856402 0.00763808 1.3077 0.0082357 1.77795L0 16L6 13.3331L12 16V1.77795C11.998 1.30704 11.8168 0.855995 11.4957 0.523007C11.1746 0.190018 10.7396 0.00204303 10.2855 0V0Z"
+                fill="#BBBBBB" />
+              <path
+                d="M10.2855 0H1.7145C1.26103 0.00164455 0.82671 0.189764 0.50683 0.523083C0.18695 0.856402 0.00763808 1.3077 0.0082357 1.77795L0 16L6 13.3331L12 16V1.77795C11.998 1.30704 11.8168 0.855995 11.4957 0.523007C11.1746 0.190018 10.7396 0.00204303 10.2855 0V0Z"
+                fill="#E4002B" />
+            </svg>
+          </div>
+        </div>
+
+        <div class="cardinfo">
+          <h1 class="recentname">Lorem</h1>
+          <div class="recenttype">
+            <h3 class="recentcat">Lorem</h3>
+            <div class="rating">
+              <svg width="12" height="12" fill="none">
+                <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+              </svg>
+              <svg width="12" height="12" fill="none">
+                <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+              </svg>
+              <svg width="12" height="12" fill="none">
+                <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+              </svg>
+              <svg width="12" height="12" fill="none">
+                <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+              </svg>
+              <svg width="12" height="12" fill="none">
+                <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+              </svg>
+
+              <p class="ratingvalue">234</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="recentcards searchcard">
+        <div class="cardimg">
+          <div class="save">
+            <svg width="12" height="16" viewBox="0 0 12 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M10.2855 0H1.7145C1.26103 0.00164455 0.82671 0.189764 0.50683 0.523083C0.18695 0.856402 0.00763808 1.3077 0.0082357 1.77795L0 16L6 13.3331L12 16V1.77795C11.998 1.30704 11.8168 0.855995 11.4957 0.523007C11.1746 0.190018 10.7396 0.00204303 10.2855 0V0Z"
+                fill="#BBBBBB" />
+              <path
+                d="M10.2855 0H1.7145C1.26103 0.00164455 0.82671 0.189764 0.50683 0.523083C0.18695 0.856402 0.00763808 1.3077 0.0082357 1.77795L0 16L6 13.3331L12 16V1.77795C11.998 1.30704 11.8168 0.855995 11.4957 0.523007C11.1746 0.190018 10.7396 0.00204303 10.2855 0V0Z"
+                fill="#E4002B" />
+            </svg>
+          </div>
+        </div>
+
+        <div class="cardinfo">
+          <h1 class="recentname">Lorem</h1>
+          <div class="recenttype">
+            <h3 class="recentcat">Lorem</h3>
+            <div class="rating">
+              <svg width="12" height="12" fill="none">
+                <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+              </svg>
+              <svg width="12" height="12" fill="none">
+                <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+              </svg>
+              <svg width="12" height="12" fill="none">
+                <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+              </svg>
+              <svg width="12" height="12" fill="none">
+                <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+              </svg>
+              <svg width="12" height="12" fill="none">
+                <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+              </svg>
+
+              <p class="ratingvalue">234</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="recentcards searchcard">
+        <div class="cardimg">
+          <div class="save">
+            <svg width="12" height="16" viewBox="0 0 12 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M10.2855 0H1.7145C1.26103 0.00164455 0.82671 0.189764 0.50683 0.523083C0.18695 0.856402 0.00763808 1.3077 0.0082357 1.77795L0 16L6 13.3331L12 16V1.77795C11.998 1.30704 11.8168 0.855995 11.4957 0.523007C11.1746 0.190018 10.7396 0.00204303 10.2855 0V0Z"
+                fill="#BBBBBB" />
+              <path
+                d="M10.2855 0H1.7145C1.26103 0.00164455 0.82671 0.189764 0.50683 0.523083C0.18695 0.856402 0.00763808 1.3077 0.0082357 1.77795L0 16L6 13.3331L12 16V1.77795C11.998 1.30704 11.8168 0.855995 11.4957 0.523007C11.1746 0.190018 10.7396 0.00204303 10.2855 0V0Z"
+                fill="#E4002B" />
+            </svg>
+          </div>
+        </div>
+
+        <div class="cardinfo">
+          <h1 class="recentname">Lorem</h1>
+          <div class="recenttype">
+            <h3 class="recentcat">Lorem</h3>
+            <div class="rating">
+              <svg width="12" height="12" fill="none">
+                <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+              </svg>
+              <svg width="12" height="12" fill="none">
+                <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+              </svg>
+              <svg width="12" height="12" fill="none">
+                <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+              </svg>
+              <svg width="12" height="12" fill="none">
+                <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+              </svg>
+              <svg width="12" height="12" fill="none">
+                <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+              </svg>
+
+              <p class="ratingvalue">234</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="recentcards searchcard">
+        <div class="cardimg">
+          <div class="save">
+            <svg width="12" height="16" viewBox="0 0 12 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M10.2855 0H1.7145C1.26103 0.00164455 0.82671 0.189764 0.50683 0.523083C0.18695 0.856402 0.00763808 1.3077 0.0082357 1.77795L0 16L6 13.3331L12 16V1.77795C11.998 1.30704 11.8168 0.855995 11.4957 0.523007C11.1746 0.190018 10.7396 0.00204303 10.2855 0V0Z"
+                fill="#BBBBBB" />
+              <path
+                d="M10.2855 0H1.7145C1.26103 0.00164455 0.82671 0.189764 0.50683 0.523083C0.18695 0.856402 0.00763808 1.3077 0.0082357 1.77795L0 16L6 13.3331L12 16V1.77795C11.998 1.30704 11.8168 0.855995 11.4957 0.523007C11.1746 0.190018 10.7396 0.00204303 10.2855 0V0Z"
+                fill="#E4002B" />
+            </svg>
+          </div>
+        </div>
+
+        <div class="cardinfo">
+          <h1 class="recentname">Lorem</h1>
+          <div class="recenttype">
+            <h3 class="recentcat">Lorem</h3>
+            <div class="rating">
+              <svg width="12" height="12" fill="none">
+                <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+              </svg>
+              <svg width="12" height="12" fill="none">
+                <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+              </svg>
+              <svg width="12" height="12" fill="none">
+                <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+              </svg>
+              <svg width="12" height="12" fill="none">
+                <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+              </svg>
+              <svg width="12" height="12" fill="none">
+                <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+              </svg>
+
+              <p class="ratingvalue">234</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- duplicate end -->
+
+    </div>
+
+  </div>
+
+</body>
+
+</html>
