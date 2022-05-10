@@ -904,8 +904,6 @@ input {
   margin: 20px 0 100px 0;
 }
 
-
-
 /* search page */
 .searchheader {
   display: flex;
@@ -947,4 +945,66 @@ input {
 
 .searchcard {
   margin: 10px 0;
+}
+
+/* explore page */
+#explore {
+  background: linear-gradient(55.96deg, #E4002B 9.03%, #E92C3D 40.19%, #F8A36F 90.12%);
+}
+
+.exploreheader {
+  margin: 40px 20px 20px 20px;
+}
+
+.exploreheader h1 {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 25px;
+  color: #FFFFFF;
+}
+
+.exploreheader h2 {
+  margin: 0px 0 20px 0;
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  color: #FFFFFF;
+}
+
+.exploretype {
+  position: absolute;
+  width: 360px;
+  height: 678px;
+  left: 0px;
+  top: 122px;
+  background: #fcfcfc;
+  border-radius: 10px 10px 0px 0px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.exploretype .explorercard,
+.exploretype .plannercard {
+  width: 300px;
+  height: 250px;
+  box-shadow: 0px 10px 20px rgba(207, 207, 207, 0.5);
+  border-radius: 10px;
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+}
+
+.exploretype .explorercard h1,
+.exploretype .plannercard h1 {
+  font-style: normal;
+  font-weight: 600;
+  font-size: 25px;
+  color: #2B2B2B;
+  margin: 10px 0 0 0;
 }
