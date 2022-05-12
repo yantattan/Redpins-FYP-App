@@ -1084,20 +1084,27 @@ input {
 
 .buffrewardsprogress {
   width: 320px;
-  height: 130.16px;
+  height: 100px;
   background: #FFFFFF;
   box-shadow: 0px 10px 20px rgba(207, 207, 207, 0.5);
   border-radius: 5px;
   margin: 10px 20px;
-  padding: 5px 20px;
+  padding: 5px 10px;
+  display: flex;
+  align-items: center;
+}
+
+.buffrewardsprogress img {
+  width: 60px;
+  height: 60px;
+  margin: 0 20px 0 0;
 }
 
 .buffrewardsprogress h1 {
   font-family: 'Poppins';
   font-style: normal;
   font-weight: 600;
-  font-size: 30px;
-  line-height: 45px;
+  font-size: 25px;
   color: #2B2B2B;
 }
 
@@ -1105,32 +1112,16 @@ input {
   font-family: 'Open Sans';
   font-style: normal;
   font-weight: 400;
-  font-size: 12px;
-  line-height: 16px;
+  font-size: 14px;
   color: #2B2B2B;
 }
 
-.buffrewardspoints {
-  display: flex;
-  align-items: baseline;
-}
-
-.buffrewardspoints p {
-  margin-left: 10px;
-}
-
-/* progressbar */
-.buffrewardsprogressbar {
-  display: flex;
-  align-items: center;
-  margin: 2px 0 4px 0;
-}
-
-.progressbar {
-  width: 245px;
-  height: 15px;
-  background: #EEEEEE;
-  border-radius: 2px;
+.buffrewardsprogress h2 {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 12px;
+  color: #2B2B2B;
 }
 
 /* myplans */
@@ -1192,4 +1183,93 @@ input {
 
 .myplanscard svg {
   margin: 10px;
+}
+
+/* explorer */
+#explorer {
+  background: #FCFCFC;
+}
+
+.explorerheader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 40px 20px 20px 20px;
+}
+
+.explorerheader h1 {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 18px;
+  color: #2B2B2B;
+}
+
+.explorerinput h1 {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  color: #2B2B2B;
+  margin: 10px 20px;
+}
+
+.explorerinput input {
+  background: #F2F2F2;
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+}
+
+.startend {
+  display: flex;
+}
+
+.transportmodecon {
+  display: flex;
+  justify-content: space-between;
+  margin: 10px 20px;
+}
+
+.transportmode {
+  width: 50px;
+  height: 50px;
+  background: #F2F2F2;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.bottom {
+  position: absolute;
+  width: 360px;
+  height: 90px;
+  left: 0px;
+  top: 710px;
+  background: #FFFFFF;
+  box-shadow: 0px 0px 20px rgba(207, 207, 207, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.maincta {
+  width: 320px;
+  height: 50px;
+  background: linear-gradient(234.68deg, #E4002B 1.73%, #E92C3D 15.75%, #F8A36F 85.31%);
+  mix-blend-mode: normal;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.maincta h1 {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  color: #FFFFFF;
 }
