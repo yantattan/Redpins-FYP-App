@@ -44,8 +44,15 @@
   justify-content: space-around;
 }
 
-#loadingbg, #registrationbg, #loginbg {
+#loadingbg,
+#registrationbg,
+#loginbg {
   background: linear-gradient(193.74deg, #E4002B 3.02%, #E82038 31.9%, #F8A36F 95.45%);
+}
+
+#explore,
+#account {
+  background: linear-gradient(55.96deg, #E4002B 9.03%, #E92C3D 40.19%, #F8A36F 90.12%);
 }
 
 /* navbar */
@@ -948,10 +955,6 @@ input {
 }
 
 /* explore page */
-#explore {
-  background: linear-gradient(55.96deg, #E4002B 9.03%, #E92C3D 40.19%, #F8A36F 90.12%);
-}
-
 .exploreheader {
   margin: 40px 20px 20px 20px;
 }
@@ -1007,4 +1010,186 @@ input {
   font-size: 25px;
   color: #2B2B2B;
   margin: 10px 0 0 0;
+}
+
+/* account */
+.accountheader {
+  margin: 40px 0 0 20px;
+}
+
+.accountheader h1 {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 25px;
+  color: #FFFFFF;
+}
+
+.accountsection {
+  position: absolute;
+  width: 360px;
+  height: 713px;
+  left: -0.14px;
+  top: 86.52px;
+  background: #FCFCFC;
+  border-radius: 10px 10px 0px 0px;
+}
+
+/*user details */
+.useraccount {
+  display: flex;
+  align-items: center;
+  margin: 40px 0 0 20px;
+}
+
+.profilepic {
+  width: 80px;
+  height: 80px;
+  border-radius: 5px;
+  background-color: #cfcfcf;
+}
+
+.userdetails {
+  margin: 0 10px;
+}
+
+.userdetails h1 {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 27px;
+  color: #2B2B2B;
+}
+
+.userdetails h2 {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 16px;
+  display: flex;
+  align-items: center;
+  color: #2B2B2B;
+}
+
+.userdetails svg {
+  margin-left: 4px;
+}
+
+/* buffrewards */
+.buffrewards {
+  margin: 30px 20px 0 20px;
+}
+
+.buffrewardsprogress {
+  width: 320px;
+  height: 130.16px;
+  background: #FFFFFF;
+  box-shadow: 0px 10px 20px rgba(207, 207, 207, 0.5);
+  border-radius: 5px;
+  margin: 10px 20px;
+  padding: 5px 20px;
+}
+
+.buffrewardsprogress h1 {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 30px;
+  line-height: 45px;
+  color: #2B2B2B;
+}
+
+.buffrewardsprogress p {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 16px;
+  color: #2B2B2B;
+}
+
+.buffrewardspoints {
+  display: flex;
+  align-items: baseline;
+}
+
+.buffrewardspoints p {
+  margin-left: 10px;
+}
+
+/* progressbar */
+.buffrewardsprogressbar {
+  display: flex;
+  align-items: center;
+  margin: 2px 0 4px 0;
+}
+
+.progressbar {
+  width: 245px;
+  height: 15px;
+  background: #EEEEEE;
+  border-radius: 2px;
+}
+
+/* myplans */
+.myplansheader {
+  margin: 20px 20px 10px 20px;
+}
+
+.myplans {
+  margin: 10px 20px;
+}
+
+.myplanscard {
+  width: 320px;
+  height: 89.98px;
+  background: #FFFFFF;
+  box-shadow: 0px 10px 20px rgba(207, 207, 207, 0.5);
+  border-radius: 5px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.mydesination {
+  display: flex;
+}
+
+.mydesination h1 {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  color: #2B2B2B;
+}
+
+.mydesination h2 {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 16px;
+  color: #2B2B2B;
+}
+
+.mydesination h3 {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 18px;
+  color: #E4002B;
+}
+
+.myplanscard .cardimg {
+  width: 70px;
+  height: 70px;
+  background: #C4C4C4;
+  border-radius: 5px;
+  margin: 10px;
+}
+
+.myplanscard svg {
+  margin: 10px;
 }
