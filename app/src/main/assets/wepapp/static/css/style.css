@@ -51,7 +51,8 @@
 }
 
 #explore,
-#account {
+#account,
+#myplans {
   background: linear-gradient(55.96deg, #E4002B 9.03%, #E92C3D 40.19%, #F8A36F 90.12%);
 }
 
@@ -254,9 +255,8 @@ input {
   width: 90%;
   height: 50px;
   mix-blend-mode: normal;
-  box-shadow: 0px 0px 20px rgba(207, 207, 207, 0.3);
+  border: 1px solid #BBBBBB;
   border-radius: 5px;
-  border: none;
   margin: 20px;
   padding: 1em;
   font-family: 'Open Sans';
@@ -326,7 +326,7 @@ input {
   left: 0px;
   top: 230px;
   background: #FFFFFF;
-  box-shadow: 0px 10px 20px rgba(207, 207, 207, 0.3);
+  box-shadow: 0px 0px 20px rgba(207, 207, 207, 0.5);
   border-radius: 10px 10px 0px 0px;
 }
 
@@ -392,7 +392,7 @@ input {
 
 /* preferences page */
 .preference {
-  margin: 120px 10px;
+  margin: 120px 20px;
 }
 
 #preferences h1 {
@@ -436,7 +436,7 @@ input {
 }
 
 #preferences .next {
-  width: 95%;
+  width: 90%;
 }
 
 #preferences .next h1 {
@@ -602,7 +602,7 @@ input {
 .searchcard {
   width: 300px;
   height: 110px;
-  box-shadow: 0px 10px 10px rgba(207, 207, 207, 0.5);
+  box-shadow: 0px 0px 20px rgba(207, 207, 207, 0.5);
   border-radius: 5px;
   margin: 0 10px 0 0;
   display: flex;
@@ -694,7 +694,7 @@ input {
   width: 200px;
   height: 217px;
   background: #FFFFFF;
-  box-shadow: 0px 10px 10px rgba(207, 207, 207, 0.5);
+  box-shadow: 0px 0px 20px rgba(207, 207, 207, 0.5);
   border-radius: 5px;
 }
 
@@ -841,7 +841,7 @@ input {
   width: 150px;
   height: 197px;
   background: #FFFFFF;
-  box-shadow: 0px 10px 10px rgba(207, 207, 207, 0.5);
+  box-shadow: 0px 0px 20px rgba(207, 207, 207, 0.5);
   border-radius: 5px;
   margin: 0 10px 0 0;
 }
@@ -993,7 +993,7 @@ input {
 .exploretype .plannercard {
   width: 300px;
   height: 250px;
-  box-shadow: 0px 10px 20px rgba(207, 207, 207, 0.5);
+  box-shadow: 0px 0px 20px rgba(207, 207, 207, 0.5);
   border-radius: 10px;
   margin-top: 30px;
   display: flex;
@@ -1013,6 +1013,11 @@ input {
 }
 
 /* account */
+#account {
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
 .accountheader {
   margin: 40px 0 0 20px;
 }
@@ -1028,7 +1033,7 @@ input {
 .accountsection {
   position: absolute;
   width: 360px;
-  height: 713px;
+  height: auto;
   left: -0.14px;
   top: 86.52px;
   background: #FCFCFC;
@@ -1078,25 +1083,25 @@ input {
 }
 
 /* buffrewards */
-.buffrewards {
-  margin: 30px 20px 0 20px;
+.accountsectionheader {
+  margin: 20px 20px 0 20px;
 }
 
 .buffrewardsprogress {
-  width: 320px;
-  height: 110px;
+  width: 90%;
+  height: auto;
   background: #FFFFFF;
-  box-shadow: 0px 10px 20px rgba(207, 207, 207, 0.5);
+  box-shadow: 0px 0px 20px rgba(207, 207, 207, 0.5);
   border-radius: 5px;
   margin: 10px 20px;
-  padding: 5px 10px;
+  padding: 10px;
   display: flex;
   align-items: center;
 }
 
 .buffrewardsprogress img {
-  width: 50px;
-  height: 50px;
+  width: 54px;
+  height: 54px;
   margin: 0 10px 0 0;
 }
 
@@ -1117,23 +1122,87 @@ input {
   font-family: 'Open Sans';
   font-style: normal;
   font-weight: 400;
-  font-size: 12px;
+  font-size: 9px;
   color: #2B2B2B;
 }
 
 .progressbar {
-  width: 240.3px;
+  width: 100%;
   height: 15px;
   background: #EEEEEE;
-  border-radius: 1px;
-  margin: 5px 0 5px 0;
+  border-radius: 5px;
+  margin: 5px 0;
 }
 
 .progression {
   width: 134.33px;
   height: 15px;
   background: linear-gradient(234.68deg, #E4002B 1.73%, #E92C3D 15.75%, #F8A36F 85.31%);
-  border-radius: 1px;
+  border-radius: 5px;
+}
+
+/* personalinfo */
+.accountsectioncon {
+  width: 90%;
+  height: auto;
+  background: #FFFFFF;
+  box-shadow: 0px 0px 20px rgba(207, 207, 207, 0.5);
+  border-radius: 5px;
+  padding: 5px 10px;
+  margin: 10px auto;
+}
+
+.accountcontents {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 5px auto 5px auto;
+  padding: 10px 0;
+}
+
+.accountrightcontent {
+  display: flex;
+  align-items: center;
+}
+
+.accountcontents h1 {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  color: #2B2B2B;
+}
+
+.accountcontents h2 {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  color: #2B2B2B;
+  margin: 0 10px 0 0;
+}
+
+.accountsectioncon:last-child {
+  margin-bottom: 100px;
+}
+
+.accsignout {
+  background: linear-gradient(234.68deg, #E4002B 1.73%, #E92C3D 15.75%, #F8A36F 85.31%);
+  mix-blend-mode: normal;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50px;
+margin: 30px auto 20px auto;
+}
+
+.accsignout h1 {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  color: #FFFFFF;
 }
 
 /* explorer */
@@ -1166,11 +1235,21 @@ input {
 }
 
 .explorerinput input {
-  background: #F2F2F2;
+  width: 90%;
+  height: 50px;
+  mix-blend-mode: normal;
+  border: 1px solid #BBBBBB;
+  border-radius: 5px;
+  margin: 20px;
+  padding: 1em;
   font-family: 'Open Sans';
   font-style: normal;
   font-weight: 400;
-  font-size: 14px;
+  font-size: 16px;
+  line-height: 22px;
+  display: flex;
+  align-items: center;
+  color: black;
 }
 
 .startend {
@@ -1186,8 +1265,6 @@ input {
 .transportmode {
   width: 50px;
   height: 50px;
-  background: #F2F2F2;
-  border-radius: 5px;
   display: flex;
   justify-content: center;
   align-items: center;
