@@ -41,54 +41,34 @@
 
     <!-- progress -->
     <div class="buffrewardsprogress">
-      <img src="/static/images/red.png" alt="">
+      <img src="../../static/images/red.png" alt="">
 
       <!-- points -->
-      <div class="buffrewardspoints">
-        <p id="total-points" hidden>{{pointsInfo.getPoints()}}</p>
-        <h1 id="points-tier">{{pointsInfo.getTier()}}</h1>
-        <div id="points-bar" width="80%" height="40px">
-          <div id="points-progressbar"></div>
+      <div class="progressdetails">
+
+        <div class="buffrewardspoints">
+          <p id="total-points">{{pointsInfo.getPoints()}} Points</p>
+          <p id="points-tier">{{pointsInfo.getTier()}}</p>
         </div>
-        <p>Just <b id="points-left">{{pointsLeft}}</b> points till Silver Tier!</p>
+
+        <div id="points-bar" class="progressbar">
+          <div id="points-progressbar" class="progression">
+          </div>
+        </div>
+
+        <div class="pointstext">
+          <p id="pointsComment">{% if pointsLeft > 150 %}Just{% endif %} <b id="points-left">{{pointsLeft}}</b> points more to <b id="points-nextTier"></b> Tier!</p>
+        </div>
       </div>
 
     </div>
 
 
-    <!-- plans -->
-    <div class="sectionheader manyheadertags myplansheader">
+    <!-- Personal Info -->
+    <div class="sectionheader manyheadertags buffrewards">
       <div>
-        <h1>My Plans</h1>
+        <h1>Personal Info</h1>
       </div>
-    </div>
-
-    <!-- plans -->
-    <div class="myplans">
-
-
-      <div class="myplanscard">
-        <div class="mydesination">
-
-          <div class="cardimg">
-          </div>
-
-          <div class="cardinfo">
-            <h1 class="cardname">Lorem</h1>
-            <h2 class="carddate">Lorem</h2>
-            <h3 class="cardstart">Lorem</h3>
-          </div>
-        </div>
-
-        <div class="cardedit">
-          <svg width="21" height="5" viewBox="0 0 21 5" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="18.1367" cy="2.63721" r="2" transform="rotate(90 18.1367 2.63721)" fill="#2B2B2B" />
-            <circle cx="2.13672" cy="2.63721" r="2" transform="rotate(90 2.13672 2.63721)" fill="#2B2B2B" />
-            <circle cx="10.1367" cy="2.63721" r="2" transform="rotate(90 10.1367 2.63721)" fill="#2B2B2B" />
-          </svg>
-        </div>
-      </div>
-
     </div>
 
   </section>
@@ -110,13 +90,22 @@
       "Silver": 1600,
       "Gold": 3000
     }
+    tiers = ["Bronze", "Silver", "Gold", "Diamond"]
 
     var tier = document.getElementById("points-tier").innerText;
     var pointsLeft = parseInt(document.getElementById("points-left").innerText);
     var pointsProgress = tierRange[tier] - pointsLeft;
 
-    var totalWidth = document.getElementById("points-bar").width;
-    document.getElementById("points-progressbar").width = (pointsProgress / tierRange[tier])*totalWidth;
+    var totalWidth = parseFloat($("#points-bar").width());
+    document.getElementById("points-progressbar").style.width = Math.floor((pointsProgress / tierRange[tier])*totalWidth) + "px";
+
+    var nextIndex = tiers.indexOf(tier) + 1;
+    if (nextIndex >= tiers.length) {
+      document.getElementById("pointsComment").innerHTML = "";
+    }
+    else {
+      document.getElementById("points-nextTier").innerText = tiers[nextIndex];
+    }
   }
 
   setRewardsBar()

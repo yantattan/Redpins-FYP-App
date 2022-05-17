@@ -78,6 +78,7 @@
                         <h5 class="plan-name">{{itinerary.getPlaces()[0].Name}}</h5>
                         <p class="plan-address" style="font-size:12px">{{itinerary.getPlaces()[0].Address}}</p>
                         <br />
+                        <p class="plan-timing"></p>
                         <p class="plan-latlng" hidden>{{itinerary.getPlaces()[0].Latlng}}</p>
                     </div>
                     <button class="btn-addColor" onclick="removeFirstBtn(this); recommend(1, 1, this);">+ Add a place</button>
@@ -90,6 +91,7 @@
                                 <h5 class="plan-name">{{itinerary.getPlaces()[i].Name}}</h5>
                                 <p class="plan-address" style="font-size:12px">{{itinerary.getPlaces()[i].Address}}</p>
                                 <br />
+                                <p class="plan-timing"></p>
                                 <p class="plan-activity-duration">{% if itinerary.getPlaces()[i].ActivityDuration %}<span>{{itinerary.getPlaces()[i].ActivityDuration}}</span> min{% else %}<span></span>{% endif %}</p>
                                 <p class="plan-total-duration">{% if itinerary.getPlaces()[i].TotalDuration %}<span>{{itinerary.getPlaces()[i].TotalDuration|int}}</span> min{% else %}<span></span>{% endif %}</p>
                                 <p class="plan-latlng" hidden>{{itinerary.getPlaces()[i].Latlng}}</p>
@@ -138,14 +140,9 @@
 {% block scripts %}
 {{super()}}
 <script>
-    var post;
-    try {
-        var post = document.getElementById("start-location-latlng").innerText.split(",");
-    }
-    catch(e) {}
-
     var skipped = [0];
     var pendingChooseList = {};
+    var startTime = new Date("2022-01-01 08:00:00");
     var allowanceLeft;
     var originalDuration;
     const currentDate = new Date();
@@ -160,6 +157,18 @@
 
         document.querySelector(".planSection").style.display = "block";
         toggleDay(0);
+        initAllowance();
+    }
+
+    function initAllowance() {
+        // Set time allowance
+        var startTmeArr = ["08", "00"];
+        var endTmeArr = ["23", "59"];
+        var startDate = new Date(0, 0, 0, startTmeArr[0], startTmeArr[1], 0);
+        var endDate = new Date(0, 0, 0, endTmeArr[0], endTmeArr[1], 0);
+        var diff = endDate.getTime() - startDate.getTime();
+        allowanceLeft = Math.floor(diff / 1000 / 60);
+        originalDuration = Math.floor(diff / 1000 / 60);
     }
 
     function checkInitPage() {
@@ -243,14 +252,7 @@
         // Display
         document.querySelector(".card-date").classList.add("addColor");
 
-        // Set time allowance
-        var startTmeArr = ["05", "00"];
-        var endTmeArr = ["23", "59"];
-        var startDate = new Date(0, 0, 0, startTmeArr[0], startTmeArr[1], 0);
-        var endDate = new Date(0, 0, 0, endTmeArr[0], endTmeArr[1], 0);
-        var diff = endDate.getTime() - startDate.getTime();
-        allowanceLeft = Math.floor(diff / 1000 / 60);
-        originalDuration = Math.floor(diff / 1000 / 60);
+        initAllowance();
 
         // document.querySelector(".planSection").style.display = "block";
         // Pull screen down
@@ -295,7 +297,7 @@
 
         var beforeDiv = document.getElementsByClassName("plan-selection")[order-1];
         if (beforeDiv && order > 1) {
-            calStartTme = new Date("2022-01-01 5:00:00");
+            calStartTme = startTime;
             for (var i=1; i<order; i++) {
                 calStartTme = new Date(calStartTme.getTime() + parseFloat(allCards[i].querySelector(".plan-total-duration").querySelector("span").innerText)*60000);
             }
@@ -305,7 +307,6 @@
             if (startTme.length == 4) {
                 startTme = 0 + startTme;
             }
-            console.log(startTme);
         }
 
         transportMde = "pt";
@@ -321,8 +322,15 @@
             var placeBefore;
             var latlng = document.getElementById("start-latlng").innerText.split(",");
         }
-        
 
+        if (order < allCards.length) {
+            var placeAfter = allCards[order].querySelector(".plan-address").innerText;
+        }
+        else {
+            var placeAfter;
+        }
+        
+        console.log(allowanceLeft);
         $.ajax({
             type: "POST",
             url: `/funcs/planner-recommend-places?page=${pageNum}`,
@@ -331,8 +339,8 @@
                 startTime: "05:00",
                 endTime: "23:59",
                 timeLeft: allowanceLeft,
-                latitude: post[0],
-                longitude: post[1],
+                latitude: latlng[0],
+                longitude: latlng[1],
                 category: "Eateries",
                 transportMode: transportMde,
                 skipped: JSON.stringify(skipped),
@@ -380,7 +388,6 @@
                 }
 
                 listing.innerHTML += `<p onclick="nextRecommend()" class="list-load-more">Load more</p>`;
-                reAssignValues();
             },
             error: function(jq, status, errorMsg) {
                 div.innerHTML = 
@@ -404,6 +411,7 @@
                 <h5 class="plan-name">${info.Name}</h5>
                 <p class="plan-address" style="font-size:12px">${info.Address}</p>
                 <br />
+                <p class="plan-timing"></p>
                 <p class="plan-activity-duration"><span>${Math.round(info.ActivityDuration)}</span> min</p>
                 <p class="plan-total-duration"><span>${Math.round(info.Duration)}</span> min</p>
                 <p class="plan-latlng" hidden>${info.Latlng}</p>
@@ -419,33 +427,94 @@
         
         allowanceLeft -= info.Duration;
         console.log(allowanceLeft);
-        document.getElementById("time-left").querySelector("span").innerText = parseInt(allowanceLeft);
+        // document.getElementById("time-left").querySelector("span").innerText = parseInt(allowanceLeft);
         
         // Fill up info for autosaving data
         saveTrips();
         reAssignValues();
     }
 
+    // Edit/delete/rearrange
+    async function editCard(btn, order) {
+        var card = btn.closest(".plan-selection");
+        // var timeLeft = document.querySelector("#time-left").querySelector("span");
+        card.closest(".recommendation-listings").getElementsByClassName("btn-addPlan")[order-1].remove();
+        reAssignValues();
+
+        // timeLeft.innerText = parseInt(timeLeft.innerText) + parseInt(card.querySelector(".plan-total-duration").querySelector("span").innerText);
+        // allowanceLeft = timeLeft.innerText;
+        await recommend(1, order-1);
+        card.remove();
+    }
+
+    function delCard(btn, order) {
+        var card = btn.closest(".plan-selection");
+        var div = btn.closest("#recommendation-listings");
+        div.getElementsByClassName("btn-addPlan")[order-1].remove();
+        card.remove();
+
+        // var timeLeft = document.querySelector("#time-left").querySelector("span");
+        // timeLeft.innerText = parseInt(timeLeft.innerText) + parseInt(card.querySelector(".plan-total-duration").querySelector("span").innerText);
+        // allowanceLeft = timeLeft.innerText;
+
+        reAssignValues();
+        reCal2Places(div, order-1);
+    }
+
+    // Recalculate route and travel time
+    async function reCal2Places(div, order) {
+        var cards = div.getElementsByClassName("plan-selection");
+        var aboveCard = cards[order-1];
+        var belowCard = cards[order];
+        var totalDuration = 0;
+        for (var i=1; i<order-1; i++) {
+            console.log(cards[i].querySelector(".plan-total-duration").querySelector("span").innerText)
+            var duration = parseFloat(cards[i].querySelector(".plan-total-duration").querySelector("span").innerText);
+            totalDuration += duration;
+        }
+
+        await $.ajax({
+            type: "POST",
+            url: `/funcs/reCalculate`,
+            data: {
+                latlngs: [aboveCard.querySelector(".plan-latlng").innerText, belowCard.querySelector(".plan-latlng").innerText],
+                routeType: document.getElementById("firstSelection").querySelector('input[type="radio"]:checked').value,
+                date: currentTime.toISOString().slice(0, 10),
+                topDuration: totalDuration,
+                startTime: $("#start-time").val()
+            },
+            success: function(result) {
+                result = JSON.parse(result);
+                var belowCardTDuration = belowCard.querySelector(".plan-total-duration").querySelector("span");
+                var belowCardADuration = belowCard.querySelector(".plan-activity-duration").querySelector("span");
+                var timeDiff = result[0] + parseInt(belowCardADuration.innerText) - parseInt(belowCardTDuration.innerText);
+                belowCardTDuration.innerText = parseInt(belowCardADuration.innerText) + result[0];
+                document.querySelector("#time-left").querySelector("span").innerText = parseInt(document.querySelector("#time-left").querySelector("span").innerText) + timeDiff;
+            }
+        })
+
+        saveTrips();
+    }
+
     function reAssignValues() {
         var div = document.getElementsByClassName("recommendation-listings");
-        var firstSelections = document.getElementsByClassName("firstPage")
 
         for (var i=0; i<div.length; i++) {
             var btn = div[i].getElementsByClassName("btn-add-place");
-            for (var i=0; i<div.length; i++) {
-                btn[i].setAttribute("onclick", `recommend(1, ${i+1});`);
+            for (var j=0; j<btn.length; j++) {
+                btn[j].setAttribute("onclick", `recommend(1, ${j+1}, this);`);
             }
 
-            var startTime = new Date(`2022-01-01T${document.get("#start-time").val()}:00`);
             var plansCards = document.getElementsByClassName("plan-selection");
 
-            var currTime = startTime.toLocaleTimeString('en-SG', {hour12: false})
-            plansCards[i].querySelector(".plan-timing").innerText = currTime.substring(0, currTime.length-3);
-            for (var i=1; i<plansCards.length-1; i++) {
-                startTime.setTime(startTime.getTime() + parseInt(plansCards[i].querySelector(".plan-total-duration").querySelector("span").innerText)*60000);
+            var startTme = startTime;
+            var currTime = startTme.toLocaleTimeString('en-SG', {hour12: false})
+            plansCards[0].querySelector(".plan-timing").innerText = currTime.substring(0, currTime.length-3);
+            for (var j=1; j<plansCards.length-1; j++) {
+                startTme.setTime(startTme.getTime() + parseInt(plansCards[j].querySelector(".plan-total-duration").querySelector("span").innerText)*60000);
 
                 currTime = startTime.toLocaleTimeString('en-SG', {hour12: false})
-                plansCards[i].querySelector(".plan-timing").innerText = currTime.substring(0, currTime.length-3);
+                plansCards[j].querySelector(".plan-timing").innerText = currTime.substring(0, currTime.length-3);
             }
         }
     }
@@ -501,9 +570,10 @@
             var placesLatlng = [];
 
             for (var j=0; j<allPlacesDiv.length; j++) {
+                console.log(allPlacesDiv[j])
                 placesName.push(allPlacesDiv[j].querySelector(".plan-name").innerText);
                 placesAddress.push(allPlacesDiv[j].querySelector(".plan-address").innerText);
-                if (j == 0 || j == allPlacesDiv.length-1) {
+                if (j == 0 || allPlacesDiv[j].classList.contains("end")) {
                     placesActivityDuration.push(null);
                     placesDuration.push(null);
                 }

@@ -860,7 +860,7 @@
         var plansCards = document.getElementsByClassName("plan-selection");
 
         var currTime = startTime.toLocaleTimeString('en-SG', {hour12: false})
-        plansCards[i].querySelector(".plan-timing").innerText = currTime.substring(0, currTime.length-3);
+        plansCards[0].querySelector(".plan-timing").innerText = currTime.substring(0, currTime.length-3);
         for (var i=1; i<plansCards.length-1; i++) {
             startTime.setTime(startTime.getTime() + parseInt(plansCards[i].querySelector(".plan-total-duration").querySelector("span").innerText)*60000);
 
