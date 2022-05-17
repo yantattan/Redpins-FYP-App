@@ -62,12 +62,12 @@ nav {
   z-index: 3;
 }
 
-.homebutton {
+.myplansbutton {
   z-index: 1;
   position: absolute;
   height: 26px;
   width: 23px;
-  left: 59px;
+  left: 275px;
   top: 44px;
   border-radius: 0px;
 }
@@ -86,7 +86,7 @@ nav {
   position: absolute;
   height: 26px;
   width: 27.000001907348633px;
-  left: 275px;
+  left: 59px;
   top: 44px;
   border-radius: 0px;
 }
@@ -1084,7 +1084,7 @@ input {
 
 .buffrewardsprogress {
   width: 320px;
-  height: 100px;
+  height: 110px;
   background: #FFFFFF;
   box-shadow: 0px 10px 20px rgba(207, 207, 207, 0.5);
   border-radius: 5px;
@@ -1095,94 +1095,45 @@ input {
 }
 
 .buffrewardsprogress img {
-  width: 60px;
-  height: 60px;
-  margin: 0 20px 0 0;
+  width: 50px;
+  height: 50px;
+  margin: 0 10px 0 0;
 }
 
-.buffrewardsprogress h1 {
-  font-family: 'Poppins';
-  font-style: normal;
-  font-weight: 600;
-  font-size: 25px;
-  color: #2B2B2B;
-}
-
-.buffrewardsprogress p {
-  font-family: 'Open Sans';
-  font-style: normal;
-  font-weight: 400;
-  font-size: 14px;
-  color: #2B2B2B;
-}
-
-.buffrewardsprogress h2 {
-  font-family: 'Poppins';
-  font-style: normal;
-  font-weight: 600;
-  font-size: 12px;
-  color: #2B2B2B;
-}
-
-/* myplans */
-.myplansheader {
-  margin: 20px 20px 10px 20px;
-}
-
-.myplans {
-  margin: 10px 20px;
-}
-
-.myplanscard {
-  width: 320px;
-  height: 89.98px;
-  background: #FFFFFF;
-  box-shadow: 0px 10px 20px rgba(207, 207, 207, 0.5);
-  border-radius: 5px;
+.buffrewardspoints {
   display: flex;
   justify-content: space-between;
 }
 
-.mydesination {
-  display: flex;
-}
-
-.mydesination h1 {
+.buffrewardspoints p {
   font-family: 'Poppins';
   font-style: normal;
   font-weight: 600;
-  font-size: 16px;
+  font-size: 14px;
   color: #2B2B2B;
 }
 
-.mydesination h2 {
+.pointstext p {
   font-family: 'Open Sans';
   font-style: normal;
   font-weight: 400;
   font-size: 12px;
-  line-height: 16px;
   color: #2B2B2B;
 }
 
-.mydesination h3 {
-  font-family: 'Poppins';
-  font-style: normal;
-  font-weight: 600;
-  font-size: 12px;
-  line-height: 18px;
-  color: #E4002B;
+.progressbar {
+  width: 240.3px;
+  height: 15px;
+  background: #EEEEEE;
+  border-radius: 1px;
+  margin: 5px 0 5px 0;
 }
 
-.myplanscard .cardimg {
-  width: 70px;
-  height: 70px;
-  background: #C4C4C4;
-  border-radius: 5px;
-  margin: 10px;
-}
-
-.myplanscard svg {
-  margin: 10px;
+.progression {
+  width: 134.33px;
+  height: 15px;
+  background: linear-gradient(234.68deg, #E4002B 1.73%, #E92C3D 15.75%, #F8A36F 85.31%);
+  border-radius: 1px;
 }
 
 /* explorer */
