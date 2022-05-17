@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% block title %}Redpins Buffer - Your Profile{% endblock %}
+
+{% block content %}
+<div class="device main-div" id="account">
+  <!-- header -->
+  <div class="accountheader">
+    <h1>My Account</h1>
+  </div>
+
+  <!-- account -->
+  <section class="accountsection">
+
+    <!-- user account -->
+    <div class="useraccount">
+      <div class="profilepic"></div>
+
+      <!-- user details -->
+      <div class="userdetails">
+        <h1>{{session["current_user"]["username"]}}</h1>
+        <h2>Lorem Ipsum
+          <svg width="6" height="8" viewBox="0 0 6 9" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M0.794164 8.4751C0.542852 8.3937 0.389163 8.20077 0.226817 8.02352C0.0986714 7.88351 0.115339 7.65436 0.239156 7.50886C0.269127 7.47481 0.301143 7.4424 0.335048 7.41179C1.35054 6.45654 2.36662 5.50176 3.38327 4.54746C3.40976 4.52609 3.43799 4.5067 3.46769 4.48946C3.42937 4.45182 3.40751 4.42841 3.38457 4.40806C2.36113 3.44562 1.3377 2.48325 0.314268 1.52094C0.13179 1.34919 0.0761588 1.13754 0.212746 0.965581C0.341292 0.806726 0.492255 0.665073 0.661472 0.54453C0.818191 0.431382 1.02946 0.464756 1.18444 0.585231C1.20782 0.603343 1.23055 0.622676 1.25198 0.642823L4.96236 4.12967C5.14722 4.30326 5.18748 4.50676 5.07167 4.695C5.04271 4.73927 5.00779 4.77983 4.96777 4.81568C3.72672 5.98244 2.48531 7.14845 1.24354 8.31372C1.16994 8.3823 1.06712 8.42198 0.976859 8.4751L0.794164 8.4751Z"
+              fill="#2B2B2B" />
+          </svg>
+        </h2>
+      </div>
+    </div>
+
+    <!-- buffrewards -->
+    <div class="sectionheader manyheadertags buffrewards">
+      <div>
+        <h1>BuffRewards</h1>
+      </div>
+
+      <div class="view">
+        <h3>View Progress</h3>
+      </div>
+    </div>
+
+    <!-- progress -->
+    <div class="buffrewardsprogress">
+      <img src="/static/images/red.png" alt="">
+
+      <!-- points -->
+      <div class="buffrewardspoints">
+        <p id="total-points" hidden>{{pointsInfo.getPoints()}}</p>
+        <h1 id="points-tier">{{pointsInfo.getTier()}}</h1>
+        <div id="points-bar" width="80%" height="40px">
+          <div id="points-progressbar"></div>
+        </div>
+        <p>Just <b id="points-left">{{pointsLeft}}</b> points till Silver Tier!</p>
+      </div>
+
+    </div>
+
+
+    <!-- plans -->
+    <div class="sectionheader manyheadertags myplansheader">
+      <div>
+        <h1>My Plans</h1>
+      </div>
+    </div>
+
+    <!-- plans -->
+    <div class="myplans">
+
+
+      <div class="myplanscard">
+        <div class="mydesination">
+
+          <div class="cardimg">
+          </div>
+
+          <div class="cardinfo">
+            <h1 class="cardname">Lorem</h1>
+            <h2 class="carddate">Lorem</h2>
+            <h3 class="cardstart">Lorem</h3>
+          </div>
+        </div>
+
+        <div class="cardedit">
+          <svg width="21" height="5" viewBox="0 0 21 5" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="18.1367" cy="2.63721" r="2" transform="rotate(90 18.1367 2.63721)" fill="#2B2B2B" />
+            <circle cx="2.13672" cy="2.63721" r="2" transform="rotate(90 2.13672 2.63721)" fill="#2B2B2B" />
+            <circle cx="10.1367" cy="2.63721" r="2" transform="rotate(90 10.1367 2.63721)" fill="#2B2B2B" />
+          </svg>
+        </div>
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- navbar -->
+  {% block bottomNav %}
+      {% include "includes/_bottomNav.html" %}
+  {% endblock %}
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{super()}}
+<script>
+  function setRewardsBar() {
+    tierRange = {
+      "Bronze": 400,
+      "Silver": 1600,
+      "Gold": 3000
+    }
+
+    var tier = document.getElementById("points-tier").innerText;
+    var pointsLeft = parseInt(document.getElementById("points-left").innerText);
+    var pointsProgress = tierRange[tier] - pointsLeft;
+
+    var totalWidth = document.getElementById("points-bar").width;
+    document.getElementById("points-progressbar").width = (pointsProgress / tierRange[tier])*totalWidth;
+  }
+
+  setRewardsBar()
+</script>
+{% endblock %}

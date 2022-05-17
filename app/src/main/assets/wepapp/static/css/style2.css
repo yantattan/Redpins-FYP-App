@@ -1,6 +1,14 @@
 .btn-addColor {
   background: linear-gradient(193.74deg, #E4002B 3.02%, #E82038 31.9%, #F8A36F 95.45%); 
   color: white;
+  border-radius: 5px;
+  border: 0;
+  padding: 5px;
+}
+
+.addColor {
+  background: linear-gradient(193.74deg, #E4002B 3.02%, #E82038 31.9%, #F8A36F 95.45%); 
+  color: white;
 }
 
 #reloadingbg {
@@ -55,4 +63,23 @@
   flex-direction: row;
   flex-wrap: nowrap;
   overflow-x: auto; overflow-y: hidden;
+}
+
+.maincta-disabled {
+  width: 320px;
+  height: 50px;
+  background: #EEEEEE;
+  mix-blend-mode: normal;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.maincta-disabled h1 {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  color: #FFFFFF;
 }

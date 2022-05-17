@@ -195,7 +195,8 @@ class Preferences:
 
 
 class Itinerary:
-    def __init__(self, id, userId, name, date, startTime, endTime, type, transportMode, timeAllowance, timeLeft, confimred, status, places):
+    def __init__(self, id, userId, name, date, startTime, endTime, type, transportMode, timeAllowance, timeLeft, confimred, status, places, 
+                plannerId=None, end=True):
         self.__id = id
         self.__userId = userId
         self.__name = name
@@ -209,12 +210,20 @@ class Itinerary:
         self.__confimred = confimred
         self.__status = status
         self.__places = places
+        self.__plannerId = plannerId
+        self.__end = end
+
+    def setId(self, id):
+        self.__id = id
 
     def setConfirmed(self, confirm):
         self.__confimred = confirm
     
-    def setOngoing(self, state):
-        self.__state = state
+    def setStatus(self, status):
+        self.__status = status
+
+    def setEnd(self, end):
+        self.__end = end
 
     def getId(self):
         return self.__id
@@ -254,6 +263,12 @@ class Itinerary:
 
     def getPlaces(self):
         return self.__places
+
+    def getPlannerId(self):
+        return self.__plannerId
+
+    def getEnd(self):
+        return self.__end
 
 
 class SignedPlace:
@@ -340,10 +355,14 @@ class SignedPlace:
 
 
 class Review:
-    def __init__(self, rating, review):
+    def __init__(self, address, rating, review):
         self.__rating = rating
         self.__review = review
+        self.__address = address
     
+    def setAddress(self, address):
+        self.__address = address
+
     def setRating(self, rating):
         self.__rating = rating
 
@@ -355,6 +374,27 @@ class Review:
 
     def getReview(self):
         return self.__review
+    
+    def getAddress(self):
+        return self.__address
+
+
+class Bookmark:
+    def __init__(self, name, address):
+        self.__name = name
+        self.__address = address
+
+    def setName(self, name):
+        self.__name = name
+
+    def setAddress(self, address):
+        self.__address = address
+
+    def getName(self):
+        return self.__name
+
+    def getAddress(self):
+        return self.__address
 
 
 class MachineLearningReport:

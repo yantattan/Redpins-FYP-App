@@ -2,9 +2,28 @@
 {% block title %}Redpins Buffer - Explorer{% endblock %}
 
 {% block content %}
-<div style="text-align: center;">
-    <h3>Select itinerary planning type</h3>
-    <a class="btn btn-primary" href="/itinerary/planning/explorer">Explorer</a>
-    <a class="btn btn-primary" href="/itinerary/planning/planner">Planner</a>
+<!-- header -->
+<div class="device main-div" id="explore">
+    <div class="exploreheader">
+        <h1>Good Morning!</h1>
+        <h2>How Would You Like To Travel Today?</h2>
+    </div>
+
+    <section class="exploretype">
+        <div class="explorercard" onclick="window.open('/itinerary/planning/explorer','_self')">
+            <img src="/static/images/explorer.png" alt="">
+            <h1>Explorer</h1>
+        </div>
+
+        <div class="plannercard" onclick="window.open('/itinerary/planning/planner','_self')">
+            <img src="/static/images/planner.png" alt="">
+            <h1>Planner</h1>
+        </div>
+    </section>
+
+    {% block bottomNav %}
+        {% include "includes/_bottomNav.html" %}
+    {% endblock %}
 </div>
+
 {% endblock %}

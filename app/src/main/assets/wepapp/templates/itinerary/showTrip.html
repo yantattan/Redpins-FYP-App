@@ -1,34 +1,68 @@
 {% extends "base.html" %}
-{% block title %}Redpins Buffer - Your planning{% endblock %}
+{% block title %}Redpins Buffer - Your trip{% endblock %}
 
 {% block content %}
-{% from "includes/_formHelper.html" import render_field %}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css" />
 <script src="https://cdn.onemap.sg/leaflet/onemap-leaflet.js"></script>
 <script type="text/javascript" src="https://rawgit.com/jieter/Leaflet.encoded/master/Polyline.encoded.js"></script>
-<div style="position:relative;z-index: 5;">
-    {% if itinerary != None %}
-        {% for place in itinerary.getPlaces() %}
-        <div class="card places-card">
-            <h5>{{place["Name"]}}</h5>
-            <p>{{place["TotalDuration"]}}</p>
-            <p hidden>{{place["Latlng"]}}</p>
+
+{% if itinerary != None %}
+<div class="main-div">
+    <div class="device" id="planList">
+        <div class="float-right" onclick="openMapView();">Map</div>
+
+        {% if itinerary != None %}
+        <div id="start-time">Start time: {{itinerary.getStartTime()}}</div>
+        <div id="end-time">End time: {{itinerary.getEndTime()}}</div>
+        <div id="time-left">Duration left: <span>{{itinerary.getTimeLeft()| int}}</span></div>
+
+        <div id="transport-mode">Transport mode: <span>{% if itinerary.getTransportMode() == "pt" %}Public Transport{% else %}{{itinerary.getTransportMode()}}{% endif %}</span></div>
+        <div>Category: Eateries</div>
+        {% else %}
+        <div id="start-time">Start time: </div>
+        <div id="end-time">End time: </div>
+        <div id="time-left">Duration left: <span></span></div>
+
+        <div id="transport-mode">Transport mode: </div>
+        <div>Category: Eateries</div>
+        {% endif %}
+
+        <div style="position:relative;z-index: 5;">
+            {% for place in itinerary.getPlaces() %}
+            <div class="card places-card">
+                <h5>{{place["Name"]}}</h5>
+                <p>{{place["TotalDuration"]}}</p>
+                <p hidden>{{place["Latlng"]}}</p>
+            </div>
+            {% endfor %}
         </div>
-        {% endfor %}
-    {% endif %}
+    </div>
+    
+    <div class="device" id="mapView" style="position: absolute; z-index:10; background-color: white; display: none; bottom: -200vh;">
+        <div id='mapdiv' style='height:80vh;'></div>
+        <div id="selection" style="height:20vh;display: inline; overflow-x: auto;">
+            <button class="btn-addColor" onclick="dismissMapView();">x</button>
+            {% for i in range(1, itinerary.getPlaces()|length) %}
+            <div class="card trip-place" style="width: 50px; margin: 5px;" onclick="showRoute('{{itinerary.getPlaces()[i-1].Latlng}}', '{{itinerary.getPlaces()[i].Latlng}}')">
+                <h4>{{i}}</h4>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
 </div>
-<div id='mapdiv' style='height:100vh;'></div>
+{% endif %}
 {% endblock %}
 
 {% block scripts %}
 {{super()}}
 <script>
     // Map display init
-    var apiToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjg1NDQsInVzZXJfaWQiOjg1NDQsImVtYWlsIjoieWFudGF0dGFuNzIxQGdtYWlsLmNvbSIsImZvcmV2ZXIiOmZhbHNlLCJpc3MiOiJodHRwOlwvXC9vbTIuZGZlLm9uZW1hcC5zZ1wvYXBpXC92MlwvdXNlclwvc2Vzc2lvbiIsImlhdCI6MTY1MjAwNzczNSwiZXhwIjoxNjUyNDM5NzM1LCJuYmYiOjE2NTIwMDc3MzUsImp0aSI6ImFlNDYzMWEyNzUyNDhiMDVkNGE5NjU0ZWM3YTIyYzdlIn0.DzuObpzVc9M4ZtGolRXAaXQ1lisWIjLcKlf5H0RmjWE";
+    var apiToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjg1NDQsInVzZXJfaWQiOjg1NDQsImVtYWlsIjoieWFudGF0dGFuNzIxQGdtYWlsLmNvbSIsImZvcmV2ZXIiOmZhbHNlLCJpc3MiOiJodHRwOlwvXC9vbTIuZGZlLm9uZW1hcC5zZ1wvYXBpXC92MlwvdXNlclwvc2Vzc2lvbiIsImlhdCI6MTY1MjQwNTcxMCwiZXhwIjoxNjUyODM3NzEwLCJuYmYiOjE2NTI0MDU3MTAsImp0aSI6ImU4NDU4NGMyNjU2ZTdjNTA4NDU3MzMyZmNiYmFkYzc0In0.EtZR1knTnlgaY1AFcZn5pevrVOwFWE-tXimo3qpI3Co";
     L.Icon.Default.imagePath = "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.4.0/images";
     var center = L.bounds([1.56073, 104.11475], [1.16, 103.502]).getCenter();
     var map = L.map('mapdiv').setView([center.x, center.y], 12);
     var yourMarker;
+    var startMarker;
     var endMarker;
 
     var routeTextures = {
@@ -48,27 +82,43 @@
     var basemap = L.tileLayer(`http://maps-{s}.onemap.sg/v2/Default/{z}/{x}/{y}.png`, {
         detectRetina: true,
         maxZoom: 18,
-        minZoom: 12
+        minZoom: 12,
     });
 
-    map.setMaxBounds([[1.56073, 104], [1.16, 103.502]]);
+    map.setMaxBounds([[1.56073, 104.1147], [1.16, 103.502]]);
 
     basemap.addTo(map);
 
     var updatePosition = false;
     var repeatedBuildings = {};
+
+    function openMapView() {
+        // Pull screen up
+        $("#mapView").show();
+        $("#mapView").animate({
+            bottom: "0"
+        }, 350);
+    }
+
+    function dismissMapView() {
+        // Pull screen down
+        $("#mapView").animate({
+            bottom: "-200vh"
+        }, 350, function() {
+            $("#mapView").hide();
+        });
+    }
+
     function getLocation() {
         if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(showRoute);
-
-            navigator.geolocation.watchPosition(showPosition, positioningError, {
+            navigator.geolocation.watchPosition(showYourPosition, positioningError, {
                 timeout: 1000,
                 enableHighAccuracy: true
             });
         } 
     }
 
-    function showPosition(position) {  
+    function showYourPosition(position) {  
         updatePosition = true;  
         console.log(position);
         
@@ -79,22 +129,26 @@
         
         yourMarker = new L.Marker([position.coords.latitude, position.coords.longitude], {bounceOnAdd: false, customId: "YouMarker"}).addTo(map); 
 
-        // var popup = L.popup()
-        // .setLatLng([position.coords.latitude, position.coords.longitude]) 
-        // .setContent('<img height="20px" width="20px" src="https://web-static.onemap.sg/images/main/misc/icons_Locator.png">')
-        // .openOn(map);   
+        /*var popup = L.popup()
+        .setLatLng([position.coords.latitude, position.coords.longitude]) 
+        .setContent('<img height="20px" width="20px" src="https://web-static.onemap.sg/images/main/misc/icons_Locator.png">')
+        .openOn(map);*/   
     }
 
     function positioningError(error) {
 
     }
 
-    function showRoute(position) {
+    function showRoute(position1, position2) {
         // Routing display
         var today = new Date();
-        const routeTypes = ["drive", "pt", "walk"];
-        var routeType = "pt";
-        var endCoords = $(".places-card").text().split(",");
+        var routeType = document.getElementById("transport-mode").querySelector("span").innerText;
+        if (routeType == "Public Transport") {
+            routeType = "pt";
+        }
+
+        var position1 = position1.split(",");
+        var position2 = position2.split(",");
 
         function decodeGeo(encodedRoute) {
             if (encodedRoute !== undefined || encodedRoute !== '' || encodedRoute != null ) {
@@ -106,19 +160,27 @@
             }
         }
 
-        console.log(`https://developers.onemap.sg/privateapi/routingsvc/route?start=${position.coords.latitude},${position.coords.longitude}&end=${endCoords[0]},${endCoords[1]}&routeType=${routeType}&token=${apiToken}&date=${String(today.getFullYear())}-${String(today.getMonth()+1)}-${String(today.getDate())}&time=${String(today.getHours())}:${String(today.getMinutes())}:${String(today.getSeconds())}&mode=TRANSIT`)
         $.ajax({
-            url: `https://developers.onemap.sg/privateapi/routingsvc/route?start=${position.coords.latitude},${position.coords.longitude}&end=${endCoords[0]},${endCoords[1]}&routeType=${routeType}&token=${apiToken}&date=${String(today.getFullYear())}-${String(today.getMonth()+1)}-${String(today.getDate())}&time=${String(today.getHours())}:${String(today.getMinutes())}:${String(today.getSeconds())}&mode=TRANSIT`,
+            url: `https://developers.onemap.sg/privateapi/routingsvc/route?start=${position1[0]},${position1[1]}&end=${position2[0]},${position2[1]}&routeType=${routeType}&token=${apiToken}&date=${String(today.getFullYear())}-${String(today.getMonth()+1)}-${String(today.getDate())}&time=${String(today.getHours())}:${String(today.getMinutes())}:${String(today.getSeconds())}&mode=TRANSIT`,
             success: function(result) {
                 //Set result to a variable for writing
                 var encodedRoute;
                 var modes = [];
 
-                // Mark end
+                // Remove previous markings and route paths
+                if (startMarker) {
+                    map.removeLayer(startMarker);
+                }
                 if (endMarker) {
                     map.removeLayer(endMarker);
                 }
-                endMarker = new L.Marker([endCoords[0], endCoords[1]], {bounceOnAdd: false}).addTo(map);
+                pathPieces = [].slice.call(document.getElementsByTagName("path")).map(x => x.parentElement);
+                for (var i=0; i<pathPieces.length; i++) {
+                    pathPieces[i].remove();
+                }
+
+                startMarker = new L.Marker([position1[0], position1[1]], {bounceOnAdd: true}).addTo(map);
+                endMarker = new L.Marker([position2[0], position2[1]], {bounceOnAdd: true}).addTo(map);
                  
                 if (routeType == "pt") {
                     var allRoutes = result.plan.itineraries;
@@ -155,7 +217,7 @@
                 
 
                 // Check for buildings around user
-                $.ajax({
+                /*$.ajax({
                     url: `https://developers.onemap.sg/privateapi/commonsvc/revgeocodexy?location=${position.coords.latitude},${position.coords.longitude}&token=${apiToken}&buffer=50`,
                     success: function(result) {
                         for (var i in result) {
@@ -167,11 +229,11 @@
                             }
                         } 
                     }
-                });
+                });*/
             }
         });
 
-        var visited = [];
+        /*var visited = [];
         for (var place in repeatedBuildings) {
             if (repeatedBuildings[place] >= 120) {
                 visited.push({latitude: 1.2834542, longitude: 103.8608090, address: "1 BAYFRONT AVENUE MARINA BAY SANDS SINGAPORE 018971"})
@@ -187,10 +249,14 @@
 
                 repeatedBuildings[place] = null;
             }
-        }
+        }*/
     }
-
-    // Do something with latlngs
+    
+    // Pin location
     getLocation();
+    // Default show 1st part trip
+    var firstCard = document.querySelector(".trip-place")
+    if (typeof firstCard.onclick == "function")
+        firstCard.onclick.apply(firstCard);
 </script>
 {% endblock %}

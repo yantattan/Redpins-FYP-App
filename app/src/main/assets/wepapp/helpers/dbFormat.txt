@@ -20,9 +20,10 @@ User [
 ]
 
 
-Itineraries [
+Itineraries(Explorer) [
     {
         _id: <Obj sth>,
+        plannerId: sth,
         userId: 1,
         date: "22-04-2022",
         name: "sth",

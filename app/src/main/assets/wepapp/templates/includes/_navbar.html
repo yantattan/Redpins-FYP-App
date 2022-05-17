@@ -3,7 +3,7 @@
     <a href="/login">Login</a>
     <a href="/register">Register</a>
     <a href="/preferences/1">Preferences</a>
-    <a href="/itinerary/selectPlan">Itinerary</a>
+    <a href="/yourProfile">Profile</a>
     {% if session.get("current_user") != None %}
         {% if session.get("current_user").get("role") == "Admin" %}
         <a href="/admin/signedPlaces">Partners</a>
