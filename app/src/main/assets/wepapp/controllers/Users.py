@@ -7,9 +7,7 @@ from DbContext import MongoDBContext
 from bson.objectid import ObjectId
 import hashlib
 
-from Model import Preferences
-from Model import UserPoints
-from Model import User
+from Model import User, Preferences, UserPoints, Bookmark
 
 
 class UserCon:
@@ -164,6 +162,7 @@ class UserCon:
                 dbPref = userInfo["Preferences"]
                 dbPref[category] = preferences.getPreferences()
             except KeyError:
+                print(category)
                 dbPref = {category: preferences.getPreferences()}
 
             print("Here")
@@ -237,7 +236,44 @@ class UserCon:
             self.__connection.update_one({"_id": ObjectId(userId)}, {"$set": {"Tier": tier}})
         except Exception as e:
             print(e)      
-            
+
+
+    # Save location functions
+    def AddBookmark(self, userId, location: Bookmark):
+        info = self.__connection.find_one({"_id": ObjectId(userId)})
+
+        if info is not None:
+            if info.get("SavedPlaces") is None:
+                info["SavedPlaces"] = []
+
+            try:
+                self.__connection.update_one({"_id": ObjectId(userId)}, {"$push": {"SavedPlaces": {"Name": location.getName(), "Address": location.getAddress()} }})
+                return {"success": True}
+            except Exception as e:
+                print(e)
+                return {"success": False, "error": "An error occurred"}   
+
+        return {"success": False, "error": "User not found"}   
+    
+    def RemoveBookmark(self, userId, address):
+        info = self.__connection.find_one({"_id": ObjectId(userId)})
+
+        if info is not None:
+            for i in range(len(info["SavedPlaces"])):
+                place = info["SavedPlaces"][i]
+                if place["Address"] == address:
+                    info["SavedPlaces"].pop(i)
+                    break
+
+            try:
+                self.__connection.update_one({"_id": ObjectId(userId)}, {"$set": {"SavedPlaces": info["SavedPlaces"]}})
+                return {"success": True}
+            except Exception as e:
+                print(e)
+                return {"success": False, "error": "An error occurred"}   
+
+        return {"success": False, "error": "User not found"}   
+
 
     # Data export csv functions
     def ExportGlobalUserPreferenceCSV(self):

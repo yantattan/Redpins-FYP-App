@@ -18,7 +18,7 @@
   min-height: 800px;
   display: flex;
   flex-direction: column;
-  /* background-color: green; */
+  background-color: white;
 }
 
 .onboarding {
@@ -59,7 +59,7 @@
 /* navbar */
 nav {
   position: sticky;
-  top: 712px;
+  top: 87%;
   z-index: 3;
 }
 
@@ -926,7 +926,7 @@ input {
   font-weight: 400;
   font-size: 14px;
   line-height: 22px;
-  color: #black;
+  color: black;
 }
 
 #search .activities {

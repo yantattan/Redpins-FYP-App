@@ -7,14 +7,250 @@
     <p>Hang tight while we find the best places for you...</p>
 </div>
 
-<div class="main-div">
+<div class="main-div device" id="explorer">
     {% if itinerary != None %}
     <div class="device" id="firstSelection" style="position: absolute; z-index:2; background-color: white; display: none;">
     {% else %}
     <div class="device" id="firstSelection" style="position: absolute; z-index:2; background-color: white;">
     {% endif %}
-        {% if itinerary != None %}
-        <div id="itinerary-id" hidden>{{itinerary.getId()}}</div>
+        <!-- header -->
+        <div class="explorerheader">
+            <svg width="12" height="20"onclick="window.open('explore.html','_self')">
+            <path
+                d="M10.2642 0C10.8582 0.203504 11.2215 0.68581 11.6052 1.12894C11.9081 1.47897 11.8687 2.05183 11.5761 2.4156C11.5052 2.50072 11.4295 2.58174 11.3494 2.65828C8.94914 5.0464 6.54751 7.43334 4.14452 9.81909C4.0819 9.87251 4.01519 9.92099 3.94498 9.96409C4.03554 10.0582 4.08722 10.1167 4.14145 10.1676C6.56048 12.5737 8.9795 14.9796 11.3985 17.3854C11.8298 17.8148 11.9613 18.3439 11.6385 18.7738C11.3346 19.1709 10.9778 19.5251 10.5779 19.8264C10.2074 20.1093 9.70807 20.0259 9.34174 19.7247C9.28648 19.6794 9.23276 19.6311 9.18211 19.5807L0.412125 10.8636C-0.0248138 10.4296 -0.119978 9.92084 0.153748 9.45024C0.222198 9.33957 0.304744 9.23817 0.399334 9.14854C3.33272 6.23165 6.26697 3.31661 9.20206 0.403448C9.37602 0.231995 9.61905 0.132787 9.8324 0H10.2642Z"
+                fill="#2B2B2B" />
+            </svg>
+            <h1>Get Exploring!</h1>
+            &nbsp
+        </div>
+    
+        <section class="explorerinput">
+            {% if itinerary != None %}
+            <div>
+                <h1>Start Location</h1>
+                <input id="start-location" type="text" class="Username" value="{{itinerary.getPlaces()[0]['Name']}}" onclick="openSearch(this);" onchange="checkFirstPage();" placeholder="Where are you?" readonly>
+                <div class="dropdown-menu-search" style="display: none;">
+                </div>
+                {% for attr in itinerary.getPlaces()[0] %}
+                    {% if itinerary.getPlaces()[-1][attr] != None %}<span id="start-location-{{attr | lower}}" hidden>{{itinerary.getPlaces()[0][attr]}}</span>{% endif %}
+                {% endfor %}
+            </div>
+            
+            <div>
+                <h1>End Location</h1>
+                <input id="end-location" type="text" class="Username" value="{{itinerary.getPlaces()[-1]['Name']}}" onclick="openSearch(this);" onchange="checkFirstPage();" placeholder="Where to end the trip?" readonly>
+                <div class="dropdown-menu-search" style="display: none;">
+                </div>
+                {% for attr in itinerary.getPlaces()[0] %}
+                    {% if itinerary.getPlaces()[-1][attr] != None %}<span id="end-location-{{attr | lower}}" hidden>{{itinerary.getPlaces()[0][attr]}}</span>{% endif %}
+                {% endfor %}
+            </div>
+    
+            <h1>Start & End Time</h1>
+            <div class="startend">
+            <input id="start-time" type="time" class="Username" value="{{itinerary.getStartTime()}}" onkeyup="checkFirstPage();" placeholder="Start">
+            <input id="end-time" type="time" class="Username" value="{{itinerary.getEndTime()}}" onkeyup="checkFirstPage();" placeholder="End">
+            </div>
+
+            {% else %}
+            {% set attributes = ["name", "address", "latlng"] %}
+            <div>
+                <h1>Start Location</h1>
+                <input id="start-location" type="text" class="Username" value="Your Location" onclick="openSearch(this)" onchange="checkFirstPage();" placeholder="Where are you?" readonly>
+                <div class="dropdown-menu-search" style="display: none;">
+                </div>
+                <span id="start-location-name" hidden>Current Location</span>
+                <span id="start-location-address" hidden></span>
+                <span id="start-location-latlng" hidden></span>
+            </div>
+            
+            <div>
+                <h1>End Location</h1>
+                <input id="end-location" type="text" class="Username" onclick="openSearch(this);" onchange="checkFirstPage();" placeholder="Where to end the trip?" readonly>
+                <div class="dropdown-menu-search" style="display: none;">
+                </div>
+                {% for attr in attributes %}
+                <span id="end-location-{{attr}}" hidden></span>
+                {% endfor %}
+            </div>
+    
+            <h1>Start & End Time</h1>
+            <div class="startend">
+            <input id="start-time" type="time" class="Username" onkeyup="checkFirstPage();" placeholder="Start">
+            <input id="end-time" type="time" class="Username" onkeyup="checkFirstPage();" placeholder="End">
+            </div>
+            {% endif %}
+
+    
+            <h1>Preferred Mode of Transport</h1>
+            <div class="transportmodecon">
+                {% if itinerary != None %}
+                {% if itinerary.getTransportMode() == 'pt' %}
+                <div class="train transportmode addColor" onclick="selectRadio('trans-publicTransport', this)">
+                    <svg width="20" height="26">
+                    <path
+                        d="M0 18.625C0 19.7853 0.460936 20.8981 1.28141 21.7186C2.10188 22.5391 3.21468 23 4.375 23L2.5 24.875V25.5H17.5V24.875L15.625 23C16.7853 23 17.8981 22.5391 18.7186 21.7186C19.5391 20.8981 20 19.7853 20 18.625V5.5C20 1.125 15.525 0.5 10 0.5C4.475 0.5 0 1.125 0 5.5V18.625ZM10 20.5C9.50555 20.5 9.0222 20.3534 8.61107 20.0787C8.19995 19.804 7.87952 19.4135 7.6903 18.9567C7.50108 18.4999 7.45157 17.9972 7.54804 17.5123C7.6445 17.0273 7.8826 16.5819 8.23223 16.2322C8.58186 15.8826 9.02732 15.6445 9.51227 15.548C9.99723 15.4516 10.4999 15.5011 10.9567 15.6903C11.4135 15.8795 11.804 16.2 12.0787 16.6111C12.3534 17.0222 12.5 17.5055 12.5 18C12.498 18.6624 12.234 19.2972 11.7656 19.7656C11.2972 20.234 10.6624 20.498 10 20.5ZM17.5 11.75H2.5V5.5H17.5V11.75Z"
+                        fill="white" />
+                    </svg>
+                </div>
+                {% else %}
+                <div class="train transportmode" onclick="selectRadio('trans-publicTransport', this)">
+                    <svg width="20" height="26">
+                    <path
+                        d="M0 18.625C0 19.7853 0.460936 20.8981 1.28141 21.7186C2.10188 22.5391 3.21468 23 4.375 23L2.5 24.875V25.5H17.5V24.875L15.625 23C16.7853 23 17.8981 22.5391 18.7186 21.7186C19.5391 20.8981 20 19.7853 20 18.625V5.5C20 1.125 15.525 0.5 10 0.5C4.475 0.5 0 1.125 0 5.5V18.625ZM10 20.5C9.50555 20.5 9.0222 20.3534 8.61107 20.0787C8.19995 19.804 7.87952 19.4135 7.6903 18.9567C7.50108 18.4999 7.45157 17.9972 7.54804 17.5123C7.6445 17.0273 7.8826 16.5819 8.23223 16.2322C8.58186 15.8826 9.02732 15.6445 9.51227 15.548C9.99723 15.4516 10.4999 15.5011 10.9567 15.6903C11.4135 15.8795 11.804 16.2 12.0787 16.6111C12.3534 17.0222 12.5 17.5055 12.5 18C12.498 18.6624 12.234 19.2972 11.7656 19.7656C11.2972 20.234 10.6624 20.498 10 20.5ZM17.5 11.75H2.5V5.5H17.5V11.75Z"
+                        fill="#BBBBBB" />
+                    </svg>
+                </div>
+                {% endif %}
+
+                {% if itinerary.getTransportMode() == 'walk' %}
+                <div class="walk transportmode addColor" onclick="selectRadio('trans-walk', this)">
+                    <svg width="17" height="25">
+                    <path
+                        d="M0 18.625C0 19.7853 0.460936 20.8981 1.28141 21.7186C2.10188 22.5391 3.21468 23 4.375 23L2.5 24.875V25.5H17.5V24.875L15.625 23C16.7853 23 17.8981 22.5391 18.7186 21.7186C19.5391 20.8981 20 19.7853 20 18.625V5.5C20 1.125 15.525 0.5 10 0.5C4.475 0.5 0 1.125 0 5.5V18.625ZM10 20.5C9.50555 20.5 9.0222 20.3534 8.61107 20.0787C8.19995 19.804 7.87952 19.4135 7.6903 18.9567C7.50108 18.4999 7.45157 17.9972 7.54804 17.5123C7.6445 17.0273 7.8826 16.5819 8.23223 16.2322C8.58186 15.8826 9.02732 15.6445 9.51227 15.548C9.99723 15.4516 10.4999 15.5011 10.9567 15.6903C11.4135 15.8795 11.804 16.2 12.0787 16.6111C12.3534 17.0222 12.5 17.5055 12.5 18C12.498 18.6624 12.234 19.2972 11.7656 19.7656C11.2972 20.234 10.6624 20.498 10 20.5ZM17.5 11.75H2.5V5.5H17.5V11.75Z"
+                        fill="white" />
+                    </svg>
+                </div>
+                {% else %}
+                <div class="walk transportmode" onclick="selectRadio('trans-walk', this)">
+                    <svg width="17" height="25">
+                    <path
+                        d="M0 18.625C0 19.7853 0.460936 20.8981 1.28141 21.7186C2.10188 22.5391 3.21468 23 4.375 23L2.5 24.875V25.5H17.5V24.875L15.625 23C16.7853 23 17.8981 22.5391 18.7186 21.7186C19.5391 20.8981 20 19.7853 20 18.625V5.5C20 1.125 15.525 0.5 10 0.5C4.475 0.5 0 1.125 0 5.5V18.625ZM10 20.5C9.50555 20.5 9.0222 20.3534 8.61107 20.0787C8.19995 19.804 7.87952 19.4135 7.6903 18.9567C7.50108 18.4999 7.45157 17.9972 7.54804 17.5123C7.6445 17.0273 7.8826 16.5819 8.23223 16.2322C8.58186 15.8826 9.02732 15.6445 9.51227 15.548C9.99723 15.4516 10.4999 15.5011 10.9567 15.6903C11.4135 15.8795 11.804 16.2 12.0787 16.6111C12.3534 17.0222 12.5 17.5055 12.5 18C12.498 18.6624 12.234 19.2972 11.7656 19.7656C11.2972 20.234 10.6624 20.498 10 20.5ZM17.5 11.75H2.5V5.5H17.5V11.75Z"
+                        fill="#BBBBBB" />
+                    </svg>
+                </div>
+                {% endif %}
+                
+                {% if itinerary.getTransportMode() == 'cycle' %}
+                <div class="cycle transportmode addColor" onclick="selectRadio('trans-cycle', this)">
+                    <svg width="24" height="21">
+                    <path
+                        d="M0 18.625C0 19.7853 0.460936 20.8981 1.28141 21.7186C2.10188 22.5391 3.21468 23 4.375 23L2.5 24.875V25.5H17.5V24.875L15.625 23C16.7853 23 17.8981 22.5391 18.7186 21.7186C19.5391 20.8981 20 19.7853 20 18.625V5.5C20 1.125 15.525 0.5 10 0.5C4.475 0.5 0 1.125 0 5.5V18.625ZM10 20.5C9.50555 20.5 9.0222 20.3534 8.61107 20.0787C8.19995 19.804 7.87952 19.4135 7.6903 18.9567C7.50108 18.4999 7.45157 17.9972 7.54804 17.5123C7.6445 17.0273 7.8826 16.5819 8.23223 16.2322C8.58186 15.8826 9.02732 15.6445 9.51227 15.548C9.99723 15.4516 10.4999 15.5011 10.9567 15.6903C11.4135 15.8795 11.804 16.2 12.0787 16.6111C12.3534 17.0222 12.5 17.5055 12.5 18C12.498 18.6624 12.234 19.2972 11.7656 19.7656C11.2972 20.234 10.6624 20.498 10 20.5ZM17.5 11.75H2.5V5.5H17.5V11.75Z"
+                        fill="white" />
+                    </svg>
+                </div>
+                {% else %}
+                <div class="cycle transportmode" onclick="selectRadio('trans-cycle', this)">
+                    <svg width="24" height="21">
+                    <path
+                        d="M0 18.625C0 19.7853 0.460936 20.8981 1.28141 21.7186C2.10188 22.5391 3.21468 23 4.375 23L2.5 24.875V25.5H17.5V24.875L15.625 23C16.7853 23 17.8981 22.5391 18.7186 21.7186C19.5391 20.8981 20 19.7853 20 18.625V5.5C20 1.125 15.525 0.5 10 0.5C4.475 0.5 0 1.125 0 5.5V18.625ZM10 20.5C9.50555 20.5 9.0222 20.3534 8.61107 20.0787C8.19995 19.804 7.87952 19.4135 7.6903 18.9567C7.50108 18.4999 7.45157 17.9972 7.54804 17.5123C7.6445 17.0273 7.8826 16.5819 8.23223 16.2322C8.58186 15.8826 9.02732 15.6445 9.51227 15.548C9.99723 15.4516 10.4999 15.5011 10.9567 15.6903C11.4135 15.8795 11.804 16.2 12.0787 16.6111C12.3534 17.0222 12.5 17.5055 12.5 18C12.498 18.6624 12.234 19.2972 11.7656 19.7656C11.2972 20.234 10.6624 20.498 10 20.5ZM17.5 11.75H2.5V5.5H17.5V11.75Z"
+                        fill="#BBBBBB" />
+                    </svg>
+                </div>
+                {% endif %}
+                
+                {% if itinerary.getTransportMode() == 'drive' %}
+                <div class="car transportmode addColor" onclick="selectRadio('trans-drive', this)">
+                    <svg width="22" height="21">
+                    <path
+                        d="M0 18.625C0 19.7853 0.460936 20.8981 1.28141 21.7186C2.10188 22.5391 3.21468 23 4.375 23L2.5 24.875V25.5H17.5V24.875L15.625 23C16.7853 23 17.8981 22.5391 18.7186 21.7186C19.5391 20.8981 20 19.7853 20 18.625V5.5C20 1.125 15.525 0.5 10 0.5C4.475 0.5 0 1.125 0 5.5V18.625ZM10 20.5C9.50555 20.5 9.0222 20.3534 8.61107 20.0787C8.19995 19.804 7.87952 19.4135 7.6903 18.9567C7.50108 18.4999 7.45157 17.9972 7.54804 17.5123C7.6445 17.0273 7.8826 16.5819 8.23223 16.2322C8.58186 15.8826 9.02732 15.6445 9.51227 15.548C9.99723 15.4516 10.4999 15.5011 10.9567 15.6903C11.4135 15.8795 11.804 16.2 12.0787 16.6111C12.3534 17.0222 12.5 17.5055 12.5 18C12.498 18.6624 12.234 19.2972 11.7656 19.7656C11.2972 20.234 10.6624 20.498 10 20.5ZM17.5 11.75H2.5V5.5H17.5V11.75Z"
+                        fill="white" />
+                    </svg>
+                </div>
+                {% else %}
+                <div class="car transportmode" onclick="selectRadio('trans-drive', this)">
+                    <svg width="22" height="21">
+                    <path
+                        d="M0 18.625C0 19.7853 0.460936 20.8981 1.28141 21.7186C2.10188 22.5391 3.21468 23 4.375 23L2.5 24.875V25.5H17.5V24.875L15.625 23C16.7853 23 17.8981 22.5391 18.7186 21.7186C19.5391 20.8981 20 19.7853 20 18.625V5.5C20 1.125 15.525 0.5 10 0.5C4.475 0.5 0 1.125 0 5.5V18.625ZM10 20.5C9.50555 20.5 9.0222 20.3534 8.61107 20.0787C8.19995 19.804 7.87952 19.4135 7.6903 18.9567C7.50108 18.4999 7.45157 17.9972 7.54804 17.5123C7.6445 17.0273 7.8826 16.5819 8.23223 16.2322C8.58186 15.8826 9.02732 15.6445 9.51227 15.548C9.99723 15.4516 10.4999 15.5011 10.9567 15.6903C11.4135 15.8795 11.804 16.2 12.0787 16.6111C12.3534 17.0222 12.5 17.5055 12.5 18C12.498 18.6624 12.234 19.2972 11.7656 19.7656C11.2972 20.234 10.6624 20.498 10 20.5ZM17.5 11.75H2.5V5.5H17.5V11.75Z"
+                        fill="#BBBBBB" />
+                    </svg>
+                </div>
+                {% endif %}
+                
+                {% if itinerary.getTransportMode() == 'pt' %}
+                <div class="bus transportmode addColor" onclick="selectRadio('trans-publicTransport', this)">
+                    <svg width="20" height="25">
+                    <path
+                        d="M0 18.625C0 19.7853 0.460936 20.8981 1.28141 21.7186C2.10188 22.5391 3.21468 23 4.375 23L2.5 24.875V25.5H17.5V24.875L15.625 23C16.7853 23 17.8981 22.5391 18.7186 21.7186C19.5391 20.8981 20 19.7853 20 18.625V5.5C20 1.125 15.525 0.5 10 0.5C4.475 0.5 0 1.125 0 5.5V18.625ZM10 20.5C9.50555 20.5 9.0222 20.3534 8.61107 20.0787C8.19995 19.804 7.87952 19.4135 7.6903 18.9567C7.50108 18.4999 7.45157 17.9972 7.54804 17.5123C7.6445 17.0273 7.8826 16.5819 8.23223 16.2322C8.58186 15.8826 9.02732 15.6445 9.51227 15.548C9.99723 15.4516 10.4999 15.5011 10.9567 15.6903C11.4135 15.8795 11.804 16.2 12.0787 16.6111C12.3534 17.0222 12.5 17.5055 12.5 18C12.498 18.6624 12.234 19.2972 11.7656 19.7656C11.2972 20.234 10.6624 20.498 10 20.5ZM17.5 11.75H2.5V5.5H17.5V11.75Z"
+                        fill="white" />
+                    </svg>
+                </div>
+                {% else %}
+                <div class="bus transportmode" onclick="selectRadio('trans-publicTransport', this)">
+                    <svg width="20" height="25">
+                    <path
+                        d="M0 18.625C0 19.7853 0.460936 20.8981 1.28141 21.7186C2.10188 22.5391 3.21468 23 4.375 23L2.5 24.875V25.5H17.5V24.875L15.625 23C16.7853 23 17.8981 22.5391 18.7186 21.7186C19.5391 20.8981 20 19.7853 20 18.625V5.5C20 1.125 15.525 0.5 10 0.5C4.475 0.5 0 1.125 0 5.5V18.625ZM10 20.5C9.50555 20.5 9.0222 20.3534 8.61107 20.0787C8.19995 19.804 7.87952 19.4135 7.6903 18.9567C7.50108 18.4999 7.45157 17.9972 7.54804 17.5123C7.6445 17.0273 7.8826 16.5819 8.23223 16.2322C8.58186 15.8826 9.02732 15.6445 9.51227 15.548C9.99723 15.4516 10.4999 15.5011 10.9567 15.6903C11.4135 15.8795 11.804 16.2 12.0787 16.6111C12.3534 17.0222 12.5 17.5055 12.5 18C12.498 18.6624 12.234 19.2972 11.7656 19.7656C11.2972 20.234 10.6624 20.498 10 20.5ZM17.5 11.75H2.5V5.5H17.5V11.75Z"
+                        fill="#BBBBBB" />
+                    </svg>
+                </div>
+                {% endif %}
+
+                {% else %}
+                <div class="train transportmode addColor" onclick="selectRadio('trans-publicTransport', this)">
+                    <svg width="20" height="26">
+                    <path
+                        d="M0 18.625C0 19.7853 0.460936 20.8981 1.28141 21.7186C2.10188 22.5391 3.21468 23 4.375 23L2.5 24.875V25.5H17.5V24.875L15.625 23C16.7853 23 17.8981 22.5391 18.7186 21.7186C19.5391 20.8981 20 19.7853 20 18.625V5.5C20 1.125 15.525 0.5 10 0.5C4.475 0.5 0 1.125 0 5.5V18.625ZM10 20.5C9.50555 20.5 9.0222 20.3534 8.61107 20.0787C8.19995 19.804 7.87952 19.4135 7.6903 18.9567C7.50108 18.4999 7.45157 17.9972 7.54804 17.5123C7.6445 17.0273 7.8826 16.5819 8.23223 16.2322C8.58186 15.8826 9.02732 15.6445 9.51227 15.548C9.99723 15.4516 10.4999 15.5011 10.9567 15.6903C11.4135 15.8795 11.804 16.2 12.0787 16.6111C12.3534 17.0222 12.5 17.5055 12.5 18C12.498 18.6624 12.234 19.2972 11.7656 19.7656C11.2972 20.234 10.6624 20.498 10 20.5ZM17.5 11.75H2.5V5.5H17.5V11.75Z"
+                        fill="white" />
+                    </svg>
+                </div>
+
+                <div class="walk transportmode" onclick="selectRadio('trans-walk', this)">
+                    <svg width="17" height="25">
+                    <path
+                        d="M11.1925 4.96512C11.6102 4.96512 12.0185 4.83418 12.3658 4.58886C12.7131 4.34355 12.9838 3.99487 13.1436 3.58692C13.3034 3.17898 13.3453 2.73008 13.2638 2.29701C13.1823 1.86393 12.9812 1.46613 12.6858 1.1539C12.3905 0.841673 12.0142 0.629043 11.6045 0.542899C11.1949 0.456755 10.7703 0.500967 10.3844 0.669944C9.99851 0.838921 9.66869 1.12507 9.43665 1.49222C9.2046 1.85936 9.08074 2.291 9.08074 2.73256C9.08242 3.32413 9.30544 3.89096 9.70112 4.30926C10.0968 4.72757 10.633 4.96335 11.1925 4.96512V4.96512ZM7.3913 20.4814L8.4472 15.5698L10.6646 17.8023V24.5H12.7764V16.1279L10.559 13.8954L11.1925 10.5465C11.917 11.4217 12.8098 12.1234 13.8113 12.6046C14.8128 13.0859 15.8999 13.3356 17 13.3372V11.1047C16.0872 11.1193 15.187 10.8794 14.3899 10.409C13.5928 9.93868 12.927 9.25456 12.4596 8.42558L11.4037 6.63954C11.2166 6.30975 10.9542 6.03479 10.6406 5.83979C10.3271 5.6448 9.97229 5.53597 9.60869 5.52326C9.29192 5.52326 9.08074 5.63488 8.76397 5.63488L3.27329 8.0907V13.3372H5.38509V9.54186L7.28571 8.76047L5.59627 17.8023L0.42236 16.686L0 18.9186L7.3913 20.4814Z"
+                        fill="#BBBBBB" />
+                    </svg>
+                </div>
+        
+                <div class="cycle transportmode" onclick="selectRadio('trans-cycle', this)">
+                    <svg width="24" height="21">
+                    <path
+                        d="M15.1219 4.40244C15.5079 4.40244 15.8851 4.288 16.206 4.0736C16.5269 3.8592 16.777 3.55446 16.9246 3.19792C17.0723 2.84138 17.111 2.44906 17.0357 2.07056C16.9604 1.69206 16.7746 1.34438 16.5017 1.0715C16.2288 0.798617 15.8811 0.612781 15.5026 0.537493C15.1241 0.462205 14.7318 0.500845 14.3752 0.648529C14.0187 0.796212 13.714 1.0463 13.4996 1.36718C13.2852 1.68806 13.1707 2.06531 13.1707 2.45122C13.1723 2.96824 13.3783 3.46364 13.7439 3.82923C14.1095 4.19483 14.6049 4.4009 15.1219 4.40244V4.40244ZM4.87805 10.7439C3.58431 10.7439 2.34356 11.2578 1.42875 12.1726C0.513936 13.0875 0 14.3282 0 15.6219C0 16.9157 0.513936 18.1564 1.42875 19.0712C2.34356 19.9861 3.58431 20.5 4.87805 20.5C6.17179 20.5 7.41254 19.9861 8.32735 19.0712C9.24216 18.1564 9.7561 16.9157 9.7561 15.6219C9.7561 14.3282 9.24216 13.0875 8.32735 12.1726C7.41254 11.2578 6.17179 10.7439 4.87805 10.7439ZM4.87805 19.0366C3.97243 19.0366 3.10391 18.6768 2.46354 18.0365C1.82317 17.3961 1.46341 16.5276 1.46341 15.6219C1.46341 14.7163 1.82317 13.8478 2.46354 13.2074C3.10391 12.5671 3.97243 12.2073 4.87805 12.2073C5.78366 12.2073 6.65219 12.5671 7.29256 13.2074C7.93293 13.8478 8.29268 14.7163 8.29268 15.6219C8.29268 16.5276 7.93293 17.3961 7.29256 18.0365C6.65219 18.6768 5.78366 19.0366 4.87805 19.0366ZM10.5366 9.28049L12.878 6.93902L13.6585 7.71951C14.3061 8.37989 15.081 8.90196 15.9362 9.25412C16.7915 9.60628 17.7093 9.7812 18.6341 9.76829V7.81707C17.9803 7.82268 17.332 7.69592 16.7284 7.44442C16.1248 7.19292 15.5784 6.82189 15.1219 6.35366L13.2683 4.5C12.835 4.12402 12.281 3.91627 11.7073 3.91463C11.4496 3.89755 11.1915 3.94168 10.9541 4.04341C10.7168 4.14515 10.5068 4.30161 10.3415 4.5L7.60975 7.23171C7.42659 7.40926 7.28052 7.62143 7.18003 7.8559C7.07954 8.09037 7.02664 8.34247 7.02439 8.59756C7.0073 8.85526 7.05143 9.11335 7.15317 9.35073C7.2549 9.58812 7.41136 9.79806 7.60975 9.96341L10.7317 12.6951V17.5732H12.6829V11.5244L10.5366 9.28049ZM18.5366 10.7439C17.5718 10.7439 16.6287 11.03 15.8265 11.566C15.0243 12.102 14.3991 12.8639 14.0299 13.7552C13.6606 14.6465 13.564 15.6274 13.7523 16.5736C13.9405 17.5199 14.4051 18.389 15.0873 19.0712C15.7695 19.7535 16.6387 20.218 17.5849 20.4063C18.5312 20.5945 19.512 20.4979 20.4033 20.1287C21.2947 19.7595 22.0565 19.1342 22.5925 18.332C23.1285 17.5299 23.4146 16.5867 23.4146 15.6219C23.421 14.9796 23.2992 14.3424 23.0563 13.7477C22.8134 13.153 22.4544 12.6127 22.0001 12.1584C21.5459 11.7042 21.0056 11.3451 20.4109 11.1022C19.8161 10.8593 19.179 10.7375 18.5366 10.7439V10.7439ZM18.5366 19.0366C17.8612 19.0366 17.201 18.8363 16.6395 18.4611C16.078 18.0859 15.6403 17.5526 15.3819 16.9287C15.1234 16.3047 15.0558 15.6182 15.1876 14.9558C15.3193 14.2934 15.6445 13.685 16.1221 13.2074C16.5996 12.7299 17.208 12.4047 17.8704 12.2729C18.5328 12.1412 19.2194 12.2088 19.8433 12.4672C20.4672 12.7257 21.0005 13.1633 21.3757 13.7249C21.7509 14.2864 21.9512 14.9466 21.9512 15.6219C21.9403 16.5242 21.5771 17.3864 20.9391 18.0244C20.301 18.6624 19.4388 19.0257 18.5366 19.0366V19.0366Z"
+                        fill="#BBBBBB" />
+                    </svg>
+                </div>
+        
+                <div class="car transportmode" onclick="selectRadio('trans-drive', this)">
+                    <svg width="22" height="21">
+                    <path
+                        d="M19.4578 1.76252C19.334 1.39283 19.1 1.07217 18.7886 0.845683C18.4773 0.619197 18.1043 0.498301 17.7222 0.500018H4.27778C3.89597 0.499422 3.5235 0.620757 3.21236 0.847087C2.90123 1.07342 2.66695 1.39345 2.54222 1.76252L0 9.25001V19.25C0 19.5815 0.128769 19.8995 0.357981 20.1339C0.587192 20.3683 0.898069 20.5 1.22222 20.5H2.44444C2.7686 20.5 3.07947 20.3683 3.30869 20.1339C3.5379 19.8995 3.66667 19.5815 3.66667 19.25V18H18.3333V19.25C18.3333 19.5815 18.4621 19.8995 18.6913 20.1339C18.9205 20.3683 19.2314 20.5 19.5556 20.5H20.7778C21.1019 20.5 21.4128 20.3683 21.642 20.1339C21.8712 19.8995 22 19.5815 22 19.25V9.25001L19.4578 1.76252ZM4.27778 14.25C3.91518 14.25 3.56072 14.14 3.25923 13.934C2.95774 13.728 2.72276 13.4351 2.584 13.0925C2.44524 12.7499 2.40893 12.3729 2.47967 12.0092C2.55041 11.6455 2.72502 11.3114 2.98142 11.0492C3.23781 10.787 3.56448 10.6084 3.92011 10.536C4.27574 10.4637 4.64437 10.5008 4.97936 10.6427C5.31436 10.7846 5.60069 11.025 5.80214 11.3333C6.00359 11.6417 6.11111 12.0042 6.11111 12.375C6.11111 12.8723 5.91796 13.3492 5.57414 13.7008C5.23032 14.0525 4.76401 14.25 4.27778 14.25ZM17.7222 14.25C17.3596 14.25 17.0052 14.14 16.7037 13.934C16.4022 13.728 16.1672 13.4351 16.0284 13.0925C15.8897 12.7499 15.8534 12.3729 15.9241 12.0092C15.9949 11.6455 16.1695 11.3114 16.4259 11.0492C16.6823 10.787 17.0089 10.6084 17.3646 10.536C17.7202 10.4637 18.0888 10.5008 18.4238 10.6427C18.7588 10.7846 19.0451 11.025 19.2466 11.3333C19.448 11.6417 19.5556 12.0042 19.5556 12.375C19.5556 12.8723 19.3624 13.3492 19.0186 13.7008C18.6748 14.0525 18.2085 14.25 17.7222 14.25ZM2.44444 8.00001L4.27778 2.37502H17.7222L19.5556 8.00001H2.44444Z"
+                        fill="#BBBBBB" />
+                    </svg>
+                </div>
+        
+                <div class="bus transportmode" onclick="selectRadio('trans-publicTransport', this)">
+                    <svg width="20" height="25">
+                    <path
+                        d="M16.0299 24.0294C15.1857 23.6777 15.0031 23.4022 15.0031 22.4814C15.0031 22.1783 15.0031 21.8745 15.0031 21.57H4.99889C4.99889 21.9784 4.99743 22.3673 4.99889 22.7568C5.00036 23.0664 4.93215 23.3702 4.70038 23.5744C4.48915 23.7612 4.21704 23.8804 3.97207 24.0294H2.25655C1.4527 23.7641 1.20039 23.1776 1.2444 22.3876C1.27447 21.8454 1.2554 21.3011 1.24513 20.7575C1.24367 20.6623 1.20186 20.5431 1.13585 20.4784C0.367203 19.7189 0.00121521 18.7981 0.000481765 17.7304C-0.000251678 13.6656 -0.000251678 9.60071 0.00121521 5.53585C0.00121521 4.75384 0.120766 3.99509 0.505824 3.29811C1.06397 2.28498 1.98078 1.7181 3.0318 1.32709C4.26545 0.868495 5.55851 0.689708 6.86257 0.608309C9.2558 0.45932 11.6505 0.443331 14.0386 0.692615C15.2708 0.821254 16.4817 1.05237 17.6075 1.59818C18.3498 1.95793 18.9835 2.44487 19.4162 3.15857C19.8599 3.89043 19.9993 4.69715 20 5.53585C20 9.60071 20 13.6656 20 17.7312C20 18.8003 19.634 19.7189 18.8668 20.4784C18.8008 20.5438 18.759 20.663 18.7575 20.7575C18.748 21.4007 18.7531 22.0431 18.7524 22.6863C18.7517 23.2387 18.528 23.6617 18.016 23.9131C17.928 23.956 17.8363 23.9909 17.7461 24.0294H16.0299ZM2.51032 5.47699V11.6328H17.4924V5.47699H2.51032ZM4.3828 19.0713C5.41476 19.0684 6.25161 18.2348 6.24795 17.2137C6.24355 16.194 5.39422 15.3561 4.37327 15.3641C3.34498 15.372 2.49712 16.2166 2.50446 17.2246C2.51179 18.245 3.35598 19.075 4.38354 19.0713H4.3828ZM15.6213 19.0713C16.6482 19.0735 17.4931 18.2421 17.499 17.2231C17.5048 16.2137 16.657 15.3706 15.6294 15.3641C14.6077 15.3575 13.7584 16.1962 13.7555 17.2152C13.7518 18.2355 14.5901 19.0692 15.6213 19.0713Z"
+                        fill="#BBBBBB" />
+                    </svg>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="transportModeRadio" onclick="checkFirstPage();" hidden>
+                <label for="trans-walk">Walk</label>
+                {% if itinerary != None %}
+                    {% if itinerary.getTransportMode() == "walk" %} <input type="radio" name="transportMode" id="trans-walk" value="walk" checked>
+                    {% else %} <input type="radio" name="transportMode" id="trans-walk" value="walk"> {% endif %}
+                    <label for="trans-publicTransport">Public Transport</label>
+                    {% if itinerary.getTransportMode() == "pt" %} <input type="radio" name="transportMode" id="trans-publicTransport" value="pt" checked>
+                    {% else %} <input type="radio" name="transportMode" id="trans-publicTransport" value="pt">{% endif %}
+                    <label for="trans-drive">Drive</label>
+                    {% if itinerary.getTransportMode() == "drive" %} <input type="radio" name="transportMode" id="trans-drive" value="drive" checked>
+                    {% else %} <input type="radio" name="transportMode" id="trans-drive" value="drive">{% endif %}
+                    <label for="trans-cycle">Cycle</label>
+                    {% if itinerary.getTransportMode() == "cycle" %} <input type="radio" name="transportMode" id="trans-cycle" value="cycle" checked>
+                    {% else %} <input type="radio" name="transportMode" id="trans-cycle" value="cycle">{% endif %}
+                {% else %}
+                <input type="radio" name="transportMode" id="trans-walk" value="walk">
+                <label for="trans-publicTransport">Public Transport</label>
+                <input type="radio" name="transportMode" id="trans-publicTransport" value="pt" checked>
+                <label for="trans-drive">Drive</label>
+                <input type="radio" name="transportMode" id="trans-drive" value="drive">
+                <label for="trans-cycle">Cycle</label>
+                <input type="radio" name="transportMode" id="trans-cycle" value="cycle">
+                {% endif %}
+            </div>
+        </section>
+    
+        <section class="bottom">
+            <div class="maincta-disabled" id="firstPageNext">
+            <h1>Create Trip!</h1>
+            </div>
+        </section>
+    </div>
+        <!-- {% if itinerary != None %}
         <div>
             <label>Start Time</label>
             <input id="start-time" type="time" class="form-control" value="{{itinerary.getStartTime()}}" onkeyup="checkFirstPage();" required>
@@ -23,21 +259,70 @@
             <label>End Time</label>
             <input id="end-time" type="time" class="form-control" value="{{itinerary.getEndTime()}}" onkeyup="checkFirstPage();" required>
         </div>
+        <div>
+            <label>Start Location</label>
+            <input id="start-location" type="text" class="form-control" value="{{itinerary.getPlaces()[0]['Name']}}" onkeyup="pauseSearch(this, 'Start');checkFirstPage();" required>
+            <div class="dropdown-menu-search" style="display: none;">
+            </div>
+            {% for attr in itinerary.getPlaces()[0] %}
+                {% if itinerary.getPlaces()[-1][attr] != None %}<span id="start-location-{{attr | lower}}" hidden>{{itinerary.getPlaces()[0][attr]}}</span>{% endif %}
+            {% endfor %}
+        </div>
+        <div>
+            <label>End Location</label>
+            <input id="end-location" type="text" class="form-control" value="{{itinerary.getPlaces()[-1]['Name']}}" onkeyup="pauseSearch(this, 'End');checkFirstPage();" required>
+            <div class="dropdown-menu-search" style="display: none;">
+            </div>
+            {% for attr in itinerary.getPlaces()[-1] %}
+                {% if itinerary.getPlaces()[-1][attr] != None %}<span id="end-location-{{attr | lower}}" hidden>{{itinerary.getPlaces()[-1][attr]}}</span>{% endif %}
+            {% endfor %}
+        </div>
         {% else %}
-        <div id="itinerary-id" hidden></div>
-        <div>
-            <label>Start Time</label>
-            <input id="start-time" type="time" class="form-control" onkeyup="checkFirstPage();" required>
-        </div>
-        <div>
-            <label>End Time</label>
-            <input id="end-time" type="time" class="form-control" onkeyup="checkFirstPage();" required>
-        </div>
+            <div>
+                <label>Start Time</label>
+                <input id="start-time" type="time" class="form-control" onkeyup="checkFirstPage();" required>
+            </div>
+            <div>
+                <label>End Time</label>
+                <input id="end-time" type="time" class="form-control" onkeyup="checkFirstPage();" required>
+            </div>
+            {% set attributes = ["name", "address", "latlng"] %}
+            <div style="position: relative;">
+                <label>Start Location</label>
+                <input id="start-location" type="text" class="form-control" value="Your Location" onkeyup="pauseSearch(this, 'Start');checkFirstPage();" required>
+                <div class="dropdown-menu-search" style="display: none;">
+                </div>
+                <span id="start-location-name" hidden>Current Location</span>
+                <span id="start-location-address" hidden></span>
+                <span id="start-location-latlng" hidden></span>
+            </div>
+            <div style="position: relative;">
+                <label>End Location</label>
+                <input id="end-location" type="text" class="form-control" onkeyup="pauseSearch(this, 'End');checkFirstPage();" required>
+                <div class="dropdown-menu-search" style="display: none;">
+                </div>
+                {% for attr in attributes %}
+                <span id="end-location-{{attr}}" hidden></span>
+                {% endfor %}
+            </div>
         {% endif %}
         <div>
             <h5>Select mode of transport</h5>
             <div style="display: inline;" onclick="checkFirstPage();">
                 <label for="trans-walk">Walk</label>
+                {% if itinerary != None %}
+                    {% if itinerary.getTransportMode() == "walk" %} <input type="radio" name="transportMode" id="trans-walk" value="walk" checked>
+                    {% else %} <input type="radio" name="transportMode" id="trans-walk" value="walk"> {% endif %}
+                    <label for="trans-publicTransport">Public Transport</label>
+                    {% if itinerary.getTransportMode() == "pt" %} <input type="radio" name="transportMode" id="trans-publicTransport" value="pt" checked>
+                    {% else %} <input type="radio" name="transportMode" id="trans-publicTransport" value="pt">{% endif %}
+                    <label for="trans-drive">Drive</label>
+                    {% if itinerary.getTransportMode() == "drive" %} <input type="radio" name="transportMode" id="trans-drive" value="drive" checked>
+                    {% else %} <input type="radio" name="transportMode" id="trans-drive" value="drive">{% endif %}
+                    <label for="trans-cycle">Cycle</label>
+                    {% if itinerary.getTransportMode() == "cycle" %} <input type="radio" name="transportMode" id="trans-cycle" value="cycle" checked>
+                    {% else %} <input type="radio" name="transportMode" id="trans-cycle" value="cycle">{% endif %}
+                {% else %}
                 <input type="radio" name="transportMode" id="trans-walk" value="walk">
                 <label for="trans-publicTransport">Public Transport</label>
                 <input type="radio" name="transportMode" id="trans-publicTransport" value="pt">
@@ -45,27 +330,24 @@
                 <input type="radio" name="transportMode" id="trans-drive" value="drive">
                 <label for="trans-cycle">Cycle</label>
                 <input type="radio" name="transportMode" id="trans-cycle" value="cycle">
+                {% endif %}
             </div>
         </div>
 
         <button class="next" id="firstPageNext" onclick="dismissFirst();" disabled>Next</button>
-    </div>
-
+    </div> -->
+    
     {% if itinerary != None %}
     <div class="device" id="planPage">
     {% else %}
     <div class="device" id="planPage" style="display: none;">
     {% endif %}
-        <div class="float-right">
-            <a href="/itinerary/showTrip">Map</a>
-        </div>
-        
         {% if itinerary != None %}
         <div id="startTime-text">Start time: {{itinerary.getStartTime()}}</div>
         <div id="endTime-text">End time: {{itinerary.getEndTime()}}</div>
-        <div id="time-left">Duration left: <span>{{itinerary.getTimeLeft()}}</span></div>
+        <div id="time-left">Duration left: <span>{{itinerary.getTimeLeft()| int}}</span></div>
     
-        <div id="transport-text">Transport mode: {{itinerary.getTransportMode()}}</div>
+        <div id="transport-text">Transport mode: {% if itinerary.getTransportMode() == "pt" %}Public Transport{% else %}{{itinerary.getTransportMode()}}{% endif %}</div>
         <div>Category: Eateries</div>
         {% else %}
         <div id="startTime-text">Start time: </div>
@@ -78,36 +360,52 @@
 
         <div id="start">Start location: </div>
         
-        <button class="btn btn-primary" onclick="recommend(1);">Draw new plan</button>
+        <button class="btn btn-primary" onclick="recommendExplorer();">Draw new plan</button>
     
         <br>
         <div id="recommendation-listings">
             {% if itinerary != None %}
-                {% for place in itinerary.getPlaces() %}
-                <button class="btn-addColor" onclick="recommend(1);">  +  </button>
+                {% for i in range(itinerary.getPlaces()| length) %}
                 <div class="card plan-selection">
-                    <h5 class="plan-name">{{place["Name"]}}</h5>
-                    <p class="plan-address" style="font-size:12px">{{place["Address"]}}</p>
+                    <h5 class="plan-name">{{itinerary.getPlaces()[i].Name}}</h5>
+                    <p class="plan-address" style="font-size:12px">{{itinerary.getPlaces()[i].Address}}</p>
                     <br />
-                    <p class="plan-activity-duration"><span>{{place.ActivityDuration}}</span> min</p>
-                    <p class="plan-total-duration"><span>{{place.TotalDuration|int}}</span> min</p>
+                    <p class="plan-activity-duration">{% if itinerary.getPlaces()[i].ActivityDuration %}<span>{{itinerary.getPlaces()[i].ActivityDuration}}</span> min{% else %}<span></span>{% endif %}</p>
+                    <p class="plan-total-duration">{% if itinerary.getPlaces()[i].TotalDuration %}<span>{{itinerary.getPlaces()[i].TotalDuration|int}}</span> min{% else %}<span></span>{% endif %}</p>
+                    <p class="plan-timing"></p>
+                    <p class="plan-latlng" hidden>{{itinerary.getPlaces()[i].Latlng}}</p>
+                    {% if i != itinerary.getPlaces()| length - 1 and i != 0 %}
+                    <p class="plan-edit" onclick="editCard(this, parseInt('{{i+1}}'))">Edit</p>
+                    <p class="plan-delete" onclick="delCard(this, parseInt('{{i+1}}'))">Delete</p>
+                    {% endif %}
                 </div>
+                {% if i != itinerary.getPlaces()| length - 1 %}<button class="btn-addPlan btn-addColor" onclick="recommend(1, parseInt('{{i+1}}'));">  +  </button>{% endif %}
                 {% endfor %}
             {% endif %}
         </div>
         <br>
-        <div>
-            <label>End destination</label>
-            <input type="text" id="endDestination" class="form-control" onkeyup="pauseSearch();"></input>
-        </div>
-        
-        <div id="show-destinations" class="row" style="width: 100%; height: 200px; overflow: auto;"></div>
     
         <form method="POST">
-            <input type="submit" value="Create Trip" class="btn btn-primary">
+            <input id="itinerary-id" name="id" value="{% if itinerary != None %}{{itinerary.getId()}}{% endif %}" hidden readonly>
+            <input type="submit" value="Review Trip" class="btn btn-primary">
         </form>
     </div>
     
+    <!-- Search Page -->
+    <div class="device" id="searchTab" style="position: absolute; z-index:2; background-color: white; display: none; bottom: -200vh;">
+        <input type="text" class="form-control" id="searchBar" onkeyup="pauseSearch();" autocomplete="off">
+        <div id="searchPage" hidden>1</div>
+        <div id="search-btnId" hidden></div>
+        <div id="search-divOrder" hidden></div>
+        <div class="dropdown-item" id="start" onclick="addSE(this);">
+            <p style="font-size: 14px; margin-bottom: 3px; font-weight: bold;">Your Location</p>
+            <p style="font-size: 11px; max-width: 100%; overflow: auto; margin-bottom: 3px; display: none;">Current Location</p>
+            <p id="start-latlng" hidden></p>
+        </div>
+        <div id="search-results">
+        </div>
+    </div>
+
 </div>
 
 {% endblock %}
@@ -117,12 +415,13 @@
 <script>
     var post;
     var skipped = [0];
-    var pageNum = 2;
-    var allowanceLeft = parseInt(document.getElementById("time-left").innerText) || 0;
+    var allowanceLeft = parseInt(document.querySelector("#time-left").querySelector("span").innerText);
+    var originalDuration = allowanceLeft;
+    var pendingChooseList = {};
     const currentTime = new Date();
 
     /*function initFunctions() {
-        $("#recommend-btn").on("click", function() {
+        $("#recommend-btn").on("click", f() {
             recommend(1);
         })
         $("#next-recommend-btn").on("click", function() {
@@ -130,23 +429,43 @@
             pageNum += 1;
         })
     }*/
-    
+
     function checkFirstPage() {
         var firstSelection = document.getElementById("firstSelection");
         var allInps = firstSelection.getElementsByTagName("input");
         var radioChecked = firstSelection.querySelector('input[type="radio"]:checked');
 
         var nextBtn = document.getElementById("firstPageNext");
-        if (allInps[0].value != "" && allInps[1].value != "" && radioChecked) {
-            nextBtn.style.background = "linear-gradient(193.74deg, #E4002B 3.02%, #E82038 31.9%, #F8A36F 95.45%)";
-            nextBtn.style.color = "white";
-            nextBtn.disabled = false;
+        var valid = true;
+        for (var i=0; i<allInps.length; i++) {
+            if (allInps[i].value.trim() == "") {
+                valid = false;
+                break;
+            }
+        }
+
+        if (valid && radioChecked) {
+            nextBtn.setAttribute("onclick", "dismissFirst();")
+            nextBtn.classList.remove("maincta-disabled");
+            nextBtn.classList.add("maincta");
         }
         else {
-            nextBtn.style.background = "#EEEEEE";
-            nextBtn.style.color = "#BBBBBB";
-            nextBtn.disabled = true;
+            nextBtn.removeAttribute("onclick");
+            nextBtn.classList.remove("maincta");
+            nextBtn.classList.add("maincta-disabled");
         }
+    }
+
+    function selectRadio(id, btn) {
+        var allBtns = btn.closest(".transportmodecon").getElementsByClassName("transportmode");
+        for (var i=0; i<allBtns.length; i++) {
+            allBtns[i].classList.remove("addColor");
+            allBtns[i].querySelector("path").setAttribute("style", "fill:#BBBBBB");
+        }
+
+        document.getElementById(id).checked = true;
+        btn.classList.add("addColor");
+        btn.querySelector("path").setAttribute("style", "fill:white");
     }
 
     function dismissFirst() {
@@ -162,6 +481,7 @@
             console.log("Check checkboxes");
         }
         else {
+            // Displays
             document.getElementById("startTime-text").innerText += startTme;
             document.getElementById("endTime-text").innerText += endTme;
             document.getElementById("transport-text").innerText += document.querySelector(`label[for="${document.querySelector('input[name="transportMode"]:checked').id}"]`).innerText;
@@ -171,20 +491,55 @@
             var endDate = new Date(0, 0, 0, endTmeArr[0], endTmeArr[1], 0);
             var diff = endDate.getTime() - startDate.getTime();
             allowanceLeft = Math.floor(diff / 1000 / 60);
+            originalDuration = Math.floor(diff / 1000 / 60);
             document.getElementById("time-left").querySelector("span").innerText = allowanceLeft;
 
+            // Set post
+            post = document.getElementById("start-location-latlng").innerText.split(",");
+
+            // Start end cards
+            div = document.getElementById("recommendation-listings");
+            var startPlace = new DOMParser().parseFromString(`
+                <div class="card plan-selection">
+                    <h5 class="plan-name">${$("#start-location").val()}</h5>
+                    <p class="plan-address" style="font-size:12px">${$("#start-location-address").text()}</p>
+                    <p class="plan-activity-duration"><span></span></p>
+                    <p class="plan-total-duration"><span></span></p>
+                    <p class="plan-timing"></p>
+                    <br />
+                    <p class="plan-latlng" hidden>${$("#start-location-latlng").text()}</p>
+                </div>`, "text/html").body.firstElementChild;
+            var endPlace = new DOMParser().parseFromString(`
+                <div class="card plan-selection">
+                    <h5 class="plan-name">${$("#end-location").val()}</h5>
+                    <p class="plan-address" style="font-size:12px">${$("#end-location-address").text()}</p>
+                    <p class="plan-activity-duration"><span></span></p>
+                    <p class="plan-total-duration"><span></span></p>
+                    <p class="plan-timing"></p>
+                    <br />
+                    <p class="plan-latlng" hidden>${$("#end-location-latlng").text()}</p>
+                </div>`, "text/html").body.firstElementChild;
+
+            div.insertBefore(startPlace, div.firstChild);
+            div.appendChild(endPlace);
+
+            // Pull screen down
             $("#firstSelection").animate({
                 bottom: "-200vh"
             }, 350, function() {
                 $("#firstSelection").hide();
             })
             $("#planPage").show();
+
+            // Recommend itinerary straight
+            recommendExplorer();
         }
     }
 
-    function nextRecommend() {
-        recommend(pageNum);
+    function nextRecommend(pageNum, order, btn) {
         pageNum += 1;
+        recommend(pageNum, order, btn.closest(".plan-choices-list"));
+        btn.remove();
     }
 
     function getLocation() {
@@ -194,18 +549,19 @@
     }
 
     function showRoute(position) {
-        document.getElementById("start").innerText += position.coords.latitude + "," + position.coords.longitude
-        post = position
+        latLngStr = position.coords.latitude + "," + position.coords.longitude
+        document.getElementById("start-latlng").innerText += latLngStr
+        if (document.getElementById("start-location-name").innerText == "Current Location") {
+            document.getElementById("start-location-latlng").innerText = latLngStr
+        }
 
-        var listingNo = document.getElementById("recommendation-listings").children.length;
-        if (listingNo == 0) {
-            recommend(1);
-        } 
+        var post = document.getElementById("start-location-latlng").innerText.split(",");
     }
 
-    function recommend(pageNum) {
+    function recommendExplorer() {
         startTme = $("#start-time").val();
         endTme = $("#end-time").val();
+
         if (startTme == "") {
             $("#start-time").focus()
         }
@@ -214,26 +570,45 @@
         }
         else {
             div = document.getElementById("recommendation-listings");
-            div.innerHTML = "";
-            
-            $("#reloadingbg").show();
+            endCoords = document.getElementById("end-location-latlng").innerText.split(",");
 
+            var latlng = document.getElementById("start-location-latlng").innerText.split(",")
+
+            $("#reloadingbg").show();
+            
             $.ajax({
                 type: "POST",
-                url: `/funcs/explorer-recommend-places?page=${pageNum}`,
+                url: `/funcs/explorer-recommend-places`,
                 data: {
                     startTime: startTme,
                     endTime: endTme,
-                    latitude: post.coords.latitude,
-                    longitude: post.coords.longitude,
-                    endLatitude: 1.2834542,
-                    endLongitude: 103.8608090,
+                    latitude: latlng[0],
+                    longitude: latlng[1],
+                    endLatitude: endCoords[0],
+                    endLongitude: endCoords[1],
                     category: "Eateries",
                     transportMode: "pt",
                 },
                 success: function(result) {
                     cleanedResult = result.replaceAll("\\u", "").replaceAll("NaN", `""`);
                     result = JSON.parse(cleanedResult);
+                    
+                    // Clear out listing with new ones
+                    var startCard = div.firstElementChild.cloneNode(true);
+                    var endCard = div.lastElementChild.cloneNode(true);
+                    div.innerHTML = "";
+
+                    div.appendChild(startCard);
+                    div.appendChild(endCard);
+
+                    div.insertBefore(new DOMParser().parseFromString(`<button class="btn-addPlan btn-addColor" onclick="recommend(1, 1);">  +  </button>`, "text/html").body.firstElementChild, div.lastChild);
+
+                    startTmeArr = startTme.split(":");
+                    endTmeArr = endTme.split(":");
+                    var startDate = new Date(0, 0, 0, startTmeArr[0], startTmeArr[1], 0);
+                    var endDate = new Date(0, 0, 0, endTmeArr[0], endTmeArr[1], 0);
+                    var diff = endDate.getTime() - startDate.getTime();
+                    allowanceLeft = Math.floor(diff / 1000 / 60);
 
                     placesName = [];
                     placesAddress = [];
@@ -241,17 +616,24 @@
                     placesDuration = [];
 
                     // Display function
-                    for (var i in result) {
-                        div.innerHTML += `
-                        <button class="btn-addColor" onclick="recommend(1);">  +  </button>
+                    for (var i=0; i< result.length; i++) {
+                        var newPlace = new DOMParser().parseFromString(`
+                            <div class="card plan-selection">
+                                <h5 class="plan-name">${result[i].Name}</h5>
+                                <p class="plan-address" style="font-size:12px">${result[i].Address}</p>
+                                <br />
+                                <p class="plan-activity-duration"><span>${Math.round(result[i].ActivityDuration)}</span> min</p>
+                                <p class="plan-total-duration"><span>${Math.round(result[i].Duration)}</span> min</p>
+                                <p class="plan-timing"></p>
+                                <p class="plan-latlng" hidden>${result[i].Latlng}</p>
+                                <p class="plan-edit" onclick="editCard(this, ${i+2})">Edit</p>
+                                <p class="plan-delete" onclick="delCard(this, ${i+2})">Delete</p>
+                            </div>`, "text/html").body.firstElementChild;
+                        var newBtn = new DOMParser().parseFromString(`   
+                            <button class="btn-addPlan btn-addColor" onclick="recommend(1, ${i+2});">  +  </button>`, "text/html").body.firstElementChild;
                         
-                        <div class="card plan-selection">
-                            <h5 class="plan-name">${result[i].Name}</h5>
-                            <p class="plan-address" style="font-size:12px">${result[i].Address}</p>
-                            <br />
-                            <p class="plan-activity-duration"><span>${Math.round(result[i].ActivityDuration)}</span> min</p>
-                            <p class="plan-total-duration"><span>${Math.round(result[i].Duration)}</span> min</p>
-                        </div>`;
+                        div.insertBefore(newPlace, div.lastElementChild);
+                        div.insertBefore(newBtn, div.lastElementChild);
 
                         allowanceLeft -= result[i].Duration;
                         document.getElementById("time-left").querySelector("span").innerText = parseInt(allowanceLeft);
@@ -262,22 +644,262 @@
                         placesDuration.push(parseFloat(result[i].Duration))
                     }
 
+                    reAssignValues();
                     saveTrips(placesName, placesAddress, placesActivityDuration, placesDuration)
+                },
+                error: function(jq, status, errorMsg) {
+                    div.innerText = `Something went wrong. Try again`;
                 },
                 complete: function(result) {
                     $("#reloadingbg").hide();
                 }
             })
         }
-       
     }
 
-    function saveTrips(placesName, placesAddress, placesActivityDuration, placesDuration) {
+    // Order - the positional order of the button in DOM
+    async function recommend(pageNum, order, listing=null) {
+        startTme = $("#start-time").val();
+        endTme = $("#end-time").val();
+        transportMde = document.querySelector('input[name="transportMode"]:checked').value;
+
+        div = document.getElementById("recommendation-listings");
+        var allCards = div.getElementsByClassName("plan-selection");
+
+        $("#reloadingbg").show();
+        console.log(pageNum+", "+order);
+        // Get place before, after and registered places
+        var registeredPlaces = [].slice.call(allCards).slice(1, allCards.length - 1).map(x => x.querySelector(".plan-address").innerText);
+        if (order - 1 > 0) {
+            var placeBefore = allCards[order-1].querySelector(".plan-address").innerText;
+            var latlng = allCards[order-1].querySelector(".plan-latlng").innerText.split(",");
+        }
+        else {
+            var placeBefore;
+            var latlng = document.getElementById("start-location-latlng").innerText.split(",");
+        }
+        
+        
+        var placeAfter = allCards[order].querySelector(".plan-address").innerText;
+
+        await $.ajax({
+            type: "POST",
+            url: `/funcs/planner-recommend-places?page=${pageNum}`,
+            data: {
+                date: currentTime.toISOString().slice(0, 10),
+                startTime: startTme,
+                endTime: endTme,
+                timeLeft: allowanceLeft,
+                latitude: latlng[0],
+                longitude: latlng[1],
+                category: "Eateries",
+                transportMode: transportMde,
+                skipped: JSON.stringify(skipped),
+                placesAdded: registeredPlaces,
+                abovePlace: placeBefore,
+                belowPlace: placeAfter
+            },
+            success: function(result) {
+                cleanedResult = result.replaceAll("\\u", "").replaceAll("NaN", `""`);
+                result = JSON.parse(cleanedResult);
+                pendingChooseList[order] = result;
+                pendingChooseList[order].pageNum = 2;
+
+                if (!listing) {
+                    listing = new DOMParser().parseFromString(
+                    `<div class="plan-choices-list">
+                    </div>`, "text/html").body.firstElementChild;
+
+                    var allAddBtns = div.getElementsByClassName("btn-addPlan");
+                    div.insertBefore(listing, allAddBtns[order-1].nextSibling);
+                }
+
+                if (result.list.length > 0) {
+                    for (var i in result.list) {
+                        listing.innerHTML += 
+                        `<div class="card plan-choice" style="width:150px; height:175px; margin-right: 1em; max-width:
+                            flex-basis: 33.333%;
+                            flex-grow: 0;
+                            flex-shrink: 0;" onclick="choosePlace(this, ${order}, ${i});">
+                            <h5>${result.list[i].Name}</h5>
+                            <p style="font-size:12px">${result.list[i].Address}</p>
+                            <br />
+                            <p>Matching ${result.list[i].RecommendationScore.toFixed(2)}</p>
+                        </div>`;
+
+                    }
+                }
+                else {
+                    listing.innerHTML += `<div class="card">There isn't any available places to be added</div>`;
+                    var allBtns = div.getElementsByClassName("btn-addPlan");
+                    for (var i=0; i<allBtns.length; i++) {
+                        allBtns[i].disabled = true;
+                        allBtns[i].classList.remove("btn-addColor");
+                    }
+                }
+
+                if (result.list.length == 10)
+                    listing.innerHTML += `<p onclick="nextRecommend(${pageNum}, ${order}, this)" class="list-load-more">Load more</p>`;
+
+                console.log(skipped);
+            },
+            error: function(jq, status, errorMsg) {
+                div.innerHTML = 
+                `<div class="plan-choices-list">
+                    Something went wrong. Try again
+                </div>`;
+            },
+            complete: function(result) {
+                $("#reloadingbg").hide();
+            }
+        });
+    }
+
+    function choosePlace(btn, order, itemNo) {
+        btn.parentElement.remove()
+        div = document.getElementById("recommendation-listings");
+        var info = pendingChooseList[order].list[itemNo];
+
+        var newPlace = new DOMParser().parseFromString(`
+            <div class="card plan-selection">
+                <h5 class="plan-name">${info.Name}</h5>
+                <p class="plan-address" style="font-size:12px">${info.Address}</p>
+                <br />
+                <p class="plan-activity-duration"><span>${Math.round(info.ActivityDuration)}</span> min</p>
+                <p class="plan-total-duration"><span>${Math.round(info.Duration)}</span> min</p>
+                <p class="plan-timing"></p>
+                <p class="plan-latlng" hidden>${info.Latlng}</p>
+                <p class="plan-edit" onclick="editCard(this, ${order})">Edit</p>
+                <p class="plan-delete" onclick="delCard(this, ${order})">Delete</p>
+            </div>`, "text/html").body.firstElementChild;
+        var newBtn = new DOMParser().parseFromString(`   
+            <button class="btn-addPlan btn-addColor" onclick="recommend(1, ${order+1});">  +  </button>`, "text/html").body.firstElementChild;
+
+        var allAddBtns = div.getElementsByClassName("btn-addPlan");
+        console.log(order, allAddBtns.length)
+        
+        div.insertBefore(newBtn, allAddBtns[order-1].nextSibling);
+        div.insertBefore(newPlace, allAddBtns[order-1].nextSibling);
+        
+        allowanceLeft -= info.Duration;
+        console.log(allowanceLeft);
+        document.getElementById("time-left").querySelector("span").innerText = parseInt(allowanceLeft);
+        
+        // Fill up info for autosaving data
+        reCal2Places(div, order);
+        reAssignValues();
+        saveTrips();
+    }
+
+    // Edit/delete/rearrange
+    async function editCard(btn, order) {
+        var card = btn.closest(".plan-selection");
+        var timeLeft = document.querySelector("#time-left").querySelector("span");
+        card.closest("#recommendation-listings").getElementsByClassName("btn-addPlan")[order-1].remove();
+        reAssignValues();
+
+        timeLeft.innerText = parseInt(timeLeft.innerText) + parseInt(card.querySelector(".plan-total-duration").querySelector("span").innerText);
+        allowanceLeft = timeLeft.innerText;
+        await recommend(1, order-1);
+        card.remove();
+    }
+
+    function delCard(btn, order) {
+        var card = btn.closest(".plan-selection");
+        var div = btn.closest("#recommendation-listings");
+        div.getElementsByClassName("btn-addPlan")[order-1].remove();
+        card.remove();
+
+        var timeLeft = document.querySelector("#time-left").querySelector("span");
+        timeLeft.innerText = parseInt(timeLeft.innerText) + parseInt(card.querySelector(".plan-total-duration").querySelector("span").innerText);
+        allowanceLeft = timeLeft.innerText;
+
+        reAssignValues();
+        reCal2Places(div, order-1);
+    }
+
+    // Recalculate route and travel time
+    async function reCal2Places(div, order) {
+        var cards = div.getElementsByClassName("plan-selection");
+        var aboveCard = cards[order-1];
+        var belowCard = cards[order];
+        var totalDuration = 0;
+        for (var i=1; i<order-1; i++) {
+            console.log(cards[i].querySelector(".plan-total-duration").querySelector("span").innerText)
+            var duration = parseFloat(cards[i].querySelector(".plan-total-duration").querySelector("span").innerText);
+            totalDuration += duration;
+        }
+
+        await $.ajax({
+            type: "POST",
+            url: `/funcs/reCalculate`,
+            data: {
+                latlngs: [aboveCard.querySelector(".plan-latlng").innerText, belowCard.querySelector(".plan-latlng").innerText],
+                routeType: document.getElementById("firstSelection").querySelector('input[type="radio"]:checked').value,
+                date: currentTime.toISOString().slice(0, 10),
+                topDuration: totalDuration,
+                startTime: $("#start-time").val()
+            },
+            success: function(result) {
+                result = JSON.parse(result);
+                var belowCardTDuration = belowCard.querySelector(".plan-total-duration").querySelector("span");
+                var belowCardADuration = belowCard.querySelector(".plan-activity-duration").querySelector("span");
+                var timeDiff = result[0] + parseInt(belowCardADuration.innerText) - parseInt(belowCardTDuration.innerText);
+                belowCardTDuration.innerText = parseInt(belowCardADuration.innerText) + result[0];
+                document.querySelector("#time-left").querySelector("span").innerText = parseInt(document.querySelector("#time-left").querySelector("span").innerText) + timeDiff;
+            }
+        })
+
+        saveTrips();
+    }
+
+    function reAssignValues() {
+        var div = document.getElementsByClassName("btn-add-place");
+        for (var i=0; i<div.length; i++) {
+            div[i].setAttribute("onclick", `recommend(1, ${i+1});`);
+        }
+
+        var startTime = new Date(`2022-01-01T${$("#start-time").val()}:00`);
+        var plansCards = document.getElementsByClassName("plan-selection");
+
+        var currTime = startTime.toLocaleTimeString('en-SG', {hour12: false});
+        plansCards[0].querySelector(".plan-timing").innerText = currTime.substring(0, currTime.length-3);
+        for (var i=1; i<plansCards.length-1; i++) {
+            startTime.setTime(startTime.getTime() + parseInt(plansCards[i].querySelector(".plan-total-duration").querySelector("span").innerText)*60000);
+
+            currTime = startTime.toLocaleTimeString('en-SG', {hour12: false});
+            console.log(plansCards[i])
+            plansCards[i].querySelector(".plan-timing").innerText = currTime.substring(0, currTime.length-3);
+        }
+    }
+
+    function saveTrips() {
         startTme = $("#start-time").val();
         endTme = $("#end-time").val();
 
         // Update db function
-        itineraryId = document.getElementById("itinerary-id").innerText;
+        itineraryId = document.getElementById("itinerary-id").value;
+        var allPlacesDiv = document.getElementsByClassName("plan-selection");
+        var placesName = [];
+        var placesAddress = [];
+        var placesActivityDuration = [];
+        var placesDuration = [];
+        var placesLatlng = [];
+
+        for (var i=0; i<allPlacesDiv.length; i++) {
+            placesName.push(allPlacesDiv[i].querySelector(".plan-name").innerText);
+            placesAddress.push(allPlacesDiv[i].querySelector(".plan-address").innerText);
+            if (i == 0 || i == allPlacesDiv.length-1) {
+                placesActivityDuration.push(null);
+                placesDuration.push(null);
+            }
+            else {
+                placesActivityDuration.push(parseInt(allPlacesDiv[i].querySelector(".plan-activity-duration").querySelector("span").innerText));
+                placesDuration.push(parseInt(allPlacesDiv[i].querySelector(".plan-total-duration").querySelector("span").innerText));
+            }
+            placesLatlng.push(allPlacesDiv[i].querySelector(".plan-latlng").innerText);
+        }
+
         $.ajax({
             type: "POST",
             url: `/funcs/save-trip`,
@@ -292,36 +914,59 @@
                 addresses: placesAddress,
                 activityDuration: placesActivityDuration,
                 duration: placesDuration,
-                timeAllowance: 360,
-                timeLeft: 360,
+                latlngs: placesLatlng,
+                timeAllowance: originalDuration,
+                timeLeft: allowanceLeft,
                 transportMode: "pt",
                 confirmed: false,
-                status: "Planned"
+                status: "Planning",
+                hasEnd: true
             },
             success: function(result) {
+                document.getElementById("itinerary-id").value = JSON.parse(result).id;
                 console.log("System: Trip has been autosaved");
-                document.getElementById("itinerary-id").innerText = JSON.parse(result).id;
             }
         })
     }
 
     var canSearch = true;
+    var dropdownCooldown = false;
+
+    function openSearch(btn) {
+        // Pull screen up
+        $("#searchTab").show();
+        $("#searchTab").animate({
+            bottom: "0"
+        }, 350, function () {
+            document.querySelector("#searchBar").focus();
+        });
+
+        $("#search-btnId").text(btn.id);
+    }
+    function closeSearch() {
+        // Pull screen down
+        $("#searchTab").animate({
+            bottom: "-200vh"
+        }, 350, function() {
+            $("#searchTab").hide();
+        });
+    }
 
     function pauseSearch() {
         canSearch = false;
-        console.log("Here")
         setTimeout(function() {
             canSearch = true;
-            search()
-        }, 1000)
+            search();
+        }, 350);
     }
-
+    
     function search() {
         if (canSearch) {
-            var dropdownMenu = document.getElementById("show-destinations");
-            const search = $("#endDestination").val()
-            const pageNum = 1
-            if (!search) {
+            var dropdownMenu = document.querySelector("#search-results");
+            const search = document.querySelector("#searchBar").value;
+            const pageNum = $("#searchPage").val()
+
+            if (!search.trim()) {
                 dropdownMenu.innerHTML = "";
             }
             else {
@@ -329,36 +974,76 @@
                     url: `https://developers.onemap.sg/commonapi/search?searchVal=${search}&returnGeom=Y&getAddrDetails=Y&pageNum=${pageNum}`,
                     success: function(result) {
                         dropdownMenu.innerHTML = "";
-                        showLength = 6;
                         if (result.results.length > 0) {
-                            if (result.results.length < 6) {
+                            dropdownMenu.style.display = "block";
+                            showLength = 10;
+                            if (result.results.length < 10) {
                                 showLength = result.results.length;
                             }
 
                             for (var i=0; i<showLength; i++) {
+                                dropdownCooldown = true;
                                 record = result.results[i]
                                 dropdownMenu.innerHTML += `
-                                <div class="dropdown-item" onclick="">
-                                    <p style="font-size: 14px;"><b>${record.SEARCHVAL}</b></p>
-                                    <p style="font-size: 11px; max-width: 100%; overflow: auto;">${record.ADDRESS}</p>
+                                <div class="dropdown-item" onclick="addSE(this);">
+                                    <p style="font-size: 14px; margin-bottom: 3px; font-weight: bold;">${capitalize(record.SEARCHVAL)}</p>
+                                    <p style="font-size: 11px; max-width: 100%; overflow: auto; margin-bottom: 3px;">${capitalize(record.ADDRESS)}</p>
+                                    <p hidden>${record.LATITUDE},${record.LONGITUDE}</p>
                                 </div>`;
+
+                                setTimeout(function () { dropdownCooldown = false; }, 126)
                             }
                         }
                         else {
                             dropdownMenu.innerHTML = `<div class="dropdown-item">No results found</div>`; 
                         }
-                }});
+                    }
+                });
             }
-            
-        }       
-    } 
+
+        }     
+    }
 
     function searchNextPage() {
         $("#searchPage").text(parseInt($("#searchPage").text()) + 1)
     }
 
+    function addSE(card) { 
+        var btnId = $("#search-btnId").text();
+        var allP = card.getElementsByTagName("p");
+        var type = "start";
+        if (btnId.charAt(0) == "e") {
+            type = "end";
+        }
+        
+        $(`#${type}-location`).val(allP[0].innerText);
+        startEndAttr = ["name", "address", "latlng"];
+        for (var i=0; i<startEndAttr.length; i++) {
+            document.querySelector(`#${type}-location-${startEndAttr[i]}`).innerText = allP[i].innerText;
+        }
+
+        closeSearch();
+    }
+
     // initFunctions();
-    getLocation();
+
+    window.addEventListener('load', function () {
+        document.addEventListener('click', function (event) {
+            const allTabs = document.getElementsByClassName("dropdown-menu-search");
+            const endInp = document.getElementById("end-location");
+            const startInp = document.getElementById("start-location");
+
+            if (![].slice.call(allTabs).find(x => x === event.target) && event.target != endInp && event.target != startInp) {
+                if (!dropdownCooldown) {
+                    for (var i in allTabs) {
+                        allTabs.item(i).style.display = "none";
+                    }
+                }
+            }
+        });
+
+        getLocation();
+    });
 
 </script>
 {% endblock %}

@@ -1,6 +1,5 @@
 package com.nyp.sit.s202897h.redpinsbuffer
 
-import android.annotation.SuppressLint
 import android.app.Service
 import android.content.Context
 import android.content.Intent

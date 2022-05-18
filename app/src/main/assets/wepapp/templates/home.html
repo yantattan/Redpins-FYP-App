@@ -2,27 +2,540 @@
 {% block title %}Redpins Buffer{% endblock %}
 
 {% block content %}
-<!--START YOUR HTML WITHIN block content and endblock-->
-<div class="device">
-    <h1>Hello {{session["current_user"]["username"]}}</h1>
-    <a href="/qr-scanner">Scan me</a>
-    <br />
-    <br>
-    <div>
+<div class="device" id="home">
+    <img src="../../static/images/spots.png" alt="">
+
+    <div class="homeheader">
+      <h1>Discover</h1>
+
+      <ul>
+        <li onclick="openSearch();"><img src="/static/images/search.png" alt="search"></li>
+        <li><img src="/static/images/saved.png" alt="saved"></li>
+      </ul>
+    </div>
+
+    <section class="homecontent">
+        <div class="banner">
+
+        </div>
+
+        <div class="categories">
+            <ul>
+                {% for cat in catInfo %}
+                <li>
+                    <div class="categoriesbutton">
+                        <svg>
+                        </svg>
+                    </div>
+                    <p>{{cat}}</p>
+                </li>
+                {% endfor %}
+                {% for i in range(8 - catInfo|length) %}
+                <li>
+                    <div class="categoriesbutton">
+                        <svg>
+                        </svg>
+                    </div>
+                    <p>Lorem</p>
+                </li>
+                {% endfor %}
+            </ul>
+            <ul>
+                {% for i in range(8) %}
+                <li>
+                    <div class="categoriesbutton">
+                        <svg>
+                        </svg>
+                    </div>
+                    <p>Lorem</p>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- recent searches -->
+      <div class="sectionheader recentheader">
+        <h1>Recent Searches</h1>
+        <h3>Clear</h3>
+      </div>
+
+      <div class="recentsearches">
+        <div class="cardscon">
+
+          <div class="recentcards">
+            <div class="cardimg">
+              <div class="save">
+                <svg>
+                  <path
+                    d="M10.2855 0H1.7145C1.26103 0.00164455 0.82671 0.189764 0.50683 0.523083C0.18695 0.856402 0.00763808 1.3077 0.0082357 1.77795L0 16L6 13.3331L12 16V1.77795C11.998 1.30704 11.8168 0.855995 11.4957 0.523007C11.1746 0.190018 10.7396 0.00204303 10.2855 0V0Z"
+                    fill="#BBBBBB" />
+                </svg>
+              </div>
+            </div>
+
+            <div class="cardinfo">
+              <h1 class="recentname">Lorem</h1>
+              <div class="recenttype">
+                <h3 class="recentcat">Lorem</h3>
+                <div class="rating">
+                  <svg width="12" height="12" fill="none">
+                    <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+                  </svg>
+                  <svg width="12" height="12" fill="none">
+                    <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+                  </svg>
+                  <svg width="12" height="12" fill="none">
+                    <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+                  </svg>
+                  <svg width="12" height="12" fill="none">
+                    <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+                  </svg>
+                  <svg width="12" height="12" fill="none">
+                    <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+                  </svg>
+
+                  <p class="ratingvalue">234</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="recentcards">
+            <div class="cardimg">
+              <div class="save">
+                <svg width="12" height="16" viewBox="0 0 12 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    d="M10.2855 0H1.7145C1.26103 0.00164455 0.82671 0.189764 0.50683 0.523083C0.18695 0.856402 0.00763808 1.3077 0.0082357 1.77795L0 16L6 13.3331L12 16V1.77795C11.998 1.30704 11.8168 0.855995 11.4957 0.523007C11.1746 0.190018 10.7396 0.00204303 10.2855 0V0Z"
+                    fill="#BBBBBB" />
+                  <path
+                    d="M10.2855 0H1.7145C1.26103 0.00164455 0.82671 0.189764 0.50683 0.523083C0.18695 0.856402 0.00763808 1.3077 0.0082357 1.77795L0 16L6 13.3331L12 16V1.77795C11.998 1.30704 11.8168 0.855995 11.4957 0.523007C11.1746 0.190018 10.7396 0.00204303 10.2855 0V0Z"
+                    fill="#E4002B" />
+                </svg>
+              </div>
+            </div>
+
+            <div class="cardinfo">
+              <h1 class="recentname">Lorem</h1>
+              <div class="recenttype">
+                <h3 class="recentcat">Lorem</h3>
+                <div class="rating">
+                  <svg width="12" height="12" fill="none">
+                    <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+                  </svg>
+                  <svg width="12" height="12" fill="none">
+                    <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+                  </svg>
+                  <svg width="12" height="12" fill="none">
+                    <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+                  </svg>
+                  <svg width="12" height="12" fill="none">
+                    <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+                  </svg>
+                  <svg width="12" height="12" fill="none">
+                    <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+                  </svg>
+
+                  <p class="ratingvalue">234</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- top 10 -->
+      <div class="sectionheader">
+        <h1>This Month's Top 10</h1>
+        <h2>Chosen by the community!</h2>
+      </div>
+
+      <div class="top10">
+        <div class="cardscon">
+
+          <!-- cards -->
+          <div class="top10cards">
+
+            <div class="cardimg">
+
+              <div class="ranking">
+                <h1>XX</h1>
+              </div>
+
+              <div class="save">
+                <svg>
+                  <path
+                    d="M10.2855 0H1.7145C1.26103 0.00164455 0.82671 0.189764 0.50683 0.523083C0.18695 0.856402 0.00763808 1.3077 0.0082357 1.77795L0 16L6 13.3331L12 16V1.77795C11.998 1.30704 11.8168 0.855995 11.4957 0.523007C11.1746 0.190018 10.7396 0.00204303 10.2855 0V0Z"
+                    fill="#BBBBBB" />
+                </svg>
+              </div>
+            </div>
+
+            <div class="top10cardinfo">
+              <h1 class="recentname">Lorem</h1>
+
+              <div class="recenttype">
+                <h3 class="recentcat">Lorem</h3>
+                <div class="rating">
+                  <svg width="12" height="12" fill="none">
+                    <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+                  </svg>
+                  <svg width="12" height="12" fill="none">
+                    <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+                  </svg>
+                  <svg width="12" height="12" fill="none">
+                    <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+                  </svg>
+                  <svg width="12" height="12" fill="none">
+                    <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+                  </svg>
+                  <svg width="12" height="12" fill="none">
+                    <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+                  </svg>
+
+                  <p class="ratingvalue">234</p>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+
+        </div>
+      </div>
+
+
+      <!-- dazzling districts -->
+      <div class="sectionheader dazzlingheader">
+        <div>
+          <h1>Dazzling Districts</h1>
+          <h2>Afternoon tea or Happy Hour?</h2>
+        </div>
+
+        <div class="view">
+          <h3>View All</h3>
+        </div>
+      </div>
+
+      <div class="dazzlingcardscon">
+        <!-- cards -->
+        <div class="dazzlingcard">
+          <h1>Lorem</h1>
+          <h2>Lorem ipsum dolor sit amet</h2>
+        </div>
+
+        <div class="dazzlingcard">
+          <h1>Lorem</h1>
+          <h2>Lorem ipsum dolor sit amet</h2>
+        </div>
+
+        <div class="dazzlingcard">
+          <h1>Lorem</h1>
+          <h2>Lorem ipsum dolor sit amet</h2>
+        </div>
+
+        <div class="dazzlingcard">
+          <h1>Lorem</h1>
+          <h2>Lorem ipsum dolor sit amet</h2>
+        </div>
+
+      </div>
+
+
+      <!-- Amazing Attractions -->
+      <div class="sectionheader manyheadertags">
+        <div>
+          <h1>Amazing Attractions</h1>
+          <h2>Fun Things To Do!</h2>
+        </div>
+
+        <div class="view">
+          <h3>View All</h3>
+        </div>
+      </div>
+
+      <div class="maincardcon attractionscon">
+        <!-- cards -->
+        <div class="maincard attractioncard">
+          <div class="cardimg">
+
+            <div class="save">
+              <svg>
+                <path
+                  d="M10.2855 0H1.7145C1.26103 0.00164455 0.82671 0.189764 0.50683 0.523083C0.18695 0.856402 0.00763808 1.3077 0.0082357 1.77795L0 16L6 13.3331L12 16V1.77795C11.998 1.30704 11.8168 0.855995 11.4957 0.523007C11.1746 0.190018 10.7396 0.00204303 10.2855 0V0Z"
+                  fill="#BBBBBB" />
+              </svg>
+            </div>
+          </div>
+
+          <div class="maincardinfo attractioncardinfo">
+            <h1 class="recentname">Lorem</h1>
+
+            <div class="recenttype">
+              <h3 class="recentcat">Lorem</h3>
+              <div class="rating">
+                <svg width="12" height="12" fill="none">
+                  <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+                </svg>
+                <svg width="12" height="12" fill="none">
+                  <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+                </svg>
+                <svg width="12" height="12" fill="none">
+                  <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+                </svg>
+                <svg width="12" height="12" fill="none">
+                  <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+                </svg>
+                <svg width="12" height="12" fill="none">
+                  <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+                </svg>
+
+                <p class="ratingvalue">234</p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+
+      <!-- Exciting Eateries -->
+      <div class="sectionheader manyheadertags">
+        <div>
+          <h1>Exciting Eateries</h1>
+          <h2>It’s Chow-time!</h2>
+        </div>
+
+        <div class="view">
+          <h3>View All</h3>
+        </div>
+      </div>
+
+      <div class="maincardcon excitingcon">
+        <!-- cards -->
+        <div class="maincard excitingcard">
+          <div class="cardimg">
+
+            <div class="save">
+              <svg>
+                <path
+                  d="M10.2855 0H1.7145C1.26103 0.00164455 0.82671 0.189764 0.50683 0.523083C0.18695 0.856402 0.00763808 1.3077 0.0082357 1.77795L0 16L6 13.3331L12 16V1.77795C11.998 1.30704 11.8168 0.855995 11.4957 0.523007C11.1746 0.190018 10.7396 0.00204303 10.2855 0V0Z"
+                  fill="#BBBBBB" />
+              </svg>
+            </div>
+          </div>
+
+          <div class="maincardinfo excitingcardinfo">
+            <h1 class="recentname">Lorem</h1>
+
+            <div class="recenttype">
+              <h3 class="recentcat">Lorem</h3>
+              <div class="rating">
+                <svg width="12" height="12" fill="none">
+                  <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+                </svg>
+                <svg width="12" height="12" fill="none">
+                  <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+                </svg>
+                <svg width="12" height="12" fill="none">
+                  <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+                </svg>
+                <svg width="12" height="12" fill="none">
+                  <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+                </svg>
+                <svg width="12" height="12" fill="none">
+                  <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+                </svg>
+
+                <p class="ratingvalue">234</p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Go Global! -->
+      <div class="sectionheader manyheadertags">
+        <div>
+          <h1>Go Global!</h1>
+          <h2>Find out what people love!</h2>
+        </div>
+      </div>
+
+      <div class="globalcardscon">
+        <!-- cards -->
+        <div class="globalcard">
+          <h1>Lorem</h1>
+        </div>
+
+        <div class="globalcard">
+          <h1>Lorem</h1>
+        </div>
+
+        <div class="globalcard">
+          <h1>Lorem</h1>
+        </div>
+        <div class="globalcard">
+          <h1>Lorem</h1>
+        </div>
+        <div class="globalcard">
+          <h1>Lorem</h1>
+        </div>
+        <div class="globalcard">
+          <h1>Lorem</h1>
+        </div>
+
+      </div>
+
+      <p class="more">Stay Tuned For More!</p>
+
+
+    </section>
+
+    </section>
+
+    <div class="device" id="searchTab" style="position: absolute; z-index:2; background-color: white; display: none; bottom: -200vh;">
         <input type="text" class="form-control" id="searchBar" onkeyup="pauseSearch();" autocomplete="off">
-        <div id="search-dropdown">
+        <div id="searchPage" hidden>1</div>
+        <div id="search-results">
         </div>
     </div>
-    
-    <div id="searchPage">1</div>
-    <button class="btn btn-primary" id="searchNextPageBtn" onclick="searchNextPage();">Next page</button>
-</div>
+
+    <nav>
+      <svg class="homebutton" onclick="window.open('/','_self')">
+        <path
+          d="M11.5117 25.9923C8.46474 25.9923 5.41777 25.9923 2.3708 25.9923C1.84233 26.0188 1.3213 25.8612 0.899702 25.5472C0.478107 25.2332 0.18306 24.7831 0.0666556 24.2763C0.0220353 24.0649 0.00200091 23.8491 0.00693707 23.6333C0.00295583 19.0475 0.000965211 14.4617 0.000965211 9.87588C-0.00988491 9.49704 0.0708722 9.12106 0.236615 8.77878C0.402358 8.4365 0.648367 8.13766 0.954471 7.90677C3.98419 5.46762 7.00927 3.02455 10.0297 0.577578C10.4304 0.208712 10.9584 0.00237697 11.5077 2.04092e-05C12.0569 -0.00233615 12.5868 0.199461 12.9907 0.564874C16.0609 3.04051 19.1281 5.51974 22.1924 8.00254C22.4493 8.20022 22.6555 8.45425 22.7945 8.74427C22.9335 9.03429 23.0013 9.35223 22.9926 9.67262C22.9886 14.3125 22.9886 18.9527 22.9926 23.5932C23.0192 23.9154 22.974 24.2394 22.8602 24.5427C22.7464 24.846 22.5667 25.1213 22.3337 25.3496C22.1006 25.5779 21.8197 25.7536 21.5105 25.8646C21.2013 25.9756 20.8712 26.0192 20.5431 25.9923H11.5117ZM11.5366 22.6697C13.7031 22.6697 15.8695 22.6697 18.036 22.6697C18.1764 22.6791 18.3173 22.6589 18.4491 22.6103C18.5809 22.5618 18.7006 22.4861 18.8001 22.3883C18.8996 22.2905 18.9766 22.1729 19.0259 22.0435C19.0752 21.914 19.0957 21.7757 19.086 21.6378C19.086 21.3857 19.086 21.1325 19.086 20.8804C19.09 20.7492 19.0666 20.6186 19.0173 20.4966C18.968 20.3746 18.8938 20.2638 18.7993 20.171C18.7048 20.0782 18.5919 20.0054 18.4677 19.957C18.3434 19.9085 18.2104 19.8856 18.0768 19.8895C13.7167 19.8895 9.35654 19.8895 4.99642 19.8895C4.86287 19.886 4.73 19.9093 4.60593 19.9579C4.48185 20.0065 4.36919 20.0795 4.27481 20.1723C4.18044 20.2652 4.10635 20.376 4.05706 20.4979C4.00778 20.6198 3.98434 20.7503 3.98817 20.8814C3.98817 21.0974 3.98817 21.3143 3.98817 21.5303C3.96311 21.6855 3.97582 21.8444 4.02527 21.9939C4.07473 22.1433 4.15952 22.2792 4.27272 22.3904C4.38591 22.5015 4.5243 22.5847 4.67655 22.6333C4.8288 22.6819 4.9906 22.6943 5.1487 22.6697H11.5376"
+          fill="url(#paint0_linear_1272_1674)" />
+        <defs>
+          <linearGradient id="paint0_linear_1272_1674" x1="-1.05417" y1="18.412" x2="21.9735" y2="4.65156" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#E4002B" />
+            <stop offset="0.384252" stop-color="#E92C3D" />
+            <stop offset="1" stop-color="#F8A36F" />
+          </linearGradient>
+        </defs>
+      </svg>
+
+      <svg class="explorebutton" onclick="window.open('/itinerary/selectPlan','_self')">
+        <path d="M37.5 75C58.2107 75 75 58.2107 75 37.5C75 16.7893 58.2107 0 37.5 0C16.7893 0 0 16.7893 0 37.5C0 58.2107 16.7893 75 37.5 75Z" fill="url(#paint0_linear_1353_1773)" />
+        <path
+          d="M49.2637 20V24.5818H54V27.6364H49.2637V32.2182H46.1061V27.6364H41.3698V24.5818H46.1061V20H49.2637ZM36.6335 38.3273C37.258 38.3273 37.8685 38.1481 38.3877 37.8125C38.907 37.4769 39.3117 36.9998 39.5507 36.4417C39.7897 35.8835 39.8522 35.2693 39.7304 34.6768C39.6085 34.0843 39.3078 33.54 38.8662 33.1128C38.4246 32.6857 37.862 32.3947 37.2495 32.2769C36.637 32.159 36.0021 32.2195 35.4252 32.4507C34.8482 32.6819 34.3551 33.0734 34.0081 33.5757C33.6612 34.078 33.476 34.6686 33.476 35.2727C33.4785 36.0821 33.8119 36.8576 34.4035 37.4299C34.9952 38.0023 35.7968 38.3249 36.6335 38.3273ZM39.7911 23.4364V29.1636H44.5274V33.7455H49.1374C49.2198 34.3531 49.262 34.9653 49.2637 35.5782C49.2637 40.6487 45.0536 46.656 36.6335 53.6C28.2187 46.6509 24.0086 40.6436 24.0033 35.5782C23.9585 33.6889 24.3664 31.8152 25.1951 30.1039C26.0238 28.3926 27.2507 26.8901 28.7799 25.714C30.309 24.538 32.0989 23.7204 34.0092 23.3253C35.9195 22.9301 37.8985 22.9681 39.7911 23.4364Z"
+          fill="white" />
+        <defs>
+          <linearGradient id="paint0_linear_1353_1773" x1="-3.4375" y1="53.1116" x2="66.5365" y2="5.84387" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#E4002B" />
+            <stop offset="0.384252" stop-color="#E92C3D" />
+            <stop offset="1" stop-color="#F8A36F" />
+          </linearGradient>
+        </defs>
+      </svg>
+
+      <svg class="accountbutton" onclick="window.open('/account','_self')">
+        <path
+          d="M13.5008 12.9993C14.8356 12.999 16.1403 12.6176 17.2501 11.9033C18.3598 11.189 19.2247 10.1739 19.7354 8.98626C20.246 7.79867 20.3796 6.49193 20.1191 5.23126C19.8586 3.97059 19.2158 2.8126 18.2719 1.9037C17.3281 0.9948 16.1256 0.375799 14.8164 0.124963C13.5072 -0.125873 12.1502 0.00271749 10.917 0.494478C9.68371 0.986239 8.62954 1.81909 7.88777 2.88772C7.146 3.95636 6.74992 5.21279 6.74962 6.49817C6.74922 7.35202 6.92357 8.19757 7.26271 8.98649C7.60184 9.77541 8.09911 10.4922 8.72609 11.096C9.35308 11.6998 10.0975 12.1786 10.9167 12.5052C11.736 12.8318 12.6141 12.9997 13.5008 12.9993ZM13.5008 16.2498C8.99444 16.2484 0 18.4261 0 22.7494V26H27V22.7494C27 18.4261 18.0056 16.2484 13.5008 16.2484V16.2498Z"
+          fill="#BBBBBB" />
+      </svg>
+
+      <svg class="navbarbutton">
+        <g filter="url(#filter0_d_1272_1669)">
+          <path
+            d="M230.33 17.71C225.51 21.26 222.34 26.54 221.13 32.4C217.17 51.77 200.03 66.33 179.49 66.33C158.95 66.33 141.82 51.76 137.85 32.4C136.65 26.53 133.48 21.25 128.65 17.71L128.46 17.57C124.42 14.6 119.54 13 114.52 13H-0.5V73H359.5V13H244.46C239.45 13 234.56 14.6 230.52 17.57L230.33 17.71Z"
+            fill="white" />
+        </g>
+        <defs>
+          <filter id="filter0_d_1272_1669" x="-10.5" y="0" width="380" height="80" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+            <feFlood flood-opacity="0" result="BackgroundImageFix" />
+            <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
+            <feOffset dy="-3" />
+            <feGaussianBlur stdDeviation="5" />
+            <feComposite in2="hardAlpha" operator="out" />
+            <feColorMatrix type="matrix" values="0 0 0 0 0.8125 0 0 0 0 0.8125 0 0 0 0 0.8125 0 0 0 0.5 0" />
+            <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_1272_1669" />
+            <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_1272_1669" result="shape" />
+          </filter>
+        </defs>
+      </svg>
+
+    </nav>
+
+  </div>
 {% endblock %}
 
 {% block scripts %}
 {{super()}}
 <script>
     var canSearch = true;
+
+    function pauseSearch(inp, type) {
+        canSearch = false;
+        setTimeout(function() {
+            canSearch = true;
+            search(inp, type)
+        }, 1000)
+    }
+
+    function search(inp, type) {
+        if (canSearch) {
+            var dropdownMenu = document.querySelector("#search-results");
+            const search = inp.value;
+            const pageNum = $("#searchPage").val()
+            if (!search) {
+                dropdownMenu.style.display = "none"; 
+            }
+            else {
+                $.ajax({
+                    url: `https://developers.onemap.sg/commonapi/search?searchVal=${search}&returnGeom=Y&getAddrDetails=Y&pageNum=${pageNum}`,
+                    success: function(result) {
+                        dropdownMenu.innerHTML = "";
+                        showLength = 6;
+                        if (result.results.length > 0) {
+                            dropdownMenu.style.display = "block";
+                            if (result.results.length < 6) {
+                                showLength = result.results.length;
+                            }
+
+                            for (var i=0; i<showLength; i++) {
+                                dropdownCooldown = true;
+                                record = result.results[i]
+                                dropdownMenu.innerHTML += `
+                                <div class="dropdown-item" onclick="add${type}(this);">
+                                    <p style="font-size: 14px; margin-bottom: 3px; font-weight: bold;">${capitalize(record.SEARCHVAL)}</p>
+                                    <p style="font-size: 11px; max-width: 100%; overflow: auto; margin-bottom: 3px;">${capitalize(record.ADDRESS)}</p>
+                                    <p hidden>${record.LATITUDE},${record.LONGITUDE}</p>
+                                </div>`;
+
+                                setTimeout(function () { dropdownCooldown = false; }, 126)
+                            }
+                        }
+                        else {
+                            dropdownMenu.innerHTML = `<div class="dropdown-item">No results found</div>`; 
+                        }
+                }});
+            }
+            
+        }       
+    } 
+
+    function searchNextPage() {
+        $("#searchPage").text(parseInt($("#searchPage").text()) + 1)
+    }
+
+    function openSearch() {
+        // Pull screen up
+        $("#searchTab").show();
+        $("#searchTab").animate({
+            bottom: "0"
+        }, 350);
+    }
+
+    function dismissSearch() {
+        // Pull screen down
+        $("#searchTab").animate({
+            bottom: "-200vh"
+        }, 350, function() {
+            $("#searchTab").hide();
+        });
+    }
 
     function pauseSearch() {
         canSearch = false;
@@ -34,7 +547,7 @@
 
     function search() {
         if (canSearch) {
-            var dropdownMenu = document.getElementById("search-dropdown");
+            var dropdownMenu = document.getElementById("search-results");
             const search = $("#searchBar").val()
             const pageNum = $("#searchPage").val()
             if (!search) {
@@ -42,24 +555,28 @@
             }
             else {
                 $.ajax({
-                    // url: `https://developers.onemap.sg/commonapi/search?searchVal=${search}&returnGeom=Y&getAddrDetails=Y&pageNum=${pageNum}`,
-                    url: `/funcs/search?s=${search}`,
+                    url: `https://developers.onemap.sg/commonapi/search?searchVal=${search}&returnGeom=Y&getAddrDetails=Y&pageNum=${pageNum}`,
                     success: function(result) {
+                        console.log(result)
                         dropdownMenu.innerHTML = "";
                         showLength = 6;
-                        if (result.length > 0) {
-                            if (result.length < 6) {
-                                showLength = result.length;
+                        if (result.results.length > 0) {
+                            dropdownMenu.style.display = "block";
+                            if (result.results.length < 6) {
+                                showLength = result.results.length;
                             }
 
                             for (var i=0; i<showLength; i++) {
-                                record = result[i]
+                                dropdownCooldown = true;
+                                record = result.results[i]
                                 dropdownMenu.innerHTML += `
-                                <div class="dropdown-item" onclick="saveSearch('${record.Address}', '${record.Name}')" style="cursor: pointer">
-                                    <p style="font-size: 14px;"><b>${record.Name}</b></p>
-                                    <p style="font-size: 11px; max-width: 100%; overflow: auto;">${record.Address}</p>
-                                </div>
-                                `;
+                                <div class="dropdown-item" onclick="">
+                                    <p style="font-size: 14px; margin-bottom: 3px; font-weight: bold;">${capitalize(record.SEARCHVAL)}</p>
+                                    <p style="font-size: 11px; max-width: 100%; overflow: auto; margin-bottom: 3px;">${capitalize(record.ADDRESS)}</p>
+                                    <p hidden>${record.LATITUDE},${record.LONGITUDE}</p>
+                                </div>`;
+
+                                setTimeout(function () { dropdownCooldown = false; }, 126)
                             }
                         }
                         else {

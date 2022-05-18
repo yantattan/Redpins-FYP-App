@@ -1,6 +1,14 @@
 .btn-addColor {
   background: linear-gradient(193.74deg, #E4002B 3.02%, #E82038 31.9%, #F8A36F 95.45%); 
   color: white;
+  border-radius: 5px;
+  border: 0;
+  padding: 5px;
+}
+
+.addColor {
+  background: linear-gradient(193.74deg, #E4002B 3.02%, #E82038 31.9%, #F8A36F 95.45%); 
+  color: white;
 }
 
 #reloadingbg {
@@ -9,6 +17,26 @@
   color: white;
   position: fixed;
   z-index: 999;
+}
+
+.dropdown-menu-search {
+  position: absolute;
+  width: 87.5%;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  float: left;
+  min-width: 10rem;
+  padding: 0.5rem 0;
+  margin: 0 20px;
+  font-size: 1rem;
+  color: #212529;
+  text-align: left;
+  list-style: none;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid rgba(0,0,0,.15);
+  border-radius: 0.25rem;
 }
 
 .relogogif {
@@ -35,4 +63,23 @@
   flex-direction: row;
   flex-wrap: nowrap;
   overflow-x: auto; overflow-y: hidden;
+}
+
+.maincta-disabled {
+  width: 320px;
+  height: 50px;
+  background: #EEEEEE;
+  mix-blend-mode: normal;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.maincta-disabled h1 {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  color: #FFFFFF;
 }
