@@ -9,27 +9,35 @@
 
 <div class="main-div">
     {% if itineraries != None %}
-    <div id="initForm" style="position: absolute; z-index:2; background-color: white; display: none;">
+    <div id="initForm" style="position: absolute; z-index:2; background-color: white; display: none; bottom: -200vh;">
     {% else %}
     <div id="initForm" style="position: absolute; z-index:2; background-color: white;">
     {% endif %}
         <label for="">Where to?</label>
         <input type="text" id="city" value="Local">
         <label for="startDate">Start Date</label>
-        <input type="date" id="startDate" onchange="checkResetEndDate(); checkInitPage();">
+        <input type="date" id="startDate" value="{% if itineraries != None %}{{itineraries[0].getDate().strftime('%Y-%m-%d')}}{% endif %}" onchange="checkResetEndDate(); checkInitPage();">
         <label for="endDate">End Date</label>
-        <input type="date" id="endDate" onchange="checkInitPage();">
+        <input type="date" id="endDate" value="{% if itineraries != None %}{{itineraries[-1].getDate().strftime('%Y-%m-%d')}}{% endif %}" onchange="checkInitPage();">
 
         <button class="maincta-disabled" id="initPageNext">Next</button>
     </div>
 
     <div id="dates-selection" style="display: inline; overflow-x: auto;">
         {% if itineraries != None %}{% for itinerary in itineraries %}
-        <div class="card card-date" style="width: 100px;" onclick="toggleDay(this);">
+        <div class="card card-date" style="width: 150px;" onclick="toggleDay(this);">
             <h5>{{itinerary.getDate().strftime("%Y-%m-%d")}}</h5>
+            <p class="tm-selection">{% if itinerary.getTransportMode() == "pt" %}Public Transport{% else %}{{itinerary.getTransportMode()}}{% endif %}<span hidden>{{itinerary.getTransportMode()}}</span></p>
+            <ul class="tm" style="display: block;">
+                <li onclick="chooseTransportMode(this);">Car<span hidden>car</span></li>
+                <li onclick="chooseTransportMode(this);">Public Transport<span hidden>pt</span></li>
+                <li onclick="chooseTransportMode(this);">Bus<span hidden>bus</span></li>
+                <li onclick="chooseTransportMode(this);">Walk<span hidden>walk</span></li>
+                <li onclick="chooseTransportMode(this);">Cycle<span hidden>cycle</span></li>
+            </ul>
         </div>
         {% endfor %}{% endif %}
-        <div class="card" id="card-date-add" style="width: 100px;">
+        <div class="card" id="card-date-add" onclick="openInitPage();" style="width: 100px;">
             <h5>+ Add day</h5>
         </div>
     </div>
@@ -39,24 +47,7 @@
     {% else %}
     <div id="planPage" style="display: block;">
     {% endif %}
-        {% if itineraries == None %}
-        <div class="device planSection" style="display: none;">
-            <div class="float-right">
-                <a href="/itinerary/showTrip">Map</a>
-            </div>
-
-            <div class="startTime-text">Start time: </div>
-            <div class="endTime-text">End time: </div>
-            <div class="time-left">Duration left: <span></span></div>
-            <div class="transport-text">Transport mode: </div>
-
-            <div class="recommendation-listings">
-                <button class="btn-addColor start-location" onclick="openSearch(this, '1');">+ Add start Location</button>
-            </div>
-
-            <input class="itinerary-id" hidden readonly>
-        </div>
-        {% else %}
+        {% if itineraries != None %}
             {% for i in range(itineraries|length) %}
             {% set itinerary = itineraries[i] %}
             <div class="device planSection" style="display: none;">
@@ -64,11 +55,8 @@
                     <a href="/itinerary/showTrip">Map</a>
                 </div>
                 
-                <input type="text" class="itinerary-id" value="{{itinerary.getId()}}" hidden readonly>
-                <div class="startTime-text">Start time: {{itinerary.getStartTime()}}</div>
-                <div class="endTime-text">End time: {{itinerary.getEndTime()}}</div>
                 <div class="time-left">Duration left: <span>{{itinerary.getTimeLeft()| int}}</span></div>
-                <div class="transport-text">Transport mode: </div>
+                <div class="transport-text">Transport mode: {% if itinerary.getTransportMode() == "pt" %}Public Transport{% else %}{{itinerary.getTransportMode()}}{% endif %}</div>
             
                 <div class="recommendation-listings">
                     {% if itinerary.getPlaces()| length == 0 %}
@@ -95,6 +83,10 @@
                                 <p class="plan-activity-duration">{% if itinerary.getPlaces()[i].ActivityDuration %}<span>{{itinerary.getPlaces()[i].ActivityDuration}}</span> min{% else %}<span></span>{% endif %}</p>
                                 <p class="plan-total-duration">{% if itinerary.getPlaces()[i].TotalDuration %}<span>{{itinerary.getPlaces()[i].TotalDuration|int}}</span> min{% else %}<span></span>{% endif %}</p>
                                 <p class="plan-latlng" hidden>{{itinerary.getPlaces()[i].Latlng}}</p>
+                                {% if i != itinerary.getPlaces()| length - 1 and i != 0 %}
+                                <p class="plan-edit" onclick="editCard(this, parseInt('{{i+1}}'))">Edit</p>
+                                <p class="plan-delete" onclick="delCard(this, parseInt('{{i+1}}'))">Delete</p>
+                                {% endif %}
                             </div>
                             {% if i != itinerary.getPlaces()| length - 1 %}
                             <button class="btn-addPlan btn-addColor" onclick="recommend(1, parseInt('{{i+1}}'), this);">  +  </button>
@@ -108,8 +100,6 @@
                     {% endif %}
                 </div>
                 <button class="btn btn-primary" id="next-recommend-btn" onclick="nextRecommend();">Next</button>
-
-                <input class="itinerary-id" value="{{itinerary.getId()}}" hidden readonly>
             </div>
             {% endfor %}
         {% endif %}
@@ -130,6 +120,13 @@
         </div>
     </div>
 
+    <!-- Popup -->
+    <div id="changesPopup" style="display: none; position: absolute; top: 50%;">
+        <p id="changes-text">You've changed the starting date of your itinerary. What action do you wish to perform ?</p>
+        <p class="text-primary" onclick="dateChangesAction(1)">Leave itinerary in their respective pages</p>
+        <p class="text-danger" onclick="dateChangesAction(2)">Reset itinerary</p>
+    </div>
+
     <form method="POST">
         <input id="planner-id" name="plannerId" value="{% if itineraries != None %}{{itineraries[0].getPlannerId()}}{% endif %}" hidden readonly>
         <input type="submit" value="Review Trip" class="btn btn-primary">
@@ -142,7 +139,7 @@
 <script>
     var skipped = [0];
     var pendingChooseList = {};
-    var startTime = new Date("2022-01-01 08:00:00");
+    var startTime = new Date("2022-01-01T08:00:00");
     var allowanceLeft;
     var originalDuration;
     const currentDate = new Date();
@@ -155,20 +152,33 @@
 
         document.getElementById("endDate").min = todayDate;
 
-        document.querySelector(".planSection").style.display = "block";
         toggleDay(0);
         initAllowance();
+        reAssignValues();
     }
-
     function initAllowance() {
-        // Set time allowance
-        var startTmeArr = ["08", "00"];
-        var endTmeArr = ["23", "59"];
-        var startDate = new Date(0, 0, 0, startTmeArr[0], startTmeArr[1], 0);
-        var endDate = new Date(0, 0, 0, endTmeArr[0], endTmeArr[1], 0);
-        var diff = endDate.getTime() - startDate.getTime();
-        allowanceLeft = Math.floor(diff / 1000 / 60);
-        originalDuration = Math.floor(diff / 1000 / 60);
+            // Set time allowance
+            var startTmeArr = ["08", "00"];
+            var endTmeArr = ["23", "59"];
+            var startDate = new Date(0, 0, 0, startTmeArr[0], startTmeArr[1], 0);
+            var endDate = new Date(0, 0, 0, endTmeArr[0], endTmeArr[1], 0);
+            var diff = endDate.getTime() - startDate.getTime();
+            allowanceLeft = Math.floor(diff / 1000 / 60);
+            originalDuration = Math.floor(diff / 1000 / 60);
+
+            var allSections = document.getElementsByClassName("planSection");
+            for (var i=0; i<allSections.length; i++) {
+                if (allSections[i].querySelector(".time-left").querySelector("span").innerText.length > 0)
+                    allSections[i].querySelector(".time-left").querySelector("span").innerText = allowanceLeft;
+            }
+        }
+
+    function openInitPage() {
+        $("#initForm").show();
+        $("#initForm").animate({
+            bottom: "0"
+        });
+        checkInitPage();
     }
 
     function checkInitPage() {
@@ -214,7 +224,7 @@
             }
         }
     }
-    function dismissInit() {
+    async function dismissInit() {
         var initDiv = document.getElementById("initForm");
         var datesDiv = document.getElementById("dates-selection");
         var plansDiv = document.getElementById("planPage");
@@ -224,38 +234,22 @@
 
         var days = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 3600 * 24)) + 1;
         var datesSelection = document.querySelector("#dates-selection");
-        var dateCards = document.getElementsByClassName("card-date")
-        for (var i=0; i<dateCards.length; i++) {
-            dateCards[i].remove();
-        }
-
-        // Add days card
-        var checkDate = startDate;
-        var plansSec = document.querySelector(".planSection");
-
-        for (var i=0; i<days; i++) {
-            var cardDate = new DOMParser().parseFromString(`
-            <div class="card card-date" style="width: 100px;" onclick="toggleDay(this);">
-                <h5>${checkDate.toISOString().slice(0, 10)}</h5>
-            </div>`, "text/html").body.firstElementChild;
-
-            datesDiv.insertBefore(cardDate, document.querySelector("#card-date-add"));
-            checkDate.setDate(checkDate.getDate() + 1);
-
-            if (i > 0) {
-                var clonedPlansSec = plansSec.cloneNode(true);
-                clonedPlansSec.style.display = "none";
-                plansDiv.appendChild(clonedPlansSec);
+        var dateCards = [].slice.call(document.getElementsByClassName("card-date"));
+        var diff = days - dateCards.length;
+        
+        if (dateCards.length > 0) {
+            // Prompt for action
+            if (startDate > new Date(dateCards[0].querySelector("h5").innerText)) {
+                $("#changesPopup").fadeIn(150);
             }
+
+            datesSelection.innerHTML = 
+            `<div class="card" id="card-date-add" onclick="openInitPage();" style="width: 100px;">
+                <h5>+ Add day</h5>
+            </div>`;
         }
 
-        // Display
-        document.querySelector(".card-date").classList.add("addColor");
-
-        initAllowance();
-
-        // document.querySelector(".planSection").style.display = "block";
-        // Pull screen down
+        // Pull form down
         $("#initForm").animate({
             bottom: "-200vh"
         }, 350, function() {
@@ -263,7 +257,76 @@
         });
         $("#planPage").show();
 
+        var checkDate = startDate;
+        for (var i=0; i<days; i++) {
+            await new Promise(resolve => setTimeout(resolve, 150));
+            var cardDate = new DOMParser().parseFromString(`
+            <div class="card card-date" style="width: 150px;" onclick="toggleDay(this);">
+                <h5>${checkDate.toISOString().slice(0, 10)}</h5>
+                <p class="tm-selection">Car<span hidden>car</span></p>
+                <ul class="tm" style="display: block;">
+                    <li onclick="chooseTransportMode(this);">Car<span hidden>car</span></li>
+                    <li onclick="chooseTransportMode(this);">Public Transport<span hidden>pt</span></li>
+                    <li onclick="chooseTransportMode(this);">Bus<span hidden>bus</span></li>
+                    <li onclick="chooseTransportMode(this);">Walk<span hidden>walk</span></li>
+                    <li onclick="chooseTransportMode(this);">Cycle<span hidden>cycle</span></li>
+                </ul>
+            </div>`, "text/html").body.firstElementChild;
+
+            datesDiv.insertBefore(cardDate, document.querySelector("#card-date-add"));
+            checkDate.setDate(checkDate.getDate() + 1);  
+        }
+
+        datesDiv.querySelector(".card-date").classList.add("addColor");
+
+        // Add days card
+        var plansSec = new DOMParser().parseFromString(
+        `<div class="device planSection" style="display: none;">
+            <div class="float-right">
+                <a href="/itinerary/showTrip">Map</a>
+            </div>
+
+            <div class="time-left">Duration left: <span></span></div>
+            <div class="transport-text">Transport mode: </div>
+
+            <div class="recommendation-listings">
+                <button class="btn-addColor start-location" onclick="openSearch(this, '1');">+ Add start Location</button>
+            </div>
+        </div>`, "text/html").body.firstElementChild.cloneNode(true);
+        var allSections = document.getElementsByClassName("planSection");
+        for (var i=0; i<Math.abs(diff); i++) {
+            if (diff > 0) {
+                var clonedPlansSec = plansSec.cloneNode(true);
+                clonedPlansSec.style.display = "none";
+                plansDiv.appendChild(clonedPlansSec);
+            }
+            else if (diff < 0) {
+                // TODO: Change query selector h5 change in the future
+                if (startDate > new Date(dateCards[0].querySelector("h5").innerText)) {
+                    allSections[i].remove();
+                }
+                else {
+                    allSections[dateCards.length-1].remove();
+                }
+            }
+        }
+
+        plansDiv.querySelector(".planSection").style.display = "block";
+        initAllowance();
+
         saveTrips();
+    }
+
+    function dateChangesAction(actionNum) {
+        if (actionNum == 2) {
+            var div = document.getElementsByClassName("recommendation-listings");
+            for (i=0; i<div.length; i++) {
+                div.innerHTML = `<button class="btn-addColor start-location" onclick="openSearch(this, '${i+1}');">+ Add start Location</button>`;
+            }
+        }
+
+        saveTrips();
+        $("#changesPopup").fadeOut(150);
     }
 
     function removeFirstBtn(btn) {
@@ -287,6 +350,14 @@
         document.getElementById("start-latlng").innerText += latLngStr;
 
         var post = document.getElementById("start-latlng").innerText.split(",");
+    }
+
+    // Choose transport mode
+    function chooseTransportMode(btn) {
+        var cardDate = btn.closest(".card-date");
+        cardDate.querySelector(".tm-selection").innerHTML = btn.innerHTML;
+
+        saveTrips();
     }
 
     // Order - the positional order of the button in DOM
@@ -366,7 +437,7 @@
                 if (result.list.length > 0) {
                     for (var i in result.list) {
                         listing.innerHTML += 
-                        `<div class="card plan-selection" style="width:150px; height:175px; margin-right: 1em; max-width:
+                        `<div class="card plan-choice" style="width:150px; height:175px; margin-right: 1em; max-width:
                             flex-basis: 33.333%;
                             flex-grow: 0;
                             flex-shrink: 0;" onclick="choosePlace(this, ${order}, ${i});">
@@ -424,10 +495,9 @@
         
         div.insertBefore(newBtn, allAddBtns[order-1].nextSibling);
         div.insertBefore(newPlace, allAddBtns[order-1].nextSibling);
+        var timeLeft = div.parentElement.querySelector(".time-left").querySelector("span")
         
-        allowanceLeft -= info.Duration;
-        console.log(allowanceLeft);
-        // document.getElementById("time-left").querySelector("span").innerText = parseInt(allowanceLeft);
+        timeLeft.innerText = parseInt(timeLeft) - info.Duration;
         
         // Fill up info for autosaving data
         saveTrips();
@@ -437,25 +507,23 @@
     // Edit/delete/rearrange
     async function editCard(btn, order) {
         var card = btn.closest(".plan-selection");
-        // var timeLeft = document.querySelector("#time-left").querySelector("span");
+        var timeLeft = card.parentElement.parentElement.querySelector(".time-left").querySelector("span");
         card.closest(".recommendation-listings").getElementsByClassName("btn-addPlan")[order-1].remove();
         reAssignValues();
 
-        // timeLeft.innerText = parseInt(timeLeft.innerText) + parseInt(card.querySelector(".plan-total-duration").querySelector("span").innerText);
-        // allowanceLeft = timeLeft.innerText;
-        await recommend(1, order-1);
+        timeLeft.innerText = parseInt(timeLeft.innerText) + parseInt(card.querySelector(".plan-total-duration").querySelector("span").innerText);
+        await recommend(1, order-1, card);
         card.remove();
     }
 
     function delCard(btn, order) {
         var card = btn.closest(".plan-selection");
-        var div = btn.closest("#recommendation-listings");
+        var div = btn.closest(".recommendation-listings");
         div.getElementsByClassName("btn-addPlan")[order-1].remove();
         card.remove();
 
-        // var timeLeft = document.querySelector("#time-left").querySelector("span");
-        // timeLeft.innerText = parseInt(timeLeft.innerText) + parseInt(card.querySelector(".plan-total-duration").querySelector("span").innerText);
-        // allowanceLeft = timeLeft.innerText;
+        var timeLeft = div.parentElement.querySelector(".time-left").querySelector("span");
+        timeLeft.innerText = parseInt(timeLeft.innerText) + parseInt(card.querySelector(".plan-total-duration").querySelector("span").innerText);
 
         reAssignValues();
         reCal2Places(div, order-1);
@@ -464,24 +532,26 @@
     // Recalculate route and travel time
     async function reCal2Places(div, order) {
         var cards = div.getElementsByClassName("plan-selection");
+        var index = [].slice.call(document.getElementsByClassName("recommendation-listings")).indexOf(div);
         var aboveCard = cards[order-1];
         var belowCard = cards[order];
         var totalDuration = 0;
         for (var i=1; i<order-1; i++) {
-            console.log(cards[i].querySelector(".plan-total-duration").querySelector("span").innerText)
             var duration = parseFloat(cards[i].querySelector(".plan-total-duration").querySelector("span").innerText);
             totalDuration += duration;
         }
+        var divDate = new Date($("#startDate").val());
+        divDate = new Date(divDate.setDate(divDate.getDate() + (order-1)));
 
         await $.ajax({
             type: "POST",
             url: `/funcs/reCalculate`,
             data: {
                 latlngs: [aboveCard.querySelector(".plan-latlng").innerText, belowCard.querySelector(".plan-latlng").innerText],
-                routeType: document.getElementById("firstSelection").querySelector('input[type="radio"]:checked').value,
-                date: currentTime.toISOString().slice(0, 10),
+                routeType: "pt",
+                date: divDate.toISOString().slice(0, 10),
                 topDuration: totalDuration,
-                startTime: $("#start-time").val()
+                startTime: aboveCard.querySelector(".plan-timing")
             },
             success: function(result) {
                 result = JSON.parse(result);
@@ -489,7 +559,7 @@
                 var belowCardADuration = belowCard.querySelector(".plan-activity-duration").querySelector("span");
                 var timeDiff = result[0] + parseInt(belowCardADuration.innerText) - parseInt(belowCardTDuration.innerText);
                 belowCardTDuration.innerText = parseInt(belowCardADuration.innerText) + result[0];
-                document.querySelector("#time-left").querySelector("span").innerText = parseInt(document.querySelector("#time-left").querySelector("span").innerText) + timeDiff;
+                div.parentElement.parentElement.querySelector(".time-left").querySelector("span").innerText = parseInt(div.parentElement.parentElement.querySelector("#time-left").querySelector("span").innerText) + timeDiff;
             }
         })
 
@@ -505,24 +575,26 @@
                 btn[j].setAttribute("onclick", `recommend(1, ${j+1}, this);`);
             }
 
-            var plansCards = document.getElementsByClassName("plan-selection");
+            var plansCards = div[i].getElementsByClassName("plan-selection");
 
             var startTme = startTime;
             var currTime = startTme.toLocaleTimeString('en-SG', {hour12: false})
-            plansCards[0].querySelector(".plan-timing").innerText = currTime.substring(0, currTime.length-3);
-            for (var j=1; j<plansCards.length-1; j++) {
-                startTme.setTime(startTme.getTime() + parseInt(plansCards[j].querySelector(".plan-total-duration").querySelector("span").innerText)*60000);
+            if (plansCards.length > 0) {
+                plansCards[0].querySelector(".plan-timing").innerText = currTime.substring(0, currTime.length-3);
+                for (var j=1; j<plansCards.length-1; j++) {
+                    startTme.setTime(startTme.getTime() + parseInt(plansCards[j].querySelector(".plan-total-duration").querySelector("span").innerText)*60000);
 
-                currTime = startTime.toLocaleTimeString('en-SG', {hour12: false})
-                plansCards[j].querySelector(".plan-timing").innerText = currTime.substring(0, currTime.length-3);
+                    currTime = startTime.toLocaleTimeString('en-SG', {hour12: false})
+                    plansCards[j].querySelector(".plan-timing").innerText = currTime.substring(0, currTime.length-3);
+                }
             }
+
         }
     }
 
     async function saveTrips() {
         var div = document.getElementsByClassName("recommendation-listings");
-        var firstSelection = document.getElementsByClassName("firstPage");
-        var itineraryId = document.getElementsByClassName("itinerary-id");
+        var cardDates = document.getElementsByClassName("card-date");
         var checkDate = new Date($("#startDate").val());
 
         var plannerIdStr = document.querySelector("#planner-id").value; 
@@ -530,12 +602,21 @@
             plannerIdStr = ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c => (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16));
         document.querySelector("#planner-id").value = plannerIdStr;
 
+        async function reset() {
+            await $.ajax({
+                type: "POST",
+                url: `/funcs/clear-planner?id=${$("#planner-id").val()}`,
+                data: {},
+                success: function(result) {
+                    console.log("System: Reset planner. Waiting for new planner ...");
+                }
+            });
+        }
         async function save(index) {
             await $.ajax({
                 type: "POST",
                 url: `/funcs/save-trip`,
                 data: {
-                    id: itineraryId[index].value,
                     tripType: "Planner",
                     tripName: "Hello",
                     date: checkDate.toISOString().slice(0, 10),
@@ -544,7 +625,7 @@
                     activityDuration: placesActivityDuration,
                     duration: placesDuration,
                     latlngs: placesLatlng,
-                    transportMode: "pt",
+                    transportMode: cardDates[index].querySelector(".tm-selection").querySelector("span").innerText,
                     confirmed: false,
                     status: "Planning",
                     plannerId: plannerIdStr,
@@ -552,14 +633,13 @@
                 },
                 success: function(result) {
                     result = JSON.parse(result);
-                    for (var j in result.id)
-                        itineraryId[j].value = result.id;
                     document.querySelector("#planner-id").value = result.plannerId;
-                    console.log("System: Saving trip - Page "+(index+1));
+                    console.log("System: Trip "+(index+1)+" saved.");
                 }
             });
         }
 
+        reset();
         for (var i=0; i<div.length; i++) {
             // Update db function
             var allPlacesDiv = div[i].getElementsByClassName("plan-selection");
@@ -570,7 +650,6 @@
             var placesLatlng = [];
 
             for (var j=0; j<allPlacesDiv.length; j++) {
-                console.log(allPlacesDiv[j])
                 placesName.push(allPlacesDiv[j].querySelector(".plan-name").innerText);
                 placesAddress.push(allPlacesDiv[j].querySelector(".plan-address").innerText);
                 if (j == 0 || allPlacesDiv[j].classList.contains("end")) {
@@ -589,7 +668,6 @@
                 hasE = allPlacesDiv[allPlacesDiv.length-1].classList.contains("end")
             }
 
-            console.log(allPlacesDiv);
             await save(i);
 
             checkDate.setDate(checkDate.getDate() + 1);

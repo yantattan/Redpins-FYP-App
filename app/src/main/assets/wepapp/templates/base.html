@@ -29,8 +29,12 @@
 {% else %}
 <body class="device" style="border: 1px solid black;">
 {% endif %}
+    {% block navbar %}
+      {% include "includes/_navbar.html" %}
+    {% endblock %}
+
     {% block loading %}
-        {% include "includes/_loading.html" %}
+      {% include "includes/_loading.html" %}
     {% endblock %}
 
     {% block content %}

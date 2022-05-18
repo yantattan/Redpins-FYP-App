@@ -82,3 +82,12 @@ class ItinerariesCon:
                 return list(map(lambda x: Itinerary(x["_id"], x["UserId"], x["Name"], x["Date"], x["StartTime"], x["EndTime"], x["Type"], x["TransportMode"], x["TimeAllowance"], x["TimeLeft"], x["Confirmed"], x["Status"], x["Places"], x["PlannerId"], x["HasEnd"]), itineraries)) 
         except Exception as e:
             print(e)
+
+    def ClearPlanner(self, plannerId):
+        try:
+            self.__connection.delete_many({"PlannerId": plannerId})
+
+            return {"success": True}
+        except Exception as e:
+            print(e)
+            return {"success": False, "error": e}

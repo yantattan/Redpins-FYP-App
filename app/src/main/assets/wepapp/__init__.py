@@ -38,7 +38,7 @@ cron = Scheduler(daemon=True)
 cron.start()
 CORS(app)
 app.secret_key = "redp1n5Buffer"
-apiKey = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjg1NDQsInVzZXJfaWQiOjg1NDQsImVtYWlsIjoieWFudGF0dGFuNzIxQGdtYWlsLmNvbSIsImZvcmV2ZXIiOmZhbHNlLCJpc3MiOiJodHRwOlwvXC9vbTIuZGZlLm9uZW1hcC5zZ1wvYXBpXC92MlwvdXNlclwvc2Vzc2lvbiIsImlhdCI6MTY1MjQwNTcxMCwiZXhwIjoxNjUyODM3NzEwLCJuYmYiOjE2NTI0MDU3MTAsImp0aSI6ImU4NDU4NGMyNjU2ZTdjNTA4NDU3MzMyZmNiYmFkYzc0In0.EtZR1knTnlgaY1AFcZn5pevrVOwFWE-tXimo3qpI3Co"
+apiKey = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjg1NDQsInVzZXJfaWQiOjg1NDQsImVtYWlsIjoieWFudGF0dGFuNzIxQGdtYWlsLmNvbSIsImZvcmV2ZXIiOmZhbHNlLCJpc3MiOiJodHRwOlwvXC9vbTIuZGZlLm9uZW1hcC5zZ1wvYXBpXC92MlwvdXNlclwvc2Vzc2lvbiIsImlhdCI6MTY1Mjg1ODQ2OSwiZXhwIjoxNjUzMjkwNDY5LCJuYmYiOjE2NTI4NTg0NjksImp0aSI6IjM0OGMxNmQyYTU4ZmM1NGJlYjcxZWVjMDRkMjNhNTNlIn0.esJZ66sJtK5-r2CRIifU15azJgmYMoGe-CfwO6Cxit4"
 
 # Init all controllers
 userCon = Users.UserCon()
@@ -58,7 +58,10 @@ globalPrefLE = trackedInfoLE = preprocessing.LabelEncoder()
 categoriesInfo = {
     "Eateries": {"filename":"restaurants_info.csv", "category":"Eateries", "colName": "Cuisines", "activityTime": 45, 
                 "preferences": ["Italian", "Chinese", "Japanese", "Thai", "French", "Spanish", "American", "Mexican", "Indian", "Turkish", "Korean", "Vietnamese", "Hong Kong", 
-                                "German", "British", "Taiwanese", "Singaporean", "Indonesian", "Malaysian", "Australian", "Swedish"]}
+                                "German", "British", "Taiwanese", "Singaporean", "Indonesian", "Malaysian", "Australian", "Swedish"]},
+
+    "Attractions": {"filename":"attractions_info.csv", "category":"Attractions", "colName": "Category",
+                "preferences": ["Museums", "Fun and Games", "Sights and Landmarks", "Nature and Parks"]}
 }
 
 tierRange = {
@@ -195,7 +198,7 @@ def loading():
     return render_template("includes/_loading.html")
 
 # Itinerary planning pages
-@app.route("/itineraries")
+@app.route("/itinerary/savedTrips")
 def showItineraries():
     return render_template("/itinerary/listItineraries.html")
 
@@ -292,7 +295,7 @@ def pref2():
         return redirect(invalidRedirect)
 
     if request.method == 'POST':
-        category = "Activities"
+        category = "Attractions"
         allPrefs = request.form.getlist("preferences[]")
         pref = Preferences(session["current_user"]["userId"], allPrefs, category)
         userCon.SetPreferences(pref)
@@ -550,7 +553,7 @@ def calculateAndReturnList(userId, category, webScrapData, shortlistedPlaces, di
                 cuisinesMatch = 0
                 yourPrefs = userCon.GetPreferences(userId, category)
                 restaurantDetails = webScrapData.loc[webScrapData["Name"] == place.Name]
-                restaurantCuisines = restaurantDetails["Cuisines"].values[0].split(",")
+                restaurantCuisines = restaurantDetails[categoriesInfo[category]["colName"]].values[0].split(",")
 
                 for pref in top5Pref:
                     if pref in restaurantCuisines:
@@ -918,7 +921,7 @@ def recommendPlacesPlanner():
 
 @app.route("/funcs/explorer-recommend-places", methods=['POST'])
 def recommendPlacesExplorer():
-    categoriesIndexMap = ["Eateries"]
+    categoriesIndexMap = ["Eateries", "Attractions"]
 
     if request.method == 'POST':
         print("Start")
@@ -1222,11 +1225,19 @@ def discoverRecommend(category):
             place["Ratings"] = dataRow["Ratings"]
         return json.dumps({"list": topPlaces, "index": request.form.get("index")})
 
+@app.route("/funcs/clear-planner", methods=['POST'])
+def clearPlanner():
+    plannerId = request.args.get("id")
+    if plannerId is not None:
+        res = itinerariesCon.ClearPlanner(plannerId)
+        return json.dumps(res)
+    
+    return json.dumps({"success": False, "error": "No planner id supplied"})
+
 @app.route("/funcs/save-trip", methods=['POST'])
 def saveTrip():
     if request.method == 'POST':
         userId = session["current_user"]["userId"]
-        itineraryId = request.form.get("id")
         tripType = request.form.get("tripType")
         tripName = request.form.get("tripName")
         date = request.form.get("date")
@@ -1245,8 +1256,7 @@ def saveTrip():
         plannerId = request.form.get("plannerId")
         hasEnd = request.form.get("hasEnd").lower() == "true"
 
-        if not itineraryId:
-            itineraryId = None
+        print(f"Planner id: {plannerId}")
         if not plannerId:
             plannerId = None
 
@@ -1271,7 +1281,7 @@ def saveTrip():
             places.append({"Name": names[i], "Address": addresses[i], "ActivityDuration": activityDuration, 
                             "TotalDuration": duration, "Latlng": latlngs[i]})
 
-        itinerary = Itinerary(itineraryId, userId, tripName, date, startTime, endTime, tripType, transportMode, timeAllowance, timeLeft, confirmed, status, places, plannerId, hasEnd)
+        itinerary = Itinerary(None, userId, tripName, date, startTime, endTime, tripType, transportMode, timeAllowance, timeLeft, confirmed, status, places, plannerId, hasEnd)
         itinerariesCon.SetItinerary(itinerary)
         returnIti = itinerariesCon.GetUnconfimredItinerary(userId, tripType)
 

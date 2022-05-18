@@ -536,9 +536,10 @@
         }
     }
 
-    function nextRecommend(pageNum, order) {
+    function nextRecommend(pageNum, order, btn) {
         pageNum += 1;
-        recommend(pageNum, order);
+        recommend(pageNum, order, btn.closest(".plan-choices-list"));
+        btn.remove();
     }
 
     function getLocation() {
@@ -549,7 +550,7 @@
 
     function showRoute(position) {
         latLngStr = position.coords.latitude + "," + position.coords.longitude
-        document.getElementById("start").innerText += latLngStr
+        document.getElementById("start-latlng").innerText += latLngStr
         if (document.getElementById("start-location-name").innerText == "Current Location") {
             document.getElementById("start-location-latlng").innerText = latLngStr
         }
@@ -657,7 +658,7 @@
     }
 
     // Order - the positional order of the button in DOM
-    async function recommend(pageNum, order) {
+    async function recommend(pageNum, order, listing=null) {
         startTme = $("#start-time").val();
         endTme = $("#end-time").val();
         transportMde = document.querySelector('input[name="transportMode"]:checked').value;
@@ -666,6 +667,7 @@
         var allCards = div.getElementsByClassName("plan-selection");
 
         $("#reloadingbg").show();
+        console.log(pageNum+", "+order);
         // Get place before, after and registered places
         var registeredPlaces = [].slice.call(allCards).slice(1, allCards.length - 1).map(x => x.querySelector(".plan-address").innerText);
         if (order - 1 > 0) {
@@ -703,18 +705,19 @@
                 pendingChooseList[order] = result;
                 pendingChooseList[order].pageNum = 2;
 
-                var listing = new DOMParser().parseFromString(
+                if (!listing) {
+                    listing = new DOMParser().parseFromString(
                     `<div class="plan-choices-list">
                     </div>`, "text/html").body.firstElementChild;
 
-                var allAddBtns = div.getElementsByClassName("btn-addPlan");
-                
-                div.insertBefore(listing, allAddBtns[order-1].nextSibling);
+                    var allAddBtns = div.getElementsByClassName("btn-addPlan");
+                    div.insertBefore(listing, allAddBtns[order-1].nextSibling);
+                }
 
                 if (result.list.length > 0) {
                     for (var i in result.list) {
                         listing.innerHTML += 
-                        `<div class="card plan-selection" style="width:150px; height:175px; margin-right: 1em; max-width:
+                        `<div class="card plan-choice" style="width:150px; height:175px; margin-right: 1em; max-width:
                             flex-basis: 33.333%;
                             flex-grow: 0;
                             flex-shrink: 0;" onclick="choosePlace(this, ${order}, ${i});">
@@ -736,7 +739,7 @@
                 }
 
                 if (result.list.length == 10)
-                    listing.innerHTML += `<p onclick="nextRecommend(${pageNum}, ${order})" class="list-load-more">Load more</p>`;
+                    listing.innerHTML += `<p onclick="nextRecommend(${pageNum}, ${order}, this)" class="list-load-more">Load more</p>`;
 
                 console.log(skipped);
             },
@@ -859,7 +862,7 @@
         var startTime = new Date(`2022-01-01T${$("#start-time").val()}:00`);
         var plansCards = document.getElementsByClassName("plan-selection");
 
-        var currTime = startTime.toLocaleTimeString('en-SG', {hour12: false})
+        var currTime = startTime.toLocaleTimeString('en-SG', {hour12: false});
         plansCards[0].querySelector(".plan-timing").innerText = currTime.substring(0, currTime.length-3);
         for (var i=1; i<plansCards.length-1; i++) {
             startTime.setTime(startTime.getTime() + parseInt(plansCards[i].querySelector(".plan-total-duration").querySelector("span").innerText)*60000);
@@ -1023,7 +1026,6 @@
     }
 
     // initFunctions();
-    getLocation();
 
     window.addEventListener('load', function () {
         document.addEventListener('click', function (event) {
@@ -1040,6 +1042,7 @@
             }
         });
 
+        getLocation();
     });
 
 </script>

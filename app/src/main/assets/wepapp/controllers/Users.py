@@ -162,6 +162,7 @@ class UserCon:
                 dbPref = userInfo["Preferences"]
                 dbPref[category] = preferences.getPreferences()
             except KeyError:
+                print(category)
                 dbPref = {category: preferences.getPreferences()}
 
             print("Here")

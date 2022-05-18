@@ -11,9 +11,9 @@ import requests
 # print(hi)
 # sectorsLeft = {}
 # csvReaderRaw = csv.reader(open("csv/webcsv/restaurants_info_raw.csv"), delimiter = ',')
-csvReader = csv.reader(open("csv/webcsv/restaurants_info_raw.csv"), delimiter = ',')
+csvReader = csv.reader(open("csv/webcsv/attractions_info_raw.csv"), delimiter = ',')
 
-csvFile = open("csv/webcsv/restaurants_info.csv", "w", newline="")
+csvFile = open("csv/webcsv/attractions_info.csv", "w", newline="")
 csvWriter = csv.writer(csvFile)
 # Header
 i = True
