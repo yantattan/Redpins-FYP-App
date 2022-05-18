@@ -452,7 +452,6 @@ input {
 #home {
   overflow-y: scroll;
   overflow-x: hidden;
-  background: linear-gradient(55.96deg, #E4002B 9.03%, #E92C3D 40.19%, #F8A36F 90.12%);
 }
 
 #home img {
@@ -472,7 +471,6 @@ input {
   font-weight: 600;
   font-size: 25px;
   line-height: 38px;
-  color: #FFFFFF;
 }
 
 .homeheader ul {
@@ -482,17 +480,6 @@ input {
 
 .homeheader ul li {
   margin: 10px 20px;
-}
-
-/* homecontent */
-.homecontent {
-  position: absolute;
-  width: 360px;
-  height: auto;
-  left: 0px;
-  top: 80px;
-  background: #FCFCFC;
-  border-radius: 20px 20px 0px 0px;
 }
 
 /* banner */
