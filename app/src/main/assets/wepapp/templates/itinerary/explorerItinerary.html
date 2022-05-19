@@ -691,6 +691,8 @@
                         placesActivityDuration.push(parseFloat(result[i].ActivityDuration))
                         placesDuration.push(parseFloat(result[i].Duration))
                     }
+                    allowanceLeft -= result[result.length-1].EndDuration;
+                    div.lastElementChild.querySelector(".plan-total-duration").querySelector("span").innerText = Math.round(result[result.length-1].EndDuration);
 
                     reAssignValues();
                     saveTrips(placesName, placesAddress, placesActivityDuration, placesDuration)
@@ -791,7 +793,8 @@
                     listingIndex = [document.getElementById("recommend-main"), document.getElementById("recommend-ratings"), document.getElementById("recommend-partners")]
                     pendingChooseList[sectionNo] = result;
                     listing = listingIndex[sectionNo-1]
-                    listing.innerHTML = "";
+                    if (!append)
+                        listing.innerHTML = "";
 
                     if (result.list.length > 0) {
                         for (var i in result.list) {

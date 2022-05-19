@@ -18,6 +18,7 @@
     {% else %}
     <div id="initForm" style="position: absolute; z-index:2; background-color: white;">
     {% endif %}
+        <p id="start-latlng" hidden></p>
         <label for="">Where to?</label>
         <input type="text" id="city" value="Local">
         <label for="startDate">Start Date</label>
@@ -74,7 +75,7 @@
                         <p class="plan-timing"></p>
                         <p class="plan-latlng" hidden>{{itinerary.getPlaces()[0].Latlng}}</p>
                     </div>
-                    <button class="btn-addColor" onclick="removeFirstBtn(this); recommend(1, 1, this);">+ Add a place</button>
+                    <button class="btn-addColor" onclick="removeFirstBtn(this); openRecommendTab(1, this);">+ Add a place</button>
                         {% if not itinerary.getEnd() %}
                         <button class="btn-addColor end-location" onclick="openSearch(this, '{{i+1}}');">+ Add end Location</button>
                         {% endif %}
@@ -94,7 +95,7 @@
                                 {% endif %}
                             </div>
                             {% if i != itinerary.getPlaces()| length - 1 %}
-                            <button class="btn-addPlan btn-addColor" onclick="recommend(1, parseInt('{{i+1}}'), this);">  +  </button>
+                            <button class="btn-addPlan btn-addColor" onclick="openRecommendTab(parseInt('{{i+1}}'), this);">  +  </button>
                             {% elif not itinerary.getEnd() %}
                             <button class="btn-addPlan btn-addColor" onclick="recommend(1, parseInt('{{i+1}}'), this);">  +  </button>
                             {% endif %}
@@ -110,7 +111,39 @@
         {% endif %}
     </div>
 
-    
+    <!-- Recommendation tab -->
+    <div class="device" id="recommendationTab" style="position: absolute; z-index:2; background-color: white; display: none; bottom: -200vh;">
+        <input type="text" class="form-control" id="searchBar" onkeyup="pauseSearch();" autocomplete="off">
+        <div id="sectionIndex" hidden></div>
+        <div class="categories">
+            <ul id="categories">
+                {% for cat in catInfo %}
+                <li>
+                    <div class="categoriesbutton">
+                        <svg>
+                        </svg>
+                    </div>
+                    <p>{{cat}}</p>
+                </li>
+                {% endfor %}
+                {% for i in range(8 - catInfo|length) %}
+                <li>
+                    <div class="categoriesbutton">
+                        <svg>
+                        </svg>
+                    </div>
+                    <p>Lorem</p>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div id="recommendcon">
+            <div id="recommend-main" class="plan-choices-list"></div>
+            <div id="recommend-ratings" class="plan-choices-list"></div>
+            <div id="recommend-partners" class="plan-choices-list"></div>
+        </div>
+    </div>
 
     <!-- Map View -->
     <div class="device" id="mapView" style="position: fixed; z-index:-2;">
@@ -143,15 +176,14 @@
     var skipped = [0];
     var pendingChooseList = {};
     var startTime = new Date("2022-01-01T08:00:00");
-    var allowanceLeft;
     var originalDuration;
-    const currentDate = new Date();
+    const currentTime = new Date();
 
     var requests = [];
 
     function initFunctions() {
         getLocation();
-        const todayDate = currentDate.toISOString().split("T")[0]
+        const todayDate = currentTime.toISOString().split("T")[0]
         document.getElementById("startDate").min = todayDate;
         document.getElementById("startDate").value = todayDate;
 
@@ -162,21 +194,20 @@
         reAssignValues();
     }
     function initAllowance() {
-            // Set time allowance
-            var startTmeArr = ["08", "00"];
-            var endTmeArr = ["23", "59"];
-            var startDate = new Date(0, 0, 0, startTmeArr[0], startTmeArr[1], 0);
-            var endDate = new Date(0, 0, 0, endTmeArr[0], endTmeArr[1], 0);
-            var diff = endDate.getTime() - startDate.getTime();
-            allowanceLeft = Math.floor(diff / 1000 / 60);
-            originalDuration = Math.floor(diff / 1000 / 60);
+        // Set time allowance
+        var startTmeArr = ["08", "00"];
+        var endTmeArr = ["23", "59"];
+        var startDate = new Date(0, 0, 0, startTmeArr[0], startTmeArr[1], 0);
+        var endDate = new Date(0, 0, 0, endTmeArr[0], endTmeArr[1], 0);
+        var diff = endDate.getTime() - startDate.getTime();
+        var allowanceLeft = Math.floor(diff / 1000 / 60);
 
-            var allSections = document.getElementsByClassName("planSection");
-            for (var i=0; i<allSections.length; i++) {
-                if (allSections[i].querySelector(".time-left").querySelector("span").innerText.length > 0)
-                    allSections[i].querySelector(".time-left").querySelector("span").innerText = allowanceLeft;
-            }
+        var allSections = document.getElementsByClassName("planSection");
+        for (var i=0; i<allSections.length; i++) {
+            if (allSections[i].querySelector(".time-left").querySelector("span").innerText.length > 0)
+                allSections[i].querySelector(".time-left").querySelector("span").innerText = allowanceLeft;
         }
+    }
 
     function openInitPage() {
         $("#initForm").show();
@@ -339,9 +370,9 @@
         btn.innerText = " +  ";
     }
 
-    function nextRecommend() {
-        recommend(pageNum);
-        pageNum += 1;
+    function nextRecommend(pageNum, order, cat, sectionNo, btn) {
+        recommend(pageNum+1, order, cat, sectionNo, true);
+        btn.remove();
     }
 
     function getLocation() {
@@ -361,8 +392,33 @@
         saveTrips();
     }
 
+    function openRecommendTab(order, btn) {
+        // Pull screen up
+        $("#recommendationTab").show();
+        $("#recommendationTab").animate({
+            bottom: "0"
+        }, 350);
+
+        sectionIndex = [].slice.call(document.getElementsByClassName("recommendation-listings")).indexOf(btn.closest(".recommendation-listings"));
+        document.getElementById("sectionIndex").innerText = sectionIndex;
+
+        allCat = document.getElementById("categories").getElementsByTagName("li");
+        for (var i=0; i<allCat.length; i++) {
+            var li = allCat[i];
+            li.setAttribute("onclick", `recommend(1, ${order}, '${li.querySelector("p").innerText}')`)
+        }
+        recommend(1, order, "Eateries");
+    }
+    function closeRecommendTab() {
+        // Pull screen down
+        $("#recommendationTab").animate({
+            bottom: "-200vh"
+        }, 350, function () {
+            $("#recommendationTab").hide();
+        });
+    }
     // Order - the positional order of the button in DOM
-    function recommend(pageNum, order, btn) {
+    async function recommend(pageNum, order, cat, sectionNo=0, append=false) {
         // Stop pending ajax req
         if (requests.length > 0) {
             while (requests.length > 0) {
@@ -376,28 +432,16 @@
             }
         }
 
-        var planSection = btn.closest(".planSection")
-        var div = planSection.querySelector(".recommendation-listings");
+        var sectionIndex = parseInt(document.getElementById("sectionIndex").innerText);
+
+        transportMde = document.getElementsByClassName("tm-selection")[sectionIndex].querySelector("span").innerText;
+
+        div = document.getElementsByClassName("recommendation-listings")[sectionIndex];
         var allCards = div.getElementsByClassName("plan-selection");
 
-        var beforeDiv = document.getElementsByClassName("plan-selection")[order-1];
-        if (beforeDiv && order > 1) {
-            calStartTme = startTime;
-            for (var i=1; i<order; i++) {
-                calStartTme = new Date(calStartTme.getTime() + parseFloat(allCards[i].querySelector(".plan-total-duration").querySelector("span").innerText)*60000);
-            }
-            
-            var startTmeUn = calStartTme.toLocaleTimeString('en-SG', {hour12: false});
-            startTme = startTmeUn.substring(0, startTmeUn.length-3);
-            if (startTme.length == 4) {
-                startTme = 0 + startTme;
-            }
-        }
-
-        transportMde = "pt";
-
         $("#reloadingbg").show();
-        // Get place before and registered places
+        console.log(pageNum+", "+order);
+        // Get place before, after and registered places
         var registeredPlaces = [].slice.call(allCards).slice(1, allCards.length - 1).map(x => x.querySelector(".plan-address").innerText);
         if (order - 1 > 0) {
             var placeBefore = allCards[order-1].querySelector(".plan-address").innerText;
@@ -405,101 +449,117 @@
         }
         else {
             var placeBefore;
-            var latlng = document.getElementById("start-latlng").innerText.split(",");
+            var latlng = allCards[0].querySelector(".plan-latlng").innerText.split(",");
         }
+    
+        var placeAfter = allCards[order].querySelector(".plan-address").innerText;
+        startTme = new Date();
+        startTme = new Date(startTme.getFullYear(), startTme.getMonth(), startTme.getDate(), 8, 0, 0);
+        // TODO
+        for (var i=1; i<allCards.length-1; i++) {
+            startTme.setTime(startTime.getTime() + parseInt(allCards[i].querySelector(".plan-total-duration").innerText));
+        }
+        var allowanceLeft = div.closest(".planSection").querySelector(".time-left").querySelector("span").innerText;
 
-        if (order < allCards.length) {
-            var placeAfter = allCards[order].querySelector(".plan-address").innerText;
-        }
-        else {
-            var placeAfter;
-        }
-        
-        console.log(allowanceLeft);
-        request = $.ajax({
-            type: "POST",
-            url: `/funcs/planner-recommend-places?page=${pageNum}`,
-            data: {
-                date: "2022-05-12",
-                startTime: "05:00",
-                endTime: "23:59",
-                timeLeft: allowanceLeft,
-                latitude: latlng[0],
-                longitude: latlng[1],
-                category: "Eateries",
-                transportMode: transportMde,
-                skipped: JSON.stringify(skipped),
-                placesAdded: registeredPlaces,
-                abovePlace: placeBefore,
-                belowPlace: placeAfter
-            },
-            success: function(result) {
-                cleanedResult = result.replaceAll("\\u", "").replaceAll("NaN", `""`);
-                result = JSON.parse(cleanedResult);
-                pendingChooseList[order] = result;
-                pendingChooseList[order].pageNum = 2;
+        async function fetchDisplay(sectionNo) {
+            console.log(startTme.getHours())
+            request = await $.ajax({
+                type: "POST",
+                url: `/funcs/planner-recommend-places?page=${pageNum}`,
+                data: {
+                    date: currentTime.toISOString().slice(0, 10),
+                    startTime: startTme.getHours() + ":" + startTme.getMinutes(),
+                    timeLeft: allowanceLeft,
+                    latitude: latlng[0],
+                    longitude: latlng[1],
+                    category: cat,
+                    transportMode: transportMde,
+                    skipped: JSON.stringify(skipped),
+                    placesAdded: registeredPlaces,
+                    abovePlace: placeBefore,
+                    belowPlace: placeAfter,
+                    section: sectionNo
+                },
+                success: function(result) {
+                    cleanedResult = result.replaceAll("\\u", "").replaceAll("NaN", `""`);
+                    result = JSON.parse(cleanedResult);
 
-                var listing = new DOMParser().parseFromString(
+                    listingIndex = [document.getElementById("recommend-main"), document.getElementById("recommend-ratings"), document.getElementById("recommend-partners")]
+                    pendingChooseList[sectionNo] = result;
+                    listing = listingIndex[sectionNo-1]
+                    if (!append)
+                        listing.innerHTML = "";
+
+                    if (result.list.length > 0) {
+                        for (var i in result.list) {
+                            listing.innerHTML += 
+                            `<div class="card plan-choice" style="width:150px; height:175px; margin-right: 1em; max-width:
+                                flex-basis: 33.333%;
+                                flex-grow: 0;
+                                flex-shrink: 0;" onclick="choosePlace(this, ${sectionNo}, ${order}, ${i});">
+                                <h5>${result.list[i].Name}</h5>
+                                <p style="font-size:12px">${result.list[i].Address}</p>
+                                <br />
+                                <p>Matching ${result.list[i].RecommendationScore.toFixed(2)}</p>
+                            </div>`;
+
+                        }
+                    }
+                    else {
+                        listing.innerHTML += `<div class="card">There isn't any available places to be added</div>`;
+                        var allBtns = div.getElementsByClassName("btn-addPlan");
+                        for (var i=0; i<allBtns.length; i++) {
+                            allBtns[i].disabled = true;
+                            allBtns[i].classList.remove("btn-addColor");
+                        }
+                    }
+
+                    if (result.list.length == 10)
+                        listing.innerHTML += `<p onclick="nextRecommend(${pageNum}, ${order}, '${cat}', ${sectionNo}, this);" class="list-load-more">Load more</p>`;
+
+                    console.log(skipped);
+                    
+                },
+                error: function(jq, status, errorMsg) {
+                    div.innerHTML = 
                     `<div class="plan-choices-list">
-                    </div>`, "text/html").body.firstElementChild;
-
-                var allAddBtns = div.getElementsByClassName("btn-addPlan");
-                console.log(order+", "+allAddBtns.length)
-                
-                div.insertBefore(listing, allAddBtns[order-1].nextSibling);
-
-                if (result.list.length > 0) {
-                    for (var i in result.list) {
-                        listing.innerHTML += 
-                        `<div class="card plan-choice" style="width:150px; height:175px; margin-right: 1em; max-width:
-                            flex-basis: 33.333%;
-                            flex-grow: 0;
-                            flex-shrink: 0;" onclick="choosePlace(this, ${order}, ${i});">
-                            <h5>${result.list[i].Name}</h5>
-                            <p style="font-size:12px">${result.list[i].Address}</p>
-                            <br />
-                            <p>Matching ${result.list[i].RecommendationScore.toFixed(2)}</p>
-                        </div>`;
-
-                    }
+                        Something went wrong. Try again
+                    </div>`;
+                },
+                complete: function(result) {
+                    $("#reloadingbg").hide();
                 }
-                else {
-                    listing.innerHTML += `<div class="card">There isn't any available places to be added</div>`;
-                    var allBtns = div.getElementsByClassName("btn-addPlan");
-                    for (var i=0; i<allBtns.length; i++) {
-                        allBtns[i].disabled = true;
-                        allBtns[i].classList.remove("btn-addColor");
-                    }
-                }
+            });
 
-                listing.innerHTML += `<p onclick="nextRecommend()" class="list-load-more">Load more</p>`;
-            },
-            error: function(jq, status, errorMsg) {
-                div.innerHTML = 
-                `<div class="plan-choices-list">
-                    Something went wrong. Try again
-                </div>`;
-            },
-            complete: function(result) {
-                $("#reloadingbg").hide();
+            requests.push(request);
+        }
+
+        if (sectionNo == 0) {
+            for (var i=1; i<4; i++) {
+                fetchDisplay(i)
             }
-        });
+        }
+        else
+            fetchDisplay(sectionNo)
     }
 
-    function choosePlace(btn, order, itemNo) {
-        var div = btn.closest(".recommendation-listings");
+    function choosePlace(btn, index, order, itemNo) {
         btn.parentElement.remove();
-        var info = pendingChooseList[order].list[itemNo];
+        sectionIndex = parseInt(document.getElementById("sectionIndex").innerText);
+        div = document.getElementsByClassName("recommendation-listings")[sectionIndex];
+        var info = pendingChooseList[index].list[itemNo];
 
         var newPlace = new DOMParser().parseFromString(`
             <div class="card plan-selection">
                 <h5 class="plan-name">${info.Name}</h5>
                 <p class="plan-address" style="font-size:12px">${info.Address}</p>
                 <br />
-                <p class="plan-timing"></p>
                 <p class="plan-activity-duration"><span>${Math.round(info.ActivityDuration)}</span> min</p>
                 <p class="plan-total-duration"><span>${Math.round(info.Duration)}</span> min</p>
+                <p class="plan-timing"></p>
                 <p class="plan-latlng" hidden>${info.Latlng}</p>
+                <p class="plan-edit" onclick="editCard(this, ${order})">Edit</p>
+                <p class="plan-delete" onclick="delCard(this, ${order})">Delete</p>
             </div>`, "text/html").body.firstElementChild;
         var newBtn = new DOMParser().parseFromString(`   
             <button class="btn-addPlan btn-addColor" onclick="recommend(1, ${order+1});">  +  </button>`, "text/html").body.firstElementChild;
@@ -509,13 +569,17 @@
         
         div.insertBefore(newBtn, allAddBtns[order-1].nextSibling);
         div.insertBefore(newPlace, allAddBtns[order-1].nextSibling);
-        var timeLeft = div.parentElement.querySelector(".time-left").querySelector("span")
         
-        timeLeft.innerText = parseInt(timeLeft) - info.Duration;
+        var timeLeft = document.getElementsByClassName("time-left")[sectionIndex].querySelector("span");
+        var allowanceLeft = timeLeft - info.Duration;
+        timeLeft.innerText = allowanceLeft;
         
         // Fill up info for autosaving data
-        saveTrips();
+        reCal2Places(div, order);
         reAssignValues();
+        saveTrips();
+
+        closeRecommendTab();
     }
 
     // Edit/delete/rearrange
@@ -526,18 +590,18 @@
         reAssignValues();
 
         timeLeft.innerText = parseInt(timeLeft.innerText) + parseInt(card.querySelector(".plan-total-duration").querySelector("span").innerText);
-        await recommend(1, order-1, card);
+        openRecommendTab(order-1);
         card.remove();
     }
 
     function delCard(btn, order) {
         var card = btn.closest(".plan-selection");
+        
         var div = btn.closest(".recommendation-listings");
         div.getElementsByClassName("btn-addPlan")[order-1].remove();
-        card.remove();
-
         var timeLeft = div.parentElement.querySelector(".time-left").querySelector("span");
         timeLeft.innerText = parseInt(timeLeft.innerText) + parseInt(card.querySelector(".plan-total-duration").querySelector("span").innerText);
+        card.remove();
 
         reAssignValues();
         reCal2Places(div, order-1);
@@ -562,10 +626,10 @@
             url: `/funcs/reCalculate`,
             data: {
                 latlngs: [aboveCard.querySelector(".plan-latlng").innerText, belowCard.querySelector(".plan-latlng").innerText],
-                routeType: "pt",
+                routeType: document.getElementsByClassName("tm-selection")[index].innerText,
                 date: divDate.toISOString().slice(0, 10),
                 topDuration: totalDuration,
-                startTime: aboveCard.querySelector(".plan-timing")
+                startTime: aboveCard.querySelector(".plan-timing").innerText
             },
             success: function(result) {
                 result = JSON.parse(result);
@@ -573,7 +637,7 @@
                 var belowCardADuration = belowCard.querySelector(".plan-activity-duration").querySelector("span");
                 var timeDiff = result[0] + parseInt(belowCardADuration.innerText) - parseInt(belowCardTDuration.innerText);
                 belowCardTDuration.innerText = parseInt(belowCardADuration.innerText) + result[0];
-                div.parentElement.parentElement.querySelector(".time-left").querySelector("span").innerText = parseInt(div.parentElement.parentElement.querySelector("#time-left").querySelector("span").innerText) + timeDiff;
+                div.parentElement.parentElement.querySelector(".time-left").querySelector("span").innerText = parseInt(div.parentElement.parentElement.querySelector(".time-left").querySelector("span").innerText) + timeDiff;
             }
         })
 
@@ -922,8 +986,6 @@
 
         latLngStr = position.coords.latitude + "," + position.coords.longitude;
         document.getElementById("start-latlng").innerText = latLngStr;
-
-        var post = document.getElementById("start-latlng").innerText.split(",");
     }
 
     function positioningError(error) {

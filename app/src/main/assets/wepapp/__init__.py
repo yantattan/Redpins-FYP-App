@@ -275,8 +275,8 @@ def pref1():
         print(invalidRedirect)
         return redirect(invalidRedirect)
 
+    category = "Eateries"
     if request.method == 'POST':
-        category = "Eateries"
         allPrefs = request.form.getlist("preferences[]")
         pref = Preferences(session["current_user"]["userId"], allPrefs, category)
         userCon.SetPreferences(pref)
@@ -285,7 +285,13 @@ def pref1():
         print(allPrefs)
         return redirect("/preferences/2")
     
-    return render_template("preferences/preference1.html")
+    webscrapData = pandas.read_csv("csv/webcsv/"+categoriesInfo[category]["filename"], encoding = "ISO-8859-1")
+    allPrefs = pandas.unique(webscrapData[categoriesInfo[category]["colName"]].str.split(",", expand=True).stack())
+
+    prefs = userCon.GetPreferences(session["current_user"]["userId"], category).getPreferences()
+    print(prefs)
+
+    return render_template("preferences/preference1.html", prefs=prefs, allPrefs=allPrefs)
 
 @app.route("/preferences/2", methods=['GET', 'POST'])
 def pref2():
@@ -294,8 +300,8 @@ def pref2():
         print(invalidRedirect)
         return redirect(invalidRedirect)
 
+    category = "Attractions"
     if request.method == 'POST':
-        category = "Attractions"
         allPrefs = request.form.getlist("preferences[]")
         pref = Preferences(session["current_user"]["userId"], allPrefs, category)
         userCon.SetPreferences(pref)
@@ -304,7 +310,12 @@ def pref2():
         print(allPrefs)
         return redirect("/")
     
-    return render_template("preferences/preference2.html")
+    webscrapData = pandas.read_csv("csv/webcsv/"+categoriesInfo[category]["filename"], encoding = "ISO-8859-1")
+    allPrefs = pandas.unique(webscrapData[categoriesInfo[category]["colName"]].str.split(",", expand=True).stack())
+
+    prefs = userCon.GetPreferences(session["current_user"]["userId"], category).getPreferences()
+
+    return render_template("preferences/preference2.html", prefs=prefs, allPrefs=allPrefs)
 
 
 # Reviews pages
@@ -875,13 +886,16 @@ def recommenderAlgorithmEndPoint(userId, startDatetime, timeAllowance, displaySi
                                 continue
 
                             if transportMode == "pt":
-                                estTime += (routeResults["plan"]["itineraries"][0]["duration"] + endRouteResults["plan"]["itineraries"][0]["duration"]) / 60
+                                estTime += routeResults["plan"]["itineraries"][0]["duration"] / 60
+                                estEndTime = endRouteResults["plan"]["itineraries"][0]["duration"] / 60
                             else:
-                                estTime += (routeResults["route_summary"]["total_time"] + endRouteResults["route_summary"]["total_time"]) / 60
+                                estTime += routeResults["route_summary"]["total_time"] / 60
+                                estEndTime = endRouteResults["route_summary"]["total_time"] / 60
 
-                            if estTime <= timeAllowance:
+                            if estTime + estEndTime <= timeAllowance:
                                 subList[i]["Duration"] = estTime
                                 subList[i]["Category"] = category
+                                subList[i]["EndDuration"] = estEndTime
                                 recommendList.append(subList[i])
                             else:
                                 skippedCount += 1
@@ -904,8 +918,9 @@ def recommenderAlgorithmEndPoint(userId, startDatetime, timeAllowance, displaySi
 def recommendPlacesPlanner():
     if request.method == 'POST':
         print("Start")
-        itiDate = request.form.get("date")
         userId = session["current_user"]["userId"]
+        itiDate = request.form.get("date")
+        timeAllowance = float(request.form.get("timeLeft"))
         latitude = float(request.form.get("latitude"))
         longitude = float(request.form.get("longitude"))
         category = request.form.get("category")
@@ -915,10 +930,12 @@ def recommendPlacesPlanner():
         placesAdded = request.form.getlist("placesAdded[]") or []
         abovePlace = request.form.get("abovePlace")
         belowPlace = request.form.get("belowPlace")
-        sectionIndex = int(request.form.get("section"))
+        sectionIndex = request.form.get("section")
+
+        if sectionIndex is not None:
+            sectionIndex = int(sectionIndex)
 
         startDatetime = datetime.strptime(itiDate + " " + request.form.get("startTime"), "%Y-%m-%d %H:%M")
-        timeAllowance = (datetime.strptime(itiDate + " " + "23:59:59", "%Y-%m-%d %H:%M:%S") - startDatetime).seconds / 60
 
         resultDict = recommenderAlgorithm(userId, startDatetime, timeAllowance, 10, latitude, longitude, category, transportMode, skipped, pageNum, placesAdded, abovePlace, belowPlace, sectionIndex)
         
@@ -988,7 +1005,7 @@ def recommendPlacesExplorer():
                     destinations.append(resultDict)
                     return resultDict
                         
-                while timeAllowance >= 180:
+                while True:
                     # Start heading back to end point when half the time is used up
                     if timeAllowance < originalAllowance / 2:
                         recommendFarEnd(timeAllowance, checkTime, foodCheck, totalEateries, placesAdded, abovePlace)
@@ -1162,7 +1179,11 @@ def reCalculateCards():
                             f"&routeType={routeType}&token={apiKey}&date={tripDate}&time={parseTime.strftime('%H:%M:%S')}" \
                             f"&mode=TRANSIT&numItineraries=1", ssl=False)
                 result = await res.json()
-                travelDurations.append(int(result["plan"]["itineraries"][0]["duration"] / 60))
+
+                if routeType == "pt":
+                    travelDurations.append(int(result["plan"]["itineraries"][0]["duration"] / 60))
+                else:
+                    travelDurations.append(int(result["route_summary"]["total_time"] / 60))
 
     asyncio.run(apiGetTime())
     return json.dumps(travelDurations)

@@ -11,9 +11,9 @@ import requests
 # print(hi)
 # sectorsLeft = {}
 # csvReaderRaw = csv.reader(open("csv/webcsv/restaurants_info_raw.csv"), delimiter = ',')
-csvReader = csv.reader(open("csv/webcsv/attractions_info_raw.csv"), delimiter = ',')
+csvReader = csv.reader(open("csv/webcsv/restaurants_info_raw.csv"), delimiter = ',')
 
-csvFile = open("csv/webcsv/attractions_info.csv", "w", newline="")
+csvFile = open("csv/webcsv/restaurants_info.csv", "w", newline="")
 csvWriter = csv.writer(csvFile)
 # Header
 i = True
@@ -48,6 +48,7 @@ for row in csvReader:
         if row[5][-9:].lower() == "singapore":
             row[5] = row[5][:-10]
         postalCode = row[5][-6:]
+        json.loads(row[7])
         print(f"Row {count}")
         link = "https://developers.onemap.sg/commonapi/search?searchVal={}&returnGeom=Y&getAddrDetails=Y".format(postalCode)
         apiResult = requests.get(link).json()
