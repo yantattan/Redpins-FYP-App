@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -15,6 +16,7 @@ import com.budiyev.android.codescanner.CodeScanner
 import com.budiyev.android.codescanner.DecodeCallback
 import com.budiyev.android.codescanner.ErrorCallback
 import com.budiyev.android.codescanner.ScanMode
+import java.net.URLEncoder
 
 class QrScannerActivity : AppCompatActivity() {
 
@@ -30,6 +32,12 @@ class QrScannerActivity : AppCompatActivity() {
 
         if (permission != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.CAMERA), CAMERA_REQUEST_CODE)
+        }
+
+        // Back button
+        backBtn.text = URLEncoder.encode("U+1F878","UTF-8")
+        backBtn.setOnClickListener {
+            super.onBackPressed()
         }
 
         // Code scanner

@@ -44,7 +44,7 @@
       <img src="../../static/images/red.png" alt="">
 
       <!-- points -->
-      <div class="progressdetails">
+      <div class="progressdetails" style="width: 75%;">
 
         <div class="buffrewardspoints">
           <p id="total-points">{{pointsInfo.getPoints()}} Points</p>
@@ -254,8 +254,12 @@
     var pointsLeft = parseInt(document.getElementById("points-left").innerText);
     var pointsProgress = tierRange[tier] - pointsLeft;
 
+    console.log(document.querySelector("#points-bar").clientWidth)
     var totalWidth = parseFloat($("#points-bar").width());
-    document.getElementById("points-progressbar").style.width = Math.floor((pointsProgress / tierRange[tier])*totalWidth) + "px";
+    if (totalWidth > 0) {
+      clearInterval(makeBar);
+    }
+    document.getElementById("points-progressbar").style.width = (pointsProgress / tierRange[tier])*totalWidth + "px";
 
     var nextIndex = tiers.indexOf(tier) + 1;
     if (nextIndex >= tiers.length) {
@@ -266,6 +270,9 @@
     }
   }
 
-  setRewardsBar()
+  var makeBar = setInterval(function () {
+    setRewardsBar();
+  }, 10);
+
 </script>
 {% endblock %}

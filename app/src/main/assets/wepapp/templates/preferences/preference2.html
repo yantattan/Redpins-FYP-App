@@ -7,36 +7,33 @@
     <form method="post">
         <div class="preference">
             <h1>Getting You<br>Started</h1>
-            <p>Pick at least <b>3</b> activities which suits you best!</p>
+            <p>Pick at least <b>3</b> attractions which suits you best!</p>
 
             <div class="activities">
                 <ul id="select-list">
-                    <li>Museums</li>
-                    <li>Fun and Games</li>
-                    <li>Sights and Landmarks</li>
-                    <li>Nature and Parks</li>
+                {% for pref in allPrefs %}
+                {% if pref in prefs %}
+                <li style="background: linear-gradient(193.74deg, #E4002B 3.02%, #E82038 31.9%, #F8A36F 95.45%); color:white;">{{pref}}</li>
+                {% else %}
+                <li>{{pref}}</li>
+                {% endif %}
+                {% endfor %}
                 </ul>
             </div>
         </div>
-        
-        <input id="next-btn" type="submit" value="Complete" class="next" disabled>
+
+        <input id="next-btn" type="submit" value="Next" class="next" disabled>
 
         <div id="checkboxes-div" style="display: none;">
+            {% for pref in allPrefs %}
             <br>
-                <input type="checkbox" value="Museums" id="pref1" name="preferences[]">
-                <label for="pref1">Museums</label>
-    
-            <br>
-                <input type="checkbox" value="Fun and Games" id="pref2" name="preferences[]">
-                <label for="pref2">Fun and Games</label>
-        
-            <br>
-                <input type="checkbox" value="Sights and Landmarks" id="pref3" name="preferences[]">
-                <label for="pref3">Sights and Landmarks</label>
-        
-            <br>
-                <input type="checkbox" value="Nature and Parks" id="pref4" name="preferences[]">
-                <label for="pref4">Nature and Parks</label>
+            {% if pref in prefs %}
+            <input type="checkbox" value="{{pref}}" id="{{pref}}" name="preferences[]" checked>
+            {% else %}
+            <input type="checkbox" value="{{pref}}" id="{{pref}}" name="preferences[]">
+            {% endif %}
+            <label for="{{pref}}">{{pref}}</label>
+            {% endfor %}
         </div>
     </form>
 </div>
@@ -47,12 +44,11 @@
 <script>
     var buttons = [].slice.call(document.getElementById("select-list").children);
     var checkboxes = document.getElementById("checkboxes-div").getElementsByTagName("input");
-    var checkedCount = 0;
+    var checkedCount = document.querySelectorAll("input[type='checkbox']:checked").length;
 
     for (var i=0; i<buttons.length; i++) {
         buttons[i].addEventListener("click", function(e) {
             var index = buttons.indexOf(e.target);
-            console.log(index)
             if (checkboxes[index].checked) {
                 checkboxes[index].checked = false;
                 buttons[index].style.background = null;
@@ -67,17 +63,24 @@
                 checkedCount++;
             }
 
-            if (checkedCount >= 3) {
-                document.getElementById("next-btn").style.background = "linear-gradient(193.74deg, #E4002B 3.02%, #E82038 31.9%, #F8A36F 95.45%)";
-                document.getElementById("next-btn").style.color = "white";
-                document.getElementById("next-btn").disabled = false;
-            }
-            else {
-                document.getElementById("next-btn").style.background = "#EEEEEE";
-                document.getElementById("next-btn").style.color = "#BBBBBB";
-                document.getElementById("next-btn").disabled = true;
-            }
-        })
+            checkCheckboxes();
+        });
     }
+
+    function checkCheckboxes() {
+        console.log(checkedCount)
+        if (checkedCount >= 3) {
+            document.getElementById("next-btn").style.background = "linear-gradient(193.74deg, #E4002B 3.02%, #E82038 31.9%, #F8A36F 95.45%)";
+            document.getElementById("next-btn").style.color = "white";
+            document.getElementById("next-btn").disabled = false;
+        }
+        else {
+            document.getElementById("next-btn").style.background = "#EEEEEE";
+            document.getElementById("next-btn").style.color = "#BBBBBB";
+            document.getElementById("next-btn").disabled = true;
+        }
+    }
+
+    checkCheckboxes();
 </script>
 {% endblock %}
