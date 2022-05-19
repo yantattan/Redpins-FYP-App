@@ -2,6 +2,11 @@
 {% block title %}Redpins Buffer - Explorer{% endblock %}
 
 {% block content %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css" />
+<script src="https://cdn.onemap.sg/leaflet/onemap-leaflet.js"></script>
+<script type="text/javascript" src="https://rawgit.com/jieter/Leaflet.encoded/master/Polyline.encoded.js"></script>
+
+
 <div class="device" id="reloadingbg" style="display: none;">
     <img src="/static/images/logo.gif" alt="logo" class="relogogif">
     <p>Hang tight while we find the best places for you...</p>
@@ -342,6 +347,9 @@
     {% else %}
     <div class="device" id="planPage" style="display: none;">
     {% endif %}
+        <div class="float-right">
+            <p onclick="openMapView();">Map</p>
+        </div>
         {% if itinerary != None %}
         <div id="startTime-text">Start time: {{itinerary.getStartTime()}}</div>
         <div id="endTime-text">End time: {{itinerary.getEndTime()}}</div>
@@ -379,7 +387,7 @@
                     <p class="plan-delete" onclick="delCard(this, parseInt('{{i+1}}'))">Delete</p>
                     {% endif %}
                 </div>
-                {% if i != itinerary.getPlaces()| length - 1 %}<button class="btn-addPlan btn-addColor" onclick="recommend(1, parseInt('{{i+1}}'));">  +  </button>{% endif %}
+                {% if i != itinerary.getPlaces()| length - 1 %}<button class="btn-addPlan btn-addColor" onclick="openRecommendTab(parseInt('{{i+1}}'));">  +  </button>{% endif %}
                 {% endfor %}
             {% endif %}
         </div>
@@ -389,6 +397,39 @@
             <input id="itinerary-id" name="id" value="{% if itinerary != None %}{{itinerary.getId()}}{% endif %}" hidden readonly>
             <input type="submit" value="Review Trip" class="btn btn-primary">
         </form>
+    </div>
+
+    <!-- Recommendation tab -->
+    <div class="device" id="recommendationTab" style="position: absolute; z-index:2; background-color: white; display: none; bottom: -200vh;">
+        <input type="text" class="form-control" id="searchBar" onkeyup="pauseSearch();" autocomplete="off">
+        <div class="categories">
+            <ul id="categories">
+                {% for cat in catInfo %}
+                <li>
+                    <div class="categoriesbutton">
+                        <svg>
+                        </svg>
+                    </div>
+                    <p>{{cat}}</p>
+                </li>
+                {% endfor %}
+                {% for i in range(8 - catInfo|length) %}
+                <li>
+                    <div class="categoriesbutton">
+                        <svg>
+                        </svg>
+                    </div>
+                    <p>Lorem</p>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div id="recommendcon" onclick="addSE(this);">
+            <div id="recommend-main" class="plan-choices-list"></div>
+            <div id="recommend-ratings" class="plan-choices-list"></div>
+            <div id="recommend-partners" class="plan-choices-list"></div>
+        </div>
     </div>
     
     <!-- Search Page -->
@@ -406,6 +447,17 @@
         </div>
     </div>
 
+    <!-- Map View -->
+    <div class="device" id="mapView" style="position: absolute; z-index:-2;">
+        <div id='mapdiv' style='height:80vh;'></div>
+        <div id="map-selection" style="height:20vh; z-index:-1; overflow-x: auto;">
+            <button class="btn-addColor" onclick="dismissMapView();">x</button>
+            <div id="map-sections" style="display: inline; overflow-x: auto; overflow-y: auto;">
+
+            </div>
+        </div>
+    </div>
+
 </div>
 
 {% endblock %}
@@ -413,12 +465,15 @@
 {% block scripts %}
 {{super()}}
 <script>
+    const apiKey = "{{apiKey}}";
     var post;
     var skipped = [0];
     var allowanceLeft = parseInt(document.querySelector("#time-left").querySelector("span").innerText);
     var originalDuration = allowanceLeft;
     var pendingChooseList = {};
     const currentTime = new Date();
+
+    var requests = [];
 
     /*function initFunctions() {
         $("#recommend-btn").on("click", f() {
@@ -536,26 +591,19 @@
         }
     }
 
-    function nextRecommend(pageNum, order, btn) {
+    function nextRecommend(pageNum, order, cat) {
         pageNum += 1;
-        recommend(pageNum, order, btn.closest(".plan-choices-list"));
+        recommend(pageNum, order, cat, 0, true);
         btn.remove();
     }
 
     function getLocation() {
         if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(showRoute)
+            navigator.geolocation.watchPosition(showYourPosition, positioningError, {
+                timeout: 500,
+                enableHighAccuracy: true
+            });
         }
-    }
-
-    function showRoute(position) {
-        latLngStr = position.coords.latitude + "," + position.coords.longitude
-        document.getElementById("start-latlng").innerText += latLngStr
-        if (document.getElementById("start-location-name").innerText == "Current Location") {
-            document.getElementById("start-location-latlng").innerText = latLngStr
-        }
-
-        var post = document.getElementById("start-location-latlng").innerText.split(",");
     }
 
     function recommendExplorer() {
@@ -657,8 +705,43 @@
         }
     }
 
+    function openRecommendTab(order) {
+        // Pull screen up
+        $("#recommendationTab").show();
+        $("#recommendationTab").animate({
+            bottom: "0"
+        }, 350);
+
+        allCat = document.getElementById("categories").getElementsByTagName("li");
+        for (var i=0; i<allCat.length; i++) {
+            var li = allCat[i];
+            li.setAttribute("onclick", `recommend(1, ${order}, '${li.querySelector("p").innerText}')`)
+        }
+        recommend(1, order, "Eateries");
+    }
+    function closeRecommendTab() {
+        // Pull screen down
+        $("#recommendationTab").animate({
+            bottom: "-200vh"
+        }, 350, function () {
+            $("#recommendationTab").hide();
+        });
+    }
     // Order - the positional order of the button in DOM
-    async function recommend(pageNum, order, listing=null) {
+    async function recommend(pageNum, order, cat, sectionNo=0, append=false) {
+        // Stop pending ajax reqf
+        if (requests.length > 0) {
+            while (requests.length > 0) {
+                try {
+                    requests[0].abort();
+                }
+                catch (e) {}
+                finally {
+                    requests.pop(0);
+                }
+            }
+        }
+
         startTme = $("#start-time").val();
         endTme = $("#end-time").val();
         transportMde = document.querySelector('input[name="transportMode"]:checked').value;
@@ -682,83 +765,91 @@
         
         var placeAfter = allCards[order].querySelector(".plan-address").innerText;
 
-        await $.ajax({
-            type: "POST",
-            url: `/funcs/planner-recommend-places?page=${pageNum}`,
-            data: {
-                date: currentTime.toISOString().slice(0, 10),
-                startTime: startTme,
-                endTime: endTme,
-                timeLeft: allowanceLeft,
-                latitude: latlng[0],
-                longitude: latlng[1],
-                category: "Eateries",
-                transportMode: transportMde,
-                skipped: JSON.stringify(skipped),
-                placesAdded: registeredPlaces,
-                abovePlace: placeBefore,
-                belowPlace: placeAfter
-            },
-            success: function(result) {
-                cleanedResult = result.replaceAll("\\u", "").replaceAll("NaN", `""`);
-                result = JSON.parse(cleanedResult);
-                pendingChooseList[order] = result;
-                pendingChooseList[order].pageNum = 2;
+        async function fetchDisplay(sectionNo) {
+            request = await $.ajax({
+                type: "POST",
+                url: `/funcs/planner-recommend-places?page=${pageNum}`,
+                data: {
+                    date: currentTime.toISOString().slice(0, 10),
+                    startTime: startTme,
+                    endTime: endTme,
+                    timeLeft: allowanceLeft,
+                    latitude: latlng[0],
+                    longitude: latlng[1],
+                    category: cat,
+                    transportMode: transportMde,
+                    skipped: JSON.stringify(skipped),
+                    placesAdded: registeredPlaces,
+                    abovePlace: placeBefore,
+                    belowPlace: placeAfter,
+                    section: sectionNo
+                },
+                success: function(result) {
+                    cleanedResult = result.replaceAll("\\u", "").replaceAll("NaN", `""`);
+                    result = JSON.parse(cleanedResult);
 
-                if (!listing) {
-                    listing = new DOMParser().parseFromString(
+                    listingIndex = [document.getElementById("recommend-main"), document.getElementById("recommend-ratings"), document.getElementById("recommend-partners")]
+                    pendingChooseList[sectionNo] = result;
+                    listing = listingIndex[sectionNo-1]
+                    listing.innerHTML = "";
+
+                    if (result.list.length > 0) {
+                        for (var i in result.list) {
+                            listing.innerHTML += 
+                            `<div class="card plan-choice" style="width:150px; height:175px; margin-right: 1em; max-width:
+                                flex-basis: 33.333%;
+                                flex-grow: 0;
+                                flex-shrink: 0;" onclick="choosePlace(this, ${sectionNo}, ${order}, ${i});">
+                                <h5>${result.list[i].Name}</h5>
+                                <p style="font-size:12px">${result.list[i].Address}</p>
+                                <br />
+                                <p>Matching ${result.list[i].RecommendationScore.toFixed(2)}</p>
+                            </div>`;
+
+                        }
+                    }
+                    else {
+                        listing.innerHTML += `<div class="card">There isn't any available places to be added</div>`;
+                        var allBtns = div.getElementsByClassName("btn-addPlan");
+                        for (var i=0; i<allBtns.length; i++) {
+                            allBtns[i].disabled = true;
+                            allBtns[i].classList.remove("btn-addColor");
+                        }
+                    }
+
+                    if (result.list.length == 10)
+                        listing.innerHTML += `<p onclick="nextRecommend(${pageNum}, ${order}, this)" class="list-load-more">Load more</p>`;
+
+                    console.log(skipped);
+                    
+                },
+                error: function(jq, status, errorMsg) {
+                    div.innerHTML = 
                     `<div class="plan-choices-list">
-                    </div>`, "text/html").body.firstElementChild;
-
-                    var allAddBtns = div.getElementsByClassName("btn-addPlan");
-                    div.insertBefore(listing, allAddBtns[order-1].nextSibling);
+                        Something went wrong. Try again
+                    </div>`;
+                },
+                complete: function(result) {
+                    $("#reloadingbg").hide();
                 }
+            });
 
-                if (result.list.length > 0) {
-                    for (var i in result.list) {
-                        listing.innerHTML += 
-                        `<div class="card plan-choice" style="width:150px; height:175px; margin-right: 1em; max-width:
-                            flex-basis: 33.333%;
-                            flex-grow: 0;
-                            flex-shrink: 0;" onclick="choosePlace(this, ${order}, ${i});">
-                            <h5>${result.list[i].Name}</h5>
-                            <p style="font-size:12px">${result.list[i].Address}</p>
-                            <br />
-                            <p>Matching ${result.list[i].RecommendationScore.toFixed(2)}</p>
-                        </div>`;
+            requests.push(request);
+        }
 
-                    }
-                }
-                else {
-                    listing.innerHTML += `<div class="card">There isn't any available places to be added</div>`;
-                    var allBtns = div.getElementsByClassName("btn-addPlan");
-                    for (var i=0; i<allBtns.length; i++) {
-                        allBtns[i].disabled = true;
-                        allBtns[i].classList.remove("btn-addColor");
-                    }
-                }
-
-                if (result.list.length == 10)
-                    listing.innerHTML += `<p onclick="nextRecommend(${pageNum}, ${order}, this)" class="list-load-more">Load more</p>`;
-
-                console.log(skipped);
-            },
-            error: function(jq, status, errorMsg) {
-                div.innerHTML = 
-                `<div class="plan-choices-list">
-                    Something went wrong. Try again
-                </div>`;
-            },
-            complete: function(result) {
-                $("#reloadingbg").hide();
+        if (sectionNo == 0) {
+            for (var i=1; i<4; i++) {
+                fetchDisplay(i)
             }
-        });
+        }
+        else
+            fetchDisplay(sectionNo)
     }
 
-    function choosePlace(btn, order, itemNo) {
+    function choosePlace(btn, index, order, itemNo) {
         btn.parentElement.remove()
         div = document.getElementById("recommendation-listings");
-        var info = pendingChooseList[order].list[itemNo];
+        var info = pendingChooseList[index].list[itemNo];
 
         var newPlace = new DOMParser().parseFromString(`
             <div class="card plan-selection">
@@ -789,6 +880,8 @@
         reCal2Places(div, order);
         reAssignValues();
         saveTrips();
+
+        closeRecommendTab();
     }
 
     // Edit/delete/rearrange
@@ -800,7 +893,7 @@
 
         timeLeft.innerText = parseInt(timeLeft.innerText) + parseInt(card.querySelector(".plan-total-duration").querySelector("span").innerText);
         allowanceLeft = timeLeft.innerText;
-        await recommend(1, order-1);
+        openRecommendTab(order-1);
         card.remove();
     }
 
@@ -856,7 +949,7 @@
     function reAssignValues() {
         var div = document.getElementsByClassName("btn-add-place");
         for (var i=0; i<div.length; i++) {
-            div[i].setAttribute("onclick", `recommend(1, ${i+1});`);
+            div[i].openRecommendTab("onclick", `recommend(1, ${i+1});`);
         }
 
         var startTime = new Date(`2022-01-01T${$("#start-time").val()}:00`);
@@ -1026,6 +1119,177 @@
     }
 
     // initFunctions();
+
+    // Map settings
+    // Map display init
+    L.Icon.Default.imagePath = "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.4.0/images";
+    var center = L.bounds([1.56073, 104.11475], [1.16, 103.502]).getCenter();
+    var map = L.map('mapdiv').setView([center.x, center.y], 12);
+    var yourMarker;
+    var startMarker;
+    var endMarker;
+
+    var routeTextures = {
+        WALK: {color: "black", dashArray: "10, 10"},
+        SUBWAY: {
+            NE: {color: "purple"},
+            NS: {color: "red"},
+            DT: {color: "blue"},
+            EW: {color: "green"},
+            CC: {color: "yellow"},
+            TE: {color: "brown"},
+            Default: {color: "grey"}
+        },
+        DRIVE: {color: "black"}
+    }
+
+    var basemap = L.tileLayer(`http://maps-{s}.onemap.sg/v2/Default/{z}/{x}/{y}.png`, {
+        detectRetina: true,
+        maxZoom: 18,
+        minZoom: 12,
+    });
+
+    map.setMaxBounds([[1.56073, 104.1147], [1.16, 103.502]]);
+
+    basemap.addTo(map);
+
+    var updatePosition = false;
+    var repeatedBuildings = {};
+
+    function openMapView() {
+        // Make toggle cards
+        var planCards = document.getElementById("recommendation-listings").getElementsByClassName("plan-selection");
+        var mapDiv = document.getElementById("map-selection");
+        mapDiv.innerHTML = "";
+        for (var i=1; i<planCards.length; i++) {
+            mapDiv.innerHTML += 
+            `<div class="trip-place" style="border: 1px solid grey ;width: 250px; margin: 5px;" onclick="showRoute('${planCards[i-1].querySelector(".plan-latlng").innerText}', '${planCards[i].querySelector(".plan-latlng").innerText}')">
+                <h5>${planCards[i].querySelector(".plan-name").innerText}</h5>
+                <p>${planCards[i].querySelector(".plan-address").innerText}</p>
+            </div>`;
+        }
+
+        // Default show 1st part trip
+        var firstCard = document.querySelector(".trip-place")
+        if (typeof firstCard.onclick == "function")
+            firstCard.onclick.apply(firstCard);
+
+        // Pull plan page down
+        $("#planPage").animate({
+            bottom: "-200vh"
+        }, 350, function () {
+            $("#planPage").hide()
+        });
+    }
+
+    function dismissMapView() {
+        // Pull plan page up
+        $("#planPage").show();
+        $("#planPage").animate({
+            bottom: "0"
+        }, 350);
+    }
+
+    function showYourPosition(position) {  
+        updatePosition = true;  
+        // Mark marker
+        if (yourMarker) {
+            map.removeLayer(yourMarker);
+        }
+        
+        yourMarker = new L.Marker([position.coords.latitude, position.coords.longitude], {bounceOnAdd: false, customId: "YouMarker"}).addTo(map); 
+
+        latLngStr = position.coords.latitude + "," + position.coords.longitude
+        document.getElementById("start-latlng").innerText += latLngStr
+        if (document.getElementById("start-location-name").innerText == "Current Location") {
+            document.getElementById("start-location-latlng").innerText = latLngStr
+        }
+
+        var post = document.getElementById("start-location-latlng").innerText.split(",");
+    }
+
+    function positioningError(error) {
+
+    }
+
+    function showRoute(position1, position2) {
+        // Routing display
+        var today = new Date();
+        var routeType = document.querySelector('input[name="transportMode"]:checked').value;
+        if (routeType == "Public Transport") {
+            routeType = "pt";
+        }
+
+        var position1 = position1.split(",");
+        var position2 = position2.split(",");
+
+        function decodeGeo(encodedRoute) {
+            if (encodedRoute !== undefined || encodedRoute !== '' || encodedRoute != null ) {
+                var routeGeo = L.Polyline.fromEncoded(encodedRoute, {
+                    precision: 6
+                });
+
+                return routeGeo;
+            }
+        }
+
+        $.ajax({
+            url: `https://developers.onemap.sg/privateapi/routingsvc/route?start=${position1[0]},${position1[1]}&end=${position2[0]},${position2[1]}&routeType=${routeType}&token=${apiKey}&date=${String(today.getFullYear())}-${String(today.getMonth()+1)}-${String(today.getDate())}&time=${String(today.getHours())}:${String(today.getMinutes())}:${String(today.getSeconds())}&mode=TRANSIT`,
+            success: function(result) {
+                //Set result to a variable for writing
+                var encodedRoute;
+                var modes = [];
+
+                // Remove previous markings and route paths
+                if (startMarker) {
+                    map.removeLayer(startMarker);
+                }
+                if (endMarker) {
+                    map.removeLayer(endMarker);
+                }
+                pathPieces = [].slice.call(document.getElementsByTagName("path")).map(x => x.parentElement);
+                for (var i=0; i<pathPieces.length; i++) {
+                    pathPieces[i].remove();
+                }
+
+                startMarker = new L.Marker([position1[0], position1[1]], {bounceOnAdd: true}).addTo(map);
+                endMarker = new L.Marker([position2[0], position2[1]], {bounceOnAdd: true}).addTo(map);
+                 
+                if (routeType == "pt") {
+                    var allRoutes = result.plan.itineraries;
+                    for (var i in allRoutes) {
+                        var transportMeans = allRoutes[i].legs;
+                        for (var j in transportMeans) {
+                            var details = transportMeans[j];
+                            var mode = details.mode;
+
+                            encodedRoute = details.legGeometry.points
+                            var routeGeo = decodeGeo(encodedRoute);
+                            modes = {endpoints: routeGeo._latlngs, mode: mode};
+
+                            if (mode == "SUBWAY") {
+                                var subwayLine = details.route;
+                                L.polyline(modes.endpoints, routeTextures.SUBWAY[subwayLine]).addTo(map);
+                            }
+                            else {
+                                L.polyline(modes.endpoints, routeTextures[modes.mode]).addTo(map);
+                            }
+                        }
+
+                        // Remove for the next time, only take 1st route
+                        break
+                    }
+                }
+                else {
+                    encodedRoute = result.route_geometry;
+                    var routeGeo = decodeGeo(encodedRoute);
+                    modes = {endpoints: routeGeo._latlngs, mode: routeType.toUpperCase()};
+
+                    L.polyline(modes.endpoints, routeTextures[modes.mode]).addTo(map);
+                }
+            }
+        });
+    }
 
     window.addEventListener('load', function () {
         document.addEventListener('click', function (event) {

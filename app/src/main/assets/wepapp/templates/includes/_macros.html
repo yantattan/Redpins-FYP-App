@@ -1,0 +1,16 @@
+{% macro searchTab() %}
+<!-- Search Page -->
+<div class="device" id="searchTab" style="position: absolute; z-index:2; background-color: white; display: none; bottom: -200vh;">
+    <input type="text" class="form-control" id="searchBar" onkeyup="pauseSearch();" autocomplete="off">
+    <div id="searchPage" hidden>1</div>
+    <div id="search-btnId" hidden></div>
+    <div id="search-divOrder" hidden></div>
+    <div class="dropdown-item" id="start" onclick="addSE(this);">
+        <p style="font-size: 14px; margin-bottom: 3px; font-weight: bold;">Your Location</p>
+        <p style="font-size: 11px; max-width: 100%; overflow: auto; margin-bottom: 3px; display: none;">Current Location</p>
+        <p id="start-latlng" hidden></p>
+    </div>
+    <div id="search-results">
+    </div>
+</div>
+{% endmacro %}

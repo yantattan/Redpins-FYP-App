@@ -218,7 +218,7 @@ def plannerItinerary():
         if reviewItineraries is not None:
             return redirect("/itinerary/review/planner")
 
-    return render_template(f"/itinerary/plannerItinerary.html", itineraries=itineraries)
+    return render_template(f"/itinerary/plannerItinerary.html", itineraries=itineraries, apiKey=apiKey, catInfo=categoriesInfo)
 
 @app.route("/itinerary/planning/explorer", methods=['GET', 'POST'])
 def explorerItinerary():
@@ -236,7 +236,7 @@ def explorerItinerary():
         if reviewItinerary is not None:
             return redirect("/itinerary/review/explorer")
 
-    return render_template("/itinerary/explorerItinerary.html", itinerary=itinerary)
+    return render_template("/itinerary/explorerItinerary.html", itinerary=itinerary, apiKey=apiKey, catInfo=categoriesInfo)
 
 @app.route("/itinerary/review/<string:typ>", methods=['GET', 'POST'])
 def confirmItinerary(typ):
@@ -264,7 +264,7 @@ def showTrip(id):
     if currItinerary.getUserId() != session["current_user"]["userId"]:
         return render_template("/itinerary/reviewItinerary.html", error="You are not permitted to view this itinerary")
 
-    return render_template("/itinerary/showTrip.html", itinerary=currItinerary)
+    return render_template("/itinerary/showTrip.html", itinerary=currItinerary, apiKey=apiKey)
 
 
 # Preferences pages
@@ -480,7 +480,7 @@ averageSpeeds = {
     "cycle": 18
 }
 
-def calculateAndReturnList(userId, category, webScrapData, shortlistedPlaces, displaySize, activityTime, skipped, placesAdded):
+def calculateAndReturnList(userId, category, webScrapData, shortlistedPlaces, displaySize, activityTime, skipped, placesAdded, sectionIndex):
     # CALCULATIONS BEFORE CHECKING AGAINST DIFFERENT PLACES
     # From here, every different checks contributes to different weightage to the final chance.
     globalPreference = joblib.load("csv/dbcsv/global-users-preferences.joblib")
@@ -549,53 +549,58 @@ def calculateAndReturnList(userId, category, webScrapData, shortlistedPlaces, di
                 # Low chance to try and exclude restaurants outside of our dataset
                 netChance = 0.1
             else:
+                placeDetails = webScrapData.loc[webScrapData["Name"] == place.Name]
+                placesCat = placeDetails[categoriesInfo[category]["colName"]].values[0].split(",")
+
                 # #1 - Check against global and your preference
-                cuisinesMatch = 0
-                yourPrefs = userCon.GetPreferences(userId, category)
-                restaurantDetails = webScrapData.loc[webScrapData["Name"] == place.Name]
-                restaurantCuisines = restaurantDetails[categoriesInfo[category]["colName"]].values[0].split(",")
+                if sectionIndex in [1, 3]:
+                    cuisinesMatch = 0
+                    yourPrefs = userCon.GetPreferences(userId, category)
 
-                for pref in top5Pref:
-                    if pref in restaurantCuisines:
-                        cuisinesMatch += 1 * globalPrefAccuracy
-                for pref in yourPrefs.getPreferences():
-                    if pref in restaurantCuisines:
-                        cuisinesMatch += 2
+                    for pref in top5Pref:
+                        if pref in placesCat:
+                            cuisinesMatch += 1 * globalPrefAccuracy
+                    for pref in yourPrefs.getPreferences():
+                        if pref in placesCat:
+                            cuisinesMatch += 2
 
-                cuisinesMatch /= 15
-                netChance += cuisinesMatch * 0.35
+                    cuisinesMatch /= 15
+                    netChance += cuisinesMatch * 0.35
 
                 # #2 - Check reviews
-                reviews = reviewsCon.GetReviews(place.Address)
-                if reviews is not None:
-                    calRating = restaurantDetails["Rating"].values[0] * 0.25 + reviews * 0.75
-                    calRating /= 5
-                    # calRatingXVal = calRating * 0.5
-                    # netChance += ((2 * calRatingXVal * (1 - calRatingXVal) + 0.5) * calRating) * 0.35
-                    netChance += calRating * 0.25
-                else:
-                    calRating = restaurantDetails["Rating"].values[0] / 5
-                    netChance += calRating * 0.25
+                if sectionIndex in [1, 2]:
+                    reviews = reviewsCon.GetReviews(place.Address)
+                    if reviews is not None:
+                        calRating = placeDetails["Rating"].values[0] * 0.25 + reviews * 0.75
+                        calRating /= 5
+                        # calRatingXVal = calRating * 0.5
+                        # netChance += ((2 * calRatingXVal * (1 - calRatingXVal) + 0.5) * calRating) * 0.35
+                        netChance += calRating * 0.25
+                    else:
+                        calRating = placeDetails["Rating"].values[0] / 5
+                        netChance += calRating * 0.25
 
                 # #3 - Check against the cuisines & places recommended from your tracked history
-                trackedMatch = 0
-                if freqtrackedPlacesCuisine != {}:
-                    if place.Name in rerecommend:
-                        trackedMatch += 5
+                if sectionIndex in [1, 4]:
+                    trackedMatch = 0
+                    if freqtrackedPlacesCuisine != {}:
+                        if place.Name in rerecommend:
+                            trackedMatch += 5
 
-                    for cuisine in restaurantCuisines:
-                        trackedMatch += freqtrackedPlacesCuisine[cuisine]
-                        trackedMatch += futuretrackedPlacesPoints[cuisine]
+                        for cuisine in placesCat:
+                            trackedMatch += freqtrackedPlacesCuisine[cuisine]
+                            trackedMatch += futuretrackedPlacesPoints[cuisine]
 
-                trackedMatch /= 13
-                
-                netChance += trackedMatch * 0.2
+                    trackedMatch /= 13
+                    
+                    netChance += trackedMatch * 0.2
 
                 # #4 - Check if the places are our partners
-                partnered = signedPlaceCon.CheckPlace(place.Name)
-                if partnered:
-                    netChance += 0.2
-
+                if sectionIndex in [1, 3]:
+                    partnered = signedPlaceCon.CheckPlace(place.Name)
+                    if partnered:
+                        netChance += 0.2
+                
                 # #5 - Check if place already selected
                 if place.Address in placesAdded:
                     netChance /= 2
@@ -627,7 +632,7 @@ def calculateAndReturnList(userId, category, webScrapData, shortlistedPlaces, di
 
         return takenSet, orderedPlaces
 
-def recommenderAlgorithm(userId, startDatetime, timeAllowance, displaySize, latitude, longitude, category, transportMode, skipped, pageNum, placesAdded, abovePlace=None, belowPlace=None):
+def recommenderAlgorithm(userId, startDatetime, timeAllowance, displaySize, latitude, longitude, category, transportMode, skipped, pageNum, placesAdded, abovePlace=None, belowPlace=None, sectionIndex=1):
     recommendList = []
 
     def firstShortlist(placesList, startDatetime, transportMode, activityTime, abovePlace, belowPlace):
@@ -685,7 +690,7 @@ def recommenderAlgorithm(userId, startDatetime, timeAllowance, displaySize, lati
     shortlistedPlaces = firstShortlist(webScrapData, startDatetime, transportMode, activityTime, abovePlace, belowPlace)
 
     if len(shortlistedPlaces) > 0:
-        returnList = calculateAndReturnList(userId, category, webScrapData, shortlistedPlaces, displaySize, activityTime, skipped, placesAdded)
+        returnList = calculateAndReturnList(userId, category, webScrapData, shortlistedPlaces, displaySize, activityTime, skipped, placesAdded, sectionIndex)
 
         async def CheckRealDuration(placesList, orderedPlaces, transportMode):
             # Final shortlisting - Ensure estimated shortlisted places can actually be reached in time
@@ -750,7 +755,7 @@ def recommenderAlgorithm(userId, startDatetime, timeAllowance, displaySize, lati
 
     return {"list": recommendList, "skipped": skipped}
 
-def recommenderAlgorithmEndPoint(userId, startDatetime, timeAllowance, displaySize, latitude, longitude, endLatitude, endLongitude, category, transportMode, skipped, pageNum, placesAdded, abovePlace=None, belowPlace=None):
+def recommenderAlgorithmEndPoint(userId, startDatetime, timeAllowance, displaySize, latitude, longitude, endLatitude, endLongitude, category, transportMode, skipped, pageNum, placesAdded, abovePlace=None, belowPlace=None, sectionIndex=1):
     recommendList = []
 
     def firstShortlist(placesList, startDatetime, transportMode, activityTime, abovePlace, belowPlace):
@@ -811,7 +816,7 @@ def recommenderAlgorithmEndPoint(userId, startDatetime, timeAllowance, displaySi
     shortlistedPlaces = firstShortlist(webScrapData, startDatetime, transportMode, activityTime, abovePlace, belowPlace)
 
     if len(shortlistedPlaces) > 0:
-        returnList = calculateAndReturnList(userId, category, webScrapData, shortlistedPlaces, displaySize, activityTime, skipped, placesAdded)
+        returnList = calculateAndReturnList(userId, category, webScrapData, shortlistedPlaces, displaySize, activityTime, skipped, placesAdded, sectionIndex)
 
         async def CheckRealDuration(placesList, orderedPlaces, transportMode):
             # Final shortlisting - Ensure estimated shortlisted places can actually be reached in time
@@ -910,11 +915,12 @@ def recommendPlacesPlanner():
         placesAdded = request.form.getlist("placesAdded[]") or []
         abovePlace = request.form.get("abovePlace")
         belowPlace = request.form.get("belowPlace")
+        sectionIndex = int(request.form.get("section"))
 
         startDatetime = datetime.strptime(itiDate + " " + request.form.get("startTime"), "%Y-%m-%d %H:%M")
         timeAllowance = (datetime.strptime(itiDate + " " + "23:59:59", "%Y-%m-%d %H:%M:%S") - startDatetime).seconds / 60
 
-        resultDict = recommenderAlgorithm(userId, startDatetime, timeAllowance, 10, latitude, longitude, category, transportMode, skipped, pageNum, placesAdded, abovePlace, belowPlace)
+        resultDict = recommenderAlgorithm(userId, startDatetime, timeAllowance, 10, latitude, longitude, category, transportMode, skipped, pageNum, placesAdded, abovePlace, belowPlace, sectionIndex)
         
         print("Done")
     return json.dumps(resultDict)
@@ -1237,6 +1243,7 @@ def clearPlanner():
 @app.route("/funcs/save-trip", methods=['POST'])
 def saveTrip():
     if request.method == 'POST':
+        itineraryId = request.form.get("id") or None
         userId = session["current_user"]["userId"]
         tripType = request.form.get("tripType")
         tripName = request.form.get("tripName")
@@ -1281,7 +1288,7 @@ def saveTrip():
             places.append({"Name": names[i], "Address": addresses[i], "ActivityDuration": activityDuration, 
                             "TotalDuration": duration, "Latlng": latlngs[i]})
 
-        itinerary = Itinerary(None, userId, tripName, date, startTime, endTime, tripType, transportMode, timeAllowance, timeLeft, confirmed, status, places, plannerId, hasEnd)
+        itinerary = Itinerary(itineraryId, userId, tripName, date, startTime, endTime, tripType, transportMode, timeAllowance, timeLeft, confirmed, status, places, plannerId, hasEnd)
         itinerariesCon.SetItinerary(itinerary)
         returnIti = itinerariesCon.GetUnconfimredItinerary(userId, tripType)
 
