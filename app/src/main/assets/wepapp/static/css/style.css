@@ -68,7 +68,7 @@ nav {
   position: absolute;
   height: 26px;
   width: 23px;
-  left: 275px;
+  left: 59px;
   top: 44px;
   border-radius: 0px;
 }
@@ -87,7 +87,7 @@ nav {
   position: absolute;
   height: 26px;
   width: 27.000001907348633px;
-  left: 59px;
+  left: 275px;
   top: 44px;
   border-radius: 0px;
 }
@@ -498,11 +498,10 @@ input {
 }
 
 .categories ul {
-  width: 640px;
+  width: 740px;
   display: flex;
   justify-content: space-around;
   list-style: none;
-  margin: auto 20px;
   text-align: center;
 }
 
@@ -523,13 +522,35 @@ input {
 .categoriesbutton {
   width: 40px;
   height: 40px;
-  background: linear-gradient(234.68deg, #E4002B 1.73%, #E92C3D 15.75%, #F8A36F 85.31%);
+  background: #E4002B;
   border-radius: 5px;
+}
+
+.categoriesscroll {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  grid-gap: 4px;
+  margin: 20px 0;
+}
+
+.categoriesscrollpg1 {
+  width: 29px;
+  height: 4px;
+  background: #E4002B;
+  border-radius: 2px;
+}
+
+.categoriesscrollpg2 {
+  width: 15px;
+  height: 4px;
+  background: #E7E7E7;
+  border-radius: 2px;
 }
 
 /* homeheaders */
 .sectionheader {
-  margin: 10px 20px 0 20px;
+  margin: 10px 20px;
 }
 
 .sectionheader h1 {
@@ -568,7 +589,7 @@ input {
 .manyheadertags {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: baseline;
 }
 
 .recentsearches {
@@ -1368,6 +1389,17 @@ input {
   justify-content: center;
 }
 
+/* viewonmap */
+.viewonmap {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  left: 290px;
+  top: 610.5px;
+  z-index: 5;
+}
+
+/* bottom */
 .bottom {
   position: absolute;
   width: 360px;
@@ -1421,13 +1453,13 @@ input {
 
 .explorertripitinerary hr {
   border: 1px solid #BBBBBB;
-  margin: 20px 0;
 }
 
 .explorerstart,
 .explorerend {
   display: flex;
   justify-content: space-between;
+  margin: 20px 0;
 }
 
 .explorerstart h1,
@@ -1441,7 +1473,7 @@ input {
 
 .explorerstart svg,
 .explorerend svg {
-  margin: 0 10px;
+  margin-right: 10px;
 }
 
 .explorerstartpoint,
@@ -1455,6 +1487,7 @@ input {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin: 20px 0;
 }
 
 .eventdetails {
@@ -1495,4 +1528,121 @@ input {
 
 .deleteevent {
   margin-left: 30px;
+}
+
+/* explorerdirections */
+.explorerdirections {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 10px 0;
+}
+
+.explorertransport {
+  display: flex;
+  align-items: center;
+  grid-gap: 10px;
+}
+
+/* transportation */
+.transportation {
+  width: 30px;
+  height: 17px;
+  border-radius: 3px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.transportation h1 {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 12px;
+  color: #FFFFFF;
+}
+
+/* mrt */
+.nsline {
+  background: #E32325;
+}
+
+.dtline {
+  background: #2059A9;
+}
+
+.neline {
+  background: #8E3E98;
+}
+
+.ewline {
+  background: #0C9345;
+}
+
+.circleline {
+  background: #F99D21;
+}
+
+.tecpline {
+  background: #AA7242;
+}
+
+/* lrt */
+.lrtline {
+  background: #708573;
+}
+
+/* bus */
+.busno {
+  background: #0C9345;
+}
+
+/* explorertravelduration */
+.explorertravelduration {
+  text-align: right;
+}
+
+.explorertravelduration h1 {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 18px;
+  color: #2B2B2B;
+}
+
+.explorertravelduration h2 {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 16px;
+  color: #E4002B;
+}
+
+/* showexpandedroute */
+.detailedwalking,
+.stationname {
+  display: flex;
+  align-items: center;
+  grid-gap: 10px;
+}
+
+.detailedwalking h1 {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 22px;
+  color: #707070;
+}
+
+.walkingdots {
+  margin: 2.3%;
+}
+
+/* editexplorertrip */
+#editexplorertrip {
+  overflow-y: scroll;
+  overflow-x: hidden;
 }
