@@ -942,6 +942,10 @@ input {
 }
 
 /* explore page */
+#explore {
+  background-image: url("../../static/images/Homespots.png");
+}
+
 .exploreheader {
   margin: 40px 20px 20px 20px;
 }
@@ -1003,6 +1007,7 @@ input {
 #account {
   overflow-y: scroll;
   overflow-x: hidden;
+  background-image: url("../../static/images/Accountspots.png");
 }
 
 .accountheader {
@@ -1181,7 +1186,7 @@ input {
   justify-content: center;
   align-items: center;
   height: 50px;
-margin: 30px auto 20px auto;
+  margin: 30px auto 20px auto;
 }
 
 .accsignout h1 {
@@ -1190,6 +1195,103 @@ margin: 30px auto 20px auto;
   font-weight: 600;
   font-size: 16px;
   color: #FFFFFF;
+}
+
+/* myplans */
+#myplans {
+  background-image: url("../../static/images/Plansspots.png");
+}
+
+.myplansheader h1 {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 25px;
+  color: #FFFFFF;
+  margin: 40px 20px 10px 20px;
+}
+
+.planscon {
+  width: 360px;
+  height: 760px;
+  background: #FCFCFC;
+  border-radius: 10px 10px 0px 0px;
+}
+
+.planscon ul {
+  display: flex;
+  justify-content: space-around;
+  list-style: none;
+  margin: 20px;
+}
+
+.currentplans {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  color: #E4002B;
+  border-bottom: 3px solid #E4002B;
+}
+
+.previousplans {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  color: #BBBBBB;
+}
+
+/* myplanstrips */
+.myplanstrips {
+  width: 320px;
+  height: 100px;
+  background: #FFFFFF;
+  box-shadow: 0px 0px 20px rgba(207, 207, 207, 0.5);
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  margin: 20px;
+}
+
+.planimg {
+  width: 100px;
+  height: 100px;
+  background-color: green;
+  /* background: url(image.png); */
+  border-radius: 5px;
+}
+
+.planinfo {
+  margin-left: 10px;
+}
+
+.planinfo h1 {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 18px;
+  color: #E4002B;
+}
+
+.planinfo h2 {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 27px;
+  color: #2B2B2B;
+  margin: 5px 0;
+}
+
+.planinfo h3 {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 16px;
+  color: #2B2B2B;
 }
 
 /* explorer */
@@ -1201,7 +1303,11 @@ margin: 30px auto 20px auto;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 40px 20px 20px 20px;
+  padding: 40px 20px 20px 20px;
+  width: 360px;
+  height: 90px;
+  background: #FFFFFF;
+  box-shadow: 0px 5px 20px rgba(207, 207, 207, 0.3);
 }
 
 .explorerheader h1 {
@@ -1227,7 +1333,7 @@ margin: 30px auto 20px auto;
   mix-blend-mode: normal;
   border: 1px solid #BBBBBB;
   border-radius: 5px;
-  margin: 20px;
+  margin: 10px 20px;
   padding: 1em;
   font-family: 'Open Sans';
   font-style: normal;
@@ -1255,6 +1361,11 @@ margin: 30px auto 20px auto;
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.explorerbanner {
+  display: flex;
+  justify-content: center;
 }
 
 .bottom {
@@ -1299,6 +1410,89 @@ margin: 30px auto 20px auto;
   align-items: center;
 }
 
-.starttrip {
+.reviewtrip {
   width: 236px;
+}
+
+/* explorer trip itinerary */
+.explorertripitinerary {
+  margin: 20px;
+}
+
+.explorertripitinerary hr {
+  border: 1px solid #BBBBBB;
+  margin: 20px 0;
+}
+
+.explorerstart,
+.explorerend {
+  display: flex;
+  justify-content: space-between;
+}
+
+.explorerstart h1,
+.explorerend h1 {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 18px;
+  color: #2B2B2B;
+}
+
+.explorerstart svg,
+.explorerend svg {
+  margin: 0 10px;
+}
+
+.explorerstartpoint,
+.explorerendpoint {
+  display: flex;
+  align-items: center;
+}
+
+/* explorerevent */
+.explorerevent {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.eventdetails {
+  display: flex;
+  align-items: center;
+}
+
+.eventimg {
+  width: 60px;
+  height: 60px;
+  border-radius: 5px;
+  background-color: green;
+  margin: 0 10px 0 0;
+}
+
+.eventinfo h1 {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 21px;
+  color: #2B2B2B;
+}
+
+.eventinfo h2 {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 16px;
+  color: #707070;
+}
+
+.eventedit {
+  display: flex;
+  align-items: center;
+}
+
+.deleteevent {
+  margin-left: 30px;
 }
