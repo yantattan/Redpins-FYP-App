@@ -1447,6 +1447,11 @@ input {
 }
 
 /* explorer trip itinerary */
+#exploreritinerary {
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
 .explorertripitinerary {
   margin: 20px;
 }
