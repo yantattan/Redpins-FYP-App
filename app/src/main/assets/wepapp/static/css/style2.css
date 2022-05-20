@@ -2,12 +2,23 @@ p, h1, h2, h3, h4, h5, h6 {
   margin-bottom: 0;
 }
 
+hr {
+  margin: 0;
+}
+
+#planPage {
+  overflow-y: scroll;
+  overflow-x: hidden;
+  max-height: 600px;
+}
+
 .btn-addColor {
   background: linear-gradient(193.74deg, #E4002B 3.02%, #E82038 31.9%, #F8A36F 95.45%); 
   color: white;
   border-radius: 5px;
   border: 0;
   padding: 5px;
+  margin: 5px 0;
 }
 
 .addColor {
