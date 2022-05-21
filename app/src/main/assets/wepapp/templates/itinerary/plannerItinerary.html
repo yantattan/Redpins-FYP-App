@@ -111,38 +111,175 @@
         {% endif %}
     </div>
 
+    <!-- Search Page -->
+    <div class="device" id="searchTab" style="position: absolute; z-index:2; background-color: white; display: none; bottom: -200vh;">
+        <input type="text" class="form-control" id="searchBar" onkeyup="pauseSearch();" autocomplete="off">
+        <div id="searchPage" hidden>1</div>
+        <div id="search-btnId" hidden></div>
+        <div id="search-divOrder" hidden></div>
+        <div class="dropdown-item" id="start" onclick="addSE(this);">
+            <p style="font-size: 14px; margin-bottom: 3px; font-weight: bold;">Your Location</p>
+            <p style="font-size: 11px; max-width: 100%; overflow: auto; margin-bottom: 3px; display: none;">Current Location</p>
+            <p id="start-latlng" hidden></p>
+        </div>
+        <div id="search-results">
+        </div>
+    </div>
+    
     <!-- Recommendation tab -->
     <div class="device" id="recommendationTab" style="position: absolute; z-index:2; background-color: white; display: none; bottom: -200vh;">
-        <input type="text" class="form-control" id="searchBar" onkeyup="pauseSearch();" autocomplete="off">
         <div id="sectionIndex" hidden></div>
-        <div class="categories">
-            <ul id="categories">
-                {% for cat in catInfo %}
-                <li>
-                    <div class="categoriesbutton">
-                        <svg>
-                        </svg>
-                    </div>
-                    <p>{{cat}}</p>
-                </li>
-                {% endfor %}
-                {% for i in range(8 - catInfo|length) %}
-                <li>
-                    <div class="categoriesbutton">
-                        <svg>
-                        </svg>
-                    </div>
-                    <p>Lorem</p>
-                </li>
-                {% endfor %}
-            </ul>
+        <!-- header -->
+        <div class="explorerheader">
+            <svg width="12" height="20" onclick="closeRecommendTab();">
+            <path
+                d="M10.2642 0C10.8582 0.203504 11.2215 0.68581 11.6052 1.12894C11.9081 1.47897 11.8687 2.05183 11.5761 2.4156C11.5052 2.50072 11.4295 2.58174 11.3494 2.65828C8.94914 5.0464 6.54751 7.43334 4.14452 9.81909C4.0819 9.87251 4.01519 9.92099 3.94498 9.96409C4.03554 10.0582 4.08722 10.1167 4.14145 10.1676C6.56048 12.5737 8.9795 14.9796 11.3985 17.3854C11.8298 17.8148 11.9613 18.3439 11.6385 18.7738C11.3346 19.1709 10.9778 19.5251 10.5779 19.8264C10.2074 20.1093 9.70807 20.0259 9.34174 19.7247C9.28648 19.6794 9.23276 19.6311 9.18211 19.5807L0.412125 10.8636C-0.0248138 10.4296 -0.119978 9.92084 0.153748 9.45024C0.222198 9.33957 0.304744 9.23817 0.399334 9.14854C3.33272 6.23165 6.26697 3.31661 9.20206 0.403448C9.37602 0.231995 9.61905 0.132787 9.8324 0H10.2642Z"
+                fill="#2B2B2B" />
+            </svg>
+            <h1>Edit Plan</h1>
+            <svg onclick="document.getElementById('recommendSearch').style.display = 'block';" width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+                d="M0.773438 8.20312V9.29688C0.829688 9.68802 0.867708 10.0828 0.944792 10.4703C1.69479 14.225 4.80156 17.0578 8.6276 17.45C10.6422 17.6568 12.5146 17.2036 14.2292 16.1182C14.3974 16.0115 14.5609 15.8979 14.7516 15.7708C14.8031 15.8349 14.8427 15.8958 14.8938 15.9458C16.0599 17.0984 17.2307 18.2464 18.3917 19.4042C18.6635 19.675 18.9448 19.913 19.3281 20H19.7188C19.8984 19.9188 20.0901 19.8562 20.2547 19.7521C20.5469 19.5672 20.6839 19.2682 20.7734 18.9453V18.5156C20.6651 18.1245 20.3984 17.8469 20.1198 17.5703C18.974 16.4339 17.8354 15.2896 16.6943 14.1484C16.6406 14.0948 16.5896 14.0385 16.5438 13.9901C16.5568 13.9573 16.5599 13.9443 16.5667 13.9339C16.5995 13.8854 16.6339 13.838 16.6677 13.7901C17.9063 12.0109 18.4297 10.0365 18.2224 7.88333C18.0396 5.98698 17.3 4.31823 16.0214 2.90365C14.6906 1.43229 13.0453 0.507812 11.0891 0.152083C10.7391 0.0885417 10.3839 0.05 10.0312 0C9.69271 0 9.35417 0 9.01562 0C8.96563 0.0109375 8.91563 0.0291667 8.8651 0.0322917C7.66771 0.114063 6.53125 0.426042 5.4776 0.997396C3.00156 2.34062 1.47344 4.39531 0.924479 7.16458C0.85677 7.50729 0.822917 7.85729 0.773438 8.20312ZM3.27344 8.75052C3.27344 5.30208 6.0724 2.50104 9.51979 2.50156C12.9656 2.50156 15.7698 5.30469 15.7698 8.74948C15.7698 12.1937 12.9646 14.999 9.52083 14.9984C6.0724 14.9979 3.27396 12.1995 3.27344 8.75052Z"
+                fill="#2B2B2B" />
+            </svg>
         </div>
 
-        <div id="recommendcon">
-            <div id="recommend-main" class="plan-choices-list"></div>
-            <div id="recommend-ratings" class="plan-choices-list"></div>
-            <div id="recommend-partners" class="plan-choices-list"></div>
-        </div>
+        <section id="recommendPage" class="homecontent">
+            <div class="categories">
+                <div id="selectedCat" hidden>Eateries</div>
+                <ul id="categories">
+                    {% for cat in catInfo %}
+                    <li>
+                        <div class="categoriesbutton">
+                            <svg>
+                            </svg>
+                        </div>
+                        <p>{{cat}}</p>
+                    </li>
+                    {% endfor %}
+                    {% for i in range(8 - catInfo|length) %}
+                    <li>
+                        <div class="categoriesbutton">
+                            <svg>
+                            </svg>
+                        </div>
+                        <p>Lorem</p>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            
+            <div id="recommendcon">
+                <div class="sectionheader manyheadertags">
+                    <div>
+                        <h1>Recommended For You</h1>
+                        <h2>Specially tailored for you!</h2>
+                    </div>
+            
+                    <div class="view">
+                        <h3>View All</h3>
+                    </div>
+                </div>
+        
+                <div id="recommend-main" class="plan-choices-list maincardcon attractionscon">
+                </div>
+            
+                <!-- Places Near You -->
+                <div class="sectionheader manyheadertags">
+                    <div>
+                        <h1>Places Near You</h1>
+                        <h2>We thought you might like...</h2>
+                    </div>
+            
+                    <div class="view">
+                        <h3>View All</h3>
+                    </div>
+                </div>
+        
+                <div id="recommend-ratings" class="plan-choices-list maincardcon attractionscon">
+                </div>
+        
+                <!-- Recommended By Us -->
+                <div class="sectionheader manyheadertags">
+                    <div>
+                        <h1>Recommended By Us</h1>
+                        <h2>We thought you might like...</h2>
+                    </div>
+            
+                    <div class="view">
+                        <h3>View All</h3>
+                    </div>
+                </div>
+        
+                <div id="recommend-partners" class="plan-choices-list maincardcon attractionscon">
+                </div>
+            </div>
+        </section>
+
+        <section id="recommendSearch" class="device" style="position:absolute; z-index: 4; display: none;">
+            <div id="search">
+                <div class="searchheader">
+                  <svg onclick="document.getElementById('recommendSearch').style.display = 'none';" width="12" height="20" viewBox="0 0 12 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                      d="M10.2642 0C10.8582 0.203504 11.2215 0.68581 11.6052 1.12894C11.9081 1.47897 11.8687 2.05183 11.5761 2.4156C11.5052 2.50072 11.4295 2.58174 11.3494 2.65828C8.94914 5.0464 6.54751 7.43334 4.14452 9.81909C4.0819 9.87251 4.01519 9.92099 3.94498 9.96409C4.03554 10.0582 4.08722 10.1167 4.14145 10.1676C6.56048 12.5737 8.9795 14.9796 11.3985 17.3854C11.8298 17.8148 11.9613 18.3439 11.6385 18.7738C11.3346 19.1709 10.9778 19.5251 10.5779 19.8264C10.2074 20.1093 9.70807 20.0259 9.34174 19.7247C9.28648 19.6794 9.23276 19.6311 9.18211 19.5807L0.412125 10.8636C-0.0248138 10.4296 -0.119978 9.92084 0.153748 9.45024C0.222198 9.33957 0.304744 9.23817 0.399334 9.14854C3.33272 6.23165 6.26697 3.31661 9.20206 0.403448C9.37602 0.231995 9.61905 0.132787 9.8324 0H10.2642Z"
+                      fill="#2B2B2B" />
+                  </svg>
+            
+                  <h1>Search</h1>
+            
+            
+                  <svg onclick="window.open('saved.html','_self')" width="15" height="20" viewBox="0 0 15 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                      d="M12.8569 0H2.14312C1.57629 0.00205569 1.03339 0.237205 0.633538 0.653854C0.233688 1.0705 0.00954761 1.63462 0.0102946 2.22244L0 20L7.5 16.6663L15 20V2.22244C14.9975 1.6338 14.771 1.06999 14.3696 0.653759C13.9682 0.237523 13.4245 0.00255379 12.8569 0V0Z"
+                      fill="#2B2B2B" />
+                  </svg>
+                </div>
+            
+                <input type="text" id="recSearchBar" class="Username" value="" onkeyup="recSearch();" placeholder="Search Activities, Restaurants, Cafes" autocomplete="off">
+            
+                <div id="recSearch-results" class="searchcardscon">
+                    <div style="position: relative; right: 5px;" class="sectionheader recentheader">
+                        <h1>Recent Searches</h1>
+                        <h3>Clear</h3>
+                    </div>
+                    <div id="recSearch-results-recent">
+                        {% for i in range(recentSearches|length) %}
+                        <div class="recentcards searchcard">
+                            <div class="cardimg" style="background-image: url('{{recentInfo[i].Image_url}}');">
+                            </div>
+                    
+                            <div class="cardinfo">
+                                <h1 class="recentname">{{recentSearches[i].getPlaceName()}}</h1>
+                                <div class="recenttype">
+                                    <h3 class="recentcat">{{recentSearches[i].getCategory()}}</h3>
+                                    <div class="rating">
+                                        {% for rating in range(recentInfo[i]["Rating"]|round) %}
+                                        <svg width="12" height="12" fill="none">
+                                            <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#E4002B" />
+                                        </svg>
+                                        {% endfor %}
+                                        {% for rating in range(5 - recentInfo[i]["Rating"]|round) %}
+                                        <svg width="12" height="12" fill="none">
+                                            <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+                                        </svg>
+                                        {% endfor %}
+                                        <p class="ratingvalue">{{recentInfo[i]["Review_no"]}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div style="position: relative; right: 5px;" class="sectionheader resultsheader" style="display: none;">
+                        <h1>Results</h1>
+                    </div>
+                    <div id="recSearch-results-results" style="display: none;">
+
+                    </div>
+                </div>
+            
+            </div>
+        </section>
     </div>
 
     <!-- Map View -->
@@ -212,6 +349,7 @@
     function openInitPage() {
         $("#initForm").show();
         $("#initForm").animate({
+            top: "0",
             bottom: "0"
         });
         checkInitPage();
@@ -396,6 +534,7 @@
         // Pull screen up
         $("#recommendationTab").show();
         $("#recommendationTab").animate({
+            top: "0",
             bottom: "0"
         }, 350);
 
@@ -444,15 +583,15 @@
         // Get place before, after and registered places
         var registeredPlaces = [].slice.call(allCards).slice(1, allCards.length - 1).map(x => x.querySelector(".plan-address").innerText);
         if (order - 1 > 0) {
-            var placeBefore = allCards[order-1].querySelector(".plan-address").innerText;
-            var latlng = allCards[order-1].querySelector(".plan-latlng").innerText.split(",");
+            var placeBefore = allCards[order-2].querySelector(".plan-address").innerText;
+            var latlng = allCards[order-2].querySelector(".plan-latlng").innerText.split(",");
         }
         else {
             var placeBefore;
             var latlng = allCards[0].querySelector(".plan-latlng").innerText.split(",");
         }
     
-        var placeAfter = allCards[order].querySelector(".plan-address").innerText;
+        var placeAfter = allCards[order-1].querySelector(".plan-address").innerText;
         startTme = new Date();
         startTme = new Date(startTme.getFullYear(), startTme.getMonth(), startTme.getDate(), 8, 0, 0);
         // TODO
@@ -492,17 +631,37 @@
 
                     if (result.list.length > 0) {
                         for (var i in result.list) {
-                            listing.innerHTML += 
-                            `<div class="card plan-choice" style="width:150px; height:175px; margin-right: 1em; max-width:
-                                flex-basis: 33.333%;
-                                flex-grow: 0;
-                                flex-shrink: 0;" onclick="choosePlace(this, ${sectionNo}, ${order}, ${i});">
-                                <h5>${result.list[i].Name}</h5>
-                                <p style="font-size:12px">${result.list[i].Address}</p>
-                                <br />
-                                <p>Matching ${result.list[i].RecommendationScore.toFixed(2)}</p>
+                            var recommendCard = 
+                            `<div class="maincard attractioncard plan-choice" onclick="choosePlace(this, ${sectionNo}, ${order}, ${i});">
+                                <div class="cardimg" style="background-image: url('${result.list[i].Image_url}');">
+                                </div>
+                    
+                                <div class="maincardinfo attractioncardinfo">
+                                <h1 class="recentname">${result.list[i].Name}</h1>
+                    
+                                <div class="recenttype">
+                                    <h3 class="recentcat">${result.list[i].Category.replace(/,/g, "•")}</h3>
+                                    <div class="rating">`
+                            for (var i=0; i< Math.round(result.list[i].Rating); i++) {
+                                recommendCard += 
+                                    `<svg width="12" height="12" fill="none">
+                                        <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#E4002B" />
+                                    </svg>`
+                            }
+                            for (var i=0; i< 5 - Math.round(result.list[i].Rating); i++) {
+                                recommendCard +=
+                                    `<svg width="12" height="12" fill="none">
+                                        <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+                                    </svg>`
+                            }
+                            recommendCard +=
+                                `       <p class="ratingvalue">${result.list[i].Review_no}</p>
+                                    </div>
+                                </div>
+                    
+                                </div>
                             </div>`;
-
+                            listing.innerHTML += recommendCard;
                         }
                     }
                     else {
@@ -700,6 +859,8 @@
                     date: checkDate.toISOString().slice(0, 10),
                     names: placesName,
                     addresses: placesAddress,
+                    categories: placesCategory,
+                    images: placesImg,
                     activityDuration: placesActivityDuration,
                     duration: placesDuration,
                     latlngs: placesLatlng,
@@ -724,26 +885,32 @@
             var placesName = [];
             var placesAddress = [];
             var placesActivityDuration = [];
+            var placesCategory = [];
+            var placesImg = [];
             var placesDuration = [];
             var placesLatlng = [];
-
-            for (var j=0; j<allPlacesDiv.length; j++) {
-                placesName.push(allPlacesDiv[j].querySelector(".plan-name").innerText);
-                placesAddress.push(allPlacesDiv[j].querySelector(".plan-address").innerText);
-                if (j == 0 || allPlacesDiv[j].classList.contains("end")) {
-                    placesActivityDuration.push(null);
-                    placesDuration.push(null);
-                }
-                else {
-                    placesActivityDuration.push(parseInt(allPlacesDiv[j].querySelector(".plan-activity-duration").querySelector("span").innerText));
-                    placesDuration.push(parseInt(allPlacesDiv[j].querySelector(".plan-total-duration").querySelector("span").innerText));
-                }
-                placesLatlng.push(allPlacesDiv[j].querySelector(".plan-latlng").innerText);
-            }
 
             var hasE = false;
             if (allPlacesDiv.length > 0) {
                 hasE = allPlacesDiv[allPlacesDiv.length-1].classList.contains("end")
+            }
+
+            for (var j=0; j<allPlacesDiv.length; j++) {
+                placesName.push(allPlacesDiv[j].querySelector(".plan-name").innerText);
+                placesAddress.push(allPlacesDiv[j].querySelector(".plan-address").innerText);
+                if (i == 0 || (i == allPlacesDiv.length-1 && hasE)) {
+                    placesCategory.push(null);
+                    placesImg.push(null);
+                    placesActivityDuration.push(null);
+                    placesDuration.push(null);
+                }
+                else {
+                    placesCategory.push(allPlacesDiv[i].querySelector(".plan-category").innerText);
+                    placesImg.push(allPlacesDiv[i].querySelector(".plan-img").querySelector("span").innerText);
+                    placesActivityDuration.push(parseInt(allPlacesDiv[j].querySelector(".plan-activity-duration").querySelector("span").innerText));
+                    placesDuration.push(parseInt(allPlacesDiv[j].querySelector(".plan-total-duration").querySelector("span").innerText));
+                }
+                placesLatlng.push(allPlacesDiv[j].querySelector(".plan-latlng").innerText);
             }
 
             await save(i);
@@ -760,7 +927,8 @@
         // Pull screen up
         $("#searchTab").show();
         $("#searchTab").animate({
-            bottom: "0vh"
+            top: "0",
+            bottom: "0"
         }, 350, function () {
             document.querySelector("#searchBar").focus();
         });
@@ -971,6 +1139,7 @@
         // Pull plan page up
         $("#planPage").show();
         $("#planPage").animate({
+            top: "0",
             bottom: "0"
         }, 350);
     }

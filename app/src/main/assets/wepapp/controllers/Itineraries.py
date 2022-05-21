@@ -23,7 +23,6 @@ class ItinerariesCon:
                 return {"success": False, "error": e}
         else:
             try:
-                print(itinerary.getPlaces())
                 self.__connection.update_one({"_id": ObjectId(itinerary.getId())}, {"$set": {"Name": itinerary.getName(), "PlannerId": itinerary.getPlannerId(), "UserId":itinerary.getUserId(), "Date": itinerary.getDate(), "StartTime": itinerary.getStartTime(), 
                                             "EndTime": itinerary.getEndTime(), "Type": itinerary.getType(), "TransportMode": itinerary.getTransportMode(), 
                                             "TimeAllowance": itinerary.getTimeAllowance(), "TimeLeft": itinerary.getTimeLeft(), "HasEnd": itinerary.getEnd(), 
@@ -78,6 +77,14 @@ class ItinerariesCon:
     def GetPlannerItineraries(self, plannerId):
         try:
             itineraries = self.__connection.find({"PlannerId": plannerId})
+            if len(list(itineraries)) > 0:
+                return list(map(lambda x: Itinerary(x["_id"], x["UserId"], x["Name"], x["Date"], x["StartTime"], x["EndTime"], x["Type"], x["TransportMode"], x["TimeAllowance"], x["TimeLeft"], x["Confirmed"], x["Status"], x["Places"], x["PlannerId"], x["HasEnd"]), itineraries)) 
+        except Exception as e:
+            print(e)
+
+    def GetAllPlannerItineraries(self, userId):
+        try:
+            itineraries = self.__connection.find({"UserId": userId, "Type": "Planner"})
             if len(list(itineraries)) > 0:
                 return list(map(lambda x: Itinerary(x["_id"], x["UserId"], x["Name"], x["Date"], x["StartTime"], x["EndTime"], x["Type"], x["TransportMode"], x["TimeAllowance"], x["TimeLeft"], x["Confirmed"], x["Status"], x["Places"], x["PlannerId"], x["HasEnd"]), itineraries)) 
         except Exception as e:

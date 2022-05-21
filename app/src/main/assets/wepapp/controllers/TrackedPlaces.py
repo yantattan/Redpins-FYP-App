@@ -183,6 +183,18 @@ class TrackedPlacesCon:
             print(e)
             return 
 
+    def GetTopSearchedInfo(self, userId):
+        try:
+            results = self.__connection.aggregate([
+                {"$match": {"UserId": userId}},
+                {"$sort": {"Actions.Searched": -1}},
+                {"$limit": 5}
+            ])
+
+            return list(map(lambda x: TrackedPlace(userId, x["Address"], x["Name"], x["Category"], x["Actions"]), results))
+        except Exception as e:
+            print(e)
+
     def GetDetailedTopAccessedInfo(self, userId, action):
         try:
             results = self.__connection.aggregate([

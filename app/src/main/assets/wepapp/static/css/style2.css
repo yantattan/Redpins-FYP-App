@@ -98,3 +98,21 @@ hr {
   font-size: 16px;
   color: #FFFFFF;
 }
+
+.explorertravelduration h2 a {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 16px;
+  color: #E4002B;
+}
+
+.explorertransport {
+  max-width: 80%;
+  overflow-x: scroll;
+}
+
+.cardimg {
+  background-size: cover;
+}

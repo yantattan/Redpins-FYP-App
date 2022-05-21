@@ -56,7 +56,7 @@ itinerariesCon = Itineraries.ItinerariesCon()
 globalPrefLE = trackedInfoLE = preprocessing.LabelEncoder()
 
 categoriesInfo = {
-    "Eateries": {"filename":"restaurants_info.csv", "category":"Eateries", "colName": "Cuisines", "activityTime": 45, 
+    "Eateries": {"filename":"restaurants_info.csv", "category":"Eateries", "colName": "Category", "activityTime": 45, 
                 "preferences": ["Italian", "Chinese", "Japanese", "Thai", "French", "Spanish", "American", "Mexican", "Indian", "Turkish", "Korean", "Vietnamese", "Hong Kong", 
                                 "German", "British", "Taiwanese", "Singaporean", "Indonesian", "Malaysian", "Australian", "Swedish"]},
 
@@ -69,10 +69,11 @@ tierRange = {
     "Gold": [2000, 5000]
 }
 
+allWebscrapData = {}
+
 # Functions to perform before showing the page
 @app.route("/")
 def homePage():
-    # session.pop("current_user", None)
     if session.get("current_user") is None:
         return redirect("/login")
 
@@ -198,9 +199,37 @@ def loading():
     return render_template("includes/_loading.html")
 
 # Itinerary planning pages
-@app.route("/itinerary/savedTrips")
+@app.route("/itinerary/planners")
 def showItineraries():
-    return render_template("/itinerary/listItineraries.html")
+    invalidRedirect = validateLoggedIn()
+    if invalidRedirect is not None:
+        return redirect(invalidRedirect)
+
+    userId = session["current_user"]["userId"]
+    planners = []
+    startEnds = {}
+    scannedIds = []
+    ongoing = None
+
+    for iti in sorted(itinerariesCon.GetAllPlannerItineraries(userId) or [], key=lambda x: x.getDate(), reverse=False):
+        try:
+            itiInfo = startEnds[iti.getPlannerId()]
+        except KeyError:
+            startEnds[iti.getPlannerId()] = itiInfo = {}
+
+        if itiInfo.get("start") is None:
+            startEnds[iti.getPlannerId()]["start"] = iti.getDate().strftime("%d-%M-%Y")
+        else:
+            startEnds[iti.getPlannerId()]["end"] = iti.getDate().strftime("%d-%M-%Y")
+
+        if iti.getStatus() == "Ongoing":
+            ongoing = iti
+
+        if iti not in scannedIds:
+            planners.append(iti)
+            scannedIds.append(iti)
+
+    return render_template("/itinerary/listItineraries.html", planners=planners, startEnds=startEnds, ongoing=ongoing)
 
 @app.route("/itinerary/planning/planner", methods=['GET', 'POST'])
 def plannerItinerary():
@@ -218,7 +247,15 @@ def plannerItinerary():
         if reviewItineraries is not None:
             return redirect("/itinerary/review/planner")
 
-    return render_template(f"/itinerary/plannerItinerary.html", itineraries=itineraries, apiKey=apiKey, catInfo=categoriesInfo)
+    recentInfo = []
+    recentSearches = trackedPlacesCon.GetTopSearchedInfo(session["current_user"]["userId"])
+    for search in recentSearches:
+        webScrapData = allWebscrapData[search.getCategory()]
+        entry = webScrapData.loc[webScrapData["Address"] == search.getAddress()]
+        recentInfo.append({"Image_url": entry["Image_url"], "Rating": entry["Rating"]})
+
+    return render_template("/itinerary/plannerItinerary.html", itineraries=itineraries, recentSearches=recentSearches, recentInfo=recentInfo,
+                            apiKey=apiKey, catInfo=categoriesInfo)
 
 @app.route("/itinerary/planning/explorer", methods=['GET', 'POST'])
 def explorerItinerary():
@@ -235,8 +272,16 @@ def explorerItinerary():
         reviewItinerary = itinerariesCon.GetReviewingItinerary(session["current_user"]["userId"], "Explorer")
         if reviewItinerary is not None:
             return redirect("/itinerary/review/explorer")
+    
+    recentInfo = []
+    recentSearches = trackedPlacesCon.GetTopSearchedInfo(session["current_user"]["userId"])
+    for search in recentSearches:
+        webScrapData = allWebscrapData[search.getCategory()]
+        entry = webScrapData.loc[webScrapData["Address"] == search.getAddress()]
+        recentInfo.append({"Image_url": entry["Image_url"], "Rating": entry["Rating"]})
 
-    return render_template("/itinerary/explorerItinerary.html", itinerary=itinerary, apiKey=apiKey, catInfo=categoriesInfo)
+    return render_template("/itinerary/explorerItinerary.html", itinerary=itinerary, recentSearches=recentSearches, recentInfo=recentInfo, 
+                            apiKey=apiKey, catInfo=categoriesInfo)
 
 @app.route("/itinerary/review/<string:typ>", methods=['GET', 'POST'])
 def confirmItinerary(typ):
@@ -524,7 +569,7 @@ def calculateAndReturnList(userId, category, webScrapData, shortlistedPlaces, di
             for place in yourTop5Frequent[action]:
                 # Determine if the place is good to re-recommend back to user (Kept searching but yet to plan/go)
                 dataRow = webScrapData.loc[webScrapData["Address"] == place.getAddress()]   
-                cuisines = dataRow["Cuisines"].split(",")
+                cuisines = dataRow[categoriesInfo[category]["colName"]].split(",")
                 for cuisine in cuisines:
                     try:
                         freqtrackedPlacesCuisine[cuisine] += 1
@@ -746,6 +791,7 @@ def recommenderAlgorithm(userId, startDatetime, timeAllowance, displaySize, lati
                                     estTime += routeResults["route_summary"]["total_time"] / 60
 
                                 if estTime <= timeAllowance:
+                                    subList[i]["TravelDuration"] = estTime - activityTime
                                     subList[i]["Duration"] = estTime
                                     subList[i]["Category"] = category
                                     recommendList.append(subList[i])
@@ -893,6 +939,7 @@ def recommenderAlgorithmEndPoint(userId, startDatetime, timeAllowance, displaySi
                                 estEndTime = endRouteResults["route_summary"]["total_time"] / 60
 
                             if estTime + estEndTime <= timeAllowance:
+                                subList[i]["TravelDuration"] = estTime - activityTime
                                 subList[i]["Duration"] = estTime
                                 subList[i]["Category"] = category
                                 subList[i]["EndDuration"] = estEndTime
@@ -1203,27 +1250,19 @@ def unbookmarkPlace():
 
     return json.dumps({"success": True})
 
-# Home pages functions
-allWebscrapData = []
-
 def getAllWebscrapData():
     for cat in categoriesInfo:
         data = pandas.read_csv("csv/webcsv/"+categoriesInfo[cat]["filename"])
-        allWebscrapData + list(map(lambda x: dict(x.as_dict()), data))
-
-    return allWebscrapData.sort()
+        allWebscrapData[cat] = data
 
 @app.route("/funcs/search")
 def search():
     query = request.args.get("s")
-    limit = 0
-    resultList = []
-    for row in allWebscrapData:
-        if query in row["Name"]:
-            resultList.append(row)
-            limit += 1
-            if limit >= 6:
-                return resultList
+    page = int(request.args.get("page"))
+    cat = request.args.get("cat")
+
+    webScrapData = allWebscrapData[cat]
+    return json.dumps(list(webScrapData[webScrapData["Name"].str.contains(query, na=False, case=False)].to_dict(orient='records')[(page-1)*10: (page)*10]))
 
 @app.route("/funcs/discover-recommend/<string:category>", methods=['POST'])
 def discoverRecommend(category):
@@ -1273,6 +1312,8 @@ def saveTrip():
         endTime = request.form.get("endTime") or "23:59"
         names = request.form.getlist("names[]")
         addresses = request.form.getlist("addresses[]")
+        categories = request.form.getlist("categories[]")
+        images = request.form.getlist("images[]")
         activitiesDuration = request.form.getlist("activityDuration[]")
         durations = request.form.getlist("duration[]")
         latlngs = request.form.getlist("latlngs[]")
@@ -1297,6 +1338,7 @@ def saveTrip():
         for i in range(len(addresses)):
             activityDuration = activitiesDuration[i]
             duration = durations[i]
+            travelDuration = None
             if not activityDuration:
                 activityDuration = None
             else:
@@ -1305,9 +1347,10 @@ def saveTrip():
                 duration = None
             else:
                 duration = float(duration)
+                travelDuration = duration - activityDuration
 
-            places.append({"Name": names[i], "Address": addresses[i], "ActivityDuration": activityDuration, 
-                            "TotalDuration": duration, "Latlng": latlngs[i]})
+            places.append({"Name": names[i], "Address": addresses[i], "Category": categories[i], "Image": images[i], "ActivityDuration": activityDuration, 
+                            "TravelDuration": travelDuration, "TotalDuration": duration, "Latlng": latlngs[i]})
 
         itinerary = Itinerary(itineraryId, userId, tripName, date, startTime, endTime, tripType, transportMode, timeAllowance, timeLeft, confirmed, status, places, plannerId, hasEnd)
         itinerariesCon.SetItinerary(itinerary)
@@ -1486,6 +1529,7 @@ def add_header(r):
 
 if __name__ == '__main__':
     warnings.simplefilter(action='ignore', category=FutureWarning)
+    getAllWebscrapData()
     app.run()
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
