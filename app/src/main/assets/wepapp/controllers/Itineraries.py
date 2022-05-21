@@ -15,7 +15,7 @@ class ItinerariesCon:
                 self.__connection.insert_one({"Name": itinerary.getName(), "PlannerId": itinerary.getPlannerId(), "UserId": itinerary.getUserId(), "Date": itinerary.getDate(), "StartTime": itinerary.getStartTime(), 
                                             "EndTime": itinerary.getEndTime(), "Type": itinerary.getType(), "TransportMode": itinerary.getTransportMode(), 
                                             "TimeAllowance": itinerary.getTimeAllowance(), "TimeLeft": itinerary.getTimeLeft(), "HasEnd": itinerary.getEnd(), 
-                                            "Places": itinerary.getPlaces(), "Confirmed": itinerary.getConfirmed(), "Status": itinerary.getStatus()})
+                                            "Places": itinerary.getPlaces(), "Description": itinerary.getDescription(), "Confirmed": itinerary.getConfirmed(), "Status": itinerary.getStatus()})
 
                 return {"success": True}
             except Exception as e:
@@ -23,11 +23,10 @@ class ItinerariesCon:
                 return {"success": False, "error": e}
         else:
             try:
-                print(itinerary.getPlaces())
                 self.__connection.update_one({"_id": ObjectId(itinerary.getId())}, {"$set": {"Name": itinerary.getName(), "PlannerId": itinerary.getPlannerId(), "UserId":itinerary.getUserId(), "Date": itinerary.getDate(), "StartTime": itinerary.getStartTime(), 
                                             "EndTime": itinerary.getEndTime(), "Type": itinerary.getType(), "TransportMode": itinerary.getTransportMode(), 
                                             "TimeAllowance": itinerary.getTimeAllowance(), "TimeLeft": itinerary.getTimeLeft(), "HasEnd": itinerary.getEnd(), 
-                                            "Places": itinerary.getPlaces(), "Confirmed": itinerary.getConfirmed(), "Status": itinerary.getStatus()}})
+                                            "Places": itinerary.getPlaces(), "Description": itinerary.getDescription(), "Confirmed": itinerary.getConfirmed(), "Status": itinerary.getStatus()}})
 
                 return {"success": True}
             except Exception as e:
@@ -39,7 +38,7 @@ class ItinerariesCon:
             itinerary = self.__connection.find_one({"_id": ObjectId(id)})
             if itinerary is not None:
                 return Itinerary(itinerary["_id"], itinerary["UserId"], itinerary["Name"], itinerary["Date"], itinerary["StartTime"], itinerary["EndTime"], itinerary["Type"], 
-                                itinerary["TransportMode"], itinerary["TimeAllowance"], itinerary["TimeLeft"], itinerary["Confirmed"], itinerary["Status"], itinerary["Places"], itinerary["PlannerId"], itinerary["HasEnd"])
+                                itinerary["TransportMode"], itinerary["TimeAllowance"], itinerary["TimeLeft"], itinerary["Confirmed"], itinerary["Status"], itinerary["Places"], itinerary["Description"], itinerary["PlannerId"], itinerary["HasEnd"])
         except Exception as e:
             print(e)
 
@@ -49,12 +48,12 @@ class ItinerariesCon:
                 itinerary = self.__connection.find_one({"UserId": userId, "Type": tripType, "Confirmed": False})
                 if itinerary is not None:
                     return Itinerary(itinerary["_id"], itinerary["UserId"], itinerary["Name"], itinerary["Date"], itinerary["StartTime"], itinerary["EndTime"], itinerary["Type"], 
-                                    itinerary["TransportMode"], itinerary["TimeAllowance"], itinerary["TimeLeft"], itinerary["Confirmed"], itinerary["Status"], itinerary["Places"], itinerary["PlannerId"], itinerary["HasEnd"])
+                                    itinerary["TransportMode"], itinerary["TimeAllowance"], itinerary["TimeLeft"], itinerary["Confirmed"], itinerary["Status"], itinerary["Places"], itinerary["Description"], itinerary["PlannerId"], itinerary["HasEnd"])
             else:
                 itinerary = list(self.__connection.find({"UserId": userId, "Type": tripType, "Confirmed": False}))
                 if len(itinerary) > 0:
                     return list(map(lambda x: Itinerary(x["_id"], x["UserId"], x["Name"], x["Date"], x["StartTime"], x["EndTime"], x["Type"], 
-                                    x["TransportMode"], x["TimeAllowance"], x["TimeLeft"], x["Confirmed"], x["Status"], x["Places"], x["PlannerId"], x["HasEnd"]), itinerary))
+                                    x["TransportMode"], x["TimeAllowance"], x["TimeLeft"], x["Confirmed"], x["Status"], x["Places"], x["Description"], x["PlannerId"], x["HasEnd"]), itinerary))
             
         except Exception as e:
             print(e)
@@ -65,12 +64,12 @@ class ItinerariesCon:
                 itinerary = self.__connection.find_one({"UserId": userId, "Type":  tripType, "Confirmed": True, "Status": "Planning"})
                 if itinerary is not None:
                     return Itinerary(itinerary["_id"], itinerary["UserId"], itinerary["Name"], itinerary["Date"], itinerary["StartTime"], itinerary["EndTime"], itinerary["Type"], 
-                                    itinerary["TransportMode"], itinerary["TimeAllowance"], itinerary["TimeLeft"], itinerary["Confirmed"], itinerary["Status"], itinerary["Places"], itinerary["PlannerId"], itinerary["HasEnd"])
+                                    itinerary["TransportMode"], itinerary["TimeAllowance"], itinerary["TimeLeft"], itinerary["Confirmed"], itinerary["Status"], itinerary["Places"], itinerary["Description"], itinerary["PlannerId"], itinerary["HasEnd"])
             else:
                 itinerary = list(self.__connection.find({"UserId": userId, "Type":  tripType, "Confirmed": True, "Status": "Planning"}))
                 if len(itinerary) > 0:
                     return list(map(lambda x: Itinerary(x["_id"], x["UserId"], x["Name"], x["Date"], x["StartTime"], x["EndTime"], x["Type"], 
-                                    x["TransportMode"], x["TimeAllowance"], x["TimeLeft"], x["Confirmed"], x["Status"], x["Places"], x["PlannerId"], x["HasEnd"]), itinerary))
+                                    x["TransportMode"], x["TimeAllowance"], x["TimeLeft"], x["Confirmed"], x["Status"], x["Places"], x["Description"], x["PlannerId"], x["HasEnd"]), itinerary))
 
         except Exception as e:
             print(e)  
@@ -79,7 +78,15 @@ class ItinerariesCon:
         try:
             itineraries = self.__connection.find({"PlannerId": plannerId})
             if len(list(itineraries)) > 0:
-                return list(map(lambda x: Itinerary(x["_id"], x["UserId"], x["Name"], x["Date"], x["StartTime"], x["EndTime"], x["Type"], x["TransportMode"], x["TimeAllowance"], x["TimeLeft"], x["Confirmed"], x["Status"], x["Places"], x["PlannerId"], x["HasEnd"]), itineraries)) 
+                return list(map(lambda x: Itinerary(x["_id"], x["UserId"], x["Name"], x["Date"], x["StartTime"], x["EndTime"], x["Type"], x["TransportMode"], x["TimeAllowance"], x["TimeLeft"], x["Confirmed"], x["Status"], x["Places"], x["Description"],x["PlannerId"], x["HasEnd"]), itineraries)) 
+        except Exception as e:
+            print(e)
+
+    def GetAllPlannerItineraries(self, userId):
+        try:
+            itineraries = self.__connection.find({"UserId": userId, "Type": "Planner"})
+            if len(list(itineraries)) > 0:
+                return list(map(lambda x: Itinerary(x["_id"], x["UserId"], x["Name"], x["Date"], x["StartTime"], x["EndTime"], x["Type"], x["TransportMode"], x["TimeAllowance"], x["TimeLeft"], x["Confirmed"], x["Status"], x["Places"], x["Description"],  x["PlannerId"], x["HasEnd"]), itineraries)) 
         except Exception as e:
             print(e)
 

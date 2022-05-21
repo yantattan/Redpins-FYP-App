@@ -9,7 +9,6 @@
 
 <div class="device" id="reloadingbg" style="display: none;">
     <img src="/static/images/logo.gif" alt="logo" class="relogogif">
-    <p>Hang tight while we find the best places for you...</p>
 </div>
 
 <div class="main-div device" id="exploreritinerary">
@@ -279,6 +278,11 @@
                 <input type="radio" name="transportMode" id="trans-cycle" value="cycle">
                 {% endif %}
             </div>
+
+            <div class="explorerbanner">
+                <img src="../../static/images/buffcar.png" alt="">
+        
+              </div>
         </section>
     
         <section class="bottom">
@@ -287,92 +291,6 @@
             </div>
         </section>
     </div>
-        <!-- {% if itinerary != None %}
-        <div>
-            <label>Start Time</label>
-            <input id="start-time" type="time" class="form-control" value="{{itinerary.getStartTime()}}" onkeyup="checkFirstPage();" required>
-        </div>
-        <div>
-            <label>End Time</label>
-            <input id="end-time" type="time" class="form-control" value="{{itinerary.getEndTime()}}" onkeyup="checkFirstPage();" required>
-        </div>
-        <div>
-            <label>Start Location</label>
-            <input id="start-location" type="text" class="form-control" value="{{itinerary.getPlaces()[0]['Name']}}" onkeyup="pauseSearch(this, 'Start');checkFirstPage();" required>
-            <div class="dropdown-menu-search" style="display: none;">
-            </div>
-            {% for attr in itinerary.getPlaces()[0] %}
-                {% if itinerary.getPlaces()[-1][attr] != None %}<span id="start-location-{{attr | lower}}" hidden>{{itinerary.getPlaces()[0][attr]}}</span>{% endif %}
-            {% endfor %}
-        </div>
-        <div>
-            <label>End Location</label>
-            <input id="end-location" type="text" class="form-control" value="{{itinerary.getPlaces()[-1]['Name']}}" onkeyup="pauseSearch(this, 'End');checkFirstPage();" required>
-            <div class="dropdown-menu-search" style="display: none;">
-            </div>
-            {% for attr in itinerary.getPlaces()[-1] %}
-                {% if itinerary.getPlaces()[-1][attr] != None %}<span id="end-location-{{attr | lower}}" hidden>{{itinerary.getPlaces()[-1][attr]}}</span>{% endif %}
-            {% endfor %}
-        </div>
-        {% else %}
-            <div>
-                <label>Start Time</label>
-                <input id="start-time" type="time" class="form-control" onkeyup="checkFirstPage();" required>
-            </div>
-            <div>
-                <label>End Time</label>
-                <input id="end-time" type="time" class="form-control" onkeyup="checkFirstPage();" required>
-            </div>
-            {% set attributes = ["name", "address", "latlng"] %}
-            <div style="position: relative;">
-                <label>Start Location</label>
-                <input id="start-location" type="text" class="form-control" value="Your Location" onkeyup="pauseSearch(this, 'Start');checkFirstPage();" required>
-                <div class="dropdown-menu-search" style="display: none;">
-                </div>
-                <span id="start-location-name" hidden>Current Location</span>
-                <span id="start-location-address" hidden></span>
-                <span id="start-location-latlng" hidden></span>
-            </div>
-            <div style="position: relative;">
-                <label>End Location</label>
-                <input id="end-location" type="text" class="form-control" onkeyup="pauseSearch(this, 'End');checkFirstPage();" required>
-                <div class="dropdown-menu-search" style="display: none;">
-                </div>
-                {% for attr in attributes %}
-                <span id="end-location-{{attr}}" hidden></span>
-                {% endfor %}
-            </div>
-        {% endif %}
-        <div>
-            <h5>Select mode of transport</h5>
-            <div style="display: inline;" onclick="checkFirstPage();">
-                <label for="trans-walk">Walk</label>
-                {% if itinerary != None %}
-                    {% if itinerary.getTransportMode() == "walk" %} <input type="radio" name="transportMode" id="trans-walk" value="walk" checked>
-                    {% else %} <input type="radio" name="transportMode" id="trans-walk" value="walk"> {% endif %}
-                    <label for="trans-publicTransport">Public Transport</label>
-                    {% if itinerary.getTransportMode() == "pt" %} <input type="radio" name="transportMode" id="trans-publicTransport" value="pt" checked>
-                    {% else %} <input type="radio" name="transportMode" id="trans-publicTransport" value="pt">{% endif %}
-                    <label for="trans-drive">Drive</label>
-                    {% if itinerary.getTransportMode() == "drive" %} <input type="radio" name="transportMode" id="trans-drive" value="drive" checked>
-                    {% else %} <input type="radio" name="transportMode" id="trans-drive" value="drive">{% endif %}
-                    <label for="trans-cycle">Cycle</label>
-                    {% if itinerary.getTransportMode() == "cycle" %} <input type="radio" name="transportMode" id="trans-cycle" value="cycle" checked>
-                    {% else %} <input type="radio" name="transportMode" id="trans-cycle" value="cycle">{% endif %}
-                {% else %}
-                <input type="radio" name="transportMode" id="trans-walk" value="walk">
-                <label for="trans-publicTransport">Public Transport</label>
-                <input type="radio" name="transportMode" id="trans-publicTransport" value="pt">
-                <label for="trans-drive">Drive</label>
-                <input type="radio" name="transportMode" id="trans-drive" value="drive">
-                <label for="trans-cycle">Cycle</label>
-                <input type="radio" name="transportMode" id="trans-cycle" value="cycle">
-                {% endif %}
-            </div>
-        </div>
-
-        <button class="next" id="firstPageNext" onclick="dismissFirst();" disabled>Next</button>
-    </div> -->
     
     {% if itinerary != None %}
     <div class="explorertripitinerary" id="planPage">
@@ -431,7 +349,7 @@
 
                         <!-- explorertravelduration -->
                         <div class="explorertravelduration">
-                        <h1><span>{{itinerary.getPlaces()[i].TotalDuration|int}}</span>min, 150km</h1>
+                        <h1><span class="plan-travel-duration">{{itinerary.getPlaces()[i].TotalDuration|int}}</span>min</h1>
                         <h2 onclick="showExpandedRoute">Details <svg width="9" height="5" viewBox="0 0 9 5" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path
                                 d="M0.78125 0.657445C0.862652 0.406133 1.05557 0.252445 1.23283 0.0900984C1.37284 -0.0380473 1.60198 -0.0213795 1.74749 0.102437C1.78154 0.132408 1.81395 0.164424 1.84456 0.198329C2.79981 1.21383 3.75459 2.2299 4.70889 3.24655C4.73025 3.27304 4.74965 3.30127 4.76688 3.33097C4.80453 3.29266 4.82794 3.27079 4.84829 3.24785C5.81073 2.22441 6.7731 1.20098 7.7354 0.177549C7.90716 -0.00492803 8.11881 -0.0605592 8.29077 0.0760284C8.44962 0.204574 8.59127 0.355537 8.71182 0.524754C8.82497 0.681473 8.79159 0.89274 8.67112 1.04773C8.65301 1.0711 8.63367 1.09383 8.61352 1.11526L5.12668 4.82564C4.95309 5.0105 4.74959 5.05076 4.56134 4.93495C4.51708 4.90599 4.47652 4.87107 4.44067 4.83105C3.27391 3.59 2.1079 2.34859 0.942629 1.10682C0.874048 1.03322 0.834365 0.930405 0.78125 0.84014L0.78125 0.657445Z"
@@ -442,6 +360,9 @@
                     </div>
                     <hr>
 
+                    <button class="btn-addPlan btn-addColor" onclick="openRecommendTab(parseInt('{{i+1}}'));">  +  </button>
+                    <hr>
+
                     <div class="explorerend">
                         <div class="explorerendpoint">
                             <svg width="31" height="31" viewBox="0 0 31 31" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -449,9 +370,10 @@
                                 d="M0.333984 15.9771C0.333984 13.0103 1.21372 10.1102 2.86194 7.6435C4.51016 5.17677 6.85284 3.25418 9.59373 2.11886C12.3346 0.98355 15.3506 0.6865 18.2603 1.26528C21.17 1.84406 23.8428 3.27267 25.9406 5.37046C28.0384 7.46824 29.467 10.141 30.0458 13.0507C30.6245 15.9604 30.3275 18.9764 29.1922 21.7173C28.0569 24.4582 26.1343 26.8009 23.6675 28.4491C21.2008 30.0973 18.3007 30.9771 15.334 30.9771C13.3642 30.9771 11.4136 30.5891 9.59373 29.8352C7.77385 29.0814 6.12026 27.9765 4.72738 26.5837C1.91434 23.7706 0.333984 19.9553 0.333984 15.9771ZM15.334 24.9771C17.114 24.9771 18.8541 24.4492 20.3341 23.4603C21.8142 22.4713 22.9677 21.0657 23.6489 19.4212C24.3301 17.7767 24.5083 15.9671 24.161 14.2212C23.8138 12.4754 22.9566 10.8718 21.6979 9.6131C20.4393 8.35442 18.8356 7.49726 17.0898 7.14999C15.344 6.80272 13.5344 6.98095 11.8898 7.66214C10.2453 8.34333 8.83969 9.49688 7.85076 10.9769C6.86182 12.457 6.33398 14.197 6.33398 15.9771C6.33398 18.364 7.28219 20.6532 8.97002 22.341C10.6578 24.0288 12.947 24.9771 15.334 24.9771Z"
                                 fill="#E4002B" />
                             </svg>
-                            <h1>{{itinerary.getPlaces()[i].Name}}</h1>
+                            <h1 class="plan-name">{{itinerary.getPlaces()[i].Name}}</h1>
                             <p class="plan-address" hidden>{{itinerary.getPlaces()[i].Address}}</p>
                             <p class="plan-latlng" hidden>{{itinerary.getPlaces()[i].Latlng}}</p>
+                            <p class="plan-total-duration" hidden>{{itinerary.getPlaces()[i].TotalDuration|int}}</p>
                         </div>
                         <div class="explorerendtime">
                             <h1 class="plan-timing"></h1>
@@ -468,13 +390,64 @@
 
                         <!-- explorertravelduration -->
                         <div class="explorertravelduration">
-                        <h1><span>{{itinerary.getPlaces()[i].TotalDuration|int - itinerary.getPlaces()[i].ActivityDuration|int}}</span>min, 150km</h1>
-                        <h2 onclick="showExpandedRoute">Details <svg width="9" height="5" viewBox="0 0 9 5" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <h1><span class="plan-travel-duration">{{itinerary.getPlaces()[i].TravelDuration|int}}</span>min</a>
+                        <a data-toggle="collapse" href="#details-{{i+1}}"><h2>Details<svg width="9" height="5" viewBox="0 0 9 5" fill="none" xmlns="http://www.w3.org/2000/svg"></svg>
                             <path
                                 d="M0.78125 0.657445C0.862652 0.406133 1.05557 0.252445 1.23283 0.0900984C1.37284 -0.0380473 1.60198 -0.0213795 1.74749 0.102437C1.78154 0.132408 1.81395 0.164424 1.84456 0.198329C2.79981 1.21383 3.75459 2.2299 4.70889 3.24655C4.73025 3.27304 4.74965 3.30127 4.76688 3.33097C4.80453 3.29266 4.82794 3.27079 4.84829 3.24785C5.81073 2.22441 6.7731 1.20098 7.7354 0.177549C7.90716 -0.00492803 8.11881 -0.0605592 8.29077 0.0760284C8.44962 0.204574 8.59127 0.355537 8.71182 0.524754C8.82497 0.681473 8.79159 0.89274 8.67112 1.04773C8.65301 1.0711 8.63367 1.09383 8.61352 1.11526L5.12668 4.82564C4.95309 5.0105 4.74959 5.05076 4.56134 4.93495C4.51708 4.90599 4.47652 4.87107 4.44067 4.83105C3.27391 3.59 2.1079 2.34859 0.942629 1.10682C0.874048 1.03322 0.834365 0.930405 0.78125 0.84014L0.78125 0.657445Z"
                                 fill="#E4002B" />
                             </svg>
-                        </h2>
+                        </h2></a>
+                        </div>
+                    </div>
+
+                    <!-- showExpandedRoute -->
+                    <div class="showexpandedroute collapse" id="details-{{i+1}}">
+                        
+                        <div class="detailedwalking">
+                        
+                        <svg width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                            d="M0.0078125 10C0.0078125 8.02219 0.594302 6.08879 1.69312 4.4443C2.79193 2.79981 4.35372 1.51809 6.18098 0.761209C8.00824 0.00433284 10.0189 -0.1937 11.9587 0.192152C13.8985 0.578004 15.6804 1.53041 17.0789 2.92894C18.4774 4.32746 19.4298 6.10929 19.8157 8.0491C20.2015 9.98891 20.0035 11.9996 19.2466 13.8268C18.4897 15.6541 17.208 17.2159 15.5635 18.3147C13.919 19.4135 11.9856 20 10.0078 20C8.69459 20 7.39423 19.7413 6.18098 19.2388C4.96772 18.7362 3.86533 17.9997 2.93674 17.0711C1.06138 15.1957 0.0078125 12.6522 0.0078125 10ZM10.0078 16C11.1945 16 12.3545 15.6481 13.3412 14.9888C14.3279 14.3295 15.097 13.3925 15.5511 12.2961C16.0052 11.1997 16.124 9.99335 15.8925 8.82946C15.661 7.66558 15.0896 6.59648 14.2504 5.75736C13.4113 4.91825 12.3422 4.3468 11.1784 4.11529C10.0145 3.88378 8.80807 4.0026 7.71171 4.45673C6.61535 4.91085 5.67828 5.67989 5.01899 6.66658C4.35971 7.65328 4.00781 8.81332 4.00781 10C4.00781 11.5913 4.63995 13.1174 5.76517 14.2426C6.89039 15.3679 8.41651 16 10.0078 16Z"
+                            fill="#BBBBBB" />
+                        </svg>
+
+                        
+                        <svg width="14" height="20" viewBox="0 0 14 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                            d="M8.79073 3.72093C9.12694 3.72093 9.4556 3.61182 9.73514 3.40739C10.0147 3.20296 10.2326 2.91239 10.3612 2.57244C10.4899 2.23248 10.5236 1.8584 10.458 1.49751C10.3924 1.13661 10.2305 0.805109 9.99274 0.544918C9.75501 0.284728 9.45211 0.107536 9.12236 0.0357492C8.79262 -0.0360373 8.45082 0.000806104 8.14021 0.14162C7.82959 0.282435 7.5641 0.520895 7.37731 0.826847C7.19053 1.1328 7.09083 1.4925 7.09083 1.86047C7.09217 2.35344 7.2717 2.8258 7.5902 3.17439C7.90871 3.52297 8.3403 3.71946 8.79073 3.72093ZM5.73091 16.6512L6.58086 12.5581L8.36575 14.4186V20H10.0657V13.0233L8.28076 11.1628L8.79073 8.37209C9.3739 9.10142 10.0926 9.68613 10.8987 10.0872C11.7049 10.4882 12.5799 10.6964 13.4655 10.6977V8.83721C12.7307 8.84941 12.0061 8.64946 11.3644 8.25751C10.7228 7.86557 10.1869 7.29547 9.81067 6.60465L8.96072 5.11628C8.81006 4.84145 8.59888 4.61233 8.34647 4.44983C8.09407 4.28733 7.80848 4.19664 7.5158 4.18605C7.26082 4.18605 7.09083 4.27907 6.83584 4.27907L2.4161 6.32558V10.6977H4.116V7.53489L5.64591 6.88372L4.28599 14.4186L0.12123 13.4884L-0.21875 15.3488L5.73091 16.6512Z"
+                            fill="#707070" />
+                        </svg>
+
+                        <h1>7 mins (550 m)</h1>
+                        </div>
+
+                        
+                        <svg class="walkingdots" width="5" height="41" viewBox="0 0 5 41" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="2.00781" cy="2" r="2" fill="#2B2B2B" />
+                        <circle cx="2.00781" cy="39" r="2" fill="#2B2B2B" />
+                        <circle cx="2.00781" cy="19" r="2" fill="#2B2B2B" />
+                        </svg>
+
+                        
+                        <div class="detailedtransportation">
+                        <div class="stationname">
+                            
+                            <svg width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M0.0078125 10C0.0078125 8.02219 0.594302 6.08879 1.69312 4.4443C2.79193 2.79981 4.35372 1.51809 6.18098 0.761209C8.00824 0.00433284 10.0189 -0.1937 11.9587 0.192152C13.8985 0.578004 15.6804 1.53041 17.0789 2.92894C18.4774 4.32746 19.4298 6.10929 19.8157 8.0491C20.2015 9.98891 20.0035 11.9996 19.2466 13.8268C18.4897 15.6541 17.208 17.2159 15.5635 18.3147C13.919 19.4135 11.9856 20 10.0078 20C8.69459 20 7.39423 19.7413 6.18098 19.2388C4.96772 18.7362 3.86533 17.9997 2.93674 17.0711C1.06138 15.1957 0.0078125 12.6522 0.0078125 10ZM10.0078 16C11.1945 16 12.3545 15.6481 13.3412 14.9888C14.3279 14.3295 15.097 13.3925 15.5511 12.2961C16.0052 11.1997 16.124 9.99335 15.8925 8.82946C15.661 7.66558 15.0896 6.59648 14.2504 5.75736C13.4113 4.91825 12.3422 4.3468 11.1784 4.11529C10.0145 3.88378 8.80807 4.0026 7.71171 4.45673C6.61535 4.91085 5.67828 5.67989 5.01899 6.66658C4.35971 7.65328 4.00781 8.81332 4.00781 10C4.00781 11.5913 4.63995 13.1174 5.76517 14.2426C6.89039 15.3679 8.41651 16 10.0078 16Z"
+                                fill="#BBBBBB" />
+                            </svg>
+
+                            
+                            <svg width="13" height="15" viewBox="0 0 13 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M0.929688 10.875C0.929688 11.5712 1.20261 12.2389 1.68842 12.7312C2.17422 13.2234 2.83312 13.5 3.52015 13.5L2.40995 14.625V15H11.2915V14.625L10.1813 13.5C10.8684 13.5 11.5273 13.2234 12.0131 12.7312C12.4989 12.2389 12.7718 11.5712 12.7718 10.875V3C12.7718 0.375 10.1221 0 6.85074 0C3.57936 0 0.929688 0.375 0.929688 3V10.875ZM6.85074 12C6.55797 12 6.27178 11.912 6.02835 11.7472C5.78492 11.5824 5.59519 11.3481 5.48316 11.074C5.37112 10.7999 5.3418 10.4983 5.39892 10.2074C5.45604 9.91639 5.59702 9.64912 5.80404 9.43934C6.01105 9.22956 6.27481 9.0867 6.56195 9.02882C6.8491 8.97094 7.14673 9.00065 7.41721 9.11418C7.68769 9.22771 7.91888 9.41997 8.08153 9.66665C8.24419 9.91332 8.331 10.2033 8.331 10.5C8.32983 10.8975 8.1735 11.2783 7.89615 11.5593C7.6188 11.8404 7.24297 11.9988 6.85074 12ZM11.2915 6.75H2.40995V3H11.2915V6.75Z"
+                                fill="#707070" />
+                            </svg>
+
+                            <h1>Yio Chu Kang</h1>
+                        </div>
+
                         </div>
                     </div>
                     <hr>
@@ -484,7 +457,8 @@
 
                     <div class="explorerevent">
                         <div class="eventdetails">
-                            <div class="eventimg">
+                            <div class="eventimg plan-img" style="background-image: url('{{itinerary.getPlaces()[i].Image}}');">
+                                <span hidden>{{itinerary.getPlaces()[i].Img}}</span>
                             </div>
                 
                             <div class="eventinfo">
@@ -498,7 +472,7 @@
                             </div>
                         </div>
                 
-                        <div class="eventedit" onclick="window.open('exploreredititinerary.html','_self')">
+                        <div class="eventedit">
                             <svg class="editevent plan-edit" width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg"
                             onclick="editCard(this, parseInt('{{i+1}}'));">
                             <path
@@ -522,7 +496,7 @@
         </div>
         <br>
 
-         <!-- viewonmap -->
+        <!-- viewonmap -->
         <div class="viewonmap" onclick="openMapView();">
             <svg width="51" height="50" viewBox="0 0 51 50" fill="none" xmlns="http://www.w3.org/2000/svg">
             <rect x="0.888672" width="50" height="50" rx="5" fill="#2B2B2B" />
@@ -563,35 +537,157 @@
 
     <!-- Recommendation tab -->
     <div class="device" id="recommendationTab" style="position: absolute; z-index:2; background-color: white; display: none; bottom: -200vh;">
-        <input type="text" class="form-control" id="searchBar" onkeyup="pauseSearch();" autocomplete="off">
-        <div class="categories">
-            <ul id="categories">
-                {% for cat in catInfo %}
-                <li>
-                    <div class="categoriesbutton">
-                        <svg>
-                        </svg>
-                    </div>
-                    <p>{{cat}}</p>
-                </li>
-                {% endfor %}
-                {% for i in range(8 - catInfo|length) %}
-                <li>
-                    <div class="categoriesbutton">
-                        <svg>
-                        </svg>
-                    </div>
-                    <p>Lorem</p>
-                </li>
-                {% endfor %}
-            </ul>
+        <!-- header -->
+        <div class="explorerheader">
+            <svg width="12" height="20" onclick="closeRecommendTab();">
+            <path
+                d="M10.2642 0C10.8582 0.203504 11.2215 0.68581 11.6052 1.12894C11.9081 1.47897 11.8687 2.05183 11.5761 2.4156C11.5052 2.50072 11.4295 2.58174 11.3494 2.65828C8.94914 5.0464 6.54751 7.43334 4.14452 9.81909C4.0819 9.87251 4.01519 9.92099 3.94498 9.96409C4.03554 10.0582 4.08722 10.1167 4.14145 10.1676C6.56048 12.5737 8.9795 14.9796 11.3985 17.3854C11.8298 17.8148 11.9613 18.3439 11.6385 18.7738C11.3346 19.1709 10.9778 19.5251 10.5779 19.8264C10.2074 20.1093 9.70807 20.0259 9.34174 19.7247C9.28648 19.6794 9.23276 19.6311 9.18211 19.5807L0.412125 10.8636C-0.0248138 10.4296 -0.119978 9.92084 0.153748 9.45024C0.222198 9.33957 0.304744 9.23817 0.399334 9.14854C3.33272 6.23165 6.26697 3.31661 9.20206 0.403448C9.37602 0.231995 9.61905 0.132787 9.8324 0H10.2642Z"
+                fill="#2B2B2B" />
+            </svg>
+            <h1>Edit Plan</h1>
+            <svg onclick="document.getElementById('recommendSearch').style.display = 'block';" width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+                d="M0.773438 8.20312V9.29688C0.829688 9.68802 0.867708 10.0828 0.944792 10.4703C1.69479 14.225 4.80156 17.0578 8.6276 17.45C10.6422 17.6568 12.5146 17.2036 14.2292 16.1182C14.3974 16.0115 14.5609 15.8979 14.7516 15.7708C14.8031 15.8349 14.8427 15.8958 14.8938 15.9458C16.0599 17.0984 17.2307 18.2464 18.3917 19.4042C18.6635 19.675 18.9448 19.913 19.3281 20H19.7188C19.8984 19.9188 20.0901 19.8562 20.2547 19.7521C20.5469 19.5672 20.6839 19.2682 20.7734 18.9453V18.5156C20.6651 18.1245 20.3984 17.8469 20.1198 17.5703C18.974 16.4339 17.8354 15.2896 16.6943 14.1484C16.6406 14.0948 16.5896 14.0385 16.5438 13.9901C16.5568 13.9573 16.5599 13.9443 16.5667 13.9339C16.5995 13.8854 16.6339 13.838 16.6677 13.7901C17.9063 12.0109 18.4297 10.0365 18.2224 7.88333C18.0396 5.98698 17.3 4.31823 16.0214 2.90365C14.6906 1.43229 13.0453 0.507812 11.0891 0.152083C10.7391 0.0885417 10.3839 0.05 10.0312 0C9.69271 0 9.35417 0 9.01562 0C8.96563 0.0109375 8.91563 0.0291667 8.8651 0.0322917C7.66771 0.114063 6.53125 0.426042 5.4776 0.997396C3.00156 2.34062 1.47344 4.39531 0.924479 7.16458C0.85677 7.50729 0.822917 7.85729 0.773438 8.20312ZM3.27344 8.75052C3.27344 5.30208 6.0724 2.50104 9.51979 2.50156C12.9656 2.50156 15.7698 5.30469 15.7698 8.74948C15.7698 12.1937 12.9646 14.999 9.52083 14.9984C6.0724 14.9979 3.27396 12.1995 3.27344 8.75052Z"
+                fill="#2B2B2B" />
+            </svg>
         </div>
 
-        <div id="recommendcon" onclick="addSE(this);">
-            <div id="recommend-main" class="plan-choices-list"></div>
-            <div id="recommend-ratings" class="plan-choices-list"></div>
-            <div id="recommend-partners" class="plan-choices-list"></div>
-        </div>
+        <section id="recommendPage" class="homecontent">
+            <div class="categories">
+                <div id="selectedCat" hidden>Eateries</div>
+                <ul id="categories">
+                    {% for cat in catInfo %}
+                    <li>
+                        <div class="categoriesbutton">
+                            <svg>
+                            </svg>
+                        </div>
+                        <p>{{cat}}</p>
+                    </li>
+                    {% endfor %}
+                    {% for i in range(8 - catInfo|length) %}
+                    <li>
+                        <div class="categoriesbutton">
+                            <svg>
+                            </svg>
+                        </div>
+                        <p>Lorem</p>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            
+            <div id="recommendcon">
+                <div class="sectionheader manyheadertags">
+                    <div>
+                        <h1>Recommended For You</h1>
+                        <h2>Specially tailored for you!</h2>
+                    </div>
+            
+                    <div class="view">
+                        <h3>View All</h3>
+                    </div>
+                </div>
+        
+                <div id="recommend-main" class="plan-choices-list maincardcon attractionscon">
+                </div>
+            
+                <!-- Places Near You -->
+                <div class="sectionheader manyheadertags">
+                    <div>
+                        <h1>Places Near You</h1>
+                        <h2>We thought you might like...</h2>
+                    </div>
+            
+                    <div class="view">
+                        <h3>View All</h3>
+                    </div>
+                </div>
+        
+                <div id="recommend-ratings" class="plan-choices-list maincardcon attractionscon">
+                </div>
+        
+                <!-- Recommended By Us -->
+                <div class="sectionheader manyheadertags">
+                    <div>
+                        <h1>Recommended By Us</h1>
+                        <h2>We thought you might like...</h2>
+                    </div>
+            
+                    <div class="view">
+                        <h3>View All</h3>
+                    </div>
+                </div>
+        
+                <div id="recommend-partners" class="plan-choices-list maincardcon attractionscon">
+                </div>
+            </div>
+        </section>
+
+        <section id="recommendSearch" class="device" style="position:absolute; z-index: 4; display: none;">
+            <div id="search">
+                <div class="searchheader">
+                  <svg onclick="document.getElementById('recommendSearch').style.display = 'none';" width="12" height="20" viewBox="0 0 12 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                      d="M10.2642 0C10.8582 0.203504 11.2215 0.68581 11.6052 1.12894C11.9081 1.47897 11.8687 2.05183 11.5761 2.4156C11.5052 2.50072 11.4295 2.58174 11.3494 2.65828C8.94914 5.0464 6.54751 7.43334 4.14452 9.81909C4.0819 9.87251 4.01519 9.92099 3.94498 9.96409C4.03554 10.0582 4.08722 10.1167 4.14145 10.1676C6.56048 12.5737 8.9795 14.9796 11.3985 17.3854C11.8298 17.8148 11.9613 18.3439 11.6385 18.7738C11.3346 19.1709 10.9778 19.5251 10.5779 19.8264C10.2074 20.1093 9.70807 20.0259 9.34174 19.7247C9.28648 19.6794 9.23276 19.6311 9.18211 19.5807L0.412125 10.8636C-0.0248138 10.4296 -0.119978 9.92084 0.153748 9.45024C0.222198 9.33957 0.304744 9.23817 0.399334 9.14854C3.33272 6.23165 6.26697 3.31661 9.20206 0.403448C9.37602 0.231995 9.61905 0.132787 9.8324 0H10.2642Z"
+                      fill="#2B2B2B" />
+                  </svg>
+            
+                  <h1>Search</h1>
+            
+            
+                  <svg onclick="window.open('saved.html','_self')" width="15" height="20" viewBox="0 0 15 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                      d="M12.8569 0H2.14312C1.57629 0.00205569 1.03339 0.237205 0.633538 0.653854C0.233688 1.0705 0.00954761 1.63462 0.0102946 2.22244L0 20L7.5 16.6663L15 20V2.22244C14.9975 1.6338 14.771 1.06999 14.3696 0.653759C13.9682 0.237523 13.4245 0.00255379 12.8569 0V0Z"
+                      fill="#2B2B2B" />
+                  </svg>
+                </div>
+            
+                <input type="text" id="recSearchBar" class="Username" value="" onkeyup="recSearch();" placeholder="Search Activities, Restaurants, Cafes" autocomplete="off">
+            
+                <div id="recSearch-results" class="searchcardscon">
+                    <div style="position: relative; right: 5px;" class="sectionheader recentheader">
+                        <h1>Recent Searches</h1>
+                        <h3>Clear</h3>
+                    </div>
+                    <div id="recSearch-results-recent">
+                        {% for i in range(recentSearches|length) %}
+                        <div class="recentcards searchcard">
+                            <div class="cardimg" style="background-image: url('{{recentInfo[i].Image_url}}');">
+                            </div>
+                    
+                            <div class="cardinfo">
+                                <h1 class="recentname">{{recentSearches[i].getPlaceName()}}</h1>
+                                <div class="recenttype">
+                                    <h3 class="recentcat">{{recentSearches[i].getCategory()}}</h3>
+                                    <div class="rating">
+                                        {% for rating in range(recentInfo[i]["Rating"]|round) %}
+                                        <svg width="12" height="12" fill="none">
+                                            <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#E4002B" />
+                                        </svg>
+                                        {% endfor %}
+                                        {% for rating in range(5 - recentInfo[i]["Rating"]|round) %}
+                                        <svg width="12" height="12" fill="none">
+                                            <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+                                        </svg>
+                                        {% endfor %}
+                                        <p class="ratingvalue">{{recentInfo[i]["Review_no"]}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div style="position: relative; right: 5px;" class="sectionheader resultsheader" style="display: none;">
+                        <h1>Results</h1>
+                    </div>
+                    <div id="recSearch-results-results" style="display: none;">
+
+                    </div>
+                </div>
+            
+            </div>
+        </section>
     </div>
     
     <!-- Search Page -->
@@ -745,7 +841,7 @@
 
                         <!-- explorertravelduration -->
                         <div class="explorertravelduration">
-                        <h1>2hrs, 150km</h1>
+                        <h1><span class="plan-travel-duration"></span>, 150km</h1>
                         <h2 onclick="showExpandedRoute">Details
                             <svg width="8" height="5" viewBox="0 0 8 5" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path
@@ -766,9 +862,10 @@
                                 d="M0.333984 15.9771C0.333984 13.0103 1.21372 10.1102 2.86194 7.6435C4.51016 5.17677 6.85284 3.25418 9.59373 2.11886C12.3346 0.98355 15.3506 0.6865 18.2603 1.26528C21.17 1.84406 23.8428 3.27267 25.9406 5.37046C28.0384 7.46824 29.467 10.141 30.0458 13.0507C30.6245 15.9604 30.3275 18.9764 29.1922 21.7173C28.0569 24.4582 26.1343 26.8009 23.6675 28.4491C21.2008 30.0973 18.3007 30.9771 15.334 30.9771C13.3642 30.9771 11.4136 30.5891 9.59373 29.8352C7.77385 29.0814 6.12026 27.9765 4.72738 26.5837C1.91434 23.7706 0.333984 19.9553 0.333984 15.9771ZM15.334 24.9771C17.114 24.9771 18.8541 24.4492 20.3341 23.4603C21.8142 22.4713 22.9677 21.0657 23.6489 19.4212C24.3301 17.7767 24.5083 15.9671 24.161 14.2212C23.8138 12.4754 22.9566 10.8718 21.6979 9.6131C20.4393 8.35442 18.8356 7.49726 17.0898 7.14999C15.344 6.80272 13.5344 6.98095 11.8898 7.66214C10.2453 8.34333 8.83969 9.49688 7.85076 10.9769C6.86182 12.457 6.33398 14.197 6.33398 15.9771C6.33398 18.364 7.28219 20.6532 8.97002 22.341C10.6578 24.0288 12.947 24.9771 15.334 24.9771Z"
                                 fill="#E4002B" />
                             </svg>
-                            <h1>${$("#end-location").val()}</h1>
+                            <h1 class="plan-name">${$("#end-location").val()}</h1>
                             <p class="plan-address" hidden>${$("#end-location-address").text()}</p>
                             <p class="plan-latlng" hidden>${$("#end-location-latlng").text()}</p>
+                            <p class="plan-total-duration" hidden></p>
                         </div>
                         <div class="explorerendtime">
                             <h1 class="plan-timing"></h1>
@@ -796,15 +893,6 @@
         pageNum += 1;
         recommend(pageNum, order, cat, 0, true);
         btn.remove();
-    }
-
-    function getLocation() {
-        if (navigator.geolocation) {
-            navigator.geolocation.watchPosition(showYourPosition, positioningError, {
-                timeout: 500,
-                enableHighAccuracy: true
-            });
-        }
     }
 
     function recommendExplorer() {
@@ -856,8 +944,6 @@
                     div.appendChild(startCard);
                     div.appendChild(endCard);
 
-                    div.insertBefore(new DOMParser().parseFromString(`<button class="btn-addPlan btn-addColor" onclick="recommend(1, 1);">  +  </button>`, "text/html").body.firstElementChild, div.lastChild);
-
                     startTmeArr = startTme.split(":");
                     endTmeArr = endTme.split(":");
                     var startDate = new Date(0, 0, 0, startTmeArr[0], startTmeArr[1], 0);
@@ -873,22 +959,65 @@
                     // Display function
                     for (var i=0; i< result.length; i++) {
                         var newPlace = new DOMParser().parseFromString(`
-                            <div class="card plan-selection">
-                                <h5 class="plan-name">${result[i].Name}</h5>
-                                <p class="plan-address" style="font-size:12px">${result[i].Address}</p>
-                                <br />
-                                <p class="plan-activity-duration"><span>${Math.round(result[i].ActivityDuration)}</span> min</p>
-                                <p class="plan-total-duration"><span>${Math.round(result[i].Duration)}</span> min</p>
-                                <p class="plan-timing"></p>
-                                <p class="plan-latlng" hidden>${result[i].Latlng}</p>
-                                <p class="plan-edit" onclick="editCard(this, ${i+2})">Edit</p>
-                                <p class="plan-delete" onclick="delCard(this, ${i+2})">Delete</p>
+                            <div class="plan-selection">
+                                <hr>
+                                <!-- explorerdirections -->
+                                <div class="explorerdirections">
+                                    <div class="explorertransport">
+                                    </div>
+
+                                    <!-- explorertravelduration -->
+                                    <div class="explorertravelduration">
+                                    <h1><span class="plan-travel-duration">${Math.round(result[i].TravelDuration)}</span>min</h1>
+                                    <h2 onclick="showExpandedRoute">Details <svg width="9" height="5" viewBox="0 0 9 5" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                            d="M0.78125 0.657445C0.862652 0.406133 1.05557 0.252445 1.23283 0.0900984C1.37284 -0.0380473 1.60198 -0.0213795 1.74749 0.102437C1.78154 0.132408 1.81395 0.164424 1.84456 0.198329C2.79981 1.21383 3.75459 2.2299 4.70889 3.24655C4.73025 3.27304 4.74965 3.30127 4.76688 3.33097C4.80453 3.29266 4.82794 3.27079 4.84829 3.24785C5.81073 2.22441 6.7731 1.20098 7.7354 0.177549C7.90716 -0.00492803 8.11881 -0.0605592 8.29077 0.0760284C8.44962 0.204574 8.59127 0.355537 8.71182 0.524754C8.82497 0.681473 8.79159 0.89274 8.67112 1.04773C8.65301 1.0711 8.63367 1.09383 8.61352 1.11526L5.12668 4.82564C4.95309 5.0105 4.74959 5.05076 4.56134 4.93495C4.51708 4.90599 4.47652 4.87107 4.44067 4.83105C3.27391 3.59 2.1079 2.34859 0.942629 1.10682C0.874048 1.03322 0.834365 0.930405 0.78125 0.84014L0.78125 0.657445Z"
+                                            fill="#E4002B" />
+                                        </svg>
+                                    </h2>
+                                    </div>
+                                </div>
+                                <hr>
+
+                                <button class="btn-addPlan btn-addColor" onclick="openRecommendTab(${i+2});">  +  </button>
+                                <hr>
+
+                                <div class="explorerevent">
+                                    <div class="eventdetails">
+                                        <div class="eventimg plan-img" style="background-image: url('${result[i].Image_url}');">
+                                            <span hidden>${result[i].Image_url}</span>
+                                        </div>
+                            
+                                        <div class="eventinfo">
+                                            <h1 class="eventname plan-name">${result[i].Name}</h1>
+                                            <h2 class="eventtype plan-category">${result[i].Category}</h2>
+                                            <p class="plan-address" hidden>${result[i].Address}</p>
+                                            <p class="plan-activity-duration" hidden><span>${Math.round(result[i].ActivityDuration)}</span> min</p>
+                                            <p class="plan-total-duration" hidden><span>${Math.round(result[i].Duration)}</span> min</p>
+                                            <p class="plan-timing" hidden></p>
+                                            <p class="plan-latlng" hidden>${result[i].Latlng}</p>
+                                        </div>
+                                    </div>
+                            
+                                    <div class="eventedit">
+                                        <svg class="editevent plan-edit" width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg"
+                                        onclick="editCard(this, ${i+2});">
+                                        <path
+                                            d="M0.333984 16.3335V20.5H4.49963L16.7872 8.21241L12.6208 4.04593L0.333984 16.3335ZM20.0091 4.9905C20.1121 4.88775 20.1938 4.76571 20.2495 4.63135C20.3053 4.49699 20.334 4.35295 20.334 4.20748C20.334 4.06202 20.3053 3.91798 20.2495 3.78362C20.1938 3.64926 20.1121 3.52721 20.0091 3.42447L17.4095 0.82485C17.3068 0.721875 17.1847 0.640178 17.0504 0.584435C16.916 0.528693 16.772 0.5 16.6265 0.5C16.481 0.5 16.337 0.528693 16.2026 0.584435C16.0683 0.640178 15.9462 0.721875 15.8435 0.82485L13.8101 2.8574L17.9725 7.02387L20.0058 4.9905H20.0091Z"
+                                            fill="#2B2B2B" />
+                                        </svg>
+                            
+                                        <svg class="deleteevent plan-delete" width="17" height="21" viewBox="0 0 17 21" fill="none" xmlns="http://www.w3.org/2000/svg"
+                                        onclick="delCard(this, ${i+2});">
+                                        <path
+                                            d="M2.01977 18.2776C2.02236 18.8662 2.26154 19.43 2.68522 19.8462C3.1089 20.2625 3.68278 20.4974 4.28195 20.5H13.3297C13.9289 20.4974 14.5028 20.2625 14.9264 19.8462C15.3501 19.43 15.5893 18.8662 15.5919 18.2776V4.94391H2.01977V18.2776ZM16.722 1.61122H12.7637L11.6326 0.5H5.9781L4.84701 1.61122H0.888672V3.83366H16.722V1.61122Z"
+                                            fill="#E4002B" />
+                                        </svg>
+                                    </div>
+                                </div>
                             </div>`, "text/html").body.firstElementChild;
-                        var newBtn = new DOMParser().parseFromString(`   
-                            <button class="btn-addPlan btn-addColor" onclick="recommend(1, ${i+2});">  +  </button>`, "text/html").body.firstElementChild;
                         
                         div.insertBefore(newPlace, div.lastElementChild);
-                        div.insertBefore(newBtn, div.lastElementChild);
 
                         allowanceLeft -= result[i].Duration;
                         document.getElementById("time-left").querySelector("span").innerText = parseInt(allowanceLeft);
@@ -899,11 +1028,13 @@
                         placesDuration.push(parseFloat(result[i].Duration))
                     }
                     allowanceLeft -= result[result.length-1].EndDuration;
-                    div.lastElementChild.querySelector(".plan-total-duration").querySelector("span").innerText = Math.round(result[result.length-1].EndDuration);
+                    div.lastElementChild.querySelector(".plan-travel-duration").innerText = Math.round(result[result.length-1].EndDuration);
+                    div.lastElementChild.querySelector(".plan-total-duration").innerText = Math.round(result[result.length-1].EndDuration);
                     document.getElementById("time-left").querySelector("span").innerText = parseInt(allowanceLeft);
 
                     reAssignValues();
-                    saveTrips(placesName, placesAddress, placesActivityDuration, placesDuration)
+                    displayRouteDetails();
+                    saveTrips(placesName, placesAddress, placesActivityDuration, placesDuration);
                 },
                 error: function(jq, status, errorMsg) {
                     div.insertBefore(new DOMParser().parseFromString(`   
@@ -921,6 +1052,7 @@
         // Pull screen up
         $("#recommendationTab").show();
         $("#recommendationTab").animate({
+            top: "0",
             bottom: "0"
         }, 350);
 
@@ -941,7 +1073,7 @@
     }
     // Order - the positional order of the button in DOM
     async function recommend(pageNum, order, cat, sectionNo=0, append=false) {
-        // Stop pending ajax reqf
+        // Stop pending ajax req
         if (requests.length > 0) {
             while (requests.length > 0) {
                 try {
@@ -962,20 +1094,21 @@
         var allCards = div.getElementsByClassName("plan-selection");
 
         $("#reloadingbg").show();
-        console.log(pageNum+", "+order);
+        $("#selectedCat").text(cat);
+        document.getElementById("recSearchBar").setAttribute("onkeyup", `recSearch(${order});`);
+
         // Get place before, after and registered places
         var registeredPlaces = [].slice.call(allCards).slice(1, allCards.length - 1).map(x => x.querySelector(".plan-address").innerText);
         if (order - 1 > 0) {
-            var placeBefore = allCards[order-1].querySelector(".plan-address").innerText;
-            var latlng = allCards[order-1].querySelector(".plan-latlng").innerText.split(",");
+            var placeBefore = allCards[order-2].querySelector(".plan-address").innerText;
+            var latlng = allCards[order-2].querySelector(".plan-latlng").innerText.split(",");
         }
         else {
             var placeBefore;
             var latlng = document.getElementById("start-location-latlng").innerText.split(",");
         }
         
-        
-        var placeAfter = allCards[order].querySelector(".plan-address").innerText;
+        var placeAfter = allCards[order-1].querySelector(".plan-address").innerText;
 
         async function fetchDisplay(sectionNo) {
             request = await $.ajax({
@@ -1008,17 +1141,37 @@
 
                     if (result.list.length > 0) {
                         for (var i in result.list) {
-                            listing.innerHTML += 
-                            `<div class="card plan-choice" style="width:150px; height:175px; margin-right: 1em; max-width:
-                                flex-basis: 33.333%;
-                                flex-grow: 0;
-                                flex-shrink: 0;" onclick="choosePlace(this, ${sectionNo}, ${order}, ${i});">
-                                <h5>${result.list[i].Name}</h5>
-                                <p style="font-size:12px">${result.list[i].Address}</p>
-                                <br />
-                                <p>Matching ${result.list[i].RecommendationScore.toFixed(2)}</p>
+                            var recommendCard = 
+                            `<div class="maincard attractioncard plan-choice" onclick="choosePlace(this, ${sectionNo}, ${order}, ${i});">
+                                <div class="cardimg" style="background-image: url('${result.list[i].Image_url}');">
+                                </div>
+                    
+                                <div class="maincardinfo attractioncardinfo">
+                                <h1 class="recentname">${result.list[i].Name}</h1>
+                    
+                                <div class="recenttype">
+                                    <h3 class="recentcat">${result.list[i].Category.replace(/,/g, "•")}</h3>
+                                    <div class="rating">`
+                            for (var i=0; i< Math.round(result.list[i].Rating); i++) {
+                                recommendCard += 
+                                    `<svg width="12" height="12" fill="none">
+                                        <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#E4002B" />
+                                    </svg>`
+                            }
+                            for (var i=0; i< 5 - Math.round(result.list[i].Rating); i++) {
+                                recommendCard +=
+                                    `<svg width="12" height="12" fill="none">
+                                        <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+                                    </svg>`
+                            }
+                            recommendCard +=
+                                `       <p class="ratingvalue">${result.list[i].Review_no}</p>
+                                    </div>
+                                </div>
+                    
+                                </div>
                             </div>`;
-
+                            listing.innerHTML += recommendCard;
                         }
                     }
                     else {
@@ -1064,26 +1217,69 @@
         div = document.getElementById("recommendation-listings");
         var info = pendingChooseList[index].list[itemNo];
 
-        var newPlace = new DOMParser().parseFromString(`
-            <div class="card plan-selection">
-                <h5 class="plan-name">${info.Name}</h5>
-                <p class="plan-address" style="font-size:12px">${info.Address}</p>
-                <br />
-                <p class="plan-activity-duration"><span>${Math.round(info.ActivityDuration)}</span> min</p>
-                <p class="plan-total-duration"><span>${Math.round(info.Duration)}</span> min</p>
-                <p class="plan-timing"></p>
-                <p class="plan-latlng" hidden>${info.Latlng}</p>
-                <p class="plan-edit" onclick="editCard(this, ${order})">Edit</p>
-                <p class="plan-delete" onclick="delCard(this, ${order})">Delete</p>
-            </div>`, "text/html").body.firstElementChild;
-        var newBtn = new DOMParser().parseFromString(`   
-            <button class="btn-addPlan btn-addColor" onclick="recommend(1, ${order+1});">  +  </button>`, "text/html").body.firstElementChild;
 
-        var allAddBtns = div.getElementsByClassName("btn-addPlan");
-        console.log(order, allAddBtns.length)
+        var newPlace = new DOMParser().parseFromString(`
+            <div class="plan-selection">
+                <hr>
+                <!-- explorerdirections -->
+                <div class="explorerdirections">
+                    <div class="explorertransport">
+                    </div>
+
+                    <!-- explorertravelduration -->
+                    <div class="explorertravelduration">
+                    <h1><span class="plan-travel-duration">${info.TravelDuration}</span>min</h1>
+                    <h2 onclick="showExpandedRoute">Details <svg width="9" height="5" viewBox="0 0 9 5" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M0.78125 0.657445C0.862652 0.406133 1.05557 0.252445 1.23283 0.0900984C1.37284 -0.0380473 1.60198 -0.0213795 1.74749 0.102437C1.78154 0.132408 1.81395 0.164424 1.84456 0.198329C2.79981 1.21383 3.75459 2.2299 4.70889 3.24655C4.73025 3.27304 4.74965 3.30127 4.76688 3.33097C4.80453 3.29266 4.82794 3.27079 4.84829 3.24785C5.81073 2.22441 6.7731 1.20098 7.7354 0.177549C7.90716 -0.00492803 8.11881 -0.0605592 8.29077 0.0760284C8.44962 0.204574 8.59127 0.355537 8.71182 0.524754C8.82497 0.681473 8.79159 0.89274 8.67112 1.04773C8.65301 1.0711 8.63367 1.09383 8.61352 1.11526L5.12668 4.82564C4.95309 5.0105 4.74959 5.05076 4.56134 4.93495C4.51708 4.90599 4.47652 4.87107 4.44067 4.83105C3.27391 3.59 2.1079 2.34859 0.942629 1.10682C0.874048 1.03322 0.834365 0.930405 0.78125 0.84014L0.78125 0.657445Z"
+                            fill="#E4002B" />
+                        </svg>
+                    </h2>
+                    </div>
+                </div>
+                <hr>
+
+                <button class="btn-addPlan btn-addColor" onclick="openRecommendTab(${order});">  +  </button>
+                <hr>
+
+                <div class="explorerevent">
+                    <div class="eventdetails">
+                        <div class="eventimg plan-img" style="background-image: url('${info.Image_url}');">
+                            <span hidden>${info.Image_url}</span>
+                        </div>
+            
+                        <div class="eventinfo">
+                            <h1 class="eventname plan-name">${info.Name}</h1>
+                            <h2 class="eventtype plan-category">${info.Category}</h2>
+                            <p class="plan-address" hidden>${info.Address}</p>
+                            <p class="plan-activity-duration" hidden><span>${Math.round(info.ActivityDuration)}</span> min</p>
+                            <p class="plan-total-duration" hidden><span>${Math.round(info.Duration)}</span> min</p>
+                            <p class="plan-timing" hidden></p>
+                            <p class="plan-latlng" hidden>${info.Latlng}</p>
+                        </div>
+                    </div>
+            
+                    <div class="eventedit">
+                        <svg class="editevent plan-edit" width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg"
+                        onclick="editCard(this, ${order});">
+                        <path
+                            d="M0.333984 16.3335V20.5H4.49963L16.7872 8.21241L12.6208 4.04593L0.333984 16.3335ZM20.0091 4.9905C20.1121 4.88775 20.1938 4.76571 20.2495 4.63135C20.3053 4.49699 20.334 4.35295 20.334 4.20748C20.334 4.06202 20.3053 3.91798 20.2495 3.78362C20.1938 3.64926 20.1121 3.52721 20.0091 3.42447L17.4095 0.82485C17.3068 0.721875 17.1847 0.640178 17.0504 0.584435C16.916 0.528693 16.772 0.5 16.6265 0.5C16.481 0.5 16.337 0.528693 16.2026 0.584435C16.0683 0.640178 15.9462 0.721875 15.8435 0.82485L13.8101 2.8574L17.9725 7.02387L20.0058 4.9905H20.0091Z"
+                            fill="#2B2B2B" />
+                        </svg>
+            
+                        <svg class="deleteevent plan-delete" width="17" height="21" viewBox="0 0 17 21" fill="none" xmlns="http://www.w3.org/2000/svg"
+                        onclick="delCard(this, ${order});">
+                        <path
+                            d="M2.01977 18.2776C2.02236 18.8662 2.26154 19.43 2.68522 19.8462C3.1089 20.2625 3.68278 20.4974 4.28195 20.5H13.3297C13.9289 20.4974 14.5028 20.2625 14.9264 19.8462C15.3501 19.43 15.5893 18.8662 15.5919 18.2776V4.94391H2.01977V18.2776ZM16.722 1.61122H12.7637L11.6326 0.5H5.9781L4.84701 1.61122H0.888672V3.83366H16.722V1.61122Z"
+                            fill="#E4002B" />
+                        </svg>
+                    </div>
+                </div>
+            </div>`, "text/html").body.firstElementChild;
+
+        var allPlans = div.getElementsByClassName("plan-selection");
         
-        div.insertBefore(newBtn, allAddBtns[order-1].nextSibling);
-        div.insertBefore(newPlace, allAddBtns[order-1].nextSibling);
+        div.insertBefore(newPlace, allPlans[order-2].nextSibling);
         
         allowanceLeft -= info.Duration;
         console.log(allowanceLeft);
@@ -1095,6 +1291,83 @@
         saveTrips();
 
         closeRecommendTab();
+    }
+
+    function chooseSearchPlace(btn, order) {
+        btn.parentElement.remove()
+        div = document.getElementById("recommendation-listings");
+
+        var newPlace = new DOMParser().parseFromString(`
+            <div class="plan-selection">
+                <hr>
+                <!-- explorerdirections -->
+                <div class="explorerdirections">
+                    <div class="explorertransport">
+                    </div>
+
+                    <!-- explorertravelduration -->
+                    <div class="explorertravelduration">
+                    <h1><span class="plan-travel-duration">${info.TravelDuration}</span>min, 150km</h1>
+                    <h2 onclick="showExpandedRoute">Details <svg width="9" height="5" viewBox="0 0 9 5" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M0.78125 0.657445C0.862652 0.406133 1.05557 0.252445 1.23283 0.0900984C1.37284 -0.0380473 1.60198 -0.0213795 1.74749 0.102437C1.78154 0.132408 1.81395 0.164424 1.84456 0.198329C2.79981 1.21383 3.75459 2.2299 4.70889 3.24655C4.73025 3.27304 4.74965 3.30127 4.76688 3.33097C4.80453 3.29266 4.82794 3.27079 4.84829 3.24785C5.81073 2.22441 6.7731 1.20098 7.7354 0.177549C7.90716 -0.00492803 8.11881 -0.0605592 8.29077 0.0760284C8.44962 0.204574 8.59127 0.355537 8.71182 0.524754C8.82497 0.681473 8.79159 0.89274 8.67112 1.04773C8.65301 1.0711 8.63367 1.09383 8.61352 1.11526L5.12668 4.82564C4.95309 5.0105 4.74959 5.05076 4.56134 4.93495C4.51708 4.90599 4.47652 4.87107 4.44067 4.83105C3.27391 3.59 2.1079 2.34859 0.942629 1.10682C0.874048 1.03322 0.834365 0.930405 0.78125 0.84014L0.78125 0.657445Z"
+                            fill="#E4002B" />
+                        </svg>
+                    </h2>
+                    </div>
+                </div>
+                <hr>
+
+                <button class="btn-addPlan btn-addColor" onclick="openRecommendTab(${order});">  +  </button>
+                <hr>
+
+                <div class="explorerevent">
+                    <div class="eventdetails">
+                        <div class="eventimg plan-img" style="background-image: url('${info.Image_url}');">
+                            <span hidden>${info.Image_url}</span>
+                        </div>
+            
+                        <div class="eventinfo">
+                            <h1 class="eventname plan-name">${info.Name}</h1>
+                            <h2 class="eventtype plan-category">${info.Category}</h2>
+                            <p class="plan-address" hidden>${info.Address}</p>
+                            <p class="plan-activity-duration" hidden><span>${Math.round(info.ActivityDuration)}</span> min</p>
+                            <p class="plan-total-duration" hidden><span>${Math.round(info.Duration)}</span> min</p>
+                            <p class="plan-timing" hidden></p>
+                            <p class="plan-latlng" hidden>${info.Latlng}</p>
+                        </div>
+                    </div>
+            
+                    <div class="eventedit">
+                        <svg class="editevent plan-edit" width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg"
+                        onclick="editCard(this, ${order});">
+                        <path
+                            d="M0.333984 16.3335V20.5H4.49963L16.7872 8.21241L12.6208 4.04593L0.333984 16.3335ZM20.0091 4.9905C20.1121 4.88775 20.1938 4.76571 20.2495 4.63135C20.3053 4.49699 20.334 4.35295 20.334 4.20748C20.334 4.06202 20.3053 3.91798 20.2495 3.78362C20.1938 3.64926 20.1121 3.52721 20.0091 3.42447L17.4095 0.82485C17.3068 0.721875 17.1847 0.640178 17.0504 0.584435C16.916 0.528693 16.772 0.5 16.6265 0.5C16.481 0.5 16.337 0.528693 16.2026 0.584435C16.0683 0.640178 15.9462 0.721875 15.8435 0.82485L13.8101 2.8574L17.9725 7.02387L20.0058 4.9905H20.0091Z"
+                            fill="#2B2B2B" />
+                        </svg>
+            
+                        <svg class="deleteevent plan-delete" width="17" height="21" viewBox="0 0 17 21" fill="none" xmlns="http://www.w3.org/2000/svg"
+                        onclick="delCard(this, ${order});">
+                        <path
+                            d="M2.01977 18.2776C2.02236 18.8662 2.26154 19.43 2.68522 19.8462C3.1089 20.2625 3.68278 20.4974 4.28195 20.5H13.3297C13.9289 20.4974 14.5028 20.2625 14.9264 19.8462C15.3501 19.43 15.5893 18.8662 15.5919 18.2776V4.94391H2.01977V18.2776ZM16.722 1.61122H12.7637L11.6326 0.5H5.9781L4.84701 1.61122H0.888672V3.83366H16.722V1.61122Z"
+                            fill="#E4002B" />
+                        </svg>
+                    </div>
+                </div>
+            </div>`, "text/html").body.firstElementChild;
+        
+        var allPlans = div.getElementsByClassName("plan-selection");
+        
+        div.insertBefore(newPlace, allPlans[order-2].nextSibling);
+        
+        allowanceLeft -= info.Duration;
+        console.log(allowanceLeft);
+        document.getElementById("time-left").querySelector("span").innerText = parseInt(allowanceLeft);
+        
+        // Fill up info for autosaving data
+        reCal2Places(div, order);
+        reAssignValues();
+        saveTrips();
     }
 
     // Edit/delete/rearrange
@@ -1113,12 +1386,11 @@
     function delCard(btn, order) {
         var card = btn.closest(".plan-selection");
         var div = btn.closest("#recommendation-listings");
-        div.getElementsByClassName("btn-addPlan")[order-1].remove();
-        card.remove();
 
         var timeLeft = document.querySelector("#time-left").querySelector("span");
         timeLeft.innerText = parseInt(timeLeft.innerText) + parseInt(card.querySelector(".plan-total-duration").querySelector("span").innerText);
         allowanceLeft = timeLeft.innerText;
+        card.remove();
 
         reAssignValues();
         reCal2Places(div, order-1);
@@ -1126,14 +1398,14 @@
 
     // Recalculate route and travel time
     async function reCal2Places(div, order) {
+        console.log("re2")
         var cards = div.getElementsByClassName("plan-selection");
         var aboveCard = cards[order-1];
         var belowCard = cards[order];
         var totalDuration = 0;
         for (var i=1; i<order-1; i++) {
-            console.log(cards[i].querySelector(".plan-total-duration").querySelector("span").innerText)
             var duration = parseFloat(cards[i].querySelector(".plan-total-duration").querySelector("span").innerText);
-            totalDuration += duration;
+            totalDuration += Math.round(duration);
         }
 
         await $.ajax({
@@ -1148,21 +1420,31 @@
             },
             success: function(result) {
                 result = JSON.parse(result);
-                var belowCardTDuration = belowCard.querySelector(".plan-total-duration").querySelector("span");
-                var belowCardADuration = belowCard.querySelector(".plan-activity-duration").querySelector("span");
-                var timeDiff = result[0] + parseInt(belowCardADuration.innerText) - parseInt(belowCardTDuration.innerText);
-                belowCardTDuration.innerText = parseInt(belowCardADuration.innerText) + result[0];
+
+                var belowCardTDuration = belowCard.querySelector(".plan-total-duration").innerText;
+                var belowCardADuration = belowCard.querySelector(".plan-activity-duration")
+                if (belowCardADuration) {
+                    var belowCardADuration = belowCardADuration.querySelector("span").innerText;
+                }
+                else {
+                    var belowCardADuration = 0;
+                }
+
+                var timeDiff = result[0] + parseInt(belowCardADuration) - parseInt(belowCardTDuration);
+                belowCard.querySelector(".plan-travel-duration").innerText = Math.round(result[0] - belowCardADuration);
                 document.querySelector("#time-left").querySelector("span").innerText = parseInt(document.querySelector("#time-left").querySelector("span").innerText) + timeDiff;
             }
         })
+        console.log("re2E")
 
         saveTrips();
     }
 
     function reAssignValues() {
+        console.log("reA")
         var div = document.getElementsByClassName("btn-add-place");
         for (var i=0; i<div.length; i++) {
-            div[i].openRecommendTab("onclick", `recommend(1, ${i+1});`);
+            div[i].setAttribute("onclick", `openRecommendTab(${i+1});`);
         }
 
         var startTime = new Date(`2022-01-01T${$("#start-time").val()}:00`);
@@ -1176,6 +1458,7 @@
             currTime = startTime.toLocaleTimeString('en-SG', {hour12: false});
             plansCards[i].querySelector(".plan-timing").innerText = currTime.substring(0, currTime.length-3);
         }
+        console.log("reAE")
     }
 
     function saveTrips() {
@@ -1188,6 +1471,8 @@
         var placesName = [];
         var placesAddress = [];
         var placesActivityDuration = [];
+        var placesCategory = [];
+        var placesImg = [];
         var placesDuration = [];
         var placesLatlng = [];
 
@@ -1195,10 +1480,14 @@
             placesName.push(allPlacesDiv[i].querySelector(".plan-name").innerText);
             placesAddress.push(allPlacesDiv[i].querySelector(".plan-address").innerText);
             if (i == 0 || i == allPlacesDiv.length-1) {
+                placesCategory.push(null);
+                placesImg.push(null);
                 placesActivityDuration.push(null);
                 placesDuration.push(null);
             }
             else {
+                placesCategory.push(allPlacesDiv[i].querySelector(".plan-category").innerText);
+                placesImg.push(allPlacesDiv[i].querySelector(".plan-img").querySelector("span").innerText);
                 placesActivityDuration.push(parseInt(allPlacesDiv[i].querySelector(".plan-activity-duration").querySelector("span").innerText));
                 placesDuration.push(parseInt(allPlacesDiv[i].querySelector(".plan-total-duration").querySelector("span").innerText));
             }
@@ -1217,6 +1506,8 @@
                 endTime: endTme,
                 names: placesName,
                 addresses: placesAddress,
+                categories: placesCategory,
+                images: placesImg,
                 activityDuration: placesActivityDuration,
                 duration: placesDuration,
                 latlngs: placesLatlng,
@@ -1241,6 +1532,7 @@
         // Pull screen up
         $("#searchTab").show();
         $("#searchTab").animate({
+            top: "0",
             bottom: "0"
         }, 350, function () {
             document.querySelector("#searchBar").focus();
@@ -1262,7 +1554,7 @@
         setTimeout(function() {
             canSearch = true;
             search();
-        }, 350);
+        }, 150);
     }
     
     function search() {
@@ -1309,6 +1601,93 @@
         }     
     }
 
+    function recSearch(order){
+        var dropdownMenu = document.querySelector("#recSearch-results-results");
+        var recentMenu = document.querySelector("#recSearch-results-recent");
+        const search = document.querySelector("#recSearchBar").value;
+        var cat = document.querySelector("#selectedCat").innerText;
+
+        if (search.trim().length == 0) {
+            dropdownMenu.innerHTML = "";
+        }
+        else {
+            $.ajax({
+                dataType: "json",
+                url: `/funcs/search?s=${search}&page=${1}&cat=${cat}`,
+                success: function(result) {
+                    dropdownMenu.innerHTML = "";
+                    // Filter recent searches
+                    var allRecent = recentMenu.children;
+                    if (allRecent.length > 0) {
+                        $(".recentheader").show();
+                        for (var i=0; i<allRecent.length; i++) {
+                            if (allRecent[i].querySelector(".recentname").innerText.toLowerCase.contains(search.toLowerCase)) {
+                                allRecent[i].style.display = "block";
+                            }
+                            else {
+                                allRecent[i].style.display = "none";
+                            }
+                        }
+                    }
+                    else {
+                        $(".recentheader").hide();
+                    }
+
+                    if (result.length > 0) {
+                        dropdownMenu.style.display = "block";
+                        $(".resultsheader").show();
+                        showLength = 10;
+                        if (result.length < 10) {
+                            showLength = result.length;
+                        }
+                        
+                        for (var i=0; i<showLength; i++) {
+                            dropdownCooldown = true;
+                            record = result[i]
+                            card = 
+                            `<div class="recentcards searchcard" onclick="chooseSearchPlace(this, ${order});">
+                                <div class="cardimg" style="background-image: url('${record["Image_url"]}')">
+                                </div>
+                        
+                                <div class="cardinfo">
+                                    <h1 class="recentname search-name">${record["Name"]}</h1>
+                                    <p class="search-address" hidden>${record["Address"]}</p>
+                                    <p class="search-address" hidden>${record["ActivityDuration"]}</p>
+                                    <div class="recenttype">
+                                        <h3 class="recentcat">${record['Category']}</h3>
+                                        <div class="rating">`
+                            for (var j=0; j<Math.round(parseFloat(record['Rating'])); j++) {
+                                card += 
+                                    `<svg width="12" height="12" fill="none">
+                                        <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#E4002B" />
+                                    </svg>`
+                            }
+                            for (var j=0; j<5- Math.round(parseFloat(record['Rating'])); j++) {
+                                card += 
+                                    `<svg width="12" height="12" fill="none">
+                                        <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
+                                    </svg>`
+                            }
+                            card += `<p class="ratingvalue">${record["Review_no"]}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>`;
+                            dropdownMenu.innerHTML += card;
+
+                            setTimeout(function () { dropdownCooldown = false; }, 126)
+                        }
+                    }
+                    else {
+                        dropdownMenu.style.display = "none";
+                        dropdownMenu.innerText = `No results found`; 
+                    }
+                }
+            });
+
+        }     
+    }
+
     function searchNextPage() {
         $("#searchPage").text(parseInt($("#searchPage").text()) + 1)
     }
@@ -1330,6 +1709,116 @@
         closeSearch();
     }
 
+    function displayRouteDetails() {
+        var allAddresses = document.getElementsByClassName("plan-address");
+        var allLatlngs = document.getElementsByClassName("plan-latlng");
+        var allRouteDiv = document.getElementsByClassName("explorertransport")
+        var routeType = document.querySelector('input[name="transportMode"]:checked').value;
+        var checkTime = currentTime;
+        var startTime = $("#start-time").val();
+
+        function getAPIRoute(index) {
+            var position1 = allLatlngs[index].innerText.split(",");
+            var position2 = allLatlngs[index+1].innerText.split(",");
+            var res = true;
+
+            allRouteDiv[index].innerHTML = "";
+
+            $.ajax({
+                dataType: "json",
+                url: `https://developers.onemap.sg/privateapi/routingsvc/route?start=${position1[0]},${position1[1]}&end=${position2[0]},${position2[1]}&routeType=${routeType}&token=${apiKey}&date=${String(checkTime.getFullYear())}-${String(checkTime.getMonth()+1)}-${String(checkTime.getDate())}&time=${startTime}:00&mode=TRANSIT`,
+                success: function(result) {
+                    //Set result to a variable for writing
+                    if (routeType == "pt")
+                        var info = result.plan.itineraries[0];
+                    else
+                        var info = result.route_summary;
+
+                    function addModeIcon(routeType, info) {
+                        if (routeType == "walk") {
+                            allRouteDiv[index].innerHTML += 
+                                `<div><svg width="14" height="20" viewBox="0 0 14 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                    d="M8.79073 3.72093C9.12694 3.72093 9.4556 3.61182 9.73514 3.40739C10.0147 3.20296 10.2326 2.91239 10.3612 2.57244C10.4899 2.23248 10.5236 1.8584 10.458 1.49751C10.3924 1.13661 10.2305 0.805109 9.99274 0.544918C9.75501 0.284728 9.45211 0.107536 9.12236 0.0357492C8.79262 -0.0360373 8.45082 0.000806104 8.14021 0.14162C7.82959 0.282435 7.5641 0.520895 7.37731 0.826847C7.19053 1.1328 7.09083 1.4925 7.09083 1.86047C7.09217 2.35344 7.2717 2.8258 7.5902 3.17439C7.90871 3.52297 8.3403 3.71946 8.79073 3.72093ZM5.73091 16.6512L6.58086 12.5581L8.36575 14.4186V20H10.0657V13.0233L8.28076 11.1628L8.79073 8.37209C9.3739 9.10142 10.0926 9.68613 10.8987 10.0872C11.7049 10.4882 12.5799 10.6964 13.4655 10.6977V8.83721C12.7307 8.84941 12.0061 8.64946 11.3644 8.25751C10.7228 7.86557 10.1869 7.29547 9.81067 6.60465L8.96072 5.11628C8.81006 4.84145 8.59888 4.61233 8.34647 4.44983C8.09407 4.28733 7.80848 4.19664 7.5158 4.18605C7.26082 4.18605 7.09083 4.27907 6.83584 4.27907L2.4161 6.32558V10.6977H4.116V7.53489L5.64591 6.88372L4.28599 14.4186L0.12123 13.4884L-0.21875 15.3488L5.73091 16.6512Z"
+                                    fill="#707070" />
+                                </svg></div>`;
+                        }
+                        else if (routeType == "drive") {
+                            allRouteDiv[index].innerHTML += 
+                                `<div><svg width="14" height="20" viewBox="0 0 14 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                    d="M8.79073 3.72093C9.12694 3.72093 9.4556 3.61182 9.73514 3.40739C10.0147 3.20296 10.2326 2.91239 10.3612 2.57244C10.4899 2.23248 10.5236 1.8584 10.458 1.49751C10.3924 1.13661 10.2305 0.805109 9.99274 0.544918C9.75501 0.284728 9.45211 0.107536 9.12236 0.0357492C8.79262 -0.0360373 8.45082 0.000806104 8.14021 0.14162C7.82959 0.282435 7.5641 0.520895 7.37731 0.826847C7.19053 1.1328 7.09083 1.4925 7.09083 1.86047C7.09217 2.35344 7.2717 2.8258 7.5902 3.17439C7.90871 3.52297 8.3403 3.71946 8.79073 3.72093ZM5.73091 16.6512L6.58086 12.5581L8.36575 14.4186V20H10.0657V13.0233L8.28076 11.1628L8.79073 8.37209C9.3739 9.10142 10.0926 9.68613 10.8987 10.0872C11.7049 10.4882 12.5799 10.6964 13.4655 10.6977V8.83721C12.7307 8.84941 12.0061 8.64946 11.3644 8.25751C10.7228 7.86557 10.1869 7.29547 9.81067 6.60465L8.96072 5.11628C8.81006 4.84145 8.59888 4.61233 8.34647 4.44983C8.09407 4.28733 7.80848 4.19664 7.5158 4.18605C7.26082 4.18605 7.09083 4.27907 6.83584 4.27907L2.4161 6.32558V10.6977H4.116V7.53489L5.64591 6.88372L4.28599 14.4186L0.12123 13.4884L-0.21875 15.3488L5.73091 16.6512Z"
+                                    fill="#707070" />
+                                </svg></div>`;
+                        }
+                        else if (routeType == "cycle") {
+                            allRouteDiv[index].innerHTML += 
+                                `<div><svg width="14" height="20" viewBox="0 0 14 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                    d="M8.79073 3.72093C9.12694 3.72093 9.4556 3.61182 9.73514 3.40739C10.0147 3.20296 10.2326 2.91239 10.3612 2.57244C10.4899 2.23248 10.5236 1.8584 10.458 1.49751C10.3924 1.13661 10.2305 0.805109 9.99274 0.544918C9.75501 0.284728 9.45211 0.107536 9.12236 0.0357492C8.79262 -0.0360373 8.45082 0.000806104 8.14021 0.14162C7.82959 0.282435 7.5641 0.520895 7.37731 0.826847C7.19053 1.1328 7.09083 1.4925 7.09083 1.86047C7.09217 2.35344 7.2717 2.8258 7.5902 3.17439C7.90871 3.52297 8.3403 3.71946 8.79073 3.72093ZM5.73091 16.6512L6.58086 12.5581L8.36575 14.4186V20H10.0657V13.0233L8.28076 11.1628L8.79073 8.37209C9.3739 9.10142 10.0926 9.68613 10.8987 10.0872C11.7049 10.4882 12.5799 10.6964 13.4655 10.6977V8.83721C12.7307 8.84941 12.0061 8.64946 11.3644 8.25751C10.7228 7.86557 10.1869 7.29547 9.81067 6.60465L8.96072 5.11628C8.81006 4.84145 8.59888 4.61233 8.34647 4.44983C8.09407 4.28733 7.80848 4.19664 7.5158 4.18605C7.26082 4.18605 7.09083 4.27907 6.83584 4.27907L2.4161 6.32558V10.6977H4.116V7.53489L5.64591 6.88372L4.28599 14.4186L0.12123 13.4884L-0.21875 15.3488L5.73091 16.6512Z"
+                                    fill="#707070" />
+                                </svg></div>`;
+                        }
+                        else if (routeType == "bus") {
+                            var routes = info.route.split("/")
+                            for (var i=0; i<routes.length; i++) {
+                                allRouteDiv[index].innerHTML += 
+                                    `<div class="transportation" style="background: ${routeTextures[routeType].color}">
+                                        <h1>${routes[i]}</h1>
+                                    </div>`;
+                            }
+                        }
+                        else if (routeType == "tram") {
+                            allRouteDiv[index].innerHTML += 
+                                `<div class="transportation" style="background: ${routeTextures[routeType].color}">
+                                    <h1>${info.route}</h1>
+                                </div>`;
+                        }
+                        else if (routeType == "subway") {
+                            console.log(info.route)
+                            allRouteDiv[index].innerHTML += 
+                                `<div class="transportation" style="background: ${routeTextures.subway[info.route].color}">
+                                    <h1>${info.route}</h1>
+                                </div>`;
+                        }
+                    }
+
+                    if (routeType == "pt") {
+                        for (var i=0; i<info.legs.length; i++) {
+                            addModeIcon(info.legs[i].mode.toLowerCase(), info.legs[i]);
+                            if (i != info.legs.length -1) {
+                                allRouteDiv[index].innerHTML += 
+                                    `<div><svg width="8" height="13" viewBox="0 0 8 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                        d="M1.54958 -1.36256e-06C1.75249 0.0669132 1.89922 0.212233 2.04594 0.362284C3.87674 2.23657 5.70952 4.10882 7.54098 5.98108C7.79676 6.24265 7.85162 6.54884 7.68969 6.83069C7.65466 6.89152 7.6084 6.9483 7.55882 6.99899C5.67846 8.92329 3.79611 10.8462 1.91442 12.7705C1.7201 12.9693 1.4934 13.0544 1.22572 12.9638C0.981174 12.8814 0.835107 12.7009 0.791485 12.4414C0.757777 12.2413 0.816601 12.0649 0.944162 11.9121C0.979192 11.8702 1.01753 11.8317 1.0552 11.7925C2.74389 10.0662 4.43193 8.33998 6.12195 6.6144C6.15632 6.57925 6.20324 6.55695 6.24422 6.52856L6.24422 6.47178C6.20324 6.4434 6.15632 6.42109 6.12195 6.38594C4.42069 4.64887 2.7201 2.91044 1.02017 1.17202C0.76042 0.906386 0.71085 0.592767 0.879389 0.310239C0.977868 0.145319 1.13319 0.0648857 1.30173 -1.34089e-06L1.54958 -1.36256e-06Z"
+                                        fill="#707070" />
+                                    </svg></div>`;
+                            }
+                        }
+                    }
+                    else {
+                        addModeIcon(routeType, info);
+                    }
+                },
+                error: function(jqXHR, textStatus, err) {
+                    res = false;
+                }
+            });
+
+            return res;
+        }
+
+        for (var i=0; i<allAddresses.length-1; i++) {
+            tries = 0;
+            while (tries <= 3) {
+                tries++;
+                res = getAPIRoute(i);
+                if (res)
+                    break;
+            }
+        }
+    }
+
     // initFunctions();
 
     // Map settings
@@ -1342,17 +1831,20 @@
     var endMarker;
 
     var routeTextures = {
-        WALK: {color: "black", dashArray: "10, 10"},
-        SUBWAY: {
-            NE: {color: "purple"},
-            NS: {color: "red"},
-            DT: {color: "blue"},
-            EW: {color: "green"},
-            CC: {color: "yellow"},
-            TE: {color: "brown"},
-            Default: {color: "grey"}
+        walk: {color: "black", dashArray: "10, 10"},
+        subway: {
+            NE: {color: "#8E3E98"},
+            NS: {color: "#E32325"},
+            DT: {color: "#2059A9"},
+            EW: {color: "#0C9345"},
+            CC: {color: "#F99D21"},
+            CE: {color: "#F99D21"},
+            TE: {color: "#AA7242"},
+            Default: {color: "#708573"}
         },
-        DRIVE: {color: "black"}
+        tram: {color: "#708573"},
+        bus: {color: "#0C9345"},
+        drive: {color: "black"}
     }
 
     var basemap = L.tileLayer(`http://maps-{s}.onemap.sg/v2/Default/{z}/{x}/{y}.png`, {
@@ -1367,6 +1859,19 @@
 
     var updatePosition = false;
     var repeatedBuildings = {};
+
+    function getLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showYourPosition, positioningError, {
+                timeout: 500,
+                enableHighAccuracy: true
+            });
+            navigator.geolocation.watchPosition(showYourPosition, positioningError, {
+                timeout: 500,
+                enableHighAccuracy: true
+            });
+        }
+    }
 
     function openMapView() {
         // Make toggle cards
@@ -1388,6 +1893,7 @@
 
         // Pull plan page down
         $("#planPage").animate({
+            top: "0",
             bottom: "-200vh"
         }, 350, function () {
             $("#planPage").hide()
@@ -1398,6 +1904,7 @@
         // Pull plan page up
         $("#planPage").show();
         $("#planPage").animate({
+            top: "0",
             bottom: "0"
         }, 350);
     }
@@ -1409,7 +1916,7 @@
             map.removeLayer(yourMarker);
         }
         
-        yourMarker = new L.Marker([position.coords.latitude, position.coords.longitude], {bounceOnAdd: false, customId: "YouMarker"}).addTo(map); 
+        yourMarker = new L.Marker([position.coords.latitude, position.coords.longitude], {bounceOnAdd: false, customId: "YouMarker"}).addTo(map);
         latLngStr = position.coords.latitude + "," + position.coords.longitude;
         document.getElementById("start-latlng").innerText = latLngStr;
 
@@ -1515,6 +2022,7 @@
         });
 
         getLocation();
+        displayRouteDetails();
 
         setInterval(function () {
             if (document.getElementById("start-location-name").innerText == "Your Location") {
