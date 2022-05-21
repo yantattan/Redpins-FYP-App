@@ -16,10 +16,8 @@
   position: relative;
   width: 360px;
   min-height: 760px;
-  /* min-height: 800px; */
   display: flex;
   flex-direction: column;
-  /* background-color: green; */
 }
 
 .onboarding {
@@ -662,6 +660,7 @@ input {
 
 .rating {
   display: flex;
+  align-items: center;
 }
 
 .rating svg {
@@ -1380,6 +1379,7 @@ input {
   box-shadow: 0px 0px 20px rgba(207, 207, 207, 0.5);
   display: flex;
   padding: 20px;
+  z-index: 5;
 }
 
 .maincta {
@@ -1427,7 +1427,9 @@ input {
 }
 
 .plannertripitinerary {
-  margin: 0 20px;
+  padding: 0 20px 150px 20px;
+  overflow-y: scroll;
+  overflow-x: hidden;
 }
 
 .explorertripitinerary hr,
@@ -1672,6 +1674,13 @@ input {
 #editplannertrip {
   overflow-y: scroll;
   overflow-x: hidden;
+  height: 760px;
+  position: relative;
+}
+
+#editplannertrip input {
+  width: 100%;
+  margin: 20px auto;
 }
 
 /* plannertriptopcon */
@@ -1715,7 +1724,9 @@ input {
 /* plannerdates */
 .plannerdates {
   overflow-x: scroll;
-  padding: 20px 20px 0 20px;
+  overflow-y: hidden;
+  padding: 20px;
+  height: 150px;
 }
 
 .plannerdates ul {
@@ -1756,4 +1767,97 @@ input {
   font-size: 16px;
   line-height: 24px;
   color: #FFFFFF;
+}
+
+.plannerdatestransport {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+align-items: flex-start;
+grid-gap: 20px;
+background: #2B2B2B;
+border-radius: 5px;
+height: 220px;
+width: 55px;
+}
+
+.plannerdatestransport li {
+  display: flex;
+  align-items: center;
+  grid-gap: 5px;
+  padding: 0 10px;
+}
+
+/* card details */
+#carddetails {
+  position: relative;
+  height: 760px;
+}
+
+.cardimg {
+  background-image: url("../../static/images/ock.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 360px;
+  height: 440px;
+  border-radius: 0px 0px 15px 15px;
+  z-index: 0;
+}
+
+.carddetailedinfo {
+  position: absolute;
+  width: 360px;
+  height: 700px;
+  top: 360px;
+  background: #FFFFFF;
+  box-shadow: 0px 0px 20px rgba(207, 207, 207, 0.3);
+  border-radius: 10px 10px 0px 0px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  grid-gap: 20px;
+  z-index: 1;
+  overflow-y: scroll;
+}
+
+.scrollhandle {
+  height: 5px;
+  width: 60px;
+  background: #EEEEEE;
+  border-radius: 10px;
+  margin: 0 auto;
+}
+
+.carddetailedinfo h1 {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 25px;
+  line-height: 38px;
+  color: #2B2B2B;
+}
+
+.cardmaininfo {
+  display: flex;
+  align-items: center;
+  grid-gap: 10px;
+}
+
+.cardmaininfo .rating p {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  color: #707070;
+}
+
+.cardmaininfo h1 {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 22px;
+  color: #2B2B2B;
 }
