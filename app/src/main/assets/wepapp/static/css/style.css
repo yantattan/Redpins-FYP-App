@@ -1773,12 +1773,12 @@ input {
   display: flex;
   flex-direction: column;
   justify-content: center;
-align-items: flex-start;
-grid-gap: 20px;
-background: #2B2B2B;
-border-radius: 5px;
-height: 220px;
-width: 55px;
+  align-items: flex-start;
+  grid-gap: 20px;
+  background: #2B2B2B;
+  border-radius: 5px;
+  height: 220px;
+  width: 55px;
 }
 
 .plannerdatestransport li {
@@ -1800,26 +1800,25 @@ width: 55px;
   background-position: center;
   background-repeat: no-repeat;
   width: 360px;
-  height: 440px;
+  height: 740px;
   border-radius: 0px 0px 15px 15px;
   z-index: 0;
 }
 
-.carddetailedinfo {
-  position: absolute;
-  width: 360px;
-  height: 700px;
-  top: 360px;
-  background: #FFFFFF;
+.cardhover {
   box-shadow: 0px 0px 20px rgba(207, 207, 207, 0.3);
+  overflow-y: scroll;
+}
+
+.carddetailedinfo {
+  background: #FFFFFF;
   border-radius: 10px 10px 0px 0px;
   padding: 20px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   grid-gap: 20px;
-  z-index: 1;
-  overflow-y: scroll;
+  z-index: 2;
 }
 
 .scrollhandle {
@@ -1860,4 +1859,224 @@ width: 55px;
   font-size: 14px;
   line-height: 22px;
   color: #2B2B2B;
+}
+
+.cardlocation,
+.cardopening,
+.cardnumber,
+.cardwebsite {
+  display: flex;
+  align-items: center;
+  grid-gap: 10px;
+}
+
+.cardlocation h1,
+.cardopening h1,
+.cardnumber h1,
+.cardwebsite h1 {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 22px;
+  color: #2B2B2B;
+}
+
+.cardwebsite a {
+  color: #2B2B2B;
+  text-decoration: none;
+}
+
+/* reviews */
+.cardreviews .sectionheader {
+  margin: 0;
+}
+
+.cardreviews h1 {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 18px;
+  color: #2B2B2B;
+}
+
+/* ratingbig */
+.ratingbig {
+  margin: 20px 0;
+}
+
+.ratingbigdisplay {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  grid-gap: 10px;
+}
+
+.ratingbigdisplay h1 {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 30px;
+  color: #2B2B2B;
+}
+
+.ratingsource h2 {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  color: #2B2B2B;
+  text-align: center;
+}
+
+.review {
+  display: flex;
+  flex-direction: column;
+  grid-gap: 10px;
+}
+
+/* reviewer */
+.reviewer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 20px 0;
+}
+
+.reviewerdetails {
+  display: flex;
+  align-items: center;
+  grid-gap: 10px;
+}
+
+.reviewerimg {
+  background-size: cover;
+  width: 40px;
+  height: 40px;
+  border-radius: 5px;
+  background-color: green;
+}
+
+.reviewerinfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.reviewername {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  color: #2B2B2B;
+}
+
+.reviewercountry {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  color: #2B2B2B;
+}
+
+.reviewerreview {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 22px;
+  color: #2B2B2B;
+}
+
+.reviewerreview a {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 22px;
+  color: #E4002B;
+}
+
+.reviewbottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.reviewlikes {
+  display: flex;
+  align-items: center;
+  grid-gap: 5px;
+}
+
+.reviewlikes p {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  color: #2B2B2B;
+}
+
+.reviewsubmitted p {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 16px;
+  color: #BBBBBB;
+}
+
+/* you might also like */
+.youmightlike h1 {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 18px;
+  color: #2B2B2B;
+}
+
+.youmightlikecon {
+  display: flex;
+  grid-gap: 10px;
+  overflow-x: scroll;
+  height: 200px;
+}
+
+.youmightlikecards {
+  width: 300px;
+  height: 110px;
+  background: #FFFFFF;
+  box-shadow: 0px 0px 20px rgba(207, 207, 207, 0.5);
+  border-radius: 5px;
+  display: flex;
+}
+
+.youmightlikecards .cardimg {
+  width: 110px;
+  height: 110px;
+  background: green;
+  border-radius: 5px;
+}
+
+.youmightlikecategory {
+  display: flex;
+  align-items: center;
+  grid-gap: 5px;
+}
+
+.youmightlikecards .cardinfo h1 {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 21px;
+  color: #2B2B2B;
+}
+
+.youmightlikecards .cardinfo h2 {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 16px;
+  color: #707070;
 }
