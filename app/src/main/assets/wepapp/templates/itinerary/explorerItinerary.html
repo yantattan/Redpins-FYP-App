@@ -391,12 +391,12 @@
                         <!-- explorertravelduration -->
                         <div class="explorertravelduration">
                         <h1><span class="plan-travel-duration">{{itinerary.getPlaces()[i].TravelDuration|int}}</span>min</a>
-                        <h2><a data-toggle="collapse" href="#details-{{i+1}}">Details</a><svg width="9" height="5" viewBox="0 0 9 5" fill="none" xmlns="http://www.w3.org/2000/svg"></svg>
+                        <a data-toggle="collapse" href="#details-{{i+1}}"><h2>Details<svg width="9" height="5" viewBox="0 0 9 5" fill="none" xmlns="http://www.w3.org/2000/svg"></svg>
                             <path
                                 d="M0.78125 0.657445C0.862652 0.406133 1.05557 0.252445 1.23283 0.0900984C1.37284 -0.0380473 1.60198 -0.0213795 1.74749 0.102437C1.78154 0.132408 1.81395 0.164424 1.84456 0.198329C2.79981 1.21383 3.75459 2.2299 4.70889 3.24655C4.73025 3.27304 4.74965 3.30127 4.76688 3.33097C4.80453 3.29266 4.82794 3.27079 4.84829 3.24785C5.81073 2.22441 6.7731 1.20098 7.7354 0.177549C7.90716 -0.00492803 8.11881 -0.0605592 8.29077 0.0760284C8.44962 0.204574 8.59127 0.355537 8.71182 0.524754C8.82497 0.681473 8.79159 0.89274 8.67112 1.04773C8.65301 1.0711 8.63367 1.09383 8.61352 1.11526L5.12668 4.82564C4.95309 5.0105 4.74959 5.05076 4.56134 4.93495C4.51708 4.90599 4.47652 4.87107 4.44067 4.83105C3.27391 3.59 2.1079 2.34859 0.942629 1.10682C0.874048 1.03322 0.834365 0.930405 0.78125 0.84014L0.78125 0.657445Z"
                                 fill="#E4002B" />
                             </svg>
-                        </h2>
+                        </h2></a>
                         </div>
                     </div>
 
@@ -496,7 +496,7 @@
         </div>
         <br>
 
-         <!-- viewonmap -->
+        <!-- viewonmap -->
         <div class="viewonmap" onclick="openMapView();">
             <svg width="51" height="50" viewBox="0 0 51 50" fill="none" xmlns="http://www.w3.org/2000/svg">
             <rect x="0.888672" width="50" height="50" rx="5" fill="#2B2B2B" />
@@ -1775,6 +1775,7 @@
                                 </div>`;
                         }
                         else if (routeType == "subway") {
+                            console.log(info.route)
                             allRouteDiv[index].innerHTML += 
                                 `<div class="transportation" style="background: ${routeTextures.subway[info.route].color}">
                                     <h1>${info.route}</h1>
@@ -1786,7 +1787,6 @@
                         for (var i=0; i<info.legs.length; i++) {
                             addModeIcon(info.legs[i].mode.toLowerCase(), info.legs[i]);
                             if (i != info.legs.length -1) {
-
                                 allRouteDiv[index].innerHTML += 
                                     `<div><svg width="8" height="13" viewBox="0 0 8 13" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path
@@ -1838,6 +1838,7 @@
             DT: {color: "#2059A9"},
             EW: {color: "#0C9345"},
             CC: {color: "#F99D21"},
+            CE: {color: "#F99D21"},
             TE: {color: "#AA7242"},
             Default: {color: "#708573"}
         },

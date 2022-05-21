@@ -1317,6 +1317,7 @@ def saveTrip():
         activitiesDuration = request.form.getlist("activityDuration[]")
         durations = request.form.getlist("duration[]")
         latlngs = request.form.getlist("latlngs[]")
+        description = request.form.get("description") or None
         timeAllowance = float(request.form.get("timeAllowance") or 0) or None
         timeLeft = float(request.form.get("timeLeft") or 0) or None
         transportMode = request.form.get("transportMode")
@@ -1352,7 +1353,7 @@ def saveTrip():
             places.append({"Name": names[i], "Address": addresses[i], "Category": categories[i], "Image": images[i], "ActivityDuration": activityDuration, 
                             "TravelDuration": travelDuration, "TotalDuration": duration, "Latlng": latlngs[i]})
 
-        itinerary = Itinerary(itineraryId, userId, tripName, date, startTime, endTime, tripType, transportMode, timeAllowance, timeLeft, confirmed, status, places, plannerId, hasEnd)
+        itinerary = Itinerary(itineraryId, userId, tripName, date, startTime, endTime, tripType, transportMode, timeAllowance, timeLeft, confirmed, status, places, description, plannerId, hasEnd)
         itinerariesCon.SetItinerary(itinerary)
         returnIti = itinerariesCon.GetUnconfimredItinerary(userId, tripType)
 

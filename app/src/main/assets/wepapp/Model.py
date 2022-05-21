@@ -196,7 +196,7 @@ class Preferences:
 
 class Itinerary:
     def __init__(self, id, userId, name, date, startTime, endTime, type, transportMode, timeAllowance, timeLeft, confimred, status, places, 
-                plannerId=None, end=True):
+                description=None, plannerId=None, end=True):
         self.__id = id
         self.__userId = userId
         self.__name = name
@@ -210,6 +210,7 @@ class Itinerary:
         self.__confimred = confimred
         self.__status = status
         self.__places = places
+        self.__description = description
         self.__plannerId = plannerId
         self.__end = end
 
@@ -221,6 +222,9 @@ class Itinerary:
     
     def setStatus(self, status):
         self.__status = status
+    
+    def setDescription(self, description):
+        self.__description = description
 
     def setEnd(self, end):
         self.__end = end
@@ -263,6 +267,9 @@ class Itinerary:
 
     def getPlaces(self):
         return self.__places
+    
+    def getDescription(self):
+        return self.__description
 
     def getPlannerId(self):
         return self.__plannerId
