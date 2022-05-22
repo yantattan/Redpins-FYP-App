@@ -150,7 +150,7 @@
             {% for i in range(itineraries|length) %}
             {% set itinerary = itineraries[i] %}
             <li class="inactivedate card-date" onclick="toggleDay(this);">
-                <h1>{{itinerary.getDate().strftime("%d/%m")}}</h1>
+                <h1>{{itinerary.getDate().strftime("%d/%m")}}<span hidden>{{itinerary.getDate().strftime("%Y-%m-%d")}}</span></h1>
                 
                 <p class="tm-selection">
                     {% if itinerary.getTransportMode() == "drive" %}
@@ -583,7 +583,24 @@
 
     <!-- Search Page -->
     <div class="device" id="searchTab" style="position: absolute; z-index:15; background-color: white; display: none; bottom: -200vh;">
-        <input type="text" class="form-control" id="searchBar" onkeyup="pauseSearch();" autocomplete="off">
+        <div class="searchheader">
+            <svg onclick="document.getElementById('recommendSearch').style.display = 'none';" width="12" height="20" viewBox="0 0 12 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M10.2642 0C10.8582 0.203504 11.2215 0.68581 11.6052 1.12894C11.9081 1.47897 11.8687 2.05183 11.5761 2.4156C11.5052 2.50072 11.4295 2.58174 11.3494 2.65828C8.94914 5.0464 6.54751 7.43334 4.14452 9.81909C4.0819 9.87251 4.01519 9.92099 3.94498 9.96409C4.03554 10.0582 4.08722 10.1167 4.14145 10.1676C6.56048 12.5737 8.9795 14.9796 11.3985 17.3854C11.8298 17.8148 11.9613 18.3439 11.6385 18.7738C11.3346 19.1709 10.9778 19.5251 10.5779 19.8264C10.2074 20.1093 9.70807 20.0259 9.34174 19.7247C9.28648 19.6794 9.23276 19.6311 9.18211 19.5807L0.412125 10.8636C-0.0248138 10.4296 -0.119978 9.92084 0.153748 9.45024C0.222198 9.33957 0.304744 9.23817 0.399334 9.14854C3.33272 6.23165 6.26697 3.31661 9.20206 0.403448C9.37602 0.231995 9.61905 0.132787 9.8324 0H10.2642Z"
+                fill="#2B2B2B" />
+            </svg>
+      
+            <h1>Set Location</h1>
+      
+      
+            <svg width="15" height="20" viewBox="0 0 15 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M12.569 0H2.14312C1.57629 0.00205569 1.03339 0.237205 0.633538 0.653854C0.233688 1.0705 0.00954761 1.63462 0.0102946 2.22244L0 20L7.5 16.6663L15 20V2.22244C14.9975 1.6338 14.771 1.06999 14.3696 0.653759C13.9682 0.237523 13.4245 0.00255379 12.8569 0V0Z"
+                  fill="#2B2B2B" />
+            </svg>
+        </div>
+
+        <input type="text" class="Username" placeholder="Search location" id="searchBar" onkeyup="pauseSearch();" autocomplete="off">
         <div id="searchPage" hidden>1</div>
         <div id="search-btnId" hidden></div>
         <div id="search-divOrder" hidden></div>
@@ -690,7 +707,7 @@
             </div>
         </section>
 
-        <section id="recommendSearch" class="device" style="position:absolute; z-index: 4; display: none; background-color: white;">
+        <section id="recommendSearch" class="device" style="position:absolute; z-index: 12; display: none; background-color: white;">
             <div id="search">
                 <div class="searchheader">
                   <svg onclick="document.getElementById('recommendSearch').style.display = 'none';" width="12" height="20" viewBox="0 0 12 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -757,14 +774,31 @@
     </div>
 
     <!-- Map View -->
-    <div class="device" id="mapView" style="position: absolute; z-index:-2;">
-        <div id='mapdiv' style='height:80vh;'></div>
-        <div id="map-selection" style="height:20vh; z-index:-1; overflow-x: auto;">
-            <button class="btn-addColor" onclick="dismissMapView();">x</button>
-            <div id="map-sections" style="display: inline; overflow-x: auto; overflow-y: auto;">
+    <div class="device" id="mapView" style="position: absolute; z-index: 0; display: none;">
+        <div id='mapdiv' style='height:100vh;'></div>
 
+        <svg style="z-index: 5;" class="back" width="12" height="21" viewBox="0 0 12 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path onclick="dismissMapView();"
+                d="M10.3111 0.5C10.9051 0.703504 11.2684 1.18581 11.6521 1.62894C11.955 1.97897 11.9156 2.55183 11.6229 2.9156C11.5521 3.00072 11.4764 3.08174 11.3963 3.15828C8.99602 5.5464 6.59439 7.93334 4.1914 10.3191C4.12878 10.3725 4.06206 10.421 3.99186 10.4641C4.08242 10.5582 4.13409 10.6167 4.18833 10.6676C6.60735 13.0737 9.02637 15.4796 11.4454 17.8854C11.8767 18.3148 12.0082 18.8439 11.6854 19.2738C11.3815 19.6709 11.0247 20.0251 10.6247 20.3264C10.2543 20.6093 9.75495 20.5259 9.38861 20.2247C9.33336 20.1794 9.27963 20.1311 9.22898 20.0807L0.459 11.3636C0.0220612 10.9296 -0.0731035 10.4208 0.200623 9.95024C0.269073 9.83957 0.351619 9.73817 0.446209 9.64854C3.3796 6.73165 6.31384 3.81661 9.24894 0.903448C9.42289 0.731995 9.66592 0.632787 9.87927 0.5H10.3111Z"
+                fill="#FFFFFF" />
+        </svg>
+        
+        
+        <div class="mapbuttons" style="z-index: 5;">
+            <div class="qrcodescanner" onclick="window.open('/qr-scanner','_self')">
+                <img src="../../static/images/qrscanner.png" alt="">
+            </div>
+    
+            <div class="currentlocation">
+                <img src="../../static/images/currentlocation.png" alt="">
             </div>
         </div>
+        
+        <section>
+            <div class="mapdetailscon" id="map-selection">
+
+            </div>
+        </section>
     </div>
 
     <!-- Popup -->
@@ -780,6 +814,7 @@
 {% block scripts %}
 {{super()}}
 <script>
+    const apiKey = "{{apiKey}}";
     var skipped = [0];
     var pendingChooseList = {};
     var startTime = new Date("2022-01-01T08:00:00");
@@ -889,17 +924,16 @@
         var endDate = new Date($("#endDate").val());
 
         var days = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 3600 * 24)) + 1;
-        var datesSelection = document.querySelector("#dates-selection");
         var dateCards = [].slice.call(document.getElementsByClassName("card-date"));
         var diff = days - dateCards.length;
         
         if (dateCards.length > 0) {
             // Prompt for action
-            if (startDate > new Date(dateCards[0].querySelector("h5").innerText)) {
+            if (startDate > new Date(dateCards[0].querySelector("h1").querySelector("span").innerText)) {
                 $("#changesPopup").fadeIn(150);
             }
 
-            datesSelection.innerHTML = 
+            datesDiv.innerHTML = 
             `<li class="inactivedate" id="card-date-add" onclick="openInitPage();">
                 <h1>+ Add day</h1>
             </li>`;
@@ -914,7 +948,7 @@
             console.log(checkDate.getDate())
             var cardDate = new DOMParser().parseFromString(`
             <li class="inactivedate card-date" onclick="toggleDay(this);">
-                <h1>${checkDate.getDate()}/${('0' + checkDate.getMonth()).slice(-2)}</h1>
+                <h1>${checkDate.getDate()}/${('0' + checkDate.getMonth()).slice(-2)}<span hidden>${checkDate.getFullYear()}-${('0' + checkDate.getMonth()).slice(-2)}-${('0' + checkDate.getDate()).slice(-2)}</span></h1>
                 <p class="tm-selection">
                     <a data-toggle="collapse" href="#tmdropdown-${i}"><svg width="36" height="19" viewBox="0 0 36 19" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M17.7709 2.05692C17.6584 1.72085 17.4456 1.42933 17.1626 1.22344C16.8795 1.01754 16.5405 0.907635 16.1931 0.909196H3.97092C3.62382 0.908654 3.28521 1.01896 3.00236 1.22471C2.71951 1.43047 2.50653 1.72141 2.39314 2.05692L0.0820312 8.86373V17.9546C0.0820313 18.256 0.199094 18.5451 0.407468 18.7582C0.615842 18.9713 0.898457 19.091 1.19314 19.091H2.30425C2.59894 19.091 2.88155 18.9713 3.08993 18.7582C3.2983 18.5451 3.41536 18.256 3.41536 17.9546V16.8183H16.7487V17.9546C16.7487 18.256 16.8658 18.5451 17.0741 18.7582C17.2825 18.9713 17.5651 19.091 17.8598 19.091H18.9709C19.2656 19.091 19.5482 18.9713 19.7566 18.7582C19.965 18.5451 20.082 18.256 20.082 17.9546V8.86373L17.7709 2.05692ZM3.97092 13.4092C3.64128 13.4092 3.31905 13.3092 3.04497 13.1219C2.77089 12.9346 2.55727 12.6684 2.43112 12.3569C2.30497 12.0455 2.27197 11.7027 2.33628 11.3721C2.40059 11.0415 2.55932 10.7377 2.79241 10.4993C3.0255 10.261 3.32247 10.0986 3.64577 10.0328C3.96907 9.96708 4.30418 10.0008 4.60873 10.1298C4.91327 10.2589 5.17357 10.4773 5.3567 10.7576C5.53984 11.038 5.63759 11.3675 5.63759 11.7046C5.63759 12.1567 5.46199 12.5903 5.14943 12.9099C4.83687 13.2296 4.41295 13.4092 3.97092 13.4092ZM16.1931 13.4092C15.8635 13.4092 15.5413 13.3092 15.2672 13.1219C14.9931 12.9346 14.7795 12.6684 14.6533 12.3569C14.5272 12.0455 14.4942 11.7027 14.5585 11.3721C14.6228 11.0415 14.7815 10.7377 15.0146 10.4993C15.2477 10.261 15.5447 10.0986 15.868 10.0328C16.1913 9.96708 16.5264 10.0008 16.8309 10.1298C17.1355 10.2589 17.3958 10.4773 17.5789 10.7576C17.7621 11.038 17.8598 11.3675 17.8598 11.7046C17.8598 12.1567 17.6842 12.5903 17.3717 12.9099C17.0591 13.2296 16.6352 13.4092 16.1931 13.4092ZM2.30425 7.72737L3.97092 2.61374H16.1931L17.8598 7.72737H2.30425Z" 
@@ -1151,12 +1185,15 @@
         document.getElementById("recSearchBar").setAttribute("onkeyup", `recSearch(${order});`);
         
         // Get place before, after and registered places
-        var registeredPlaces = [].slice.call(allCards).slice(1, allCards.length - 1).map(x => x.querySelector(".plan-address").innerText);
-        if (order - 1 > 0) {
+        var registeredPlaces = [].slice.call(allCards).slice(1, allCards.length).map(x => x.querySelector(".plan-address").innerText);
+        console.log("Order: "+order)
+        if (order - 2 > 0) {
+            console.log(allCards[order-2])
             var placeBefore = allCards[order-2].querySelector(".plan-address").innerText;
             var latlng = allCards[order-2].querySelector(".plan-latlng").innerText.split(",");
         }
         else {
+            console.log(allCards)
             var placeBefore;
             var latlng = allCards[0].querySelector(".plan-latlng").innerText.split(",");
         }
@@ -1170,12 +1207,10 @@
         startTme = new Date();
         startTme = new Date(startTme.getFullYear(), startTme.getMonth(), startTme.getDate(), 8, 0, 0);
         // TODO
-        console.log("Here")
         for (var i=1; i<allCards.length-1; i++) {
-            startTme.setTime(startTime.getTime() + parseInt(allCards[i].querySelector(".plan-total-duration").querySelector("span").innerText));
+            startTme.setTime(startTime.getTime() + parseInt(allCards[i].querySelector(".plan-total-duration").querySelector("span").innerText)*60000);
             console.log(allCards[i].querySelector(".plan-total-duration").querySelector("span").innerText)
         }
-        console.log(startTme)
         var allowanceLeft = div.closest(".planSection").querySelector(".time-left").querySelector("span").innerText;
 
         async function fetchDisplay(sectionNo) {
@@ -1203,6 +1238,7 @@
                     listingIndex = [document.getElementById("recommend-main"), document.getElementById("recommend-ratings"), document.getElementById("recommend-partners")]
                     pendingChooseList[sectionNo] = result;
                     listing = listingIndex[sectionNo-1]
+                    console.log(listing)
                     if (!append)
                         listing.innerHTML = "";
 
@@ -1210,6 +1246,7 @@
                         for (var i in result.list) {
                             var recommendCard = 
                             `<div class="maincard attractioncard plan-choice" onclick="choosePlace(this, ${sectionNo}, ${order}, ${i});">
+                                <p class="info_json" hidden>${JSON.stringify(result.list[i])}</p>
                                 <div class="cardimg" style="background-image: url('${result.list[i].Image_url}');">
                                 </div>
                     
@@ -1321,7 +1358,7 @@
     }
 
     function choosePlace(btn, index, order, itemNo) {
-        btn.parentElement.remove();
+        btn.remove();
         sectionIndex = parseInt(document.getElementById("sectionIndex").innerText);
         div = document.getElementsByClassName("recommendation-listings")[sectionIndex];
         var info = pendingChooseList[index].list[itemNo];
@@ -1347,7 +1384,7 @@
                 </div>
                 <hr>
 
-                <div class="plannerevent btn-addPlan" onclick="openRecommendTab(${index}, this)">
+                <div class="plannerevent btn-addPlan" onclick="openRecommendTab(${order+1}, this)">
                     <div class="eventdetails">
                         <div class="eventinfo">
                         <h2 class="inactiveinput">Add an Itinerary</h2>
@@ -1406,13 +1443,13 @@
         var allSelection = div.getElementsByClassName("plan-selection");
         div.insertBefore(newPlace, allSelection[order-2].nextSibling);
         
-        var allowanceLeft = parseInt(document.getElementsByClassName("time-left")[sectionIndex].querySelector("span").innerText) - info.Duration;
-        document.getElementsByClassName("time-left")[sectionIndex].querySelector("span").innerText = parseInt(allowanceLeft);
+        var allowanceLeft = Math.round(document.getElementsByClassName("time-left")[sectionIndex].querySelector("span").innerText) - info.Duration;
+        document.getElementsByClassName("time-left")[sectionIndex].querySelector("span").innerText = Math.round(allowanceLeft);
         
         // Fill up info for autosaving data
-        console.log(order-1, allSelection.length)
-        if (order-1 != allSelection.length)
+        if (order != allSelection.length)
             reCal2Places(div, order);
+        console.log("Here");
         reAssignValues();
         saveTrips();
 
@@ -1448,8 +1485,8 @@
     async function reCal2Places(div, order) {
         var cards = div.getElementsByClassName("plan-selection");
         var index = [].slice.call(document.getElementsByClassName("recommendation-listings")).indexOf(div);
-        var aboveCard = cards[order-2];
-        var belowCard = cards[order-1];
+        var aboveCard = cards[order-1];
+        var belowCard = cards[order];
         
         var totalDuration = 0;
         for (var i=1; i<order-1; i++) {
@@ -1470,11 +1507,10 @@
                 startTime: aboveCard.querySelector(".plan-timing").innerText
             },
             success: function(result) {
-                result = JSON.parse(result);
                 var belowCardTDuration = belowCard.querySelector(".plan-total-duration").querySelector("span");
-                var belowCardADuration = belowCard.querySelector(".plan-activity-duration").querySelector("span");
+                var belowCardADuration = belowCard.querySelector(".plan-activity-duration");
                 if (belowCardADuration) {
-                    belowCardADuration = parseInt(belowCardADuration.innerText);
+                    belowCardADuration = parseInt(belowCardADuration.querySelector("span"));
                 }
                 else {
                     belowCardADuration = 0;
@@ -1600,6 +1636,8 @@
                 }
                 placesLatlng.push(allPlacesDiv[j].querySelector(".plan-latlng").innerText);
             }
+
+            console.log()
 
             await save(i);
 
@@ -1914,11 +1952,6 @@
                         </div>
                     </div>
                 </div>`;
-            
-            var addBtns = div.getElementsByClassName("btn-addPlan");
-            if (addBtns.length == 1) {
-                addBtns[0].innerText = "+ Add a place";
-            }
 
             reAssignValues();
         }
@@ -2054,7 +2087,7 @@
 
             for (var i=0; i<allAddresses.length-1; i++) {
                 tries = 0;
-                while (tries <= 3) {
+                while (tries <= 5) {
                     tries++;
                     res = getAPIRoute(section, i);
                     if (res)
@@ -2066,7 +2099,6 @@
 
     // Map settings
     // Map display init
-    const apiKey = "{{apiKey}}";
     L.Icon.Default.imagePath = "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.4.0/images";
     var center = L.bounds([1.56073, 104.11475], [1.16, 103.502]).getCenter();
     var map = L.map('mapdiv').setView([center.x, center.y], 12);
@@ -2103,48 +2135,169 @@
 
     function openMapView() {
         // Make toggle cards
-        var activeSection;
-        var index;
-        var allSections = document.getElementsByClassName("planSection");
-        for (var i=0; i<allSections.length; i++) {
-            if (allSections[i].style.display == "block") {
-                activeSection = allSections[i];
-                index = i;
-                break;
-            }
-        }
-
-        var planCards = activeSection.getElementsByClassName("plan-selection");
+        activeIndex = [].slice.call(document.getElementsByClassName("card-date")).indexOf(document.querySelector(".activedate"));
+        var planCards = document.getElementsByClassName("recommendation-listings")[activeIndex].getElementsByClassName("plan-selection");
         var mapDiv = document.getElementById("map-selection");
         mapDiv.innerHTML = "";
         for (var i=1; i<planCards.length; i++) {
             mapDiv.innerHTML += 
-            `<div class="trip-place" style="border: 1px solid grey ;width: 250px; margin: 5px;" onclick="showRoute(${index}, '${planCards[i-1].querySelector(".plan-latlng").innerText}', '${planCards[i].querySelector(".plan-latlng").innerText}')">
-                <h5>${planCards[i].querySelector(".plan-name").innerText}</h5>
-                <p>${planCards[i].querySelector(".plan-address").innerText}</p>
+            `<div class="mapdetails trip-place" onclick="showRoute(${activeIndex}, '${planCards[i-1].querySelector(".plan-latlng").innerText}', '${planCards[i].querySelector(".plan-latlng").innerText}')">
+                <!-- explorerevent -->
+                <div class="explorerevent">
+                    <div class="eventdetails">
+                    <div class="eventinfo">
+                        <h1 class="eventname">${planCards[i-1].querySelector(".plan-name").innerText}</h1>
+                    </div>
+                    </div>
+
+                    <div class="eventedit">
+                        <h1>${planCards[i].querySelector(".plan-travel-duration").innerText} mins</h1>
+                    </div>
+                </div>
+
+                <!-- explorerdirections -->
+                <div class="mapdirections">
+                    <div class="maptransport">
+                    </div>
+
+                    <!-- explorertravelduration -->
+                    <div class="explorertravelduration">
+                    <h2 onclick="showExpandedRoute">See Details</h2>
+                    </div>
+                </div>
             </div>`;
+
+            routeIconsDiv = mapDiv.getElementsByClassName("maptransport");
+            var routeType = document.getElementsByClassName("card-date")[activeIndex].querySelector('.tm-selection').querySelector("span").innerText;
+            var checkTime = currentTime;
+
+            function getAPIRoute(index) {
+                var position1 = planCards[index-1].querySelector(".plan-latlng").innerText.split(",");
+                var position2 = planCards[index].querySelector(".plan-latlng").innerText.split(",");
+                var res = true;
+                var startDate = document.getElementsByClassName("card-date")[activeIndex].querySelector("h1").querySelector("span").innerText;
+
+                routeIconsDiv[index-1].innerHTML = "";
+
+                $.ajax({
+                    dataType: "json",
+                    url: `https://developers.onemap.sg/privateapi/routingsvc/route?start=${position1[0]},${position1[1]}&end=${position2[0]},${position2[1]}&routeType=${routeType}&token=${apiKey}&date=${startDate}&time=12:00:00&mode=TRANSIT`,
+                    success: function(result) {
+                        //Set result to a variable for writing
+                        if (routeType == "pt")
+                            var info = result.plan.itineraries[0];
+                        else
+                            var info = result.route_summary;
+
+                        function addModeIcon(routeType, info) {
+                            if (routeType == "walk") {
+                                routeIconsDiv[index-1].innerHTML += 
+                                    `<svg width="14" height="20" viewBox="0 0 14 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                        d="M8.79073 3.72093C9.12694 3.72093 9.4556 3.61182 9.73514 3.40739C10.0147 3.20296 10.2326 2.91239 10.3612 2.57244C10.4899 2.23248 10.5236 1.8584 10.458 1.49751C10.3924 1.13661 10.2305 0.805109 9.99274 0.544918C9.75501 0.284728 9.45211 0.107536 9.12236 0.0357492C8.79262 -0.0360373 8.45082 0.000806104 8.14021 0.14162C7.82959 0.282435 7.5641 0.520895 7.37731 0.826847C7.19053 1.1328 7.09083 1.4925 7.09083 1.86047C7.09217 2.35344 7.2717 2.8258 7.5902 3.17439C7.90871 3.52297 8.3403 3.71946 8.79073 3.72093ZM5.73091 16.6512L6.58086 12.5581L8.36575 14.4186V20H10.0657V13.0233L8.28076 11.1628L8.79073 8.37209C9.3739 9.10142 10.0926 9.68613 10.8987 10.0872C11.7049 10.4882 12.5799 10.6964 13.4655 10.6977V8.83721C12.7307 8.84941 12.0061 8.64946 11.3644 8.25751C10.7228 7.86557 10.1869 7.29547 9.81067 6.60465L8.96072 5.11628C8.81006 4.84145 8.59888 4.61233 8.34647 4.44983C8.09407 4.28733 7.80848 4.19664 7.5158 4.18605C7.26082 4.18605 7.09083 4.27907 6.83584 4.27907L2.4161 6.32558V10.6977H4.116V7.53489L5.64591 6.88372L4.28599 14.4186L0.12123 13.4884L-0.21875 15.3488L5.73091 16.6512Z"
+                                        fill="#707070" />
+                                    </svg>`;
+                            }
+                            else if (routeType == "drive") {
+                                routeIconsDiv[index-1].innerHTML += 
+                                    `<svg width="8" height="13" viewBox="0 0 8 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                        d="M1.54958 -1.36256e-06C1.75249 0.0669132 1.89922 0.212233 2.04594 0.362284C3.87674 2.23657 5.70952 4.10882 7.54098 5.98108C7.79676 6.24265 7.85162 6.54884 7.68969 6.83069C7.65466 6.89152 7.6084 6.9483 7.55882 6.99899C5.67846 8.92329 3.79611 10.8462 1.91442 12.7705C1.7201 12.9693 1.4934 13.0544 1.22572 12.9638C0.981174 12.8814 0.835107 12.7009 0.791485 12.4414C0.757777 12.2413 0.816601 12.0649 0.944162 11.9121C0.979192 11.8702 1.01753 11.8317 1.0552 11.7925C2.74389 10.0662 4.43193 8.33998 6.12195 6.6144C6.15632 6.57925 6.20324 6.55695 6.24422 6.52856L6.24422 6.47178C6.20324 6.4434 6.15632 6.42109 6.12195 6.38594C4.42069 4.64887 2.7201 2.91044 1.02017 1.17202C0.76042 0.906386 0.71085 0.592767 0.879389 0.310239C0.977868 0.145319 1.13319 0.0648857 1.30173 -1.34089e-06L1.54958 -1.36256e-06Z"
+                                        fill="#707070" />
+                                    </svg>`;
+                            }
+                            else if (routeType == "cycle") {
+                                routeIconsDiv[index-1].innerHTML += 
+                                    `<div><svg width="14" height="20" viewBox="0 0 14 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                        d="M15.4969 3.90244C15.8829 3.90244 16.2601 3.788 16.581 3.5736C16.9019 3.3592 17.152 3.05446 17.2996 2.69792C17.4473 2.34138 17.486 1.94906 17.4107 1.57056C17.3354 1.19206 17.1496 0.844382 16.8767 0.5715C16.6038 0.298617 16.2561 0.112781 15.8776 0.037493C15.4991 -0.0377952 15.1068 0.000845426 14.7502 0.148529C14.3937 0.296212 14.089 0.546304 13.8746 0.867181C13.6602 1.18806 13.5457 1.56531 13.5457 1.95122C13.5473 2.46824 13.7533 2.96364 14.1189 3.32923C14.4845 3.69483 14.9799 3.9009 15.4969 3.90244V3.90244ZM5.25305 10.2439C3.95931 10.2439 2.71856 10.7578 1.80375 11.6726C0.888936 12.5875 0.375 13.8282 0.375 15.1219C0.375 16.4157 0.888936 17.6564 1.80375 18.5712C2.71856 19.4861 3.95931 20 5.25305 20C6.54679 20 7.78754 19.4861 8.70235 18.5712C9.61716 17.6564 10.1311 16.4157 10.1311 15.1219C10.1311 13.8282 9.61716 12.5875 8.70235 11.6726C7.78754 10.7578 6.54679 10.2439 5.25305 10.2439ZM5.25305 18.5366C4.34743 18.5366 3.47891 18.1768 2.83854 17.5365C2.19817 16.8961 1.83841 16.0276 1.83841 15.1219C1.83841 14.2163 2.19817 13.3478 2.83854 12.7074C3.47891 12.0671 4.34743 11.7073 5.25305 11.7073C6.15866 11.7073 7.02719 12.0671 7.66756 12.7074C8.30793 13.3478 8.66768 14.2163 8.66768 15.1219C8.66768 16.0276 8.30793 16.8961 7.66756 17.5365C7.02719 18.1768 6.15866 18.5366 5.25305 18.5366ZM10.9116 8.78049L13.253 6.43902L14.0335 7.21951C14.6811 7.87989 15.456 8.40196 16.3112 8.75412C17.1665 9.10628 18.0843 9.2812 19.0091 9.26829V7.31707C18.3553 7.32268 17.707 7.19592 17.1034 6.94442C16.4998 6.69292 15.9534 6.32189 15.4969 5.85366L13.6433 4C13.21 3.62402 12.656 3.41627 12.0823 3.41463C11.8246 3.39755 11.5665 3.44168 11.3291 3.54341C11.0918 3.64515 10.8818 3.80161 10.7165 4L7.98475 6.73171C7.80159 6.90926 7.65552 7.12143 7.55503 7.3559C7.45454 7.59037 7.40164 7.84247 7.39939 8.09756C7.3823 8.35526 7.42643 8.61335 7.52817 8.85073C7.6299 9.08812 7.78636 9.29806 7.98475 9.46341L11.1067 12.1951V17.0732H13.0579V11.0244L10.9116 8.78049ZM18.9116 10.2439C17.9468 10.2439 17.0037 10.53 16.2015 11.066C15.3993 11.602 14.7741 12.3639 14.4049 13.2552C14.0356 14.1465 13.939 15.1274 14.1273 16.0736C14.3155 17.0199 14.7801 17.889 15.4623 18.5712C16.1445 19.2535 17.0137 19.718 17.9599 19.9063C18.9062 20.0945 19.887 19.9979 20.7783 19.6287C21.6697 19.2595 22.4315 18.6342 22.9675 17.832C23.5035 17.0299 23.7896 16.0867 23.7896 15.1219C23.796 14.4796 23.6742 13.8424 23.4313 13.2477C23.1884 12.653 22.8294 12.1127 22.3751 11.6584C21.9209 11.2042 21.3806 10.8451 20.7859 10.6022C20.1911 10.3593 19.554 10.2375 18.9116 10.2439V10.2439ZM18.9116 18.5366C18.2362 18.5366 17.576 18.3363 17.0145 17.9611C16.453 17.5859 16.0153 17.0526 15.7569 16.4287C15.4984 15.8047 15.4308 15.1182 15.5626 14.4558C15.6943 13.7934 16.0195 13.185 16.4971 12.7074C16.9746 12.2299 17.583 11.9047 18.2454 11.7729C18.9078 11.6412 19.5944 11.7088 20.2183 11.9672C20.8422 12.2257 21.3755 12.6633 21.7507 13.2249C22.1259 13.7864 22.3262 14.4466 22.3262 15.1219C22.3153 16.0242 21.9521 16.8864 21.3141 17.5244C20.676 18.1624 19.8138 18.5257 18.9116 18.5366V18.5366Z"
+                                        fill="#707070" />
+                                    </svg></div>`;
+                            }
+                            else if (routeType == "bus") {
+                                var routes = info.route.split("/")
+                                for (var i=0; i<routes.length; i++) {
+                                    routeIconsDiv[index-1].innerHTML += 
+                                        `<div class="transportation" style="background: ${routeTextures[routeType].color}">
+                                            <h1>${routes[i]}</h1>
+                                        </div>`;
+                                }
+                            }
+                            else if (routeType == "tram") {
+                                routeIconsDiv[index-1].innerHTML += 
+                                    `<div class="transportation" style="background: ${routeTextures[routeType].color}">
+                                        <h1>${info.route}</h1>
+                                    </div>`;
+                            }
+                            else if (routeType == "subway") {
+                                console.log(info.route)
+                                routeIconsDiv[index-1].innerHTML += 
+                                    `<div class="transportation" style="background: ${routeTextures.subway[info.route].color}">
+                                        <h1>${info.route}</h1>
+                                    </div>`;
+                            }
+                        }
+
+                        if (routeType == "pt") {
+                            for (var i=0; i<info.legs.length; i++) {
+                                addModeIcon(info.legs[i].mode.toLowerCase(), info.legs[i]);
+                                if (i != info.legs.length -1) {
+                                    routeIconsDiv[index-1].innerHTML += 
+                                        `<div><svg width="8" height="13" viewBox="0 0 8 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path
+                                            d="M1.54958 -1.36256e-06C1.75249 0.0669132 1.89922 0.212233 2.04594 0.362284C3.87674 2.23657 5.70952 4.10882 7.54098 5.98108C7.79676 6.24265 7.85162 6.54884 7.68969 6.83069C7.65466 6.89152 7.6084 6.9483 7.55882 6.99899C5.67846 8.92329 3.79611 10.8462 1.91442 12.7705C1.7201 12.9693 1.4934 13.0544 1.22572 12.9638C0.981174 12.8814 0.835107 12.7009 0.791485 12.4414C0.757777 12.2413 0.816601 12.0649 0.944162 11.9121C0.979192 11.8702 1.01753 11.8317 1.0552 11.7925C2.74389 10.0662 4.43193 8.33998 6.12195 6.6144C6.15632 6.57925 6.20324 6.55695 6.24422 6.52856L6.24422 6.47178C6.20324 6.4434 6.15632 6.42109 6.12195 6.38594C4.42069 4.64887 2.7201 2.91044 1.02017 1.17202C0.76042 0.906386 0.71085 0.592767 0.879389 0.310239C0.977868 0.145319 1.13319 0.0648857 1.30173 -1.34089e-06L1.54958 -1.36256e-06Z"
+                                            fill="#707070" />
+                                        </svg></div>`;
+                                }
+                            }
+                        }
+                        else {
+                            addModeIcon(routeType, info);
+                        }
+                    },
+                    error: function(jqXHR, textStatus, err) {
+                        res = false;
+                    }
+                });
+
+                return res;
+            }
+
+            tries = 0;
+            while (tries <= 3) {
+                tries++;
+                res = getAPIRoute(i);
+                if (res)
+                    break;
+            }
         }
 
         // Default show 1st part trip
         var firstCard = document.querySelector(".trip-place")
-        if (typeof firstCard.onclick == "function")
-            firstCard.onclick.apply(firstCard);
+        if (firstCard) {
+            if (typeof firstCard.onclick == "function")
+                firstCard.onclick.apply(firstCard);
+        }
 
         // Pull plan page down
-        $("#planPage").animate({
+        $("#editplannertrip").animate({
+            top: "0",
             bottom: "-200vh"
         }, 350, function () {
-            $("#planPage").hide()
+            $("#editplannertrip").hide();
+            $("#mapView").show();
         });
     }
 
     function dismissMapView() {
         // Pull plan page up
-        $("#planPage").show();
-        $("#planPage").animate({
+        $("#editplannertrip").show();
+        $("#editplannertrip").animate({
             top: "0",
             bottom: "0"
-        }, 350);
+        }, 350), function() {
+            $("#mapView").hide();
+        };
     }
 
     function showYourPosition(position) {  

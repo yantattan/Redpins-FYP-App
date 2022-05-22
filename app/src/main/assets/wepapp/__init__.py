@@ -38,7 +38,7 @@ cron = Scheduler(daemon=True)
 cron.start()
 CORS(app)
 app.secret_key = "redp1n5Buffer"
-apiKey = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjg1NDQsInVzZXJfaWQiOjg1NDQsImVtYWlsIjoieWFudGF0dGFuNzIxQGdtYWlsLmNvbSIsImZvcmV2ZXIiOmZhbHNlLCJpc3MiOiJodHRwOlwvXC9vbTIuZGZlLm9uZW1hcC5zZ1wvYXBpXC92MlwvdXNlclwvc2Vzc2lvbiIsImlhdCI6MTY1Mjg1ODQ2OSwiZXhwIjoxNjUzMjkwNDY5LCJuYmYiOjE2NTI4NTg0NjksImp0aSI6IjM0OGMxNmQyYTU4ZmM1NGJlYjcxZWVjMDRkMjNhNTNlIn0.esJZ66sJtK5-r2CRIifU15azJgmYMoGe-CfwO6Cxit4"
+apiKey = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjg1NDQsInVzZXJfaWQiOjg1NDQsImVtYWlsIjoieWFudGF0dGFuNzIxQGdtYWlsLmNvbSIsImZvcmV2ZXIiOmZhbHNlLCJpc3MiOiJodHRwOlwvXC9vbTIuZGZlLm9uZW1hcC5zZ1wvYXBpXC92MlwvdXNlclwvc2Vzc2lvbiIsImlhdCI6MTY1MzIzNzc1MiwiZXhwIjoxNjUzNjY5NzUyLCJuYmYiOjE2NTMyMzc3NTIsImp0aSI6IjNjNWQyM2ZjNmFmMGY1NmNjNGYyMjYwMDE3NzRhMWFjIn0.VP3WaYsAcVwyZg2cb7jm9Lz7Y6-4haoAZr52UaNdFbc"
 
 # Init all controllers
 userCon = Users.UserCon()
@@ -280,8 +280,15 @@ def explorerItinerary():
         entry = webScrapData.loc[webScrapData["Address"] == search.getAddress()]
         recentInfo.append({"Image_url": entry["Image_url"], "Rating": entry["Rating"]})
 
-    return render_template("/itinerary/explorerItinerary.html", itinerary=itinerary, recentSearches=recentSearches, recentInfo=recentInfo, 
+    return render_template("/itinerary/editExplorerItinerary.html", itinerary=itinerary, recentSearches=recentSearches, recentInfo=recentInfo, 
                             apiKey=apiKey, catInfo=categoriesInfo)
+
+@app.route("/itinerary/unconfirm/explorer")
+def unconfirmExplorer():
+    itinerary = itinerariesCon.GetReviewingItinerary(session["current_user"]["userId"], "Explorer")
+    itinerary.setConfirmed(False)
+    itinerariesCon.SetItinerary(itinerary)
+    return redirect("/itinerary/planning/explorer")
 
 @app.route("/itinerary/review/<string:typ>", methods=['GET', 'POST'])
 def confirmItinerary(typ):
@@ -301,7 +308,7 @@ def confirmItinerary(typ):
         if itinerary.getUserId() != userId:
             return render_template("/itinerary/reviewItinerary.html", error="You are not permitted to view this itinerary")
 
-        return render_template("/itinerary/reviewItinerary.html", itinerary=itinerary, type=itinerary.getType())
+        return render_template("/itinerary/reviewItinerary.html", itinerary=itinerary, type=itinerary.getType(), apiKey=apiKey)
 
 @app.route("/itinerary/showTrip/<string:id>")
 def showTrip(id):
@@ -970,7 +977,7 @@ def recommendPlacesPlanner():
         print("Start")
         userId = session["current_user"]["userId"]
         itiDate = request.form.get("date")
-        timeAllowance = float(request.form.get("timeLeft"))
+        timeAllowance = float(request.form.get("timeLeft") or 999)
         latitude = float(request.form.get("latitude"))
         longitude = float(request.form.get("longitude"))
         category = request.form.get("category")
@@ -981,11 +988,13 @@ def recommendPlacesPlanner():
         abovePlace = request.form.get("abovePlace")
         belowPlace = request.form.get("belowPlace")
         sectionIndex = request.form.get("section")
+        startTime = request.form.get("startTime")
+        startTime = "08:00"
 
         if sectionIndex is not None:
             sectionIndex = int(sectionIndex)
 
-        startDatetime = datetime.strptime(itiDate + " " + request.form.get("startTime"), "%Y-%m-%d %H:%M")
+        startDatetime = datetime.strptime(itiDate + " " + startTime, "%Y-%m-%d %H:%M")
 
         resultDict = recommenderAlgorithm(userId, startDatetime, timeAllowance, 10, latitude, longitude, category, transportMode, skipped, pageNum, placesAdded, abovePlace, belowPlace, sectionIndex)
         
@@ -1199,7 +1208,8 @@ def recommendPlacesExplorer():
                     else:
                         print("Using algorithm 8")
                         resultList = recommenderAlgorithmEndPoint(userId, startDatetime, timeAllowance, 1, latitude, longitude, endLatitude, endLongitude, "Eateries", transportMode, [0], 1, placesAdded, abovePlace)
-                    destinations.append(resultList[0])
+                    if len(resultList) > 0:
+                        destinations.append(resultList[0])
 
             # Check if the distance is considered far or short
             dist = geopy.distance.distance((latitude, longitude), (endLatitude, longitude)).km
@@ -1217,7 +1227,7 @@ def reCalculateCards():
     routeType = request.form.get("routeType")
     tripDate = request.form.get("date")
     upperDuration = float(request.form.get("topDuration"))
-    startTime = request.form.get("startTime")
+    startTime = request.form.get("startTime") or "12:00"
 
     parseTime = datetime.strptime(f"{tripDate} {startTime}", "%Y-%m-%d %H:%M") + timedelta(minutes=upperDuration)
     travelDurations = []
@@ -1225,6 +1235,9 @@ def reCalculateCards():
     async def apiGetTime():
         async with aiohttp.ClientSession() as clientSession:
             for i in range(len(latlngs)-1):
+                print(f"https://developers.onemap.sg/privateapi/routingsvc/route?start={latlngs[i]}&end={latlngs[i+1]}" \
+                            f"&routeType={routeType}&token={apiKey}&date={tripDate}&time={parseTime.strftime('%H:%M:%S')}" \
+                            f"&mode=TRANSIT&numItineraries=1")
                 res = await clientSession.get(f"https://developers.onemap.sg/privateapi/routingsvc/route?start={latlngs[i]}&end={latlngs[i+1]}" \
                             f"&routeType={routeType}&token={apiKey}&date={tripDate}&time={parseTime.strftime('%H:%M:%S')}" \
                             f"&mode=TRANSIT&numItineraries=1", ssl=False)
@@ -1233,7 +1246,6 @@ def reCalculateCards():
                 if routeType == "pt" or routeType == "bus":
                     travelDurations.append(int(result["plan"]["itineraries"][0]["duration"] / 60))
                 else:
-                    print(result)
                     travelDurations.append(int(result["route_summary"]["total_time"] / 60))
 
     asyncio.run(apiGetTime())
@@ -1256,7 +1268,7 @@ def unbookmarkPlace():
 
 def getAllWebscrapData():
     for cat in categoriesInfo:
-        data = pandas.read_csv("csv/webcsv/"+categoriesInfo[cat]["filename"])
+        data = pandas.read_csv("csv/webcsv/"+categoriesInfo[cat]["filename"], encoding = "ISO-8859-1")
         allWebscrapData[cat] = data
 
 @app.route("/funcs/search")
