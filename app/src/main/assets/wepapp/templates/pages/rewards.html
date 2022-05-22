@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rewards</title>
+  <link rel="stylesheet" href="../../static/css/style.css">
+</head>
+
+<body>
+  <div class="device" id="rewards">
+
+    <!-- header -->
+    <div class="rewardsheader">
+      <svg class="back" width="12" height="20" onclick="window.open('account.html','_self')">
+        <path
+          d="M10.2642 0C10.8582 0.203504 11.2215 0.68581 11.6052 1.12894C11.9081 1.47897 11.8687 2.05183 11.5761 2.4156C11.5052 2.50072 11.4295 2.58174 11.3494 2.65828C8.94914 5.0464 6.54751 7.43334 4.14452 9.81909C4.0819 9.87251 4.01519 9.92099 3.94498 9.96409C4.03554 10.0582 4.08722 10.1167 4.14145 10.1676C6.56048 12.5737 8.9795 14.9796 11.3985 17.3854C11.8298 17.8148 11.9613 18.3439 11.6385 18.7738C11.3346 19.1709 10.9778 19.5251 10.5779 19.8264C10.2074 20.1093 9.70807 20.0259 9.34174 19.7247C9.28648 19.6794 9.23276 19.6311 9.18211 19.5807L0.412125 10.8636C-0.0248138 10.4296 -0.119978 9.92084 0.153748 9.45024C0.222198 9.33957 0.304744 9.23817 0.399334 9.14854C3.33272 6.23165 6.26697 3.31661 9.20206 0.403448C9.37602 0.231995 9.61905 0.132787 9.8324 0H10.2642Z"
+          fill="#2B2B2B" />
+      </svg>
+      <h1>BuffRewards</h1>
+      <div class="rewardssearch">
+        <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M0.97461 8.25024V9.34399C1.03086 9.73514 1.06888 10.1299 1.14596 10.5174C1.89596 14.2721 5.00273 17.1049 8.82878 17.4971C10.8434 17.7039 12.7158 17.2508 14.4303 16.1653C14.5986 16.0586 14.7621 15.945 14.9527 15.818C15.0043 15.882 15.0439 15.943 15.0949 15.993C16.2611 17.1456 17.4319 18.2935 18.5928 19.4513C18.8647 19.7221 19.146 19.9601 19.5293 20.0471H19.9199C20.0996 19.9659 20.2913 19.9034 20.4559 19.7992C20.748 19.6143 20.885 19.3153 20.9746 18.9924V18.5627C20.8663 18.1716 20.5996 17.894 20.321 17.6174C19.1751 16.481 18.0366 15.3367 16.8954 14.1956C16.8418 14.1419 16.7908 14.0857 16.7449 14.0372C16.7579 14.0044 16.7611 13.9914 16.7678 13.981C16.8007 13.9325 16.835 13.8851 16.8689 13.8372C18.1074 12.0581 18.6309 10.0836 18.4236 7.93045C18.2408 6.0341 17.5012 4.36535 16.2225 2.95076C14.8918 1.47941 13.2465 0.554932 11.2902 0.199202C10.9402 0.135661 10.585 0.0971191 10.2324 0.0471191C9.89388 0.0471191 9.55534 0.0471191 9.2168 0.0471191C9.1668 0.0580566 9.1168 0.0762858 9.06628 0.0794108C7.86888 0.161182 6.73242 0.473161 5.67878 1.04451C3.20274 2.38774 1.67461 4.44243 1.12565 7.2117C1.05794 7.55441 1.02409 7.90389 0.97461 8.24972V8.25024ZM3.47461 8.79764C3.47461 5.3492 6.27357 2.54816 9.72096 2.54868C13.1668 2.54868 15.971 5.35181 15.971 8.7966C15.971 12.2409 13.1658 15.0461 9.72201 15.0456C6.27357 15.045 3.47513 12.2466 3.47461 8.79764Z"
+            fill="#2B2B2B" />
+        </svg>
+
+        <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M10.974 0.1604C8.99644 0.160746 7.06337 0.747529 5.41924 1.84655C3.77511 2.94558 2.49376 4.50748 1.73721 6.33478C0.980662 8.16207 0.782893 10.1727 1.16891 12.1124C1.55493 14.0521 2.5074 15.8337 3.90588 17.2321C5.30437 18.6304 7.08606 19.5827 9.02566 19.9684C10.9653 20.3541 12.9757 20.156 14.8027 19.399C16.6297 18.6421 18.1913 17.3604 19.2899 15.7159C20.3886 14.0715 20.975 12.1381 20.975 10.1604C20.974 7.50822 19.92 4.96495 18.0446 3.08974C16.1692 1.21452 13.626 0.160863 10.974 0.1604V0.1604ZM11.974 17.1601H9.97052V15.16H11.9705L11.974 17.1601ZM14.0439 9.41011L13.1443 10.3298C12.7419 10.6775 12.4265 11.1145 12.2233 11.6059C12.02 12.0973 11.9347 12.6295 11.974 13.1598H9.97052V12.6602C9.97252 11.5995 10.3931 10.5825 11.1408 9.83024L12.381 8.56987C12.5689 8.38649 12.7179 8.16717 12.8192 7.92497C12.9204 7.68277 12.9719 7.42266 12.9705 7.16014C12.9761 6.89401 12.9285 6.62945 12.8305 6.38196C12.7325 6.13447 12.5861 5.90904 12.3999 5.71886C12.2137 5.52868 11.9913 5.37759 11.746 5.27445C11.5006 5.1713 11.2371 5.11817 10.971 5.11817C10.7048 5.11817 10.4413 5.1713 10.196 5.27445C9.95058 5.37759 9.72827 5.52868 9.54204 5.71886C9.35581 5.90904 9.20941 6.13447 9.11142 6.38196C9.01343 6.62945 8.96583 6.89401 8.97139 7.16014H6.97399C6.97399 6.09929 7.39538 5.0819 8.14545 4.33177C8.89552 3.58164 9.91283 3.16023 10.9736 3.16023C12.0343 3.16023 13.0517 3.58164 13.8017 4.33177C14.5518 5.0819 14.9732 6.09929 14.9732 7.16014C14.9736 8.00379 14.6391 8.8131 14.043 9.41011H14.0439Z"
+            fill="#2B2B2B" />
+        </svg>
+
+      </div>
+    </div>
+
+    <div class="rewardscon">
+      <div class="currentcon">
+        <h1>Discover Deals</h1>
+      </div>
+      <div class="othercon">
+        <h1>Active Rewards</h1>
+      </div>
+      <div class="othercon">
+        <h1>Past Rewards</h1>
+      </div>
+    </div>
+
+    <!-- progress -->
+    <div class="buffrewardsprogress" onclick="window.open('rewards.html','_self')">
+      <img src="../../static/images/red.png" alt="">
+
+      <!-- points -->
+      <div class="progressdetails">
+
+        <div class="buffrewardspoints">
+          <p>XXX Points</p>
+          <p>Member</p>
+        </div>
+
+        <div class="progressbar">
+          <div class="progression">
+          </div>
+        </div>
+
+        <div class="pointstext">
+          <p>You’re almost there! Just <b>300</b> points more to Silver Tier!</p>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="rewardcategories">
+
+      <div class="rewardcategoriesbutton">
+        <div class="categoriesbutton">
+          <svg>
+
+          </svg>
+        </div>
+        <p>All</p>
+      </div>
+
+      <div class="rewardcategoriesbutton">
+        <div class="categoriesbutton">
+          <svg>
+
+          </svg>
+        </div>
+        <p>Shopping</p>
+      </div>
+
+      <div class="rewardcategoriesbutton">
+        <div class="categoriesbutton">
+          <svg>
+
+          </svg>
+        </div>
+        <p>Entertainment</p>
+      </div>
+
+      <div class="rewardcategoriesbutton">
+        <div class="categoriesbutton">
+          <svg>
+
+          </svg>
+        </div>
+        <p>Beauty</p>
+      </div>
+
+      <div class="rewardcategoriesbutton">
+        <div class="categoriesbutton">
+          <svg>
+
+          </svg>
+        </div>
+        <p>Eateries</p>
+      </div>
+
+    </div>
+
+
+    <!-- Deals of The Month -->
+    <div class="sectionheader dazzlingheader">
+      <div>
+        <h1>Deals of The Month</h1>
+      </div>
+    </div>
+
+    <div class="rewardpromo">
+      <h1>Lorem</h1>
+    </div>
+
+    <!-- Recommended By Us -->
+    <div class="sectionheader manyheadertags">
+      <div>
+        <h1>Yummy Deals</h1>
+      </div>
+
+      <div class="view">
+        <h3>View All</h3>
+      </div>
+    </div>
+
+
+
+    <div class="rewardcardscon">
+
+      <!-- cards -->
+      <div class="rewardcards">
+
+        <div class="cardimg"></div>
+
+        <div class="rewardcardinfo">
+          <h1 class="rewardname">Lorem</h1>
+
+          <h2 class="rewardpoint"><a href="#">0000</a> pts</h2>
+        </div>
+      </div>
+
+      <div class="rewardcards">
+
+        <div class="cardimg"></div>
+
+        <div class="rewardcardinfo">
+          <h1 class="rewardname">Lorem</h1>
+
+          <h2 class="rewardpoint"><a href="#">0000</a> pts</h2>
+        </div>
+      </div>
+
+      <div class="rewardcards">
+
+        <div class="cardimg"></div>
+
+        <div class="rewardcardinfo">
+          <h1 class="rewardname">Lorem</h1>
+
+          <h2 class="rewardpoint"><a href="#">0000</a> pts</h2>
+        </div>
+      </div>
+
+    </div>
+
+
+    <!-- Recommended By Us -->
+    <div class="sectionheader manyheadertags">
+      <div>
+        <h1>Yummy Deals</h1>
+      </div>
+
+      <div class="view">
+        <h3>View All</h3>
+      </div>
+    </div>
+
+
+    <div class="rewardcardscon">
+
+      <!-- cards -->
+      <div class="rewardcards">
+
+        <div class="cardimg"></div>
+
+        <div class="rewardcardinfo">
+          <h1 class="rewardname">Lorem</h1>
+
+          <h2 class="rewardpoint"><a href="#">0000</a> pts</h2>
+        </div>
+      </div>
+
+      <div class="rewardcards">
+
+        <div class="cardimg"></div>
+
+        <div class="rewardcardinfo">
+          <h1 class="rewardname">Lorem</h1>
+
+          <h2 class="rewardpoint"><a href="#">0000</a> pts</h2>
+        </div>
+      </div>
+
+      <div class="rewardcards">
+
+        <div class="cardimg"></div>
+
+        <div class="rewardcardinfo">
+          <h1 class="rewardname">Lorem</h1>
+
+          <h2 class="rewardpoint"><a href="#">0000</a> pts</h2>
+        </div>
+      </div>
+
+    </div>
+
+
+
+
+
+  </div>
+
+</body>
+
+</html>
