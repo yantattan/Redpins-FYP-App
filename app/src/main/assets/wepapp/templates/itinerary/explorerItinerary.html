@@ -1217,7 +1217,6 @@
         div = document.getElementById("recommendation-listings");
         var info = pendingChooseList[index].list[itemNo];
 
-
         var newPlace = new DOMParser().parseFromString(`
             <div class="plan-selection">
                 <hr>
@@ -1398,10 +1397,9 @@
 
     // Recalculate route and travel time
     async function reCal2Places(div, order) {
-        console.log("re2")
         var cards = div.getElementsByClassName("plan-selection");
-        var aboveCard = cards[order-1];
-        var belowCard = cards[order];
+        var aboveCard = cards[order-2];
+        var belowCard = cards[order-1];
         var totalDuration = 0;
         for (var i=1; i<order-1; i++) {
             var duration = parseFloat(cards[i].querySelector(".plan-total-duration").querySelector("span").innerText);
@@ -1435,7 +1433,6 @@
                 document.querySelector("#time-left").querySelector("span").innerText = parseInt(document.querySelector("#time-left").querySelector("span").innerText) + timeDiff;
             }
         })
-        console.log("re2E")
 
         saveTrips();
     }
