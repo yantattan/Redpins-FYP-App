@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Redpins Buffer - Planner{% endblock %}
+
+{% block content %}
+<div class="device" id="rewardearn">
+    <h1>Great Job!</h1>
+
+    <img src="../../static/images/reward.png" alt="">
+
+    <div class="rewardearned">
+        <h3>You earned</h3>
+        <h2>{{bonus}}</h2>
+        <h3>points!</h3>
+    </div>
+
+
+    <!-- bottom -->
+    <div class="maincta" onclick="window.open('/itinerary/showTrip/{{id}}','_self')">
+        <h1>Back To Trip</h1>
+    </div>
+
+</div>
+{% endblock %}

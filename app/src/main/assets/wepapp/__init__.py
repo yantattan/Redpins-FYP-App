@@ -413,8 +413,11 @@ def onlineQR():
 
 @app.route("/qrCode/claim-bonus/<string:id>")
 def qrCodeClaimBonus(id):
-    print("Claim bonus reached")
-    return render_template("/rewardPoints/claimBonus.html")
+    shop = signedPlaceCon.GetShopById(id)
+    if shop is None:
+        return redirect("/qrCode/invalidCode")
+
+    return render_template("/rewardPoints/earnedPoints.html", bonus=shop.getPoints(), id=id)
 
 @app.route("/qrCode/use-points/<string:id>")
 def qrCodeUsePoints(id):
@@ -991,7 +994,7 @@ def recommendPlacesPlanner():
 
 @app.route("/funcs/explorer-recommend-places", methods=['POST'])
 def recommendPlacesExplorer():
-    categoriesIndexMap = ["Eateries", "Attractions"]
+    categoriesIndexMap = ["Attractions"]
 
     if request.method == 'POST':
         print("Start")
@@ -1227,9 +1230,10 @@ def reCalculateCards():
                             f"&mode=TRANSIT&numItineraries=1", ssl=False)
                 result = await res.json()
 
-                if routeType == "pt":
+                if routeType == "pt" or routeType == "bus":
                     travelDurations.append(int(result["plan"]["itineraries"][0]["duration"] / 60))
                 else:
+                    print(result)
                     travelDurations.append(int(result["route_summary"]["total_time"] / 60))
 
     asyncio.run(apiGetTime())

@@ -124,4 +124,21 @@ hr {
 .plannerdate {
   width: 152px !important;
   margin-right: 0 !important;
+  margin-left: 20px;
+}
+
+.tm-dropdown {
+  position: relative;
+  top: 220%;
+  right: 36%;
+  height: 200px;
+}
+
+.plannerdates {
+  overflow-y: visible;
+  max-height: 85px;
+}
+
+.plannertripitinerary {
+  padding-bottom: 0px;
 }

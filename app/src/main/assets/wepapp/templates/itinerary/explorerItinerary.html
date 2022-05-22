@@ -30,9 +30,9 @@
     </div>
 
     {% if itinerary != None %}
-    <div class="device" id="firstSelection" style="position: absolute; z-index:2; background-color: white; display: none;">
+    <div class="device" id="firstSelection" style="position: absolute; z-index:20; background-color: white; display: none;">
     {% else %}
-    <div class="device" id="firstSelection" style="position: absolute; z-index:2; background-color: white;">
+    <div class="device" id="firstSelection" style="position: absolute; z-index:20; background-color: white;">
     {% endif %}
         <!-- header -->
         <div class="explorerheader">
@@ -360,7 +360,23 @@
                     </div>
                     <hr>
 
-                    <button class="btn-addPlan btn-addColor" onclick="openRecommendTab(parseInt('{{i+1}}'));">  +  </button>
+                    <div class="plannerevent btn-addPlan" onclick="openRecommendTab(parseInt('{{i+1}}'));">
+                        <div class="eventdetails">
+                            <div class="eventinfo">
+                            <h2 class="inactiveinput">Add an Itinerary</h2>
+                            </div>
+                        </div>
+                
+                        <div class="eventedit">
+                        <!-- addlocation -->
+                        <svg class="addlocation" width="31" height="31" viewBox="0 0 31 31" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="2.22656" y="2" width="26" height="26" rx="5" fill="white" />
+                            <path
+                            d="M26.8842 3.66314e-06H3.56402C2.67887 3.66314e-06 1.82997 0.351656 1.20408 0.977601C0.578186 1.60355 0.226563 2.45251 0.226562 3.33773V26.6647C0.226563 27.5499 0.578186 28.3989 1.20408 29.0248C1.82997 29.6508 2.67887 30.0024 3.56402 30.0024H26.8891C27.7743 30.0024 28.6231 29.6508 29.249 29.0248C29.8749 28.3989 30.2266 27.5499 30.2266 26.6647V3.33773C30.2266 2.899 30.1401 2.46457 29.972 2.05929C29.804 1.65402 29.5577 1.28585 29.2473 0.975851C28.9369 0.66585 28.5684 0.420098 28.1629 0.252652C27.7574 0.0852068 27.3229 -0.000646311 26.8842 3.66314e-06ZM23.5467 16.6627H16.8879V23.327H13.5504V16.6627H6.89034V13.3249H13.5541V6.66433H16.8916V13.3287H23.5517L23.5467 16.6627Z"
+                            fill="#2B2B2B" />
+                        </svg>
+                        </div>
+                    </div>
                     <hr>
 
                     <div class="explorerend">
@@ -452,7 +468,23 @@
                     </div>
                     <hr>
 
-                    <button class="btn-addPlan btn-addColor" onclick="openRecommendTab(parseInt('{{i+1}}'));">  +  </button>
+                    <div class="plannerevent btn-addPlan" onclick="openRecommendTab(parseInt('{{i+1}}'));">
+                        <div class="eventdetails">
+                            <div class="eventinfo">
+                            <h2 class="inactiveinput">Add an Itinerary</h2>
+                            </div>
+                        </div>
+                
+                        <div class="eventedit">
+                        <!-- addlocation -->
+                        <svg class="addlocation" width="31" height="31" viewBox="0 0 31 31" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="2.22656" y="2" width="26" height="26" rx="5" fill="white" />
+                            <path
+                            d="M26.8842 3.66314e-06H3.56402C2.67887 3.66314e-06 1.82997 0.351656 1.20408 0.977601C0.578186 1.60355 0.226563 2.45251 0.226562 3.33773V26.6647C0.226563 27.5499 0.578186 28.3989 1.20408 29.0248C1.82997 29.6508 2.67887 30.0024 3.56402 30.0024H26.8891C27.7743 30.0024 28.6231 29.6508 29.249 29.0248C29.8749 28.3989 30.2266 27.5499 30.2266 26.6647V3.33773C30.2266 2.899 30.1401 2.46457 29.972 2.05929C29.804 1.65402 29.5577 1.28585 29.2473 0.975851C28.9369 0.66585 28.5684 0.420098 28.1629 0.252652C27.7574 0.0852068 27.3229 -0.000646311 26.8842 3.66314e-06ZM23.5467 16.6627H16.8879V23.327H13.5504V16.6627H6.89034V13.3249H13.5541V6.66433H16.8916V13.3287H23.5517L23.5467 16.6627Z"
+                            fill="#2B2B2B" />
+                        </svg>
+                        </div>
+                    </div>
                     <hr>
 
                     <div class="explorerevent">
@@ -536,7 +568,7 @@
     </div>
 
     <!-- Recommendation tab -->
-    <div class="device" id="recommendationTab" style="position: absolute; z-index:2; background-color: white; display: none; bottom: -200vh;">
+    <div class="device" id="recommendationTab" style="position: absolute; z-index:10; background-color: white; display: none; bottom: -200vh;">
         <!-- header -->
         <div class="explorerheader">
             <svg width="12" height="20" onclick="closeRecommendTab();">
@@ -624,7 +656,7 @@
             </div>
         </section>
 
-        <section id="recommendSearch" class="device" style="position:absolute; z-index: 4; display: none;">
+        <section id="recommendSearch" class="device" style="position:absolute; z-index: 4; display: none; background-color: white;">
             <div id="search">
                 <div class="searchheader">
                   <svg onclick="document.getElementById('recommendSearch').style.display = 'none';" width="12" height="20" viewBox="0 0 12 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -691,7 +723,7 @@
     </div>
     
     <!-- Search Page -->
-    <div class="device" id="searchTab" style="position: absolute; z-index:2; background-color: white; display: none; bottom: -200vh;">
+    <div class="device" id="searchTab" style="position: absolute; z-index:15; background-color: white; display: none; bottom: -200vh;">
         <input type="text" class="form-control" id="searchBar" onkeyup="pauseSearch();" autocomplete="off">
         <div id="searchPage" hidden>1</div>
         <div id="search-btnId" hidden></div>
@@ -1438,7 +1470,6 @@
     }
 
     function reAssignValues() {
-        console.log("reA")
         var div = document.getElementsByClassName("btn-add-place");
         for (var i=0; i<div.length; i++) {
             div[i].setAttribute("onclick", `openRecommendTab(${i+1});`);
@@ -1455,7 +1486,10 @@
             currTime = startTime.toLocaleTimeString('en-SG', {hour12: false});
             plansCards[i].querySelector(".plan-timing").innerText = currTime.substring(0, currTime.length-3);
         }
-        console.log("reAE")
+
+        if (allowanceLeft < 70) {
+
+        }
     }
 
     function saveTrips() {
@@ -1652,18 +1686,56 @@
                                     <p class="search-address" hidden>${record["ActivityDuration"]}</p>
                                     <div class="recenttype">
                                         <h3 class="recentcat">${record['Category']}</h3>
-                                        <div class="rating">`
-                            for (var j=0; j<Math.round(parseFloat(record['Rating'])); j++) {
+                                        <div class="rating">`;
+                            for (var j=0; j<Math.floor(parseFloat(record['Rating'])); j++) {
                                 card += 
                                     `<svg width="12" height="12" fill="none">
                                         <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#E4002B" />
-                                    </svg>`
+                                    </svg>`;
                             }
-                            for (var j=0; j<5- Math.round(parseFloat(record['Rating'])); j++) {
+
+                            ratingDeci = parseFloat(record["Rating"]) - Math.floor(parseFloat(record['Rating']));
+                            if (ratingDeci < 0.35) {
                                 card += 
                                     `<svg width="12" height="12" fill="none">
-                                        <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
-                                    </svg>`
+                                        <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#E4002B" />
+                                    </svg>`;
+                            } 
+                            else if (ratingDeci > 0.3 && ratingDeci < 0.7) {
+                                card += 
+                                    `<svg width="12" height="12" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <rect x="1.5" y="1.5" width="37" height="37" rx="3.5" stroke="url(#paint0_linear_2171_1619)" stroke-width="3" />
+                                        <rect x="7.46094" y="7.5" width="25.015" height="25" rx="2" fill="url(#paint1_linear_2171_1619)" />
+                                        <defs>
+                                            <linearGradient id="paint0_linear_2171_1619" x1="0" y1="20" x2="40" y2="20" gradientUnits="userSpaceOnUse">
+                                            <stop stop-color="#E4002B" />
+                                            <stop offset="0.484375" stop-color="#E4002B" />
+                                            <stop offset="0.515625" stop-color="#BBBBBB" />
+                                            <stop offset="1" stop-color="#BBBBBB" />
+                                            </linearGradient>
+                                            <linearGradient id="paint1_linear_2171_1619" x1="7.46094" y1="20" x2="32.4759" y2="20" gradientUnits="userSpaceOnUse">
+                                            <stop stop-color="#E4002B" />
+                                            <stop offset="0.484375" stop-color="#E4002B" />
+                                            <stop offset="0.515625" stop-color="#BBBBBB" />
+                                            <stop offset="1" stop-color="#BBBBBB" />
+                                            </linearGradient>
+                                        </defs>
+                                    </svg>`;
+                            }
+                            else {
+                                card += 
+                                    `<svg width="12" height="12" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <rect x="1.5" y="1.5" width="37" height="37" rx="3.5" stroke="#E4002B" stroke-width="3" />
+                                        <rect x="7.46094" y="7.5" width="25.015" height="25" rx="2" fill="#E4002B" />
+                                    </svg>`;
+                            }
+
+                            for (var j=0; j<5- Math.ceil(parseFloat(record['Rating'])) + 1; j++) {
+                                card += 
+                                    `<svg width="12" height="12" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <rect x="1.5" y="1.5" width="37" height="37" rx="3.5" stroke="#E4002B" stroke-width="3" />
+                                        <rect x="7.46094" y="7.5" width="25.015" height="25" rx="2" fill="#E4002B" />
+                                    </svg>`;
                             }
                             card += `<p class="ratingvalue">${record["Review_no"]}</p>
                                         </div>
