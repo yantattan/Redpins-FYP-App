@@ -1285,7 +1285,8 @@ input {
 }
 
 .explorerheader,
-.plannerheader {
+.plannerheader,
+.rewardsheader {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -1297,7 +1298,8 @@ input {
 }
 
 .explorerheader h1,
-.plannerheader h1 {
+.plannerheader h1,
+.rewardsheader h1 {
   font-family: 'Poppins';
   font-style: normal;
   font-weight: 600;
@@ -2090,17 +2092,16 @@ input {
 /* map */
 #map {
   background: #2B2B2B80;
-
 }
 
 #map .back {
   margin: 20px;
 }
 
-#map section {
-  display: flex;
-  align-items: flex-end;
-  flex-direction: column;
+.mapbuttons {
+  position: absolute;
+  bottom: 210px;
+  right: 0;
 }
 
 .qrcodescanner,
@@ -2115,12 +2116,19 @@ input {
   margin: 10px 20px;
 }
 
+.mapdetailscon {
+  position: absolute;
+  bottom: 110px;
+  grid-gap: 10px;
+  padding: 0 20px;
+  overflow-x: scroll;
+}
+
 .mapdetails {
   width: 320px;
   height: 100px;
   background: #FFFFFF;
   border-radius: 5px;
-  margin: 0 20px;
 }
 
 .mapdetails .explorerevent {
@@ -2133,7 +2141,6 @@ input {
 .mapdetails .eventedit {
   margin: 10px;
 }
-
 
 .mapdetails .eventdetails {
   width: 80%;
@@ -2302,6 +2309,47 @@ input {
   margin: auto;
 }
 
+/* tripreview */
+#tripreview {
+  overflow-y: scroll;
+}
+
+.tripreview h1 {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 25px;
+  line-height: 38px;
+  color: #2B2B2B;
+  margin: 40px 20px 20px 20px;
+}
+
+.tripreview h2 {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 24px;
+  color: #2B2B2B;
+  margin: 20px;
+}
+
+.tripreview .rating {
+  grid-gap: 10px;
+  justify-content: center;
+}
+
+.tripreview input {
+  height: 200px;
+  text-align: center;
+}
+
+#tripreview .youmightlikecon {
+  overflow-x: visible;
+  flex-direction: column;
+  margin: 0 20px;
+}
+
 /* reward earn */
 #rewardearn img {
   margin: 0 20px;
@@ -2357,4 +2405,164 @@ input {
   line-height: 24px;
   color: #ffffff;
   margin: auto;
+}
+
+/* rewards */
+#rewards {
+  overflow-y: scroll;
+}
+
+.rewardsheader h1 {
+  position: absolute;
+  left: 34%;
+}
+
+.rewardssearch {
+  display: flex;
+  align-items: center;
+  grid-gap: 20px;
+}
+
+.rewardscon {
+  list-style: none;
+  padding: 20px;
+  grid-gap: 20px;
+  overflow-x: scroll;
+  display: flex;
+}
+
+.rewardscon h1 {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 21px;
+  color: #E4002B;
+}
+
+.currentcon h1 {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  color: #E4002B;
+  border-bottom: 3px solid #E4002B;
+  width: 150px;
+  text-align: center;
+}
+
+.othercon h1 {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  color: #BBBBBB;
+  width: 150px;
+  text-align: center;
+}
+
+.rewardcategories {
+  display: flex;
+  padding: 20px;
+  grid-gap: 40px;
+  overflow-x: scroll;
+  overflow-y: hidden;
+}
+
+.rewardcategoriesbutton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.rewardcategoriesbutton p {
+  margin: 5px 0;
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 16px;
+  color: #2B2B2B;
+}
+
+.rewardpromo {
+  height: 120px;
+  width: 320px;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 10px;
+  margin: 10px auto;
+  background: linear-gradient(357.06deg, rgba(0, 0, 0, 0.8) 2.44%, rgba(0, 0, 0, 0.5) 45.01%, rgba(74, 74, 74, 0) 79.76%);
+}
+
+.rewardpromo h1 {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 30px;
+  color: #FFFFFF;
+}
+
+.rewardcardscon {
+  display: flex;
+  grid-gap: 20px;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  padding: 0 20px;
+  height: 200px;
+}
+
+.rewardcards {
+  width: 180px;
+  height: 197px;
+  background: #FFFFFF;
+  box-shadow: 0px 10px 20px rgba(207, 207, 207, 0.5);
+  border-radius: 5px;
+}
+
+.rewardcards .cardimg {
+  width: 180px;
+  height: 100px;
+  border-radius: 5px;
+}
+
+.rewardcardinfo {
+  width: 180px;
+  height: 100px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 10px;
+}
+
+.rewardname {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 21px;
+  color: #2B2B2B;
+}
+
+.rewardpoint {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 21px;
+  color: #2B2B2B;
+}
+
+.rewardpoint a {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 21px;
+  color: #E4002B;
+  text-decoration: none;
 }
