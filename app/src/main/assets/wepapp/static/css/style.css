@@ -2096,8 +2096,6 @@ input {
   margin: 20px;
 }
 
-
-
 .mapbuttons {
   position: absolute;
   bottom: 210px;
@@ -2307,6 +2305,49 @@ input {
   line-height: 24px;
   color: #ffffff;
   margin: auto;
+}
+
+/* tripreview */
+#tripreview {
+  overflow-y: scroll;
+}
+
+.tripreview h1{
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 25px;
+  line-height: 38px;
+  color: #2B2B2B;
+  margin: 40px 20px 20px 20px;
+}
+
+.tripreview h2{
+  font-family: 'Poppins';
+font-style: normal;
+font-weight: 600;
+font-size: 16px;
+line-height: 24px;
+color: #2B2B2B;
+margin: 20px;
+}
+
+.tripreview .rating {
+  grid-gap: 10px;
+justify-content: center;
+}
+
+.tripreview input {
+  height: 200px;
+  text-align: center;
+}
+
+
+
+#tripreview .youmightlikecon {
+  overflow-x: visible;
+  flex-direction: column;
+  margin: 0 20px;
 }
 
 /* reward earn */
