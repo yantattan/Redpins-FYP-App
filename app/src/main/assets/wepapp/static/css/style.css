@@ -2090,17 +2090,18 @@ input {
 /* map */
 #map {
   background: #2B2B2B80;
-
 }
 
 #map .back {
   margin: 20px;
 }
 
-#map section {
-  display: flex;
-  align-items: flex-end;
-  flex-direction: column;
+
+
+.mapbuttons {
+  position: absolute;
+  bottom: 210px;
+  right: 0;
 }
 
 .qrcodescanner,
@@ -2115,12 +2116,19 @@ input {
   margin: 10px 20px;
 }
 
+.mapdetailscon {
+  position: absolute;
+  bottom: 110px;
+  grid-gap: 10px;
+  padding: 0 20px;
+  overflow-x: scroll;
+}
+
 .mapdetails {
   width: 320px;
   height: 100px;
   background: #FFFFFF;
   border-radius: 5px;
-  margin: 0 20px;
 }
 
 .mapdetails .explorerevent {
@@ -2133,7 +2141,6 @@ input {
 .mapdetails .eventedit {
   margin: 10px;
 }
-
 
 .mapdetails .eventdetails {
   width: 80%;
