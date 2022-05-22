@@ -2133,3 +2133,60 @@ input {
 #qr .scanner {
   margin: 0 auto;
 }
+
+/* reward earn */
+#rewardearn img {
+  margin: 0 20px;
+}
+
+#rewardearn h1 {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 25px;
+  line-height: 38px;
+  text-align: center;
+  color: #2B2B2B;
+  margin-top: 37%;
+  margin-bottom: 10%;
+}
+
+.rewardearned {
+  margin: 10% auto 0 auto;
+}
+
+#rewardearn h2 {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 32px;
+  line-height: 40px;
+  text-align: center;
+  color: #2B2B2B;
+}
+
+#rewardearn h3 {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 22px;
+  text-align: center;
+  color: #2B2B2B;
+}
+
+#rewardearn .maincta {
+  display: flex;
+  justify-content: center;
+  margin: auto;
+}
+
+#rewardearn .maincta h1 {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 24px;
+  color: #ffffff;
+  margin: auto;
+}
