@@ -1739,7 +1739,7 @@ input {
 }
 
 .plannerdates .activedate {
-  width: 106px;
+  width: 120px;
   height: 50px;
   background: #2B2B2B;
   border-radius: 5px;
@@ -1750,7 +1750,7 @@ input {
 }
 
 .plannerdates .inactivedate {
-  width: 106px;
+  width: 120px;
   height: 50px;
   background: #BBBBBB;
   border-radius: 5px;
@@ -2087,6 +2087,98 @@ input {
   color: #707070;
 }
 
+/* map */
+#map {
+  background: #2B2B2B80;
+
+}
+
+#map .back {
+  margin: 20px;
+}
+
+#map section {
+  display: flex;
+  align-items: flex-end;
+  flex-direction: column;
+}
+
+.qrcodescanner,
+.currentlocation {
+  width: 50px;
+  height: 50px;
+  background: #FFFFFF;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 10px 20px;
+}
+
+.mapdetails {
+  width: 320px;
+  height: 100px;
+  background: #FFFFFF;
+  border-radius: 5px;
+  margin: 0 20px;
+}
+
+.mapdetails .explorerevent {
+  display: flex;
+  align-items: flex-start;
+  margin: 0;
+}
+
+.mapdetails .eventdetails,
+.mapdetails .eventedit {
+  margin: 10px;
+}
+
+
+.mapdetails .eventdetails {
+  width: 80%;
+}
+
+.mapdetails .eventedit {
+  width: 34%;
+}
+
+.mapdetails .eventname {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 24px;
+  color: #2B2B2B;
+}
+
+.mapdetails .eventedit h1 {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 21px;
+  text-align: right;
+  color: #2B2B2B;
+}
+
+.mapdirections {
+  display: flex;
+  justify-content: space-between;
+  margin: 0 10px;
+}
+
+.maptransport {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  grid-gap: 10px;
+}
+
+.maptransport svg {
+  margin: 0;
+}
+
 /* QR */
 #qr {
   background: #2B2B2B80;
@@ -2132,6 +2224,82 @@ input {
 
 #qr .scanner {
   margin: 0 auto;
+}
+
+/* QR Pin */
+#qrpin svg {
+  margin: 20px;
+}
+
+#qrpin h1 {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 25px;
+  line-height: 38px;
+  text-align: center;
+  color: #2B2B2B;
+  margin: 12% 0 3% 0;
+}
+
+#qrpin h2 {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 22px;
+  text-align: center;
+  color: #2B2B2B;
+}
+
+#qrpin h3 {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 16px;
+  text-align: center;
+  color: #000000;
+}
+
+#qrpin h3 a {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 16px;
+  text-align: center;
+  color: #E4002B;
+  text-decoration: none;
+}
+
+.qrverify {
+  display: flex;
+  grid-gap: 16px;
+  margin: 12% 20px 6% 20px;
+}
+
+.qrverify input {
+  text-align: center;
+  margin: 0;
+  width: 70px;
+  height: 70px;
+}
+
+#qrpin .maincta {
+  display: flex;
+  justify-content: center;
+  margin: auto;
+}
+
+#qrpin .maincta h1 {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 24px;
+  color: #ffffff;
+  margin: auto;
 }
 
 /* reward earn */

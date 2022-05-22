@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QR Pin</title>
+  <link rel="stylesheet" href="../../static/css/style.css">
+</head>
+
+<body>
+  <div class="device" id="qrpin">
+
+    <svg width="12" height="21" viewBox="0 0 12 21" fill="none" xmlns="http://www.w3.org/2000/svg" onclick="window.open('qr.html','_self')">
+      <path
+        d="M10.3111 0.5C10.9051 0.703504 11.2684 1.18581 11.6521 1.62894C11.955 1.97897 11.9156 2.55183 11.6229 2.9156C11.5521 3.00072 11.4764 3.08174 11.3963 3.15828C8.99602 5.5464 6.59439 7.93334 4.1914 10.3191C4.12878 10.3725 4.06206 10.421 3.99186 10.4641C4.08242 10.5582 4.13409 10.6167 4.18833 10.6676C6.60735 13.0737 9.02637 15.4796 11.4454 17.8854C11.8767 18.3148 12.0082 18.8439 11.6854 19.2738C11.3815 19.6709 11.0247 20.0251 10.6247 20.3264C10.2543 20.6093 9.75495 20.5259 9.38861 20.2247C9.33336 20.1794 9.27963 20.1311 9.22898 20.0807L0.459 11.3636C0.0220612 10.9296 -0.0731035 10.4208 0.200623 9.95024C0.269073 9.83957 0.351619 9.73817 0.446209 9.64854C3.3796 6.73165 6.31384 3.81661 9.24894 0.903448C9.42289 0.731995 9.66592 0.632787 9.87927 0.5H10.3111Z"
+        fill="#2B2B2B" />
+    </svg>
+
+
+    <h1>Verify</h1>
+
+    <h2>Input the verification code<br>sent via SMS</h2>
+
+    <div class="qrverify">
+      <input type="text" class="qrverifyno" name="qrverify" value="" placeholder="-">
+      <input type="text" class="qrverifyno" name="qrverify" value="" placeholder="-">
+      <input type="text" class="qrverifyno" name="qrverify" value="" placeholder="-">
+      <input type="text" class="qrverifyno" name="qrverify" value="" placeholder="-">
+    </div>
+
+    <h3>Didn’t receive the code? <a href="#">Resend in 54s</a></h3>
+
+    <!-- bottom -->
+    <div class="maincta" onclick="window.open('rewardearn.html','_self')">
+      <h1>Verify</h1>
+    </div>
+
+  </div>
+
+</body>
+
+</html>
