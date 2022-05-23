@@ -210,6 +210,7 @@ def showItineraries():
     startEnds = {}
     scannedIds = []
     ongoing = itinerariesCon.GetOngoingItinerary(userId)
+    allPlanners = itinerariesCon.GetAllPlannerItineraries(userId)
 
     for iti in sorted(itinerariesCon.GetCompletedItineraries(userId) or [], key=lambda x: x.getDate(), reverse=False):
         try:
@@ -226,7 +227,7 @@ def showItineraries():
             planners.append(iti)
             scannedIds.append(iti)
 
-    return render_template("/itinerary/listItineraries.html", planners=planners, startEnds=startEnds, ongoing=ongoing)
+    return render_template("/itinerary/listItineraries.html", all=allPlanners, planners=planners, startEnds=startEnds, ongoing=ongoing)
 
 @app.route("/itinerary/planning/planner", methods=['GET', 'POST'])
 def plannerItinerary():
@@ -237,16 +238,12 @@ def plannerItinerary():
     itineraries = itinerariesCon.GetUnconfimredItinerary(session["current_user"]["userId"], "Planner")
 
     if request.method == 'POST':
-        itineraryId = request.form.get("id")
-        itinerary = itinerariesCon.GetItineraryById(itineraryId)
-        itinerary.setConfirmed(True)
-        itinerariesCon.SetItinerary(itinerary)
-        return redirect("/itinerary/review/planner")
-    
-    if itineraries is not None:
-        reviewItineraries = itinerariesCon.GetReviewingItinerary(session["current_user"]["userId"], "Planner")
-        if reviewItineraries is not None:
-            return redirect("/itinerary/review/planner")
+        itinerary = itinerariesCon.GetUnconfimredItinerary(session["current_user"]["userId"], "Planner")
+        for iti in itinerary:
+            iti.setConfirmed(True)
+            iti.setStatus("Saved")
+            itinerariesCon.SetItinerary(iti)
+        return redirect("/itinerary/planners")
 
     recentInfo = []
     recentSearches = trackedPlacesCon.GetTopSearchedInfo(session["current_user"]["userId"])

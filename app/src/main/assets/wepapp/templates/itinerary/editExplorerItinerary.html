@@ -1030,6 +1030,7 @@
     const currentTime = new Date();
 
     var requests = [];
+    var cardEdit;
 
     /*function initFunctions() {
         $("#recommend-btn").on("click", f() {
@@ -1131,9 +1132,7 @@
                 </div>`, "text/html").body.firstElementChild;
             var endPlace = new DOMParser().parseFromString(`
                 <div class="plan-selection">
-                    <hr>
-
-                    <div class="explorerdirections">
+                    <div class="explorerdirections" hidden>
                         <!-- explorertravelicons -->
                         <div class="explorertransport"></div>
 
@@ -1319,7 +1318,6 @@
                         div.insertBefore(newPlace, div.lastElementChild);
 
                         allowanceLeft -= result[i].Duration;
-                        console.log(allowanceLeft);
                         document.getElementById("time-left").querySelector("span").innerText = parseInt(allowanceLeft);
 
                         placesName.push(result[i].Name)
@@ -1328,7 +1326,6 @@
                         placesDuration.push(parseFloat(result[i].Duration))
                     }
                     allowanceLeft -= result[result.length-1].EndDuration;
-                    console.log(allowanceLeft);
                     div.lastElementChild.querySelector(".plan-travel-duration").innerText = Math.round(result[result.length-1].EndDuration);
                     div.lastElementChild.querySelector(".plan-total-duration").innerText = Math.round(result[result.length-1].EndDuration);
                     document.getElementById("time-left").querySelector("span").innerText = parseInt(allowanceLeft);
@@ -1401,15 +1398,21 @@
         // Get place before, after and registered places
         var registeredPlaces = [].slice.call(allCards).slice(1, allCards.length - 1).map(x => x.querySelector(".plan-address").innerText);
         if (order - 1 > 0) {
-            var placeBefore = allCards[order-2].querySelector(".plan-address").innerText;
-            var latlng = allCards[order-2].querySelector(".plan-latlng").innerText.split(",");
+            var placeBefore = allCards[order-1].querySelector(".plan-address").innerText;
+            var latlng = allCards[order-1].querySelector(".plan-latlng").innerText.split(",");
         }
         else {
             var placeBefore;
             var latlng = document.getElementById("start-location-latlng").innerText.split(",");
         }
         
-        var placeAfter = allCards[order-1].querySelector(".plan-address").innerText;
+        var placeAfter = allCards[order].querySelector(".plan-address").innerText;
+        if (cardEdit) {
+            var tempAllowance = allowanceLeft + parseInt(cardEdit.querySelector(".plan-total-duration").querySelector("span").innerText);
+        }
+        else {
+            var tempAllowance = allowanceLeft
+        }
 
         async function fetchDisplay(sectionNo) {
             request = await $.ajax({
@@ -1419,7 +1422,7 @@
                     date: currentTime.toISOString().slice(0, 10),
                     startTime: startTme,
                     endTime: endTme,
-                    timeLeft: allowanceLeft,
+                    timeLeft: tempAllowance,
                     latitude: latlng[0],
                     longitude: latlng[1],
                     category: cat,
@@ -1528,7 +1531,6 @@
                     if (result.list.length == 10)
                         listing.innerHTML += `<p onclick="nextRecommend(${pageNum}, ${order}, this)" class="list-load-more">Load more</p>`;
 
-                    console.log(skipped);
                     
                 },
                 error: function(jq, status, errorMsg) {
@@ -1558,7 +1560,6 @@
     var viewBtn;
     function viewPlace(btn, index, order, itemNo) {
         var card = document.getElementById("carddetails");
-        console.log(card)
         var cardInfo = JSON.parse(btn.querySelector(".info_json").innerText);
         viewBtn = btn
 
@@ -1580,7 +1581,6 @@
         var operatingHrsJson = JSON.parse(cardInfo.Operating_hours)
         for (var day in operatingHrsJson) {
             if (operatingHrsJson[day].length > 0) {
-                console.log(operatingHrsJson)
                 operateSE = operatingHrsJson[day][0].split("-");
                 document.querySelector("#view-operatingHours").innerText = `Opening ${operateSE[0]} to ${operateSE[1]}`;
             }
@@ -1738,6 +1738,7 @@
                             <h1 class="eventname plan-name">${info.Name}</h1>
                             <h2 class="eventtype plan-category">${info.Category}</h2>
                             <p class="plan-address" hidden>${info.Address}</p>
+                            <p class="plan-travel-duration" hidden>${Math.round(info.TravelDuration)}</p>
                             <p class="plan-activity-duration" hidden><span>${Math.round(info.ActivityDuration)}</span> min</p>
                             <p class="plan-total-duration" hidden><span>${Math.round(info.Duration)}</span> min</p>
                             <p class="plan-timing" hidden></p>
@@ -1764,11 +1765,16 @@
             </div>`, "text/html").body.firstElementChild;
 
         var allPlans = div.getElementsByClassName("plan-selection");
-        
-        div.insertBefore(newPlace, allPlans[order-2].nextSibling);
+        if (cardEdit) {
+            allowanceLeft += parseFloat(cardEdit.querySelector(".plan-total-duration").querySelector("span").innerText);
+            cardEdit.replaceWith(newPlace);
+            cardEdit = null;
+        }
+        else {
+            div.insertBefore(newPlace, allPlans[order-1]);
+        }
         
         allowanceLeft -= info.Duration;
-        console.log(allowanceLeft);
         document.getElementById("time-left").querySelector("span").innerText = parseInt(allowanceLeft);
         
         // Fill up info for autosaving data
@@ -1859,16 +1865,12 @@
     }*/
 
     // Edit/delete/rearrange
-    async function editCard(btn, order) {
+    async function editCard(btn, order) {   
         var card = btn.closest(".plan-selection");
-        var timeLeft = document.querySelector("#time-left").querySelector("span");
-        card.closest("#recommendation-listings").getElementsByClassName("btn-addPlan")[order-1].remove();
         reAssignValues();
 
-        timeLeft.innerText = parseInt(timeLeft.innerText) + parseInt(card.querySelector(".plan-total-duration").querySelector("span").innerText);
-        allowanceLeft = timeLeft.innerText;
+        cardEdit = card;
         openRecommendTab(order-1);
-        card.remove();
     }
 
     function delCard(btn, order) {
@@ -1888,8 +1890,8 @@
     // Recalculate route and travel time
     async function reCal2Places(div, order) {
         var cards = div.getElementsByClassName("plan-selection");
-        var aboveCard = cards[order-2];
-        var belowCard = cards[order-1];
+        var aboveCard = cards[order-1];
+        var belowCard = cards[order];
 
         var totalDuration = 0;
         for (var i=1; i<order-1; i++) {
@@ -1910,13 +1912,13 @@
             success: function(result) {
                 result = JSON.parse(result);
 
-                var belowCardTDuration = belowCard.querySelector(".plan-total-duration").innerText;
+                var belowCardTDuration = belowCard.querySelector(".plan-total-duration").querySelector("span").innerText;
                 var belowCardADuration = belowCard.querySelector(".plan-activity-duration")
                 if (belowCardADuration) {
-                    var belowCardADuration = belowCardADuration.querySelector("span").innerText;
+                    belowCardADuration = belowCardADuration.querySelector("span").innerText;
                 }
                 else {
-                    var belowCardADuration = 0;
+                    belowCardADuration = 0;
                 }
 
                 var timeDiff = result[0] + parseInt(belowCardADuration) - parseInt(belowCardTDuration);
@@ -1929,9 +1931,9 @@
     }
 
     function reAssignValues() {
-        var div = document.getElementsByClassName("btn-add-place");
+        var div = document.getElementsByClassName("btn-addPlan");
         for (var i=0; i<div.length; i++) {
-            div[i].setAttribute("onclick", `openRecommendTab(${i+1});`);
+            div[i].setAttribute("onclick", `openRecommendTab(${i+2});`);
         }
 
         var startTime = new Date(`2022-01-01T${$("#start-time").val()}:00`);
@@ -1946,9 +1948,7 @@
             plansCards[i].querySelector(".plan-timing").innerText = currTime.substring(0, currTime.length-3);
         }
 
-        if (allowanceLeft < 70) {
-
-        }
+        checkDisableAdd();
     }
 
     function saveTrips() {

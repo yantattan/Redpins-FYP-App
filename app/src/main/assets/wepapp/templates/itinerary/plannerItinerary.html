@@ -9,7 +9,6 @@
 
 <div class="device" id="reloadingbg" style="display: none;">
     <img src="/static/images/logo.gif" alt="logo" class="relogogif">
-    <p>Hang tight while we find the best places for you...</p>
 </div>
 
 <div class="main-div device">
@@ -1137,6 +1136,7 @@
     const currentTime = new Date();
 
     var requests = [];
+    var cardEdit;
 
     function initFunctions() {
         getLocation();
@@ -1501,22 +1501,26 @@
         
         // Get place before, after and registered places
         var registeredPlaces = [].slice.call(allCards).slice(1, allCards.length).map(x => x.querySelector(".plan-address").innerText);
-        console.log("Order: "+order)
         if (order - 2 > 0) {
-            console.log(allCards[order-2])
-            var placeBefore = allCards[order-2].querySelector(".plan-address").innerText;
-            var latlng = allCards[order-2].querySelector(".plan-latlng").innerText.split(",");
+            var placeBefore = allCards[order-1].querySelector(".plan-address").innerText;
+            var latlng = allCards[order-1].querySelector(".plan-latlng").innerText.split(",");
         }
         else {
-            console.log(allCards)
-            var placeBefore;
+            var placeBefore = allCards[0].querySelector(".plan-latlng").innerText.split(",");;
             var latlng = allCards[0].querySelector(".plan-latlng").innerText.split(",");
         }
         
-        placeA = allCards[order-1];
+        placeA = allCards[order];
         var placeAfter;
         if (placeA) {
-            placeAfter = allCards[order-1].querySelector(".plan-address").innerText;
+            placeAfter = allCards[order].querySelector(".plan-address").innerText;
+        }
+
+        if (cardEdit) {
+            var tempAllowance = document.getElementsByClassName("time-left")[sectionIndex].innerText + parseInt(cardEdit.querySelector(".plan-total-duration").querySelector("span").innerText);
+        }
+        else {
+            var tempAllowance = document.getElementsByClassName("time-left")[sectionIndex].innerText;
         }
 
         startTme = new Date();
@@ -1524,9 +1528,9 @@
         // TODO
         for (var i=1; i<allCards.length-1; i++) {
             startTme.setTime(startTime.getTime() + parseInt(allCards[i].querySelector(".plan-total-duration").querySelector("span").innerText)*60000);
-            console.log(allCards[i].querySelector(".plan-total-duration").querySelector("span").innerText)
         }
-        var allowanceLeft = div.closest(".planSection").querySelector(".time-left").querySelector("span").innerText;
+        console.log("Here")
+        var allowanceLeft = parseInt(div.closest(".planSection").querySelector(".time-left").querySelector("span").innerText);
 
         async function fetchDisplay(sectionNo) {
             request = await $.ajax({
@@ -1553,11 +1557,10 @@
                     listingIndex = [document.getElementById("recommend-main"), document.getElementById("recommend-ratings"), document.getElementById("recommend-partners")]
                     pendingChooseList[sectionNo] = result;
                     listing = listingIndex[sectionNo-1]
-                    console.log(listing)
+
                     if (!append)
                         listing.innerHTML = "";
 
-                    console.log(result.list.length)
                     if (result.list.length > 0) {
                         for (var i in result.list) {
                             var recommendCard = 
@@ -1874,6 +1877,7 @@
                             <h1 class="eventname plan-name">${info.Name}</h1>
                             <h2 class="eventtype plan-category">${info.Category}</h2>
                             <p class="plan-address" hidden>${info.Address}</p>
+                            <p class="plan-travel-duration" hidden>${Math.round(info.TravelDuration)}</p>
                             <p class="plan-activity-duration" hidden><span>${Math.round(info.ActivityDuration)}</span> min</p>
                             <p class="plan-total-duration" hidden><span>${Math.round(info.Duration)}</span> min</p>
                             <p class="plan-timing" hidden></p>
@@ -1902,9 +1906,23 @@
             </div>`, "text/html").body.firstElementChild;
 
         var allSelection = div.getElementsByClassName("plan-selection");
-        div.insertBefore(newPlace, allSelection[order-2].nextSibling);
-        
-        document.getElementsByClassName("time-left")[sectionIndex].querySelector("span").innerText = 800;
+        if (cardEdit) {
+            allowanceLeft += parseFloat(cardEdit.querySelector(".plan-total-duration").querySelector("span").innerText);
+            cardEdit.replaceWith(newPlace);
+            cardEdit = null;
+        }
+        else {
+            if (div.querySelector(".end")) {
+                div.insertBefore(newPlace, allSelection[order-1]);
+            }
+            else {
+                div.insertBefore(newPlace, div.querySelector(".plan-unsetEnd"));
+            }
+        }
+
+        var allowanceLeft = parseInt(document.getElementsByClassName("time-left")[sectionIndex].querySelector("span").innerText);
+        allowanceLeft -= info.Duration;
+        document.getElementsByClassName("time-left")[sectionIndex].querySelector("span").innerText = allowanceLeft;
         
         // Fill up info for autosaving data
         if (order != allSelection.length)
@@ -1919,26 +1937,26 @@
     // Edit/delete/rearrange
     async function editCard(btn, order) {
         var card = btn.closest(".plan-selection");
-        var timeLeft = card.parentElement.parentElement.querySelector(".time-left").querySelector("span");
-        card.closest(".recommendation-listings").getElementsByClassName("btn-addPlan")[order-1].remove();
         reAssignValues();
 
-        timeLeft.innerText = parseInt(timeLeft.innerText) + parseInt(card.querySelector(".plan-total-duration").querySelector("span").innerText);
+        cardEdit = card;
         openRecommendTab(order-1, this);
-        card.remove();
     }
 
     function delCard(btn, order) {
         var card = btn.closest(".plan-selection");
         var div = btn.closest(".recommendation-listings");
 
-        var timeLeft = div.parentElement.querySelector(".time-left").querySelector("span");
+        var timeLeft = div.closest(".planSection").querySelector(".time-left").querySelector("span");
         timeLeft.innerText = parseInt(timeLeft.innerText) + parseInt(card.querySelector(".plan-total-duration").querySelector("span").innerText);
         allowanceLeft = timeLeft.innerText;
         card.remove();
 
         reAssignValues();
-        reCal2Places(div, order-1);
+        if (order-1 != div.getElementsByClassName("plan-selection").length)
+            reCal2Places(div, order-1);
+        else
+            saveTrips();
     }
 
     // Recalculate route and travel time
@@ -1967,17 +1985,19 @@
                 startTime: aboveCard.querySelector(".plan-timing").innerText
             },
             success: function(result) {
-                var belowCardTDuration = belowCard.querySelector(".plan-total-duration").querySelector("span");
+                result = JSON.parse(result);
+
+                var belowCardTDuration = belowCard.querySelector(".plan-total-duration").querySelector("span").innerText;
                 var belowCardADuration = belowCard.querySelector(".plan-activity-duration");
                 if (belowCardADuration) {
-                    belowCardADuration = parseInt(belowCardADuration.querySelector("span"));
+                    belowCardADuration = belowCardADuration.querySelector("span").innerText;
                 }
                 else {
                     belowCardADuration = 0;
                 }
 
                 var timeDiff = result[0] + parseInt(belowCardADuration.innerText) - parseInt(belowCardTDuration.innerText);
-                belowCardTDuration.innerText = parseInt(belowCardADuration.innerText) + result[0];
+                belowCard.querySelector(".plan-travel-duration").innerText = Math.round(result[0] - belowCardADuration);
                 div.parentElement.parentElement.querySelector(".time-left").querySelector("span").innerText = parseInt(div.parentElement.parentElement.querySelector(".time-left").querySelector("span").innerText) + timeDiff;
             }
         })
@@ -1989,9 +2009,9 @@
         var div = document.getElementsByClassName("recommendation-listings");
 
         for (var i=0; i<div.length; i++) {
-            var btn = div[i].getElementsByClassName("btn-add-place");
+            var btn = div[i].getElementsByClassName("btn-addPlan");
             for (var j=0; j<btn.length; j++) {
-                btn[j].setAttribute("onclick", `recommend(1, ${j+1}, this);`);
+                btn[j].setAttribute("onclick", `openRecommendTab(${j+2}, this);`);
             }
 
             var plansCards = div[i].getElementsByClassName("plan-selection");
