@@ -10,6 +10,7 @@
         <form method="post">
             {{render_field(form.username, placeholder=form.username.label.text, onkeyup="checkValid()")}}
             {{render_field(form.password, placeholder=form.password.label.text, onkeyup="checkValid()")}}
+            <span class="fielderror text-danger" style="position: relative; left: 20px; bottom: 15px">{{error}}</span>
             <p class="forgot" onclick="window.open('/forgetPassword','_self')">Forgot Password?</p>
 
             <input id="login-btn" type="submit" value="Login" class="login" disabled>

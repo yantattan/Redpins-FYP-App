@@ -2122,6 +2122,7 @@ input {
   grid-gap: 10px;
   padding: 0 20px;
   overflow-x: scroll;
+  display: flex;
 }
 
 .mapdetails {

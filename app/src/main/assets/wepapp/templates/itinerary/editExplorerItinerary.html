@@ -575,7 +575,7 @@
 
         <div class="device" id="carddetails" style="position: absolute; z-index:12; background-color: white; display: none; bottom: -200vh;">
             <div class="cardimg" id="view-img">
-                <svg width="41" height="40" viewBox="0 0 41 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg onclick="closeViewPlace();" width="41" height="40" viewBox="0 0 41 40" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <rect x="0.664062" width="40" height="40" rx="5" fill="white"/>
                     <path d="M24.9283 10C25.5223 10.2035 25.8856 10.6858 26.2693 11.1289C26.5722 11.479 26.5328 12.0518 26.2401 12.4156C26.1693 12.5007 26.0936 12.5817 26.0135 12.6583C23.6132 15.0464 21.2116 17.4333 18.8086 19.8191C18.746 19.8725 18.6793 19.921 18.609 19.9641C18.6996 20.0582 18.7513 20.1167 18.8055 20.1676C21.2245 22.5737 23.6436 24.9796 26.0626 27.3854C26.4939 27.8148 26.6254 28.3439 26.3025 28.7738C25.9987 29.1709 25.6419 29.5251 25.2419 29.8264C24.8715 30.1093 24.3721 30.0259 24.0058 29.7247C23.9505 29.6794 23.8968 29.6311 23.8462 29.5807L15.0762 20.8636C14.6392 20.4296 14.5441 19.9208 14.8178 19.4502C14.8863 19.3396 14.9688 19.2382 15.0634 19.1485C17.9968 16.2316 20.931 13.3166 23.8661 10.4034C24.0401 10.232 24.2831 10.1328 24.4965 10H24.9283Z" fill="#2B2B2B"/>
                 </svg>
@@ -1568,20 +1568,20 @@
         document.querySelector("#view-category").innerText = cardInfo.Category;
         document.querySelector("#view-rating").innerText = cardInfo.Rating;
         document.querySelector("#view-reviewNo").innerText = cardInfo.Review_no;
-        document.querySelector("#view-reviewNo-sm").innerText = cardInfo.Review_no;
         document.querySelector("#view-img").style.backgroundImage = `url("${cardInfo.Image_url}")`;
         // Phone no
         if (cardInfo.Phone_no.length > 0) {
             document.querySelector("#view-phone").innerText = cardInfo.Phone_no;
         }
         else {
-            document.querySelector("#view-phone").parentElement.remove();
+            document.querySelector("#view-phone").parentElement.style.display = "none";
         }
         // Operating hours
-        for (var day in cardInfo.Operating_hours) {
-            if (cardInfo.Operating_hours[day].length > 0) {
-                operateSE = cardInfo.Operating_hours[day][0].split("-");
-                console.log(operateSE)
+        var operatingHrsJson = JSON.parse(cardInfo.Operating_hours)
+        for (var day in operatingHrsJson) {
+            if (operatingHrsJson[day].length > 0) {
+                console.log(operatingHrsJson)
+                operateSE = operatingHrsJson[day][0].split("-");
                 document.querySelector("#view-operatingHours").innerText = `Opening ${operateSE[0]} to ${operateSE[1]}`;
             }
         }
@@ -1591,28 +1591,31 @@
         ratingBarBg.innerHTML = "";
         ratingBarSm.innerHTML = "";
         for (var j=0; j<Math.floor(parseFloat(cardInfo.Rating)); j++) {
-            var bar = 
+            ratingBarBg.innerHTML += 
+                `<svg width="20" height="20" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="1.5" y="1.5" width="37" height="37" rx="3.5" stroke="#E4002B" stroke-width="3" />
+                  <rect x="7.46094" y="7.5" width="25.015" height="25" rx="2" fill="#E4002B" />
+                </svg>`;
+            ratingBarSm.innerHTML += 
                 `<svg width="12" height="12" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <rect x="1.5" y="1.5" width="37" height="37" rx="3.5" stroke="#E4002B" stroke-width="3" />
                     <rect x="7.46094" y="7.5" width="25.015" height="25" rx="2" fill="#E4002B" />
                 </svg>`;
-            ratingBarBg.innerHTML += bar;
-            ratingBarSm.innerHTML += bar;
         }
         
         ratingDeci = parseFloat(cardInfo.Rating) - Math.floor(parseFloat(cardInfo.Rating));
         if (ratingDeci < 0.35 && ratingDeci > 0) {
-            var bar = 
-                `<svg width="20" height="20" viewBox="0 0 41 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            ratingBarBg.innerHTML += `<svg width="20" height="20" viewBox="0 0 41 40" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <rect x="2.05078" y="1.5" width="37" height="37" rx="3.5" stroke="#BBBBBB" stroke-width="3" />
                     <rect x="8.01172" y="7.5" width="25.015" height="25" rx="2" fill="#BBBBBB" />
                 </svg>`;
-            ratingBarBg.innerHTML += bar;
-            ratingBarSm.innerHTML += bar;
+            ratingBarSm.innerHTML += `<svg width="12" height="12" viewBox="0 0 41 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="2.05078" y="1.5" width="37" height="37" rx="3.5" stroke="#BBBBBB" stroke-width="3" />
+                    <rect x="8.01172" y="7.5" width="25.015" height="25" rx="2" fill="#BBBBBB" />
+                </svg>`;
         } 
         else if (ratingDeci > 0.3 && ratingDeci < 0.7) {
-            var bar = 
-                `<svg width="20" height="20" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            ratingBarBg.innerHTML += `<svg width="20" height="20" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <rect x="1.5" y="1.5" width="37" height="37" rx="3.5" stroke="url(#paint0_linear_2171_1619)" stroke-width="3" />
                     <rect x="7.46094" y="7.5" width="25.015" height="25" rx="2" fill="url(#paint1_linear_2171_1619)" />
                     <defs>
@@ -1630,28 +1633,47 @@
                     </linearGradient>
                     </defs>
                 </svg>`;
-            ratingBarBg.innerHTML += bar;
-            ratingBarSm.innerHTML += bar;
+            ratingBarSm.innerHTML += `<svg width="12" height="12" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="1.5" y="1.5" width="37" height="37" rx="3.5" stroke="url(#paint0_linear_2171_1619)" stroke-width="3" />
+                    <rect x="7.46094" y="7.5" width="25.015" height="25" rx="2" fill="url(#paint1_linear_2171_1619)" />
+                    <defs>
+                    <linearGradient id="paint0_linear_2171_1619" x1="0" y1="20" x2="40" y2="20" gradientUnits="userSpaceOnUse">
+                        <stop stop-color="#E4002B" />
+                        <stop offset="0.484375" stop-color="#E4002B" />
+                        <stop offset="0.515625" stop-color="#BBBBBB" />
+                        <stop offset="1" stop-color="#BBBBBB" />
+                    </linearGradient>
+                    <linearGradient id="paint1_linear_2171_1619" x1="7.46094" y1="20" x2="32.4759" y2="20" gradientUnits="userSpaceOnUse">
+                        <stop stop-color="#E4002B" />
+                        <stop offset="0.484375" stop-color="#E4002B" />
+                        <stop offset="0.515625" stop-color="#BBBBBB" />
+                        <stop offset="1" stop-color="#BBBBBB" />
+                    </linearGradient>
+                    </defs>
+                </svg>`;
         }
         else if (ratingDeci > 0.7) {
-            var bar =
-                `<svg width="20" height="20" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            ratingBarBg.innerHTML += `<svg width="20" height="20" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <rect x="1.5" y="1.5" width="37" height="37" rx="3.5" stroke="#E4002B" stroke-width="3" />
                     <rect x="7.46094" y="7.5" width="25.015" height="25" rx="2" fill="#E4002B" />
                 </svg>`;
-            ratingBarBg.innerHTML += bar;
-            ratingBarSm.innerHTML += bar;
+            ratingBarSm.innerHTML += `<svg width="12" height="12" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="1.5" y="1.5" width="37" height="37" rx="3.5" stroke="#E4002B" stroke-width="3" />
+                    <rect x="7.46094" y="7.5" width="25.015" height="25" rx="2" fill="#E4002B" />
+                </svg>`;
         }
         
         for (var j=0; j<5 - (Math.ceil(parseFloat(cardInfo.Rating))); j++) {
-            var bar =
-                `<svg width="20" height="20" viewBox="0 0 41 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            ratingBarBg.innerHTML += `<svg width="20" height="20" viewBox="0 0 41 40" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <rect x="2.05078" y="1.5" width="37" height="37" rx="3.5" stroke="#BBBBBB" stroke-width="3" />
                     <rect x="8.01172" y="7.5" width="25.015" height="25" rx="2" fill="#BBBBBB" />
                 </svg>`;
-            ratingBarBg.innerHTML += bar;
-            ratingBarSm.innerHTML += bar;
+            ratingBarSm.innerHTML += `<svg width="12" height="12" viewBox="0 0 41 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="2.05078" y="1.5" width="37" height="37" rx="3.5" stroke="#BBBBBB" stroke-width="3" />
+                    <rect x="8.01172" y="7.5" width="25.015" height="25" rx="2" fill="#BBBBBB" />
+                </svg>`;
         }
+        ratingBarSm.innerHTML += `<p id="view-reviewNo-sm" class="ratingvalue">${cardInfo.Review_no}</p>`
         // Reviews
         var review = document.querySelector(".review").cloneNode(true);
         review.querySelector(".view-review-name").innerText = "Jia Min";
@@ -1680,7 +1702,6 @@
     }
 
     function choosePlace(index, order, itemNo) {
-        viewBtn.parentElement.remove()
         div = document.getElementById("recommendation-listings");
         var info = pendingChooseList[index].list[itemNo];
 
@@ -1755,7 +1776,8 @@
         reAssignValues();
         checkDisableAdd();
         saveTrips();
-
+        
+        closeViewPlace();
         closeRecommendTab();
     }
 

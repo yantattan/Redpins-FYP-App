@@ -18,13 +18,11 @@
 
     <div id="currentp-section">
         {% if ongoing == None %}
-        <div class="myplanstrips" onclick="window.open('/itinerary/planning/planner','_self');">
-            <div class="planimg">
-            </div>
+        <div class="myplanstrips" style="text-align: center;" onclick="window.open('/itinerary/planning/planner','_self');">
     
             <div class="planinfo">
                 <h1 class="planprogress">&nbsp;</h1>
-                <h2 class="planname">Create new trip</h2>
+                <h2 class="planname">+ Create new trip</h2>
                 <h3 class="plandate"></h3>
             </div>
         </div>
@@ -65,7 +63,6 @@
 
     <div id="previousp-section" style="display: none;">
         {% for iti in planners %}
-        {% if iti.getStatus() == "Completed" %}
         <div class="myplanstrips">
             <div class="planimg">
             </div>
@@ -78,11 +75,14 @@
                 <h3 class="plandate">{{startEnds[iti.getPlannerId()].start}} - {{startEnds[iti.getPlannerId()].end}}</h3>
             </div>
         </div>
-        {% endif %}
         {% endfor %}
     </div>
 
     </section>
+
+    {% block bottomNav %}
+        {% include "includes/_bottomNav.html" %}
+    {% endblock %}
 </div>
 {% endblock %}
 
@@ -96,8 +96,8 @@
             document.getElementById("previousTab").classList.add("previousplans");
             document.getElementById("previousTab").classList.remove("currentplans");
 
-            $("#previousp-section").show();
-            $("#currentp-section").hide();
+            $("#previousp-section").hide();
+            $("#currentp-section").show();
         }
         else {
             document.getElementById("previousTab").classList.add("currentplans");
@@ -105,8 +105,8 @@
             document.getElementById("currentTab").classList.add("previousplans");
             document.getElementById("currentTab").classList.remove("currentplans");
 
-            $("#currentp-section").show();
-            $("#previousp-section").hide();
+            $("#currentp-section").hide();
+            $("#previousp-section").show();
         }
     }
 </script>

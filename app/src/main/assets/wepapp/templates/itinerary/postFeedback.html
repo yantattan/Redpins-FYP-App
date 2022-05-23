@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}Redpins Buffer - Your trip{% endblock %}
+
+{% block content %}
+<div class="device" id="tripreview">
+
+    <div class="tripreview">
+    <h1>Trip Review</h1>
+
+    <h2>On a scale of 1 - 5, rate your trip! </h2>
+
+    <!-- rating -->
+    <div class="rating">
+        <svg onclick="setRating('1');" class="rateBar" width="40" height="40" viewBox="0 0 41 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="1.5" y="1.5" width="37" height="37" rx="3.5" stroke="#E4002B" stroke-width="3" />
+            <rect x="7.46094" y="7.5" width="25.015" height="25" rx="2" fill="#E4002B" />
+        </svg>
+        {% for i in range(4) %}
+        <svg onclick="setRating('{{i+2}}');" class="rateBar" width="40" height="40" viewBox="0 0 41 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="2.05078" y="1.5" width="37" height="37" rx="3.5" stroke="#BBBBBB" stroke-width="3" />
+            <rect x="8.01172" y="7.5" width="25.015" height="25" rx="2" fill="#BBBBBB" />
+        </svg>
+        {% endfor %}
+    </div>
+
+    <h2>Share more details of your trip!</h2>
+
+    <input type="text" class="tripreviewbox" name="tripreviewbox" value="" placeholder="">
+
+
+    <h2>Leave a review for places you have visited!</h2>
+    </div>
+
+    <div class="youmightlikecon">
+        {% for place in itinerary.getPlaces() %}
+        <div class="youmightlikecards">
+            <div class="cardimg"></div>
+
+            <div class="cardinfo">
+                <h1 class="youmightlikename">{{place.Name}}</h1>
+                <div class="youmightliketype">
+
+                <div class="youmightlikecategory">
+                <h2>{{place.Category}}</h2>
+
+                </div>
+                
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+<!-- bottom -->
+<section class="bottom">
+    <form method="POST">
+        <div class="maincta" onclick="document.querySelector('form').submit();">
+            <h1>Back to Home</h1>
+        </div>
+        <input type="number" id="rating" value="1" hidden readonly>
+    </form>
+</section>
+{% endblock %}
+
+{% block scripts %}
+{{super()}}
+<script>
+    function setRating(rating) {
+        document.getElementById("rating").value = parseInt(rating);
+
+        var rateBars = document.getElementsByClassName("rateBar");
+        for (var i=0; i<parseInt(rating); i++) {
+            rateBars[i].innerHTML = 
+            `<rect x="1.5" y="1.5" width="37" height="37" rx="3.5" stroke="#E4002B" stroke-width="3" />
+            <rect x="7.46094" y="7.5" width="25.015" height="25" rx="2" fill="#E4002B" />`;
+        }
+        for (var i=parseInt(rating); i<5; i++) {
+            rateBars[i].innerHTML = 
+            `<rect x="2.05078" y="1.5" width="37" height="37" rx="3.5" stroke="#BBBBBB" stroke-width="3" />
+            <rect x="8.01172" y="7.5" width="25.015" height="25" rx="2" fill="#BBBBBB" />`;
+        }
+    }
+</script>
+{% endblock %}

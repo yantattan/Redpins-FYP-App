@@ -209,9 +209,9 @@ def showItineraries():
     planners = []
     startEnds = {}
     scannedIds = []
-    ongoing = None
+    ongoing = itinerariesCon.GetOngoingItinerary(userId)
 
-    for iti in sorted(itinerariesCon.GetAllPlannerItineraries(userId) or [], key=lambda x: x.getDate(), reverse=False):
+    for iti in sorted(itinerariesCon.GetCompletedItineraries(userId) or [], key=lambda x: x.getDate(), reverse=False):
         try:
             itiInfo = startEnds[iti.getPlannerId()]
         except KeyError:
@@ -222,9 +222,6 @@ def showItineraries():
         else:
             startEnds[iti.getPlannerId()]["end"] = iti.getDate().strftime("%d-%M-%Y")
 
-        if iti.getStatus() == "Ongoing":
-            ongoing = iti
-
         if iti not in scannedIds:
             planners.append(iti)
             scannedIds.append(iti)
@@ -233,6 +230,10 @@ def showItineraries():
 
 @app.route("/itinerary/planning/planner", methods=['GET', 'POST'])
 def plannerItinerary():
+    invalidRedirect = validateLoggedIn()
+    if invalidRedirect is not None:
+        return redirect(invalidRedirect)
+
     itineraries = itinerariesCon.GetUnconfimredItinerary(session["current_user"]["userId"], "Planner")
 
     if request.method == 'POST':
@@ -259,6 +260,10 @@ def plannerItinerary():
 
 @app.route("/itinerary/planning/explorer", methods=['GET', 'POST'])
 def explorerItinerary():
+    invalidRedirect = validateLoggedIn()
+    if invalidRedirect is not None:
+        return redirect(invalidRedirect)
+
     itinerary = itinerariesCon.GetUnconfimredItinerary(session["current_user"]["userId"], "Explorer")
 
     if request.method == 'POST':
@@ -272,6 +277,9 @@ def explorerItinerary():
         reviewItinerary = itinerariesCon.GetReviewingItinerary(session["current_user"]["userId"], "Explorer")
         if reviewItinerary is not None:
             return redirect("/itinerary/review/explorer")
+        ongoingItinerary = itinerariesCon.GetOngoingItinerary(session["current_user"]["userId"])
+        if ongoingItinerary is not None:
+            return redirect(f"/itinerary/showTrip/{str(ongoingItinerary.getId())}")
     
     recentInfo = []
     recentSearches = trackedPlacesCon.GetTopSearchedInfo(session["current_user"]["userId"])
@@ -285,6 +293,10 @@ def explorerItinerary():
 
 @app.route("/itinerary/unconfirm/explorer")
 def unconfirmExplorer():
+    invalidRedirect = validateLoggedIn()
+    if invalidRedirect is not None:
+        return redirect(invalidRedirect)
+
     itinerary = itinerariesCon.GetReviewingItinerary(session["current_user"]["userId"], "Explorer")
     itinerary.setConfirmed(False)
     itinerariesCon.SetItinerary(itinerary)
@@ -292,6 +304,10 @@ def unconfirmExplorer():
 
 @app.route("/itinerary/review/<string:typ>", methods=['GET', 'POST'])
 def confirmItinerary(typ):
+    invalidRedirect = validateLoggedIn()
+    if invalidRedirect is not None:
+        return redirect(invalidRedirect)
+
     userId = session["current_user"]["userId"]
     itinerary = itinerariesCon.GetReviewingItinerary(userId, typ.capitalize())
     
@@ -299,7 +315,7 @@ def confirmItinerary(typ):
         itinerary.setStatus("Ongoing")
         res = itinerariesCon.SetItinerary(itinerary)
         if res["success"]:
-            return redirect(f"/itinerary/showTrip/{itinerary.getId()}")
+            return redirect("/itinerary/showTrip")
         else:
             return render_template("/itinerary/reviewItinerary.html", error="An error occurred. Try again")
     else:
@@ -310,14 +326,37 @@ def confirmItinerary(typ):
 
         return render_template("/itinerary/reviewItinerary.html", itinerary=itinerary, type=itinerary.getType(), apiKey=apiKey)
 
-@app.route("/itinerary/showTrip/<string:id>")
-def showTrip(id):
-    currItinerary = itinerariesCon.GetItineraryById(id)
+@app.route("/itinerary/showTrip", methods=['GET', 'POST'])
+def showTrip():
+    invalidRedirect = validateLoggedIn()
+    if invalidRedirect is not None:
+        return redirect(invalidRedirect)
+
+    currItinerary = itinerariesCon.GetOngoingItinerary(session["current_user"]["userId"])
+
+    if request.method == 'POST':
+        currItinerary.setStatus("Completed")
+        itinerariesCon.SetItinerary(currItinerary)
+        return redirect("/itinerary/postFeedback")
+
     if currItinerary.getUserId() != session["current_user"]["userId"]:
         return render_template("/itinerary/reviewItinerary.html", error="You are not permitted to view this itinerary")
+    currItinerary = itinerariesCon.GetOngoingItinerary(session["current_user"]["userId"])
 
     return render_template("/itinerary/showTrip.html", itinerary=currItinerary, apiKey=apiKey)
 
+@app.route("/itinerary/postFeedback", methods=['GET', 'POST'])
+def postFeedback():
+    invalidRedirect = validateLoggedIn()
+    if invalidRedirect is not None:
+        return redirect(invalidRedirect)
+
+    currItinerary = itinerariesCon.GetLatestCompletedItinerary(session["current_user"]["userId"])
+
+    if request.method == 'POST':
+        return redirect("/")
+
+    return render_template("/itinerary/postFeedback.html", itinerary=currItinerary)
 
 # Preferences pages
 @app.route("/preferences/1", methods=['GET', 'POST'])
@@ -428,26 +467,21 @@ def qrCodeClaimBonus(id):
 
 @app.route("/qrCode/use-points/<string:id>")
 def qrCodeUsePoints(id):
-    Total_price = " "
+    Total_price = 26.90
     Uid = session["current_user"]["userId"]
-    resultDic = {"shopName": "MARINA BAY SANDS", "address": "123B PornHub Hub Singapore 512345"}
-    result = userCon.GetUserPointsInfo(Uid)
-    result2 = signedPlaceCon.GetShopInfo(resultDic["address"])
-    discount = result2.getDiscount()
+    place = signedPlaceCon.GetShopById(id)
+    result = userCon.GetUserById(Uid)
+
+    discount = place.getDiscount()
     uPoints = result.getPoints()
-    # new_uPoints = uPoints - Total_price*(1 - discount)
-    # userCon.SetPoints(Uid, new_uPoints, tierPoints  )
+    tierPoints = result.getTierPoints()
+    new_uPoints = uPoints - Total_price*(1 - discount)
+    userCon.SetPoints(Uid, new_uPoints, tierPoints)
     return render_template("rewardPoints/usePoints.html")
 
 @app.route("/qrCode/invalidCode")
 def qrCodeInvalid():
     return render_template("qrSites/invalid.html")
-
-
-# Saved Locations page
-@app.route("/savedLocations")
-def saveLocations():
-    return render_template("")
 
 
 # ADMIN SITES

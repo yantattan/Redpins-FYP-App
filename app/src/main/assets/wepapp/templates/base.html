@@ -22,17 +22,13 @@
 
 {% if session.get("current_user") != None %}
 {% if session.get("current_user").get("role") == "Admin" %}
-<body style="border: 1px solid black;">
+<body>
 {% else %}
-<body class="device" style="border: 1px solid black;">
+<body class="device">
 {% endif %}
 {% else %}
-<body class="device" style="border: 1px solid black;">
+<body class="device">
 {% endif %}
-    {% block navbar %}
-      {% include "includes/_navbar.html" %}
-    {% endblock %}
-
     {% block loading %}
       {% include "includes/_loading.html" %}
     {% endblock %}

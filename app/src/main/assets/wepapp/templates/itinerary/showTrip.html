@@ -8,46 +8,97 @@
 
 {% if itinerary != None %}
 <div class="main-div">
-    <div class="device" id="planList">
-        <div class="float-right" onclick="openMapView();">Map</div>
+    <!-- Map View -->
+    <div class="device" id="mapView">
+        <div id='mapdiv' style='height:100vh;'></div>
 
-        {% if itinerary != None %}
-        <div id="start-time">Start time: {{itinerary.getStartTime()}}</div>
-        <div id="end-time">End time: {{itinerary.getEndTime()}}</div>
-        <div id="time-left">Duration left: <span>{{itinerary.getTimeLeft()| int}}</span></div>
-
-        <div id="transport-mode">Transport mode: <span>{% if itinerary.getTransportMode() == "pt" %}Public Transport{% else %}{{itinerary.getTransportMode()}}{% endif %}</span></div>
-        <div>Category: Eateries</div>
-        {% else %}
-        <div id="start-time">Start time: </div>
-        <div id="end-time">End time: </div>
-        <div id="time-left">Duration left: <span></span></div>
-
-        <div id="transport-mode">Transport mode: </div>
-        <div>Category: Eateries</div>
-        {% endif %}
-
-        <div style="position:relative;z-index: 5;">
-            {% for place in itinerary.getPlaces() %}
-            <div class="card places-card">
-                <h5>{{place["Name"]}}</h5>
-                <p>{{place["TotalDuration"]}}</p>
-                <p hidden>{{place["Latlng"]}}</p>
+        <svg style="z-index: 5;" class="back" width="12" height="21" viewBox="0 0 12 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path onclick="dismissMapView();"
+                d="M10.3111 0.5C10.9051 0.703504 11.2684 1.18581 11.6521 1.62894C11.955 1.97897 11.9156 2.55183 11.6229 2.9156C11.5521 3.00072 11.4764 3.08174 11.3963 3.15828C8.99602 5.5464 6.59439 7.93334 4.1914 10.3191C4.12878 10.3725 4.06206 10.421 3.99186 10.4641C4.08242 10.5582 4.13409 10.6167 4.18833 10.6676C6.60735 13.0737 9.02637 15.4796 11.4454 17.8854C11.8767 18.3148 12.0082 18.8439 11.6854 19.2738C11.3815 19.6709 11.0247 20.0251 10.6247 20.3264C10.2543 20.6093 9.75495 20.5259 9.38861 20.2247C9.33336 20.1794 9.27963 20.1311 9.22898 20.0807L0.459 11.3636C0.0220612 10.9296 -0.0731035 10.4208 0.200623 9.95024C0.269073 9.83957 0.351619 9.73817 0.446209 9.64854C3.3796 6.73165 6.31384 3.81661 9.24894 0.903448C9.42289 0.731995 9.66592 0.632787 9.87927 0.5H10.3111Z"
+                fill="#FFFFFF" />
+        </svg>
+        
+        
+        <div class="mapbuttons" style="z-index: 5;">
+            <div class="qrcodescanner" onclick="window.open('/qr-scanner','_self')">
+                <img src="../../static/images/qrscanner.png" alt="">
             </div>
-            {% endfor %}
-        </div>
-    </div>
     
-    <div class="device" id="mapView" style="position: absolute; z-index:10; background-color: white; display: none; bottom: -200vh;">
-        <div id='mapdiv' style='height:80vh;'></div>
-        <div id="selection" style="height:20vh;display: inline; overflow-x: auto;">
-            <button class="btn-addColor" onclick="dismissMapView();">x</button>
-            {% for i in range(1, itinerary.getPlaces()|length) %}
-            <div class="card trip-place" style="width: 50px; margin: 5px;" onclick="showRoute('{{itinerary.getPlaces()[i-1].Latlng}}', '{{itinerary.getPlaces()[i].Latlng}}')">
-                <h4>{{i}}</h4>
+            <div class="currentlocation">
+                <img src="../../static/images/currentlocation.png" alt="">
             </div>
-            {% endfor %}
         </div>
+        
+        <section>
+            <div class="mapdetailscon" id="map-selection">
+                <section class="req-info" hidden>
+                    {% if itinerary != None %}
+                    <div id="startTime-text">Start time: <span>{{itinerary.getStartTime()}}</span></div>
+                    <div id="endTime-text">End time: <span>{{itinerary.getEndTime()}}</span></div>
+                    <div id="time-left">Duration left: <span>{{itinerary.getTimeLeft()| int}}</span></div>
+                
+                    <div id="transport-text">Transport mode: <span>{{itinerary.getTransportMode()}}</span></div>
+                    <div>Category: Eateries</div>
+                    {% else %}
+                    <div id="startTime-text">Start time: </div>
+                    <div id="endTime-text">End time: </div>
+                    <div id="time-left">Duration left: <span></span></div>
+                
+                    <div id="transport-text">Transport mode: <span></span></div>
+                    <div>Category: Eateries</div>
+        
+                    <div id="start">Start location: </div>
+                    {% endif %}
+                </section>
+                {% for i in range(1, itinerary.getPlaces()|length) %}
+                {% set place = itinerary.getPlaces()[i] %}
+                <div class="mapdetails trip-place" onclick="showRoute('{{itinerary.getPlaces()[i-1].Latlng}}', '{{itinerary.getPlaces()[i].Latlng}}')">
+                    <div class="placeInfo" hidden>
+                        <h1 class="eventname plan-name">{{itinerary.getPlaces()[i].Name}}</h1>
+                        <h2 class="eventtype plan-category">{{itinerary.getPlaces()[i].Category}}</h2>
+                        <p class="plan-address" hidden>{{itinerary.getPlaces()[i].Address}}</p>
+                        <p class="plan-travel-duration" hidden>{{itinerary.getPlaces()[i].TravelDuration}}</p>
+                        <p class="plan-activity-duration" hidden><span>{{itinerary.getPlaces()[i].ActivityDuration}}</span> min</p>
+                        <p class="plan-total-duration" hidden><span>{{itinerary.getPlaces()[i].TotalDuration|int}}</span> min</p>
+                        <p class="plan-timing" hidden></p>
+                        <p class="plan-latlng" hidden>{{itinerary.getPlaces()[i].Latlng}}</p>
+                    </div>
+                    <!-- explorerevent -->
+                    <div class="explorerevent">
+                        <div class="eventdetails">
+                        <div class="eventinfo">
+                            <h1 class="eventname">{{itinerary.getPlaces()[i-1].Name}}</h1>
+                        </div>
+                        </div>
+    
+                        <div class="eventedit">
+                            <h1>{{itinerary.getPlaces()[i-1].TravelDuration}} mins</h1>
+                        </div>
+                    </div>
+    
+                    <!-- explorerdirections -->
+                    <div class="mapdirections">
+                        <div class="maptransport">
+                        </div>
+    
+                        <!-- explorertravelduration -->
+                        <div class="explorertravelduration">
+                            <h2>See Details</h2>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <!-- bottom -->
+        <form method="POST">
+            <section class="bottom">
+                <div class="maincta" onclick="document.querySelector('form').submit();">
+                    <h1>End Trip</h1>
+                </div>
+            </section>
+        </form>
     </div>
 </div>
 {% endif %}
@@ -56,8 +107,11 @@
 {% block scripts %}
 {{super()}}
 <script>
+    const apiKey = "{{apiKey}}";
+    var post;
+    const currentTime = new Date();
+
     // Map display init
-    var apiToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjg1NDQsInVzZXJfaWQiOjg1NDQsImVtYWlsIjoieWFudGF0dGFuNzIxQGdtYWlsLmNvbSIsImZvcmV2ZXIiOmZhbHNlLCJpc3MiOiJodHRwOlwvXC9vbTIuZGZlLm9uZW1hcC5zZ1wvYXBpXC92MlwvdXNlclwvc2Vzc2lvbiIsImlhdCI6MTY1Mjg1ODQ2OSwiZXhwIjoxNjUzMjkwNDY5LCJuYmYiOjE2NTI4NTg0NjksImp0aSI6IjM0OGMxNmQyYTU4ZmM1NGJlYjcxZWVjMDRkMjNhNTNlIn0.esJZ66sJtK5-r2CRIifU15azJgmYMoGe-CfwO6Cxit4";
     L.Icon.Default.imagePath = "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.4.0/images";
     var center = L.bounds([1.56073, 104.11475], [1.16, 103.502]).getCenter();
     var map = L.map('mapdiv').setView([center.x, center.y], 12);
@@ -66,18 +120,22 @@
     var endMarker;
 
     var routeTextures = {
-        WALK: {color: "black", dashArray: "10, 10"},
-        SUBWAY: {
-            NE: {color: "purple"},
-            NS: {color: "red"},
-            DT: {color: "blue"},
-            EW: {color: "green"},
-            CC: {color: "yellow"},
-            TE: {color: "brown"},
-            Default: {color: "grey"}
+        walk: {color: "black", dashArray: "10, 10"},
+        subway: {
+            NE: {color: "#8E3E98"},
+            NS: {color: "#E32325"},
+            DT: {color: "#2059A9"},
+            EW: {color: "#0C9345"},
+            CC: {color: "#F99D21"},
+            CE: {color: "#F99D21"},
+            TE: {color: "#AA7242"},
+            Default: {color: "#708573"}
         },
-        DRIVE: {color: "black"}
+        tram: {color: "#708573"},
+        bus: {color: "#0C9345"},
+        drive: {color: "black"}
     }
+
 
     var basemap = L.tileLayer(`http://maps-{s}.onemap.sg/v2/Default/{z}/{x}/{y}.png`, {
         detectRetina: true,
@@ -92,36 +150,236 @@
     var updatePosition = false;
     var repeatedBuildings = {};
 
-    function openMapView() {
-        // Pull screen up
-        $("#mapView").show();
-        $("#mapView").animate({
-            bottom: "0"
-        }, 350);
-    }
+    /*function displayRouteDetails() {
+        var allAddresses = document.getElementsByClassName("plan-address");
+        var allLatlngs = document.getElementsByClassName("plan-latlng");
+        var allRouteDiv = document.getElementsByClassName("explorertransport")
+        var routeType = document.querySelector('#transport-text').value;
+        var checkTime = currentTime;
+        var startTime = $("#start-time").val();
 
-    function dismissMapView() {
-        // Pull screen down
-        $("#mapView").animate({
-            bottom: "-200vh"
-        }, 350, function() {
-            $("#mapView").hide();
-        });
-    }
+        function getAPIRoute(index) {
+            var position1 = allLatlngs[index].innerText.split(",");
+            var position2 = allLatlngs[index+1].innerText.split(",");
+            var res = true;
 
-    function getLocation() {
-        if (navigator.geolocation) {
-            navigator.geolocation.watchPosition(showYourPosition, positioningError, {
-                timeout: 1000,
-                enableHighAccuracy: true
+            allRouteDiv[index].innerHTML = "";
+
+            $.ajax({
+                dataType: "json",
+                url: `https://developers.onemap.sg/privateapi/routingsvc/route?start=${position1[0]},${position1[1]}&end=${position2[0]},${position2[1]}&routeType=${routeType}&token=${apiKey}&date=${String(checkTime.getFullYear())}-${String(checkTime.getMonth()+1)}-${String(checkTime.getDate())}&time=${startTime}:00&mode=TRANSIT`,
+                success: function(result) {
+                    //Set result to a variable for writing
+                    if (routeType == "pt")
+                        var info = result.plan.itineraries[0];
+     
+                        else
+                        var info = result.route_summary;
+
+                    function addModeIcon(routeType, info) {
+                        if (routeType == "walk") {
+                            allRouteDiv[index].innerHTML += 
+                                `<div><svg width="14" height="20" viewBox="0 0 14 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                    d="M8.79073 3.72093C9.12694 3.72093 9.4556 3.61182 9.73514 3.40739C10.0147 3.20296 10.2326 2.91239 10.3612 2.57244C10.4899 2.23248 10.5236 1.8584 10.458 1.49751C10.3924 1.13661 10.2305 0.805109 9.99274 0.544918C9.75501 0.284728 9.45211 0.107536 9.12236 0.0357492C8.79262 -0.0360373 8.45082 0.000806104 8.14021 0.14162C7.82959 0.282435 7.5641 0.520895 7.37731 0.826847C7.19053 1.1328 7.09083 1.4925 7.09083 1.86047C7.09217 2.35344 7.2717 2.8258 7.5902 3.17439C7.90871 3.52297 8.3403 3.71946 8.79073 3.72093ZM5.73091 16.6512L6.58086 12.5581L8.36575 14.4186V20H10.0657V13.0233L8.28076 11.1628L8.79073 8.37209C9.3739 9.10142 10.0926 9.68613 10.8987 10.0872C11.7049 10.4882 12.5799 10.6964 13.4655 10.6977V8.83721C12.7307 8.84941 12.0061 8.64946 11.3644 8.25751C10.7228 7.86557 10.1869 7.29547 9.81067 6.60465L8.96072 5.11628C8.81006 4.84145 8.59888 4.61233 8.34647 4.44983C8.09407 4.28733 7.80848 4.19664 7.5158 4.18605C7.26082 4.18605 7.09083 4.27907 6.83584 4.27907L2.4161 6.32558V10.6977H4.116V7.53489L5.64591 6.88372L4.28599 14.4186L0.12123 13.4884L-0.21875 15.3488L5.73091 16.6512Z"
+                                    fill="#707070" />
+                                </svg></div>`;
+                        }
+                        else if (routeType == "drive") {
+                            allRouteDiv[index].innerHTML += 
+                                `<div><svg width="14" height="20" viewBox="0 0 14 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                    d="M8.79073 3.72093C9.12694 3.72093 9.4556 3.61182 9.73514 3.40739C10.0147 3.20296 10.2326 2.91239 10.3612 2.57244C10.4899 2.23248 10.5236 1.8584 10.458 1.49751C10.3924 1.13661 10.2305 0.805109 9.99274 0.544918C9.75501 0.284728 9.45211 0.107536 9.12236 0.0357492C8.79262 -0.0360373 8.45082 0.000806104 8.14021 0.14162C7.82959 0.282435 7.5641 0.520895 7.37731 0.826847C7.19053 1.1328 7.09083 1.4925 7.09083 1.86047C7.09217 2.35344 7.2717 2.8258 7.5902 3.17439C7.90871 3.52297 8.3403 3.71946 8.79073 3.72093ZM5.73091 16.6512L6.58086 12.5581L8.36575 14.4186V20H10.0657V13.0233L8.28076 11.1628L8.79073 8.37209C9.3739 9.10142 10.0926 9.68613 10.8987 10.0872C11.7049 10.4882 12.5799 10.6964 13.4655 10.6977V8.83721C12.7307 8.84941 12.0061 8.64946 11.3644 8.25751C10.7228 7.86557 10.1869 7.29547 9.81067 6.60465L8.96072 5.11628C8.81006 4.84145 8.59888 4.61233 8.34647 4.44983C8.09407 4.28733 7.80848 4.19664 7.5158 4.18605C7.26082 4.18605 7.09083 4.27907 6.83584 4.27907L2.4161 6.32558V10.6977H4.116V7.53489L5.64591 6.88372L4.28599 14.4186L0.12123 13.4884L-0.21875 15.3488L5.73091 16.6512Z"
+                                    fill="#707070" />
+                                </svg></div>`;
+                        }
+                        else if (routeType == "cycle") {
+                            allRouteDiv[index].innerHTML += 
+                                `<div><svg width="14" height="20" viewBox="0 0 14 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                    d="M8.79073 3.72093C9.12694 3.72093 9.4556 3.61182 9.73514 3.40739C10.0147 3.20296 10.2326 2.91239 10.3612 2.57244C10.4899 2.23248 10.5236 1.8584 10.458 1.49751C10.3924 1.13661 10.2305 0.805109 9.99274 0.544918C9.75501 0.284728 9.45211 0.107536 9.12236 0.0357492C8.79262 -0.0360373 8.45082 0.000806104 8.14021 0.14162C7.82959 0.282435 7.5641 0.520895 7.37731 0.826847C7.19053 1.1328 7.09083 1.4925 7.09083 1.86047C7.09217 2.35344 7.2717 2.8258 7.5902 3.17439C7.90871 3.52297 8.3403 3.71946 8.79073 3.72093ZM5.73091 16.6512L6.58086 12.5581L8.36575 14.4186V20H10.0657V13.0233L8.28076 11.1628L8.79073 8.37209C9.3739 9.10142 10.0926 9.68613 10.8987 10.0872C11.7049 10.4882 12.5799 10.6964 13.4655 10.6977V8.83721C12.7307 8.84941 12.0061 8.64946 11.3644 8.25751C10.7228 7.86557 10.1869 7.29547 9.81067 6.60465L8.96072 5.11628C8.81006 4.84145 8.59888 4.61233 8.34647 4.44983C8.09407 4.28733 7.80848 4.19664 7.5158 4.18605C7.26082 4.18605 7.09083 4.27907 6.83584 4.27907L2.4161 6.32558V10.6977H4.116V7.53489L5.64591 6.88372L4.28599 14.4186L0.12123 13.4884L-0.21875 15.3488L5.73091 16.6512Z"
+                                    fill="#707070" />
+                                </svg></div>`;
+                        }
+                        else if (routeType == "bus") {
+                            var routes = info.route.split("/")
+                            for (var i=0; i<routes.length; i++) {
+                                allRouteDiv[index].innerHTML += 
+                                    `<div class="transportation" style="background: ${routeTextures[routeType].color}">
+                                        <h1>${routes[i]}</h1>
+                                    </div>`;
+                            }
+                        }
+                        else if (routeType == "tram") {
+                            allRouteDiv[index].innerHTML += 
+                                `<div class="transportation" style="background: ${routeTextures[routeType].color}">
+                                    <h1>${info.route}</h1>
+                                </div>`;
+                        }
+                        else if (routeType == "subway") {
+                            console.log(info.route)
+                            allRouteDiv[index].innerHTML += 
+                                `<div class="transportation" style="background: ${routeTextures.subway[info.route].color}">
+                                    <h1>${info.route}</h1>
+                                </div>`;
+                        }
+                    }
+
+                    if (routeType == "pt") {
+                        for (var i=0; i<info.legs.length; i++) {
+                            addModeIcon(info.legs[i].mode.toLowerCase(), info.legs[i]);
+                            if (i != info.legs.length -1) {
+                                allRouteDiv[index].innerHTML += 
+                                    `<div><svg width="8" height="13" viewBox="0 0 8 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                        d="M1.54958 -1.36256e-06C1.75249 0.0669132 1.89922 0.212233 2.04594 0.362284C3.87674 2.23657 5.70952 4.10882 7.54098 5.98108C7.79676 6.24265 7.85162 6.54884 7.68969 6.83069C7.65466 6.89152 7.6084 6.9483 7.55882 6.99899C5.67846 8.92329 3.79611 10.8462 1.91442 12.7705C1.7201 12.9693 1.4934 13.0544 1.22572 12.9638C0.981174 12.8814 0.835107 12.7009 0.791485 12.4414C0.757777 12.2413 0.816601 12.0649 0.944162 11.9121C0.979192 11.8702 1.01753 11.8317 1.0552 11.7925C2.74389 10.0662 4.43193 8.33998 6.12195 6.6144C6.15632 6.57925 6.20324 6.55695 6.24422 6.52856L6.24422 6.47178C6.20324 6.4434 6.15632 6.42109 6.12195 6.38594C4.42069 4.64887 2.7201 2.91044 1.02017 1.17202C0.76042 0.906386 0.71085 0.592767 0.879389 0.310239C0.977868 0.145319 1.13319 0.0648857 1.30173 -1.34089e-06L1.54958 -1.36256e-06Z"
+                                        fill="#707070" />
+                                    </svg></div>`;
+                            }
+                        }
+                    }
+                    else {
+                        addModeIcon(routeType, info);
+                    }
+                },
+                error: function(jqXHR, textStatus, err) {
+                    res = false;
+                }
             });
-        } 
+
+            return res;
+        }
+
+        for (var i=0; i<allAddresses.length-1; i++) {
+            tries = 0;
+            while (tries <= 3) {
+                tries++;
+                res = getAPIRoute(i);
+                if (res)
+                    break;
+            }
+        }
+    }*/
+
+    function openMapView() {
+        // Make toggle cards
+        var planCards = document.getElementsByClassName("placeInfo");
+        var mapDiv = document.getElementById("map-selection");
+        var routeType = document.getElementById("transport-text").querySelector("span").innerText;
+        var checkTime = currentTime;
+
+        for (var i=1; i<planCards.length; i++) {
+            routeIconsDiv = mapDiv.getElementsByClassName("maptransport");
+            var startTime = $("#start-time").val();
+
+            function getAPIRoute(index) {
+                var position1 = planCards[index-1].querySelector(".plan-latlng").innerText.split(",");
+                var position2 = planCards[index].querySelector(".plan-latlng").innerText.split(",");
+                var res = true;
+
+                routeIconsDiv[index-1].innerHTML = "";
+
+                $.ajax({
+                    dataType: "json",
+                    url: `https://developers.onemap.sg/privateapi/routingsvc/route?start=${position1[0]},${position1[1]}&end=${position2[0]},${position2[1]}&routeType=${routeType}&token=${apiKey}&date=${String(checkTime.getFullYear())}-${String(checkTime.getMonth()+1)}-${String(checkTime.getDate())}&time=${startTime}:00&mode=TRANSIT`,
+                    success: function(result) {
+                        //Set result to a variable for writing
+                        if (routeType == "pt")
+                            var info = result.plan.itineraries[0];
+                        else
+                            var info = result.route_summary;
+
+                        function addModeIcon(routeType, info) {
+                            if (routeType == "walk") {
+                                routeIconsDiv[index-1].innerHTML += 
+                                    `<svg width="14" height="20" viewBox="0 0 14 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                        d="M8.79073 3.72093C9.12694 3.72093 9.4556 3.61182 9.73514 3.40739C10.0147 3.20296 10.2326 2.91239 10.3612 2.57244C10.4899 2.23248 10.5236 1.8584 10.458 1.49751C10.3924 1.13661 10.2305 0.805109 9.99274 0.544918C9.75501 0.284728 9.45211 0.107536 9.12236 0.0357492C8.79262 -0.0360373 8.45082 0.000806104 8.14021 0.14162C7.82959 0.282435 7.5641 0.520895 7.37731 0.826847C7.19053 1.1328 7.09083 1.4925 7.09083 1.86047C7.09217 2.35344 7.2717 2.8258 7.5902 3.17439C7.90871 3.52297 8.3403 3.71946 8.79073 3.72093ZM5.73091 16.6512L6.58086 12.5581L8.36575 14.4186V20H10.0657V13.0233L8.28076 11.1628L8.79073 8.37209C9.3739 9.10142 10.0926 9.68613 10.8987 10.0872C11.7049 10.4882 12.5799 10.6964 13.4655 10.6977V8.83721C12.7307 8.84941 12.0061 8.64946 11.3644 8.25751C10.7228 7.86557 10.1869 7.29547 9.81067 6.60465L8.96072 5.11628C8.81006 4.84145 8.59888 4.61233 8.34647 4.44983C8.09407 4.28733 7.80848 4.19664 7.5158 4.18605C7.26082 4.18605 7.09083 4.27907 6.83584 4.27907L2.4161 6.32558V10.6977H4.116V7.53489L5.64591 6.88372L4.28599 14.4186L0.12123 13.4884L-0.21875 15.3488L5.73091 16.6512Z"
+                                        fill="#707070" />
+                                    </svg>`;
+                            }
+                            else if (routeType == "drive") {
+                                routeIconsDiv[index-1].innerHTML += 
+                                    `<svg width="8" height="13" viewBox="0 0 8 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                        d="M1.54958 -1.36256e-06C1.75249 0.0669132 1.89922 0.212233 2.04594 0.362284C3.87674 2.23657 5.70952 4.10882 7.54098 5.98108C7.79676 6.24265 7.85162 6.54884 7.68969 6.83069C7.65466 6.89152 7.6084 6.9483 7.55882 6.99899C5.67846 8.92329 3.79611 10.8462 1.91442 12.7705C1.7201 12.9693 1.4934 13.0544 1.22572 12.9638C0.981174 12.8814 0.835107 12.7009 0.791485 12.4414C0.757777 12.2413 0.816601 12.0649 0.944162 11.9121C0.979192 11.8702 1.01753 11.8317 1.0552 11.7925C2.74389 10.0662 4.43193 8.33998 6.12195 6.6144C6.15632 6.57925 6.20324 6.55695 6.24422 6.52856L6.24422 6.47178C6.20324 6.4434 6.15632 6.42109 6.12195 6.38594C4.42069 4.64887 2.7201 2.91044 1.02017 1.17202C0.76042 0.906386 0.71085 0.592767 0.879389 0.310239C0.977868 0.145319 1.13319 0.0648857 1.30173 -1.34089e-06L1.54958 -1.36256e-06Z"
+                                        fill="#707070" />
+                                    </svg>`;
+                            }
+                            else if (routeType == "cycle") {
+                                routeIconsDiv[index-1].innerHTML += 
+                                    `<div><svg width="14" height="20" viewBox="0 0 14 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                        d="M15.4969 3.90244C15.8829 3.90244 16.2601 3.788 16.581 3.5736C16.9019 3.3592 17.152 3.05446 17.2996 2.69792C17.4473 2.34138 17.486 1.94906 17.4107 1.57056C17.3354 1.19206 17.1496 0.844382 16.8767 0.5715C16.6038 0.298617 16.2561 0.112781 15.8776 0.037493C15.4991 -0.0377952 15.1068 0.000845426 14.7502 0.148529C14.3937 0.296212 14.089 0.546304 13.8746 0.867181C13.6602 1.18806 13.5457 1.56531 13.5457 1.95122C13.5473 2.46824 13.7533 2.96364 14.1189 3.32923C14.4845 3.69483 14.9799 3.9009 15.4969 3.90244V3.90244ZM5.25305 10.2439C3.95931 10.2439 2.71856 10.7578 1.80375 11.6726C0.888936 12.5875 0.375 13.8282 0.375 15.1219C0.375 16.4157 0.888936 17.6564 1.80375 18.5712C2.71856 19.4861 3.95931 20 5.25305 20C6.54679 20 7.78754 19.4861 8.70235 18.5712C9.61716 17.6564 10.1311 16.4157 10.1311 15.1219C10.1311 13.8282 9.61716 12.5875 8.70235 11.6726C7.78754 10.7578 6.54679 10.2439 5.25305 10.2439ZM5.25305 18.5366C4.34743 18.5366 3.47891 18.1768 2.83854 17.5365C2.19817 16.8961 1.83841 16.0276 1.83841 15.1219C1.83841 14.2163 2.19817 13.3478 2.83854 12.7074C3.47891 12.0671 4.34743 11.7073 5.25305 11.7073C6.15866 11.7073 7.02719 12.0671 7.66756 12.7074C8.30793 13.3478 8.66768 14.2163 8.66768 15.1219C8.66768 16.0276 8.30793 16.8961 7.66756 17.5365C7.02719 18.1768 6.15866 18.5366 5.25305 18.5366ZM10.9116 8.78049L13.253 6.43902L14.0335 7.21951C14.6811 7.87989 15.456 8.40196 16.3112 8.75412C17.1665 9.10628 18.0843 9.2812 19.0091 9.26829V7.31707C18.3553 7.32268 17.707 7.19592 17.1034 6.94442C16.4998 6.69292 15.9534 6.32189 15.4969 5.85366L13.6433 4C13.21 3.62402 12.656 3.41627 12.0823 3.41463C11.8246 3.39755 11.5665 3.44168 11.3291 3.54341C11.0918 3.64515 10.8818 3.80161 10.7165 4L7.98475 6.73171C7.80159 6.90926 7.65552 7.12143 7.55503 7.3559C7.45454 7.59037 7.40164 7.84247 7.39939 8.09756C7.3823 8.35526 7.42643 8.61335 7.52817 8.85073C7.6299 9.08812 7.78636 9.29806 7.98475 9.46341L11.1067 12.1951V17.0732H13.0579V11.0244L10.9116 8.78049ZM18.9116 10.2439C17.9468 10.2439 17.0037 10.53 16.2015 11.066C15.3993 11.602 14.7741 12.3639 14.4049 13.2552C14.0356 14.1465 13.939 15.1274 14.1273 16.0736C14.3155 17.0199 14.7801 17.889 15.4623 18.5712C16.1445 19.2535 17.0137 19.718 17.9599 19.9063C18.9062 20.0945 19.887 19.9979 20.7783 19.6287C21.6697 19.2595 22.4315 18.6342 22.9675 17.832C23.5035 17.0299 23.7896 16.0867 23.7896 15.1219C23.796 14.4796 23.6742 13.8424 23.4313 13.2477C23.1884 12.653 22.8294 12.1127 22.3751 11.6584C21.9209 11.2042 21.3806 10.8451 20.7859 10.6022C20.1911 10.3593 19.554 10.2375 18.9116 10.2439V10.2439ZM18.9116 18.5366C18.2362 18.5366 17.576 18.3363 17.0145 17.9611C16.453 17.5859 16.0153 17.0526 15.7569 16.4287C15.4984 15.8047 15.4308 15.1182 15.5626 14.4558C15.6943 13.7934 16.0195 13.185 16.4971 12.7074C16.9746 12.2299 17.583 11.9047 18.2454 11.7729C18.9078 11.6412 19.5944 11.7088 20.2183 11.9672C20.8422 12.2257 21.3755 12.6633 21.7507 13.2249C22.1259 13.7864 22.3262 14.4466 22.3262 15.1219C22.3153 16.0242 21.9521 16.8864 21.3141 17.5244C20.676 18.1624 19.8138 18.5257 18.9116 18.5366V18.5366Z"
+                                        fill="#707070" />
+                                    </svg></div>`;
+                            }
+                            else if (routeType == "bus") {
+                                var routes = info.route.split("/")
+                                for (var i=0; i<routes.length; i++) {
+                                    routeIconsDiv[index-1].innerHTML += 
+                                        `<div class="transportation" style="background: ${routeTextures[routeType].color}">
+                                            <h1>${routes[i]}</h1>
+                                        </div>`;
+                                }
+                            }
+                            else if (routeType == "tram") {
+                                routeIconsDiv[index-1].innerHTML += 
+                                    `<div class="transportation" style="background: ${routeTextures[routeType].color}">
+                                        <h1>${info.route}</h1>
+                                    </div>`;
+                            }
+                            else if (routeType == "subway") {
+                                console.log(info.route)
+                                routeIconsDiv[index-1].innerHTML += 
+                                    `<div class="transportation" style="background: ${routeTextures.subway[info.route].color}">
+                                        <h1>${info.route}</h1>
+                                    </div>`;
+                            }
+                        }
+
+                        if (routeType == "pt") {
+                            for (var i=0; i<info.legs.length; i++) {
+                                addModeIcon(info.legs[i].mode.toLowerCase(), info.legs[i]);
+                                if (i != info.legs.length -1) {
+                                    routeIconsDiv[index-1].innerHTML += 
+                                        `<div><svg width="8" height="13" viewBox="0 0 8 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path
+                                            d="M1.54958 -1.36256e-06C1.75249 0.0669132 1.89922 0.212233 2.04594 0.362284C3.87674 2.23657 5.70952 4.10882 7.54098 5.98108C7.79676 6.24265 7.85162 6.54884 7.68969 6.83069C7.65466 6.89152 7.6084 6.9483 7.55882 6.99899C5.67846 8.92329 3.79611 10.8462 1.91442 12.7705C1.7201 12.9693 1.4934 13.0544 1.22572 12.9638C0.981174 12.8814 0.835107 12.7009 0.791485 12.4414C0.757777 12.2413 0.816601 12.0649 0.944162 11.9121C0.979192 11.8702 1.01753 11.8317 1.0552 11.7925C2.74389 10.0662 4.43193 8.33998 6.12195 6.6144C6.15632 6.57925 6.20324 6.55695 6.24422 6.52856L6.24422 6.47178C6.20324 6.4434 6.15632 6.42109 6.12195 6.38594C4.42069 4.64887 2.7201 2.91044 1.02017 1.17202C0.76042 0.906386 0.71085 0.592767 0.879389 0.310239C0.977868 0.145319 1.13319 0.0648857 1.30173 -1.34089e-06L1.54958 -1.36256e-06Z"
+                                            fill="#707070" />
+                                        </svg></div>`;
+                                }
+                            }
+                        }
+                        else {
+                            addModeIcon(routeType, info);
+                        }
+                    },
+                    error: function(jqXHR, textStatus, err) {
+                        res = false;
+                    }
+                });
+
+                return res;
+            }
+
+            tries = 0;
+            while (tries <= 3) {
+                tries++;
+                res = getAPIRoute(i);
+                if (res)
+                    break;
+            }
+        }
+
+        // Default show 1st part trip
+        var firstCard = document.querySelector(".trip-place")
+        if (typeof firstCard.onclick == "function")
+            firstCard.onclick.apply(firstCard);
     }
 
     function showYourPosition(position) {  
         updatePosition = true;  
-        console.log(position);
-        
         // Mark marker
         if (yourMarker) {
             map.removeLayer(yourMarker);
@@ -129,10 +387,8 @@
         
         yourMarker = new L.Marker([position.coords.latitude, position.coords.longitude], {bounceOnAdd: false, customId: "YouMarker"}).addTo(map); 
 
-        /*var popup = L.popup()
-        .setLatLng([position.coords.latitude, position.coords.longitude]) 
-        .setContent('<img height="20px" width="20px" src="https://web-static.onemap.sg/images/main/misc/icons_Locator.png">')
-        .openOn(map);*/   
+        latLngStr = position.coords.latitude + "," + position.coords.longitude;
+        document.getElementById("start-latlng").innerText = latLngStr;
     }
 
     function positioningError(error) {
@@ -142,10 +398,7 @@
     function showRoute(position1, position2) {
         // Routing display
         var today = new Date();
-        var routeType = document.getElementById("transport-mode").querySelector("span").innerText;
-        if (routeType == "Public Transport") {
-            routeType = "pt";
-        }
+        var routeType = document.getElementById("transport-text").querySelector("span").innerText;
 
         var position1 = position1.split(",");
         var position2 = position2.split(",");
@@ -161,7 +414,7 @@
         }
 
         $.ajax({
-            url: `https://developers.onemap.sg/privateapi/routingsvc/route?start=${position1[0]},${position1[1]}&end=${position2[0]},${position2[1]}&routeType=${routeType}&token=${apiToken}&date=${String(today.getFullYear())}-${String(today.getMonth()+1)}-${String(today.getDate())}&time=${String(today.getHours())}:${String(today.getMinutes())}:${String(today.getSeconds())}&mode=TRANSIT`,
+            url: `https://developers.onemap.sg/privateapi/routingsvc/route?start=${position1[0]},${position1[1]}&end=${position2[0]},${position2[1]}&routeType=${routeType}&token=${apiKey}&date=${String(today.getFullYear())}-${String(today.getMonth()+1)}-${String(today.getDate())}&time=${String(today.getHours())}:${String(today.getMinutes())}:${String(today.getSeconds())}&mode=TRANSIT`,
             success: function(result) {
                 //Set result to a variable for writing
                 var encodedRoute;
@@ -188,15 +441,15 @@
                         var transportMeans = allRoutes[i].legs;
                         for (var j in transportMeans) {
                             var details = transportMeans[j];
-                            var mode = details.mode;
+                            var mode = details.mode.toLowerCase();
 
                             encodedRoute = details.legGeometry.points
                             var routeGeo = decodeGeo(encodedRoute);
                             modes = {endpoints: routeGeo._latlngs, mode: mode};
 
-                            if (mode == "SUBWAY") {
+                            if (mode.toLowerCase == "subway") {
                                 var subwayLine = details.route;
-                                L.polyline(modes.endpoints, routeTextures.SUBWAY[subwayLine]).addTo(map);
+                                L.polyline(modes.endpoints, routeTextures.subway[subwayLine]).addTo(map);
                             }
                             else {
                                 L.polyline(modes.endpoints, routeTextures[modes.mode]).addTo(map);
@@ -214,49 +467,11 @@
 
                     L.polyline(modes.endpoints, routeTextures[modes.mode]).addTo(map);
                 }
-                
-
-                // Check for buildings around user
-                /*$.ajax({
-                    url: `https://developers.onemap.sg/privateapi/commonsvc/revgeocodexy?location=${position.coords.latitude},${position.coords.longitude}&token=${apiToken}&buffer=50`,
-                    success: function(result) {
-                        for (var i in result) {
-                            if (!repeatedBuildings[result[i]]) {
-                                repeatedBuildings[result[i]] = 1;
-                            }
-                            else {
-                                repeatedBuildings[result[i]]++;
-                            }
-                        } 
-                    }
-                });*/
             }
         });
-
-        /*var visited = [];
-        for (var place in repeatedBuildings) {
-            if (repeatedBuildings[place] >= 120) {
-                visited.push({latitude: 1.2834542, longitude: 103.8608090, address: "1 BAYFRONT AVENUE MARINA BAY SANDS SINGAPORE 018971"})
-                $.ajax({
-                    type: "POST",   
-                    url: `/funcs/mark-tracked/`,
-                    data: {
-                        start: getLocation.coords,
-                        storeMean: "visited",
-                        places: visited
-                    }
-                });
-
-                repeatedBuildings[place] = null;
-            }
-        }*/
     }
-    
-    // Pin location
-    getLocation();
-    // Default show 1st part trip
-    var firstCard = document.querySelector(".trip-place")
-    if (typeof firstCard.onclick == "function")
-        firstCard.onclick.apply(firstCard);
+
+    openMapView();
+    document.querySelector(".trip-place").click();
 </script>
 {% endblock %}

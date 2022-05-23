@@ -51,6 +51,24 @@ class ItinerariesCon:
         except Exception as e:
             print(e)
 
+    def GetCompletedItineraries(self, userId):
+        try:
+            itinerary = self.__connection.find({"UserId": userId, "Status": "Completed"})
+            if itinerary is not None:
+                return Itinerary(itinerary["_id"], itinerary["UserId"], itinerary["Name"], itinerary["Date"], itinerary["StartTime"], itinerary["EndTime"], itinerary["Type"], 
+                                itinerary["TransportMode"], itinerary["TimeAllowance"], itinerary["TimeLeft"], itinerary["Confirmed"], itinerary["Status"], itinerary["Places"], itinerary["Description"], itinerary["PlannerId"], itinerary["HasEnd"])
+        except Exception as e:
+            print(e)
+
+    def GetLatestCompletedItinerary(self, userId):
+        try:
+            itinerary = self.__connection.find_one({"UserId": userId, "Status": "Completed"})
+            if itinerary is not None:
+                return Itinerary(itinerary["_id"], itinerary["UserId"], itinerary["Name"], itinerary["Date"], itinerary["StartTime"], itinerary["EndTime"], itinerary["Type"], 
+                                itinerary["TransportMode"], itinerary["TimeAllowance"], itinerary["TimeLeft"], itinerary["Confirmed"], itinerary["Status"], itinerary["Places"], itinerary["Description"], itinerary["PlannerId"], itinerary["HasEnd"])
+        except Exception as e:
+            print(e)
+
     def GetUnconfimredItinerary(self, userId, tripType):
         try:
             if tripType == "Explorer":
