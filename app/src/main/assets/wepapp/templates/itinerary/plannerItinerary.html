@@ -149,7 +149,7 @@
             {% for i in range(itineraries|length) %}
             {% set itinerary = itineraries[i] %}
             <li class="inactivedate card-date" onclick="toggleDay(this);">
-                <h1>{{itinerary.getDate().strftime("%d/%m")}}<span hidden>{{itinerary.getDate().strftime("%Y-%m-%d")}}</span></h1>
+                <h1 class="card-date-text">{{itinerary.getDate().strftime("%d/%m")}}<span hidden>{{itinerary.getDate().strftime("%Y-%m-%d")}}</span></h1>
                 
                 <p class="tm-selection">
                     {% if itinerary.getTransportMode() == "drive" %}
@@ -237,7 +237,7 @@
             </li>
             {% endfor %}{% endif %}
             <li class="inactivedate" id="card-date-add" onclick="openInitPage();">
-                <h1>+ Add day</h1>
+                <h1>+ Edit days</h1>
             </li>
         </ul>
     </section>
@@ -492,7 +492,7 @@
                                         <h1 class="plan-name">{{itinerary.getPlaces()[planLoopLen].Name}}</h1>
                                         <p class="plan-address" hidden>{{itinerary.getPlaces()[planLoopLen].Address}}</p>
                                         <p class="plan-latlng" hidden>{{itinerary.getPlaces()[planLoopLen].Latlng}}</p>
-                                        <p class="plan-total-duration" hidden>{{itinerary.getPlaces()[planLoopLen].TotalDuration|int}}</p>
+                                        <p class="plan-total-duration" hidden><span>{{itinerary.getPlaces()[planLoopLen].TotalDuration|int}}</span> min</p>
                                     </div>
                                     <div class="explorerendtime">
                                         <h1 class="plan-timing" hidden></h1>
@@ -735,26 +735,13 @@
                     <div id="recSearch-results-recent">
                         {% for i in range(recentSearches|length) %}
                         <div class="recentcards searchcard">
-                            <div class="cardimg" style="background-image: url('{{recentInfo[i].Image_url}}');">
+                            <div class="cardimg" style="background-image: url('');">
                             </div>
                     
                             <div class="cardinfo">
                                 <h1 class="recentname">{{recentSearches[i].getPlaceName()}}</h1>
                                 <div class="recenttype">
                                     <h3 class="recentcat">{{recentSearches[i].getCategory()}}</h3>
-                                    <div class="rating">
-                                        {% for rating in range(recentInfo[i]["Rating"]|round) %}
-                                        <svg width="12" height="12" fill="none">
-                                            <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#E4002B" />
-                                        </svg>
-                                        {% endfor %}
-                                        {% for rating in range(5 - recentInfo[i]["Rating"]|round) %}
-                                        <svg width="12" height="12" fill="none">
-                                            <rect x="0.5" y="0.5" width="11" height="11" rx="1.5" stroke="#C4C4C4" />
-                                        </svg>
-                                        {% endfor %}
-                                        <p class="ratingvalue">{{recentInfo[i]["Review_no"]}}</p>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1116,12 +1103,16 @@
     </div>
 
     <!-- Popup -->
-    <div id="changesPopup" style="display: none; position: absolute; z-index:5; top: 50%;">
-        <p id="changes-text">You've changed the starting date of your itinerary. What action do you wish to perform ?</p>
-        <p class="text-primary" onclick="dateChangesAction(1)">Leave itinerary in their respective pages</p>
-        <p class="text-danger" onclick="dateChangesAction(2)">Reset itinerary</p>
+    <div id="changesPopup" class="disable-bg" style="display: none; z-index:25;">
+        <div class="action-dialog">
+            <p class="action-dialog-title">Changes to itinerary dates</p>
+            <p class="action-dialog-desc">You've changed the starting date of your itinerary. What action do you wish to perform ?</p>
+            <hr>
+            <p class="action-dialog-action text-primary" onclick="dateChangesAction(1)">Leave itinerary in their respective pages</p>
+            <hr>
+            <p class="action-dialog-action text-danger" onclick="dateChangesAction(2)">Reset itinerary</p>
+        </div>
     </div>
-
 </div>
 {% endblock %}
 
@@ -1162,8 +1153,9 @@
 
         var allSections = document.getElementsByClassName("planSection");
         for (var i=0; i<allSections.length; i++) {
-            if (allSections[i].querySelector(".time-left").querySelector("span").innerText.length > 0)
+            if (allSections[i].querySelector(".time-left").querySelector("span").innerText.length == 0) {
                 allSections[i].querySelector(".time-left").querySelector("span").innerText = allowanceLeft;
+            }
         }
     }
 
@@ -1244,13 +1236,12 @@
         
         if (dateCards.length > 0) {
             // Prompt for action
-            if (startDate > new Date(dateCards[0].querySelector("h1").querySelector("span").innerText)) {
-                $("#changesPopup").fadeIn(150);
-            }
+            $("#changesPopup").fadeIn(150);
+            document.body.style.overflow = "hidden";
 
             datesDiv.innerHTML = 
             `<li class="inactivedate" id="card-date-add" onclick="openInitPage();">
-                <h1>+ Add day</h1>
+                <h1>+ Edit days</h1>
             </li>`;
         }
 
@@ -1263,7 +1254,7 @@
             console.log(checkDate.getDate())
             var cardDate = new DOMParser().parseFromString(`
             <li class="inactivedate card-date" onclick="toggleDay(this);">
-                <h1>${checkDate.getDate()}/${('0' + checkDate.getMonth()).slice(-2)}<span hidden>${checkDate.getFullYear()}-${('0' + checkDate.getMonth()).slice(-2)}-${('0' + checkDate.getDate()).slice(-2)}</span></h1>
+                <h1>${checkDate.getDate()}/${('0' + (checkDate.getMonth()+1)).slice(-2)}<span hidden>${checkDate.getFullYear()}-${('0' + checkDate.getMonth()).slice(-2)}-${('0' + checkDate.getDate()).slice(-2)}</span></h1>
                 <p class="tm-selection">
                     <a data-toggle="collapse" href="#tmdropdown-${i}"><svg width="36" height="19" viewBox="0 0 36 19" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M17.7709 2.05692C17.6584 1.72085 17.4456 1.42933 17.1626 1.22344C16.8795 1.01754 16.5405 0.907635 16.1931 0.909196H3.97092C3.62382 0.908654 3.28521 1.01896 3.00236 1.22471C2.71951 1.43047 2.50653 1.72141 2.39314 2.05692L0.0820312 8.86373V17.9546C0.0820313 18.256 0.199094 18.5451 0.407468 18.7582C0.615842 18.9713 0.898457 19.091 1.19314 19.091H2.30425C2.59894 19.091 2.88155 18.9713 3.08993 18.7582C3.2983 18.5451 3.41536 18.256 3.41536 17.9546V16.8183H16.7487V17.9546C16.7487 18.256 16.8658 18.5451 17.0741 18.7582C17.2825 18.9713 17.5651 19.091 17.8598 19.091H18.9709C19.2656 19.091 19.5482 18.9713 19.7566 18.7582C19.965 18.5451 20.082 18.256 20.082 17.9546V8.86373L17.7709 2.05692ZM3.97092 13.4092C3.64128 13.4092 3.31905 13.3092 3.04497 13.1219C2.77089 12.9346 2.55727 12.6684 2.43112 12.3569C2.30497 12.0455 2.27197 11.7027 2.33628 11.3721C2.40059 11.0415 2.55932 10.7377 2.79241 10.4993C3.0255 10.261 3.32247 10.0986 3.64577 10.0328C3.96907 9.96708 4.30418 10.0008 4.60873 10.1298C4.91327 10.2589 5.17357 10.4773 5.3567 10.7576C5.53984 11.038 5.63759 11.3675 5.63759 11.7046C5.63759 12.1567 5.46199 12.5903 5.14943 12.9099C4.83687 13.2296 4.41295 13.4092 3.97092 13.4092ZM16.1931 13.4092C15.8635 13.4092 15.5413 13.3092 15.2672 13.1219C14.9931 12.9346 14.7795 12.6684 14.6533 12.3569C14.5272 12.0455 14.4942 11.7027 14.5585 11.3721C14.6228 11.0415 14.7815 10.7377 15.0146 10.4993C15.2477 10.261 15.5447 10.0986 15.868 10.0328C16.1913 9.96708 16.5264 10.0008 16.8309 10.1298C17.1355 10.2589 17.3958 10.4773 17.5789 10.7576C17.7621 11.038 17.8598 11.3675 17.8598 11.7046C17.8598 12.1567 17.6842 12.5903 17.3717 12.9099C17.0591 13.2296 16.6352 13.4092 16.1931 13.4092ZM2.30425 7.72737L3.97092 2.61374H16.1931L17.8598 7.72737H2.30425Z" 
@@ -1320,44 +1311,42 @@
         datesDiv.querySelector(".card-date").classList.add("activedate");
 
         // Add days card
-        var plansSec = new DOMParser().parseFromString(
-            `<div class="planSection" style="display: none;">
-                <section class="req-info" hidden>
-                    <div class="time-left">Duration left: <span></span></div>
-                </section>
-
-                <div class="recommendation-listings plannertripitinerary" style="overflow-y: scroll;">
-                    <div class="plannerend start" onclick="openSearch(this, 1);">
-                        <div class="plannerendpoint">
-                            <svg width="31" height="31" viewBox="0 0 31 31" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                d="M0.888672 15.5C0.888672 12.5333 1.76841 9.63319 3.41663 7.16645C5.06485 4.69972 7.40753 2.77713 10.1484 1.64181C12.8893 0.506499 15.9053 0.209449 18.815 0.788228C21.7247 1.36701 24.3975 2.79562 26.4953 4.8934C28.5931 6.99119 30.0217 9.66394 30.6004 12.5737C31.1792 15.4834 30.8822 18.4994 29.7469 21.2403C28.6115 23.9811 26.689 26.3238 24.2222 27.972C21.7555 29.6203 18.8554 30.5 15.8887 30.5C13.9188 30.5 11.9683 30.112 10.1484 29.3582C8.32853 28.6044 6.67495 27.4995 5.28207 26.1066C2.46902 23.2936 0.888672 19.4783 0.888672 15.5ZM15.8887 24.5C17.6687 24.5 19.4088 23.9722 20.8888 22.9832C22.3688 21.9943 23.5224 20.5887 24.2036 18.9442C24.8848 17.2996 25.063 15.49 24.7157 13.7442C24.3685 11.9984 23.5113 10.3947 22.2526 9.13604C20.994 7.87737 19.3903 7.0202 17.6445 6.67294C15.8987 6.32567 14.0891 6.5039 12.4445 7.18509C10.8 7.86628 9.39438 9.01983 8.40544 10.4999C7.41651 11.9799 6.88867 13.72 6.88867 15.5C6.88867 17.887 7.83688 20.1761 9.52471 21.864C11.2125 23.5518 13.5017 24.5 15.8887 24.5Z"
-                                fill="#06A122" />
-                            </svg>
-                            <h2 class="inactiveinput">Add Start-Off Point</h2>
-                        </div>
-                
-                        <!-- addlocation -->
-                        <svg class="addlocation" width="31" height="31" viewBox="0 0 31 31" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <rect x="2.22656" y="2" width="26" height="26" rx="5" fill="white" />
-                            <path
-                            d="M26.8842 3.66314e-06H3.56402C2.67887 3.66314e-06 1.82997 0.351656 1.20408 0.977601C0.578186 1.60355 0.226563 2.45251 0.226562 3.33773V26.6647C0.226563 27.5499 0.578186 28.3989 1.20408 29.0248C1.82997 29.6508 2.67887 30.0024 3.56402 30.0024H26.8891C27.7743 30.0024 28.6231 29.6508 29.249 29.0248C29.8749 28.3989 30.2266 27.5499 30.2266 26.6647V3.33773C30.2266 2.899 30.1401 2.46457 29.972 2.05929C29.804 1.65402 29.5577 1.28585 29.2473 0.975851C28.9369 0.66585 28.5684 0.420098 28.1629 0.252652C27.7574 0.0852068 27.3229 -0.000646311 26.8842 3.66314e-06ZM23.5467 16.6627H16.8879V23.327H13.5504V16.6627H6.89034V13.3249H13.5541V6.66433H16.8916V13.3287H23.5517L23.5467 16.6627Z"
-                            fill="#2B2B2B" />
-                        </svg>
-                    </div>
-                </div>
-            </div>`, "text/html").body.firstElementChild;
         var allSections = document.getElementsByClassName("planSection");
+        console.log("Diff: "+diff)
         for (var i=0; i<Math.abs(diff); i++) {
             if (diff > 0) {
-                var clonedPlansSec = plansSec.cloneNode(true);
-                clonedPlansSec.style.display = "none";
-                clonedPlansSec.querySelector(".start").setAttribute("onclick", `openSearch(this, '${i+1}');`)
-                plansDiv.appendChild(clonedPlansSec);
+                var plansSec = new DOMParser().parseFromString(
+                    `<div class="planSection" style="display: none;">
+                        <section class="req-info" hidden>
+                            <div class="time-left">Duration left: <span></span></div>
+                        </section>
+
+                        <div class="recommendation-listings plannertripitinerary" style="overflow-y: scroll;">
+                            <div class="plannerend start" onclick="openSearch(this, '${i+1}');">
+                                <div class="plannerendpoint">
+                                    <svg width="31" height="31" viewBox="0 0 31 31" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                        d="M0.888672 15.5C0.888672 12.5333 1.76841 9.63319 3.41663 7.16645C5.06485 4.69972 7.40753 2.77713 10.1484 1.64181C12.8893 0.506499 15.9053 0.209449 18.815 0.788228C21.7247 1.36701 24.3975 2.79562 26.4953 4.8934C28.5931 6.99119 30.0217 9.66394 30.6004 12.5737C31.1792 15.4834 30.8822 18.4994 29.7469 21.2403C28.6115 23.9811 26.689 26.3238 24.2222 27.972C21.7555 29.6203 18.8554 30.5 15.8887 30.5C13.9188 30.5 11.9683 30.112 10.1484 29.3582C8.32853 28.6044 6.67495 27.4995 5.28207 26.1066C2.46902 23.2936 0.888672 19.4783 0.888672 15.5ZM15.8887 24.5C17.6687 24.5 19.4088 23.9722 20.8888 22.9832C22.3688 21.9943 23.5224 20.5887 24.2036 18.9442C24.8848 17.2996 25.063 15.49 24.7157 13.7442C24.3685 11.9984 23.5113 10.3947 22.2526 9.13604C20.994 7.87737 19.3903 7.0202 17.6445 6.67294C15.8987 6.32567 14.0891 6.5039 12.4445 7.18509C10.8 7.86628 9.39438 9.01983 8.40544 10.4999C7.41651 11.9799 6.88867 13.72 6.88867 15.5C6.88867 17.887 7.83688 20.1761 9.52471 21.864C11.2125 23.5518 13.5017 24.5 15.8887 24.5Z"
+                                        fill="#06A122" />
+                                    </svg>
+                                    <h2 class="inactiveinput">Add Start-Off Point</h2>
+                                </div>
+                        
+                                <!-- addlocation -->
+                                <svg class="addlocation" width="31" height="31" viewBox="0 0 31 31" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <rect x="2.22656" y="2" width="26" height="26" rx="5" fill="white" />
+                                    <path
+                                    d="M26.8842 3.66314e-06H3.56402C2.67887 3.66314e-06 1.82997 0.351656 1.20408 0.977601C0.578186 1.60355 0.226563 2.45251 0.226562 3.33773V26.6647C0.226563 27.5499 0.578186 28.3989 1.20408 29.0248C1.82997 29.6508 2.67887 30.0024 3.56402 30.0024H26.8891C27.7743 30.0024 28.6231 29.6508 29.249 29.0248C29.8749 28.3989 30.2266 27.5499 30.2266 26.6647V3.33773C30.2266 2.899 30.1401 2.46457 29.972 2.05929C29.804 1.65402 29.5577 1.28585 29.2473 0.975851C28.9369 0.66585 28.5684 0.420098 28.1629 0.252652C27.7574 0.0852068 27.3229 -0.000646311 26.8842 3.66314e-06ZM23.5467 16.6627H16.8879V23.327H13.5504V16.6627H6.89034V13.3249H13.5541V6.66433H16.8916V13.3287H23.5517L23.5467 16.6627Z"
+                                    fill="#2B2B2B" />
+                                </svg>
+                            </div>
+                        </div>
+                    </div>`, "text/html").body.firstElementChild;
+                plansDiv.appendChild(plansSec);
             }
             else if (diff < 0) {
                 // TODO: Change query selector h5 change in the future
-                if (startDate > new Date(dateCards[0].querySelector("h5").innerText)) {
+                if (startDate > new Date(dateCards[0].querySelector(".card-date-text").innerText)) {
                     allSections[i].remove();
                 }
                 else {
@@ -1375,9 +1364,11 @@
 
     function dateChangesAction(actionNum) {
         if (actionNum == 2) {
-            var div = document.getElementsByClassName("recommendation-listings");
-            for (i=0; i<div.length; i++) {
-                div.innerHTML = 
+            var div = document.getElementById("planPage");
+            var divLen = div.getElementsByClassName("planSection").length;
+            div.innerHTML = "";
+            for (var i=0; i<divLen; i++) {
+                div.innerHTML += 
                 `<div class="planSection" style="display: none;">
                     <section class="req-info" hidden>
                         <div class="time-left">Duration left: <span></span></div>
@@ -1405,9 +1396,12 @@
                     </div>
                 </div>`;
             }
+            div.querySelector(".planSection").style.display = "block";
+
+            saveTrips();
         }
 
-        saveTrips();
+        document.body.style.overflow = "visible";
         $("#changesPopup").fadeOut(150);
     }
 
@@ -1502,18 +1496,18 @@
         // Get place before, after and registered places
         var registeredPlaces = [].slice.call(allCards).slice(1, allCards.length).map(x => x.querySelector(".plan-address").innerText);
         if (order - 2 > 0) {
-            var placeBefore = allCards[order-1].querySelector(".plan-address").innerText;
-            var latlng = allCards[order-1].querySelector(".plan-latlng").innerText.split(",");
+            var placeBefore = allCards[order-2].querySelector(".plan-address").innerText;
+            var latlng = allCards[order-2].querySelector(".plan-latlng").innerText.split(",");
         }
         else {
-            var placeBefore = allCards[0].querySelector(".plan-latlng").innerText.split(",");;
+            var placeBefore = allCards[0].querySelector(".plan-latlng").innerText.split(",");
             var latlng = allCards[0].querySelector(".plan-latlng").innerText.split(",");
         }
         
-        placeA = allCards[order];
+        placeA = allCards[order - 1];
         var placeAfter;
         if (placeA) {
-            placeAfter = allCards[order].querySelector(".plan-address").innerText;
+            placeAfter = allCards[order - 1].querySelector(".plan-address").innerText;
         }
 
         if (cardEdit) {
@@ -1677,7 +1671,7 @@
     }
 
     var viewBtn;
-    function viewPlace(btn, index, order, itemNo) {
+    function viewPlace(btn, index, order, itemNo, search=false) {
         var card = document.getElementById("carddetails");
         console.log(card)
         var cardInfo = JSON.parse(btn.querySelector(".info_json").innerText);
@@ -1805,6 +1799,22 @@
         review.querySelector(".view-review-desc").innerText = "Visited my family earlier this year for the first time since they moved to Singapore in 2020. They recommended I take the guided tour of Battlebox and I am so glad I did. The guide was extremely knowledgeable and very pleasant. The tour explains a lot about the British surrender to the Japanese and it was all the more interesting as you were in the very rooms where the decision to surrender was taken. One of the highlights of my trip.";
         document.querySelector("#view-bottomSection").appendChild(review);
         document.querySelector(".review").remove();
+        // Track as searched
+        $.ajax({
+            type: "POST",
+            url: `/funcs/mark-track`,
+            dataType: "json",
+            data: {
+                name: cardInfo.Name,
+                address: cardInfo.Address,
+                image: cardInfo.Image_url,
+                category: cardInfo.Category,
+                action: "Searched"
+            },
+            error: function(jqXHR, status, err) {
+                console.log(err)
+            }
+        })
 
         // Pull screen up
         $("#carddetails").show();
@@ -1912,8 +1922,9 @@
             cardEdit = null;
         }
         else {
-            if (div.querySelector(".end")) {
-                div.insertBefore(newPlace, allSelection[order-1]);
+            console.log(div.querySelector(".end"));
+            if (!div.querySelector(".plan-unsetEnd")) {
+                div.insertBefore(newPlace, allSelection[order-2]);
             }
             else {
                 div.insertBefore(newPlace, div.querySelector(".plan-unsetEnd"));
@@ -1940,7 +1951,7 @@
         reAssignValues();
 
         cardEdit = card;
-        openRecommendTab(order-1, this);
+        openRecommendTab(order-1, btn);
     }
 
     function delCard(btn, order) {
@@ -1997,7 +2008,13 @@
                 }
 
                 var timeDiff = result[0] + parseInt(belowCardADuration.innerText) - parseInt(belowCardTDuration.innerText);
-                belowCard.querySelector(".plan-travel-duration").innerText = Math.round(result[0] - belowCardADuration);
+                if (result.TravelDuration) {
+                    belowCard.querySelector(".plan-travel-duration").innerText = result.TravelDuration;
+                }
+                else {
+                    belowCard.querySelector(".plan-travel-duration").innerText = result.EndDuration;
+                }
+
                 div.parentElement.parentElement.querySelector(".time-left").querySelector("span").innerText = parseInt(div.parentElement.parentElement.querySelector(".time-left").querySelector("span").innerText) + timeDiff;
             }
         })
@@ -2035,7 +2052,6 @@
         var div = document.getElementsByClassName("recommendation-listings");
         var cardDates = document.getElementsByClassName("card-date");
         var checkDate = new Date($("#startDate").val());
-        console.log(checkDate)
 
         var plannerIdStr = document.querySelector("#planner-id").value; 
         if (plannerIdStr.trim().length == 0)
@@ -2053,6 +2069,7 @@
             });
         }
         async function save(index) {
+            console.log(index)
             await $.ajax({
                 type: "POST",
                 url: `/funcs/save-trip`,
@@ -2102,22 +2119,26 @@
             for (var j=0; j<allPlacesDiv.length; j++) {
                 placesName.push(allPlacesDiv[j].querySelector(".plan-name").innerText);
                 placesAddress.push(allPlacesDiv[j].querySelector(".plan-address").innerText);
+                if (j == 0) {
+                    placesDuration.push(null);
+                }
+                else {
+                    placesDuration.push(parseInt(allPlacesDiv[j].querySelector(".plan-total-duration").querySelector("span").innerText));
+                }
                 if (j == 0 || (j == allPlacesDiv.length-1 && hasE)) {
                     placesCategory.push(null);
                     placesImg.push(null);
                     placesActivityDuration.push(null);
-                    placesDuration.push(null);
                 }
                 else {
                     placesCategory.push(allPlacesDiv[j].querySelector(".plan-category").innerText);
                     placesImg.push(allPlacesDiv[j].querySelector(".plan-img").querySelector("span").innerText);
                     placesActivityDuration.push(parseInt(allPlacesDiv[j].querySelector(".plan-activity-duration").querySelector("span").innerText));
-                    placesDuration.push(parseInt(allPlacesDiv[j].querySelector(".plan-total-duration").querySelector("span").innerText));
                 }
                 placesLatlng.push(allPlacesDiv[j].querySelector(".plan-latlng").innerText);
             }
 
-            console.log()
+            console.log(i)
 
             await save(i);
 
@@ -2216,6 +2237,7 @@
         var recentMenu = document.querySelector("#recSearch-results-recent");
         const search = document.querySelector("#recSearchBar").value;
         var cat = document.querySelector("#selectedCat").innerText;
+        var sectionNo = parseInt(document.getElementById("sectionIndex").innerText);
 
         if (search.trim().length == 0) {
             dropdownMenu.innerHTML = "";
@@ -2231,7 +2253,7 @@
                     if (allRecent.length > 0) {
                         $(".recentheader").show();
                         for (var i=0; i<allRecent.length; i++) {
-                            if (allRecent[i].querySelector(".recentname").innerText.toLowerCase.contains(search.toLowerCase)) {
+                            if (allRecent[i].querySelector(".recentname").innerText.toLowerCase().includes(search.toLowerCase)) {
                                 allRecent[i].style.display = "block";
                             }
                             else {
@@ -2255,7 +2277,8 @@
                             dropdownCooldown = true;
                             record = result[i]
                             card = 
-                            `<div class="recentcards searchcard" onclick="chooseSearchPlace(this, ${order});">
+                            `<div class="recentcards searchcard" onclick="viewPlace(this, ${sectionNo}, ${order}, ${i}, true);">
+                                <p class="info_json" hidden>${JSON.stringify(record)}</p>
                                 <div class="cardimg" style="background-image: url('${record["Image_url"]}')">
                                 </div>
                         
@@ -2292,6 +2315,10 @@
                         dropdownMenu.style.display = "none";
                         dropdownMenu.innerText = `No results found`; 
                     }
+                },
+                error: function(jqXHR, status, err) {
+                    console.log(err);
+                    console.log("debug man gg")
                 }
             });
 
@@ -2425,7 +2452,7 @@
                             <h1 class="plan-name">${allP[0].innerText}</h1>
                             <p class="plan-address" hidden>${allP[1].innerText}}</p>
                             <p class="plan-latlng" hidden>${allP[2].innerText}</p>
-                            <p class="plan-total-duration" hidden></p>
+                            <p class="plan-total-duration" hidden><span><span> min</p>
                         </div>
                         <div class="explorerendtime">
                             <h1 class="plan-timing" hidden></h1>
@@ -2434,6 +2461,7 @@
                 </div>`;
 
             reAssignValues();
+            reCal2Places(div, div.getElementsByClassName("plan-selection").length-1);
         }
 
         closeSearch();
@@ -2655,7 +2683,7 @@
                 var position1 = planCards[index-1].querySelector(".plan-latlng").innerText.split(",");
                 var position2 = planCards[index].querySelector(".plan-latlng").innerText.split(",");
                 var res = true;
-                var startDate = document.getElementsByClassName("card-date")[activeIndex].querySelector("h1").querySelector("span").innerText;
+                var startDate = document.getElementsByClassName("card-date")[activeIndex].querySelector(".card-date-text").querySelector("span").innerText;
 
                 routeIconsDiv[index-1].innerHTML = "";
 

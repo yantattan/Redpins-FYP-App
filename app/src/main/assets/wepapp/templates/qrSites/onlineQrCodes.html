@@ -28,13 +28,13 @@
             } 
         })
 
-        function genCodes(placeId) {
+        async function genCodes(placeId) {
             var claimBonusPage = `http://10.0.2.2:5000/qrCode/claim-bonus/` + placeId;
             var usePointsPage = `http://10.0.2.2:5000/qrCode/use-points/` + placeId;
 
             let formData = new FormData();
             formData.append("data", claimBonusPage);
-            fetch("/funcs/generate-claimBonus-qrcode", {
+            await fetch("/funcs/generate-claimBonus-qrcode", {
                 method: "POST",
                 body: formData
             }).then((res) => {
@@ -48,7 +48,7 @@
 
             formData = new FormData();
             formData.append("data", usePointsPage);
-            fetch("/funcs/generate-usePoints-qrcode", {
+            await fetch("/funcs/generate-usePoints-qrcode", {
                 method: "POST",
                 body: formData
             }).then((res) => {
@@ -59,6 +59,7 @@
                     $("#qrcode-usePoints").attr("src", `data:image/png;base64,${encodedVal}`);
                 })
             })
+
         }
 
     }

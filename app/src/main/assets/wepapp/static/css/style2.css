@@ -116,7 +116,7 @@ hr {
   overflow-x: scroll;
 }
 
-.cardimg {
+.cardimg, .planimg {
   background-size: cover;
 }
 
@@ -140,4 +140,57 @@ hr {
 
 .plannertripitinerary {
   padding-bottom: 0px;
+}
+
+.disable-bg {
+  position: absolute;
+  height: 760px; 
+  width: 360px; 
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.action-dialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 70%;
+  padding: 2.5%;
+  text-align: center;
+  border-radius: 5px;
+  background-color: white;
+}
+
+.action-dialog p {
+  padding: 2.5%;
+}
+
+.action-dialog-title {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.action-dialog-action {
+  font-size: 16px;
+}
+
+.action-dialog-desc {
+  font-size: 14px;
+}
+
+.searchcard .cardimg {
+  object-fit: contain;
+  width: 110px;
+  height: 110px;
+  background-color: green;
+  border-radius: 5px;
+  position: relative;
+}
+
+.mapdetailscon {
+  width: 100%;
+}
+
+.mapdetails {
+  min-width: 320px;
 }

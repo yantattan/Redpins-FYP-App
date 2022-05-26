@@ -72,7 +72,7 @@
                         </div>
     
                         <div class="eventedit">
-                            <h1>{{itinerary.getPlaces()[i-1].TravelDuration}} mins</h1>
+                            <h1>{{itinerary.getPlaces()[i].TravelDuration| int}} mins</h1>
                         </div>
                     </div>
     
@@ -92,6 +92,7 @@
         </section>
 
         <!-- bottom -->
+        {% if not readonly %}
         <form method="POST">
             <section class="bottom">
                 <div class="maincta" onclick="document.querySelector('form').submit();">
@@ -99,6 +100,7 @@
                 </div>
             </section>
         </form>
+        {% endif %}
     </div>
 </div>
 {% endif %}

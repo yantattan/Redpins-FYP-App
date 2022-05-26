@@ -67,14 +67,17 @@ class TrackedPlacesCon:
                     try:  
                         self.__connection.update_one({"UserId": trackedPlace.getUserId(), 
                                                         "Address": trackedPlace.getAddress(),
-                                                        "Category": trackedPlace.getCategory()},
+                                                        "Name": trackedPlace.getPlaceName(),
+                                                        "Category": trackedPlace.getCategory(),
+                                                        "Image": trackedPlace.getImage()},
                                                         {"$set": {"Actions": trackedInfo["Actions"]}
                                                     }) 
                         self.RecordAction(trackedPlace.getAction())
                         
                     except Exception as e:
                         try:
-                            self.__connection.insert_one({"UserId": trackedPlace.getUserId(), "Address": trackedPlace.getAddress(), "Category": trackedPlace.getCategory(),
+                            self.__connection.insert_one({"UserId": trackedPlace.getUserId(), "Address": trackedPlace.getAddress(), 
+                                                        "Name": trackedPlace.getPlaceName(), "Image": trackedPlace.getImage(), "Category": trackedPlace.getCategory(),
                                                 "Actions": {
                                                     trackedPlace.getAction() : {"Frequency": 1, "Timestamps": [currentTime]}
                                                 }
@@ -92,7 +95,8 @@ class TrackedPlacesCon:
                 return {"success": False, "error": "An error occurred"}                 
         else:
             try:
-                self.__connection.insert_one({"UserId": trackedPlace.getUserId(), "Address": trackedPlace.getAddress(), "Category": trackedPlace.getCategory(),
+                self.__connection.insert_one({"UserId": trackedPlace.getUserId(), "Address": trackedPlace.getAddress(), 
+                                            "Name": trackedPlace.getPlaceName(), "Image": trackedPlace.getImage(), "Category": trackedPlace.getCategory(),
                                     "Actions": {
                                         trackedPlace.getAction() : {"Frequency": 1, "Timestamps": [currentTime]}
                                     }
@@ -170,7 +174,7 @@ class TrackedPlacesCon:
                 resultsList = []
                 for row in results:
                     action = row["Actions"][act]
-                    trackedPlace = TrackedPlace(row["UserId"], row["Address"], row["PlaceName"], act)
+                    trackedPlace = TrackedPlace(row["UserId"], row["Address"], row["PlaceName"], row["Image"], row["Category"], act)
                     trackedPlace.setFrequency(action["Frequency"])
                     trackedPlace.setTimestamps(action["Timestamps"])
                     resultsList.append(trackedPlace)
@@ -191,7 +195,7 @@ class TrackedPlacesCon:
                 {"$limit": 5}
             ])
 
-            return list(map(lambda x: TrackedPlace(userId, x["Address"], x["Name"], x["Category"], x["Actions"]), results))
+            return list(map(lambda x: TrackedPlace(userId, x["Address"], x["Name"], x["Image"], x["Category"], x["Actions"]), results))
         except Exception as e:
             print(e)
 

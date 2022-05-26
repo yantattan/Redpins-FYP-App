@@ -32,9 +32,9 @@ class SignedPlaceForm(Form):
     organization = StringField("Organization Name", [validators.DataRequired()])
     address = StringField("Address", [validators.DataRequired()])
     unitNo = StringField("Unit Number", [validators.DataRequired()])
-    category = SelectField("Category", [validators.DataRequired()], choices=[("Eateries", "Eateries"), ("Attraction", "Attraction")])
+    category = SelectField("Category", [validators.DataRequired()], choices=[("Eateries", "Eateries"), ("Attractions", "Attractions")])
     points = IntegerField("Bonus Points", [validators.NumberRange(min=3, max=60), validators.Optional()])
-    checkpoint = IntegerField("Points Needed", [validators.NumberRange(min=20, max=1000), validators.Optional()])
+    checkpoint = IntegerField("Points Needed", [validators.NumberRange(min=50, max=1000), validators.Optional()])
     discount = DecimalField("Discount (%)", [validators.Optional()], places=2)
 
 class ReviewForm(Form):
@@ -110,10 +110,11 @@ class User:
 
 
 class TrackedPlace:
-    def __init__(self, userId, address, placeName, category, action):
+    def __init__(self, userId, address, placeName, image, category, action):
         self.__userId = userId
         self.__address = address
         self.__placeName = placeName
+        self.__image = image
         self.__category = category
         self.__action = action
         self.__frequency = 0
@@ -125,6 +126,9 @@ class TrackedPlace:
     def setPlaceName(self, placeName):
         self.__placeName = placeName
     
+    def setImage(self, image):
+        self.__image = image
+
     def setCategory(self, category):
         self.__category = category
 
@@ -146,6 +150,9 @@ class TrackedPlace:
     def getPlaceName(self):
         return self.__placeName
     
+    def getImage(self):
+        return self.__image
+
     def getCategory(self):
         return self.__category
 

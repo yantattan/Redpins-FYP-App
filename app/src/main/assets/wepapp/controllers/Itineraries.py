@@ -53,10 +53,10 @@ class ItinerariesCon:
 
     def GetCompletedItineraries(self, userId):
         try:
-            itinerary = self.__connection.find({"UserId": userId, "Status": "Completed"})
+            itinerary = list(self.__connection.find({"UserId": userId, "Status": "Completed"}))
             if itinerary is not None:
-                return Itinerary(itinerary["_id"], itinerary["UserId"], itinerary["Name"], itinerary["Date"], itinerary["StartTime"], itinerary["EndTime"], itinerary["Type"], 
-                                itinerary["TransportMode"], itinerary["TimeAllowance"], itinerary["TimeLeft"], itinerary["Confirmed"], itinerary["Status"], itinerary["Places"], itinerary["Description"], itinerary["PlannerId"], itinerary["HasEnd"])
+                            return list(map(lambda x: Itinerary(x["_id"], x["UserId"], x["Name"], x["Date"], x["StartTime"], x["EndTime"], x["Type"], 
+                                x["TransportMode"], x["TimeAllowance"], x["TimeLeft"], x["Confirmed"], x["Status"], x["Places"], x["Description"], x["PlannerId"], x["HasEnd"]), itinerary))
         except Exception as e:
             print(e)
 
@@ -100,6 +100,15 @@ class ItinerariesCon:
 
         except Exception as e:
             print(e)  
+
+    def GetSavedItinerary(self, userId):
+        try:
+            itinerary = list(self.__connection.find({"UserId": userId, "Status": "Saved"}))
+            if itinerary is not None:
+                return list(map(lambda x: Itinerary(x["_id"], x["UserId"], x["Name"], x["Date"], x["StartTime"], x["EndTime"], x["Type"], 
+                                    x["TransportMode"], x["TimeAllowance"], x["TimeLeft"], x["Confirmed"], x["Status"], x["Places"], x["Description"], x["PlannerId"], x["HasEnd"]), itinerary))
+        except Exception as e:
+            print(e) 
 
     def GetPlannerItineraries(self, plannerId):
         try:

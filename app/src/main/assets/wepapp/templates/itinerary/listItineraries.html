@@ -17,62 +17,64 @@
     </ul>
 
     <div id="currentp-section">
-        {% if ongoing == None %}
-        <div class="myplanstrips" style="text-align: center;" onclick="window.open('/itinerary/planning/planner','_self');">
-    
+        <div class="myplanstrips" onclick="window.open('/itinerary/planning/planner','_self')">
             <div class="planinfo">
-                <h1 class="planprogress">&nbsp;</h1>
-                <h2 class="planname">+ Create new trip</h2>
+                <h1 class="planprogress"></h1>
+                <h2 class="planname">+ Add new plan</h2>
                 <h3 class="plandate"></h3>
             </div>
         </div>
-        {% else %}
-        <div class="myplanstrips">
-            <div class="planimg">
+
+        {% if ongoing != None %}
+        <div class="myplanstrips" onclick="window.open('/itinerary/showTrip','_self')">
+            <div class="planimg" style="background-image: url('{% if iti.getPlaces()|length > 0 %}{{iti.getPlaces()[0].Image}}{% else %}/static/images/red.png{% endif %}');">
             </div>
     
             <div class="planinfo">
-                <h1 class="planprogress">
-                    {% if iti.getStatus() == "Ongoing" %}In Progress{% endif %}
-                </h1>
+                <h1 class="planprogress">Currently ongoing</h1>
                 <h2 class="planname">My SG Trip</h2>
-                <h3 class="plandate">{{startEnds[iti.getPlannerId()].start}} - {{startEnds[iti.getPlannerId()].end}}</h3>
+                <h3 class="plandate">{{iti.getDate().strftime("%d-%m-%Y")}}</h3>
             </div>
         </div>
         {% endif %}
 
-        {% for iti in planners %}
-        {% if iti.getStatus() != "Completed" %}
-        <div class="myplanstrips">
-            <div class="planimg">
+        {% for iti in planning %}
+        <div class="myplanstrips" onclick="window.open('/itinerary/planning/planner','_self')">
+            <div class="planimg" style="background-image: url('{% if iti.getPlaces()|length > 0 %}{{iti.getPlaces()[0].Image}}{% else %}/static/images/red.png{% endif %}');">
             </div>
     
             <div class="planinfo">
-                <h1 class="planprogress">
-                    {% if iti.getStatus() == "Ongoing" %}In Progress
-                    {% elif iti.getStatus() == "Planning" %}Planning
-                    {% elif iti.getStatus() == "Saved" %}Starts on {{startEnds[iti.getPlannerId()].start}} {% endif %}
-                </h1>
+                <h1 class="planprogress">Planning in progress</h1>
                 <h2 class="planname">My SG Trip</h2>
-                <h3 class="plandate">{{startEnds[iti.getPlannerId()].start}} - {{startEnds[iti.getPlannerId()].end}}</h3>
+                <h3 class="plandate">{{iti.getDate().strftime("%d-%m-%Y")}}</h3>
             </div>
         </div>
-        {% endif %}
+        {% endfor %}
+
+        {% for iti in saved %}
+        <div class="myplanstrips">
+            <div class="planimg" style="background-image: url('{% if iti.getPlaces()|length > 0 %}{{iti.getPlaces()[0].Image}}{% else %}/static/images/red.png{% endif %}');">
+            </div>
+    
+            <div class="planinfo">
+                <h1 class="planprogress">Starts on {{iti.getDate().strftime("%d-%m-%Y")}}</h1>
+                <h2 class="planname">My SG Trip</h2>
+                <h3 class="plandate">{{iti.getDate().strftime("%d-%m-%Y")}}</h3>
+            </div>
+        </div>
         {% endfor %}
     </div>
 
     <div id="previousp-section" style="display: none;">
-        {% for iti in planners %}
+        {% for iti in completed %}
         <div class="myplanstrips">
-            <div class="planimg">
+            <div class="planimg" style="background-image: url('{% if iti.getPlaces()|length > 0 %}{{iti.getPlaces()[0].Image}}{% else %}/static/images/red.png{% endif %}');">
             </div>
     
             <div class="planinfo">
-                <h1 class="planprogress">
-                    Ended on {{startEnds[iti.getPlannerId()].end}}
-                </h1>
+                <h1 class="planprogress">Ended on {{iti.getDate().strftime("%d-%m-%Y")}}</h1>
                 <h2 class="planname">My SG Trip</h2>
-                <h3 class="plandate">{{startEnds[iti.getPlannerId()].start}} - {{startEnds[iti.getPlannerId()].end}}</h3>
+                <h3 class="plandate">{{iti.getDate().strftime("%d-%m-%Y")}}</h3>
             </div>
         </div>
         {% endfor %}
