@@ -1099,8 +1099,7 @@
                             <h1 class="plan-name">${$("#end-location").val()}</h1>
                             <p class="plan-address" hidden>${$("#end-location-address").text()}</p>
                             <p class="plan-latlng" hidden>${$("#end-location-latlng").text()}</p>
-                            <p class="plan-travel-duration" hidden></p>
-                            <p class="plan-total-duration" hidden></p>
+                            <p class="plan-total-duration" hidden><span></span></p>
                         </div>
                         <div class="explorerendtime">
                             <h1 class="plan-timing"></h1>
@@ -1264,7 +1263,7 @@
                     }
                     console.log("End duration: "+result[result.length-1].EndDuration)
                     allowanceLeft -= result[result.length-1].EndDuration;
-                    div.lastElementChild.querySelector(".plan-travel-duration").querySelector("span").innerText = Math.round(result[result.length-1].EndDuration);
+                    div.lastElementChild.querySelector(".plan-travel-duration").innerText = Math.round(result[result.length-1].EndDuration);
                     div.lastElementChild.querySelector(".plan-total-duration").querySelector("span").innerText = Math.round(result[result.length-1].EndDuration);
                     document.getElementById("time-left").querySelector("span").innerText = parseInt(allowanceLeft);
 

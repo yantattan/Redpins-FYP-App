@@ -370,8 +370,11 @@ def pref1():
     webscrapData = pandas.read_csv("csv/webcsv/"+categoriesInfo[category]["filename"], encoding = "ISO-8859-1")
     allPrefs = pandas.unique(webscrapData[categoriesInfo[category]["colName"]].str.split(",", expand=True).stack())
 
-    prefs = userCon.GetPreferences(session["current_user"]["userId"], category).getPreferences()
-    print(prefs)
+    prefsObj = userCon.GetPreferences(session["current_user"]["userId"], category)
+    if prefsObj is not None:
+        prefs = prefsObj.getPreferences()
+    else:
+        prefs = []
 
     return render_template("preferences/preference1.html", prefs=prefs, allPrefs=allPrefs)
 
@@ -395,7 +398,11 @@ def pref2():
     webscrapData = pandas.read_csv("csv/webcsv/"+categoriesInfo[category]["filename"], encoding = "ISO-8859-1")
     allPrefs = pandas.unique(webscrapData[categoriesInfo[category]["colName"]].str.split(",", expand=True).stack())
 
-    prefs = userCon.GetPreferences(session["current_user"]["userId"], category).getPreferences()
+    prefsObj = userCon.GetPreferences(session["current_user"]["userId"], category)
+    if prefsObj is not None:
+        prefs = prefsObj.getPreferences()
+    else:
+        prefs = []
 
     return render_template("preferences/preference2.html", prefs=prefs, allPrefs=allPrefs)
 
@@ -773,6 +780,8 @@ def recommenderAlgorithm(userId, startDatetime, timeAllowance, displaySize, lati
             
         return pList    
     print(timeAllowance)
+
+    print(userId, startDatetime, timeAllowance, displaySize, latitude, longitude, category, transportMode, skipped, pageNum, placesAdded, abovePlace, belowPlace, sectionIndex, sep=",")
 
      # Shortlisted after calculating distance
     webScrapData = pandas.read_csv("csv/webcsv/"+categoriesInfo[category]["filename"], encoding = "ISO-8859-1")

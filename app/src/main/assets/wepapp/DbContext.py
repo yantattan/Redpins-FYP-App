@@ -9,7 +9,8 @@ import string
 
 class MongoDBContext:
     def Connect():
-        con = MongoClient("mongodb://localhost:27017/")
+        # con = MongoClient("mongodb://localhost:27017/")
+        con = MongoClient("mongodb+srv://redpinsBufferAdmin:redpinsBvff3r@redpinsbufferdb.n8xym.mongodb.net/test")
         db = con["RedpinsBufferDB"]
         return db
 
