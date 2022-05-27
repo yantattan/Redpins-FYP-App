@@ -1378,8 +1378,8 @@ def saveTrip():
         durations = request.form.getlist("duration[]")
         latlngs = request.form.getlist("latlngs[]")
         description = request.form.get("description") or None
-        timeAllowance = float(request.form.get("timeAllowance") or 0) or None
-        timeLeft = float(request.form.get("timeLeft") or 0) or None
+        timeAllowance = float(request.form.get("timeAllowance") or 900) or None
+        timeLeft = float(request.form.get("timeLeft") or 900) or None
         transportMode = request.form.get("transportMode")
         confirmed = request.form.get("confirmed").lower() == "true"
         status = request.form.get("status")

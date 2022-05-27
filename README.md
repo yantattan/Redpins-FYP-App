@@ -1,10 +1,13 @@
 ======= Packages installation ========
-Using an IDE
+a. Using an IDE
+
 Navigate to /app/src/main/assets/webapp
 Under terminal, run "pip install -r requirements.txt"
 
 OR
-Using command prompt
+
+b. Using command prompt
+
 cd <path to main project folder>/app/src/main/assets/webapp
 pip install -r requirements.txt
 
@@ -23,12 +26,15 @@ Raw html pages are location at /app/src/main/assets/webapp/templates/pages
 *Running emulator should only be used when testing scanning of QR codes
 
 To run the application on emulator, run the web application first.
+
 From the folders directory menu, navigate to java/<first folder>, right click on MainActivity.kt and select run. This might up to 2-5 minutes on the first run.
 
 
 ======== Install an emulator ========
 To Install an emulator, go to AVD manager located at the top of Android Studio. 
+
 Select Pixel 5 API 30, and click on "Show Advanced Settings"
+
 Scroll down, and under Camera, change front and back to Webcam, then click Finish.
 
 
