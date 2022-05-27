@@ -626,7 +626,7 @@ def calculateAndReturnList(userId, category, webScrapData, shortlistedPlaces, di
 
         # Score preferences based on regression of his preferences 
         for action in actionPoints:
-            yourFuturePref = trackedInfoPreference.predict([trackedInfoLE.fit_transform([userId, "Eateries", action, str(datetime.now()) ])])[0]
+            yourFuturePref = trackedInfoPreference.predict([trackedInfoLE.fit_transform([userId, category, action, str(datetime.now()) ])])[0]
             try:
                 futuretrackedPlacesPoints[yourFuturePref] += 1
             except KeyError:
@@ -655,7 +655,7 @@ def calculateAndReturnList(userId, category, webScrapData, shortlistedPlaces, di
                         if pref in placesCat:
                             cuisinesMatch += 2
 
-                    cuisinesMatch /= 15
+                    cuisinesMatch /= ( (len(yourPrefs.getPreferences())*2) + 5 )
                     netChance += cuisinesMatch * 0.35
 
                 # #2 - Check reviews
@@ -684,13 +684,13 @@ def calculateAndReturnList(userId, category, webScrapData, shortlistedPlaces, di
 
                     trackedMatch /= 13
                     
-                    netChance += trackedMatch * 0.2
+                    netChance += trackedMatch * 0.25
 
                 # #4 - Check if the places are our partners
                 if sectionIndex in [1, 3]:
                     partnered = signedPlaceCon.CheckPlace(place.Name)
                     if partnered:
-                        netChance += 0.2
+                        netChance += 0.15
                 
                 # #5 - Check if place already selected
                 if place.Address in placesAdded:
