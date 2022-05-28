@@ -38,3 +38,9 @@ Select Pixel 5 API 30, and click on "Show Advanced Settings"
 Scroll down, and under Camera, change front and back to Webcam, then click Finish.
 
 
+======== Instructions for deployment of app to public ========
+As of now, the app is still local only. The app will require deployment of the WEBSITE database to cloud. As of now, the app is able to connect onto a cloud database, however features of database are limited as it is a free version.
+
+Main path to the WEBSITE folder => <main folder>/app/src/main/assets/webapp
+*Connection string to local database is commented out in the case cloud database connection string fails. Connection string coded under DBContext.py in the website folder.
+
